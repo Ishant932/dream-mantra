@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment & secrets
+.env
+.env.*
+!.env.example
+backend/.env
+
+# Runtime data (users, payments — never commit)
+backend/data.json
+backend/data/store.json
+server/data.json
+backend/uploads/
+
+# Build output
+dist/
+client/dist/
+frontend/dist/
+build/
+
+# Logs & OS
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Playwright / test artifacts
+test-results/
+playwright-report/
+blob-report/

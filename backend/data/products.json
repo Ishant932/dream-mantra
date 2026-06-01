@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "dmit",
+    "title": "Mind Mapping",
+    "titleHi": "Mind Mapping मूल्यांकन",
+    "description": "Fingerprint analysis — inborn talent mapping (30+ countries validated)",
+    "price": 2999,
+    "duration": "45 mins",
+    "testPath": "/dashboard/test/dmit"
+  },
+  {
+    "slug": "psychometric",
+    "title": "Skill Mapping",
+    "titleHi": "Skill Mapping",
+    "description": "MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung — 7 frameworks",
+    "price": 1999,
+    "duration": "60 mins",
+    "testPath": "/dashboard/test/psychometric"
+  },
+  {
+    "slug": "dmit-psychometric-combo",
+    "title": "Mind Mapping + Skill Mapping Combo",
+    "titleHi": "Mind Mapping + Skill Mapping कॉम्बो",
+    "description": "Complete scientific career assessment package",
+    "price": 4499,
+    "duration": "90 mins",
+    "testPath": "/dashboard/test/combo"
+  },
+  {
+    "slug": "crp-test",
+    "title": "AI Career Launchpad Training",
+    "titleHi": "AI Career Launchpad Training",
+    "description": "For college students & freshers — career readiness training",
+    "price": 1499,
+    "duration": "40 mins",
+    "testPath": "/dashboard/test/crp-test"
+  }
+]

@@ -1,0 +1,14 @@
+# Deploy free on Render.com: connect GitHub repo → New Web Service → use this blueprint
+services:
+  - type: web
+    name: dreams-mantra
+    runtime: node
+    buildCommand: npm run install:all && npm run build
+    startCommand: cd backend && node index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: GEMINI_API_KEY
+        sync: false
