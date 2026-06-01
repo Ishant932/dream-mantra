@@ -29,6 +29,19 @@ function parseJwtPayload(token) {
   }
 }
 
+function userFromToken(token) {
+  const payload = parseJwtPayload(token);
+  if (!payload?.id) return null;
+  if (payload.exp && Date.now() >= payload.exp * 1000) return null;
+  return {
+    id: payload.id,
+    email: payload.email,
+    phone: payload.phone,
+    role: payload.role,
+    name: payload.name,
+  };
+}
+
 function clearStoredAuth() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(LEGACY_TOKEN_KEY);
@@ -132,7 +145,11 @@ export function AuthProvider({ children }) {
     const skipLoading = skipNextValidationLoading.current;
     skipNextValidationLoading.current = false;
 
-    if (!skipLoading) {
+    const bootstrapUser = userFromToken(activeToken);
+    if (bootstrapUser) {
+      setUser(bootstrapUser);
+      if (!skipLoading) setLoading(false);
+    } else if (!skipLoading) {
       setLoading(true);
       setUser(null);
     }
@@ -150,6 +167,7 @@ export function AuthProvider({ children }) {
         if (cancelled || session !== authSessionRef.current) return;
         if (err?.name === 'AbortError') return;
         if (activeToken !== tokenRef.current) return;
+        if (bootstrapUser) return;
         logout();
       })
       .finally(() => {

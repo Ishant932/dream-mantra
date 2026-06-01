@@ -3,7 +3,6 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Briefcase, Filter, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { careersApi } from '../api';
-import { loadCareersLocal } from '../utils/loadCareers';
 import { useLang } from '../context/LanguageContext';
 
 export default function CareersPage() {
@@ -19,15 +18,12 @@ export default function CareersPage() {
     setLoading(true);
     const params = { q: search || undefined, category, page, limit: 24 };
     try {
-      setData(await loadCareersLocal(params));
+      setData(await careersApi.list(params));
     } catch {
       setData({ careers: [], total: 0, pages: 1, categories: [] });
     } finally {
       setLoading(false);
     }
-    careersApi.list(params).then((res) => {
-      if (res?.careers?.length) setData(res);
-    }).catch(() => {});
   }, [search, category, page]);
 
   useEffect(() => {

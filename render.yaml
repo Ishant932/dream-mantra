@@ -8,8 +8,8 @@ services:
     plan: free
     region: singapore
     branch: main
-    buildCommand: npm run install:all && npm run build
-    startCommand: cd backend && node index.js
+    buildCommand: npm install && npm install --prefix backend && npm install --include=dev --prefix client && npm run build --prefix client
+    startCommand: node backend/index.js
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:
@@ -37,3 +37,13 @@ services:
         sync: false
       - key: SEED_SAMPLE_SLOTS
         value: true
+
+  # Pings the web service every 14 min to reduce Render free-tier cold starts
+  - type: cron
+    name: dream-mantra-keepalive
+    runtime: node
+    schedule: "*/14 * * * *"
+    buildCommand: echo "keepalive"
+    startCommand: node -e "fetch('https://dream-mantra.onrender.com/api/warmup').catch(()=>fetch('https://dream-mantra.onrender.com/api/health'))"
+    plan: free
+    region: singapore

@@ -22,7 +22,7 @@ import { getAssessmentFlow, updateAssessmentFlow } from '../lib/assessmentProgre
 import { setAssessmentSkillMappingBand } from '../lib/skillMappingBand.js';
 import { getSkillTestsForUser } from '../lib/skillMappingTests.js';
 import { getCareerPathForUser } from '../lib/careerPath.js';
-import { listPaymentsForUser, getPaymentForAssessment, isAssessmentFullyPaid, canCancelAssessment, syncAllConfirmedPaymentAssessments } from '../lib/paymentService.js';
+import { listPaymentsForUser, getPaymentForAssessment, isAssessmentFullyPaid, canCancelAssessment } from '../lib/paymentService.js';
 import { getCommunityLink } from '../lib/siteSettings.js';
 import {
   listNotificationsForUser,
@@ -42,7 +42,6 @@ const router = Router();
 router.use(authRequired);
 
 router.get('/dashboard', (req, res) => {
-  syncAllConfirmedPaymentAssessments();
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
   const consultations = db
     .prepare('SELECT * FROM consultations WHERE user_id = ? ORDER BY created_at DESC')

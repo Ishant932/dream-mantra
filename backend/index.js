@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import fs from 'fs';
@@ -8,6 +9,7 @@ import { getUploadsDir } from './lib/paymentProof.js';
 import { seedAdmin } from './db.js';
 import { seedSampleSlots, getAvailableSlots } from './lib/slots.js';
 import { migrateLegacyPayments } from './lib/paymentService.js';
+import { loadCareersData } from './lib/careersData.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 import userRoutes from './routes/user.js';
@@ -24,8 +26,6 @@ if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
 }
 
 seedAdmin();
-seedSampleSlots();
-migrateLegacyPayments();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distCandidates = [
@@ -37,6 +37,11 @@ const hasBuiltClient = fs.existsSync(path.join(clientDist, 'index.html'));
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const isProd = process.env.NODE_ENV === 'production';
+
+app.set('trust proxy', 1);
+app.use(compression({ threshold: 1024 }));
+app.disable('x-powered-by');
 
 const corsOrigins = process.env.CORS_ORIGIN
   ? process.env.CORS_ORIGIN.split(',').map((s) => s.trim())
@@ -51,13 +56,23 @@ const corsOrigins = process.env.CORS_ORIGIN
 app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json({ limit: '12mb' }));
 
-app.use('/api/uploads/payment-proofs', express.static(getUploadsDir()));
+app.use('/api/uploads/payment-proofs', express.static(getUploadsDir(), { maxAge: isProd ? '7d' : 0 }));
 
-app.get('/api/health', (_, res) => res.json({ ok: true }));
+app.get('/api/health', (_, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json({ ok: true, ts: Date.now() });
+});
+
+app.get('/api/warmup', (_, res) => {
+  loadCareersData();
+  res.set('Cache-Control', 'no-store');
+  res.json({ ok: true, ready: true, ts: Date.now() });
+});
 
 app.get('/api/slots/available', (req, res) => {
   const from = req.query.from || new Date().toISOString();
   const to = req.query.to;
+  res.set('Cache-Control', 'public, max-age=60');
   res.json({ slots: getAvailableSlots({ from, to }) });
 });
 
@@ -69,11 +84,28 @@ app.use('/api/careers', careersRoutes);
 app.use('/api/payments', paymentsRoutes);
 app.use('/api/contact', contactRoutes);
 
-// Production: serve React app from one URL (website + API on same port)
 if (hasBuiltClient) {
-  app.use(express.static(clientDist));
+  app.use(
+    express.static(clientDist, {
+      index: false,
+      setHeaders(res, filePath) {
+        if (filePath.endsWith('index.html')) {
+          res.setHeader('Cache-Control', 'no-cache');
+          return;
+        }
+        if (filePath.includes(`${path.sep}assets${path.sep}`)) {
+          res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          return;
+        }
+        if (filePath.endsWith('.json')) {
+          res.setHeader('Cache-Control', 'public, max-age=3600');
+        }
+      },
+    })
+  );
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
+    res.set('Cache-Control', 'no-cache');
     res.sendFile(path.join(clientDist, 'index.html'));
   });
 }
@@ -89,6 +121,16 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log('  Or use dev mode: npm run dev  →  http://localhost:5173');
   }
   console.log('');
+
+  setImmediate(() => {
+    try {
+      loadCareersData();
+      seedSampleSlots();
+      migrateLegacyPayments();
+    } catch (err) {
+      console.error('Background startup task failed:', err.message);
+    }
+  });
 }).on('error', (err) => {
   if (err.code === 'EADDRINUSE') {
     console.error(`\n  Port ${PORT} is already in use. Stop the other process or set PORT in .env\n`);

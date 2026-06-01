@@ -19,8 +19,6 @@ import {
   submitManualPayment,
 } from '../lib/paymentService.js';
 
-migrateLegacyPayments();
-
 const router = Router();
 
 router.get('/products', (_, res) => {
