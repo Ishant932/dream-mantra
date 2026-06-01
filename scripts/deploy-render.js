@@ -67,12 +67,14 @@ async function createService(ownerId) {
     branch: 'main',
     autoDeploy: 'yes',
     serviceDetails: {
-      env: 'node',
+      runtime: 'node',
       plan: 'free',
       region: 'singapore',
-      buildCommand: 'npm run install:all && npm run build',
-      startCommand: 'cd backend && node index.js',
       healthCheckPath: '/api/health',
+      envSpecificDetails: {
+        buildCommand: 'npm run install:all && npm run build',
+        startCommand: 'cd backend && node index.js',
+      },
       envVars: [
         { key: 'NODE_ENV', value: 'production' },
         { key: 'JWT_EXPIRES_IN', value: '7d' },
