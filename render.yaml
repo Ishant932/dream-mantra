@@ -1,14 +1,39 @@
-# Deploy free on Render.com: connect GitHub repo → New Web Service → use this blueprint
+# Render Blueprint — full Dream Mantra (frontend + API on one URL)
+# Dashboard → Blueprints → New Blueprint Instance → connect DreamsMantra/dream-mantra
+
 services:
   - type: web
-    name: dreams-mantra
+    name: dream-mantra
     runtime: node
+    plan: free
+    region: singapore
+    branch: main
     buildCommand: npm run install:all && npm run build
     startCommand: cd backend && node index.js
+    healthCheckPath: /api/health
+    autoDeploy: true
     envVars:
       - key: NODE_ENV
         value: production
       - key: JWT_SECRET
         generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: ADMIN_EMAIL
+        value: admin@dreamsmantra.com
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_PHONE
+        value: 9680102276
       - key: GEMINI_API_KEY
         sync: false
+      - key: PAYMENT_GATEWAY_ENABLED
+        value: false
+      - key: RAZORPAY_KEY_ID
+        sync: false
+      - key: RAZORPAY_KEY_SECRET
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: SEED_SAMPLE_SLOTS
+        value: true
