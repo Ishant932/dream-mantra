@@ -121,7 +121,10 @@ function runQuery(sql, params, mode) {
     const row = data.users.find((u) => u.id === Number(p[0]));
     return mode === 'all' ? (row ? [row] : []) : row;
   }
-  if (sql.includes('SELECT * FROM users WHERE email')) return data.users.find((u) => u.email === p[0]);
+  if (sql.includes('SELECT * FROM users WHERE email')) {
+    const q = String(p[0] || '').trim().toLowerCase();
+    return data.users.find((u) => u.email?.toLowerCase() === q);
+  }
   if (sql.includes('SELECT * FROM users WHERE phone')) return data.users.find((u) => u.phone === p[0]);
   if (sql.includes('SELECT id FROM users WHERE role')) return data.users.find((u) => u.role === p[0]);
   if (sql.includes('COUNT(*)') && sql.includes('users') && sql.includes('role')) {
@@ -348,29 +351,40 @@ export const repo = {
 };
 
 export function seedAdmin() {
-  const email = process.env.ADMIN_EMAIL || 'admin@dreamsmantra.com';
-  const phone = process.env.ADMIN_PHONE || '9999999999';
+  const email = (process.env.ADMIN_EMAIL || 'admin@dreamsmantra.com').trim().toLowerCase();
+  const phone = (process.env.ADMIN_PHONE || '9999999999').trim();
   const password = process.env.ADMIN_PASSWORD || 'Admin@123';
-  if (!data.users.find((u) => u.role === 'admin')) {
-    const id = data.nextId.users++;
-    const created_at = new Date().toISOString();
-    data.users.push({
-      id,
-      user_uid: nextUserUid(data, created_at),
-      name: 'Dream Mantra Admin',
-      email,
-      phone,
-      password: bcrypt.hashSync(password, 10),
-      role: 'admin',
-      twoFactorEnabled: false,
-      twoFactorSecret: null,
-      twoFactorPendingSecret: null,
-      profile: defaultProfile(),
-      created_at,
-    });
+  const hashed = bcrypt.hashSync(password, 10);
+
+  const existing = data.users.find((u) => u.role === 'admin');
+  if (existing) {
+    existing.name = existing.name || 'Dream Mantra Admin';
+    existing.email = email;
+    existing.phone = phone;
+    existing.password = hashed;
     saveData();
-    console.log(`Admin seeded: ${email}`);
+    console.log(`Admin credentials synced: ${email}`);
+    return;
   }
+
+  const id = data.nextId.users++;
+  const created_at = new Date().toISOString();
+  data.users.push({
+    id,
+    user_uid: nextUserUid(data, created_at),
+    name: 'Dream Mantra Admin',
+    email,
+    phone,
+    password: hashed,
+    role: 'admin',
+    twoFactorEnabled: false,
+    twoFactorSecret: null,
+    twoFactorPendingSecret: null,
+    profile: defaultProfile(),
+    created_at,
+  });
+  saveData();
+  console.log(`Admin seeded: ${email}`);
 }
 
 export default db;
