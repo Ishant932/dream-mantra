@@ -1,4 +1,4 @@
-const API = '/api';
+const API = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 
 function headers(token) {
   const h = { 'Content-Type': 'application/json' };
