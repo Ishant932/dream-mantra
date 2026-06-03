@@ -174,11 +174,11 @@ export default function CareerLibraryExplorer({
           className={`flex flex-wrap items-center justify-between gap-3 ${embedded ? 'mb-2' : 'mb-6'}`}
         >
           <div>
-            <h2 className="text-xl font-bold flex items-center gap-2 text-sand-900 dark:text-amber-50">
+            <h2 className="text-xl font-bold flex items-center gap-2 text-[var(--text-primary)]">
               <Sparkles className="w-6 h-6 text-amber-600" />
-              950+ Career Library
+              Career Library
             </h2>
-            <p className="text-sm text-sand-600 dark:text-sand-400 mt-1">
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
               Search, filter &amp; bookmark careers — full database access
             </p>
           </div>

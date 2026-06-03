@@ -78,7 +78,7 @@ export default function Home() {
             </p>
           </motion.div>
           <div className="grid lg:grid-cols-[280px_1fr] gap-6">
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-2 lg:gap-2">
+            <div className="home-pillars-nav flex flex-col gap-2 sm:grid sm:grid-cols-2 lg:grid-cols-1 lg:gap-2">
               {pillars.map((p, i) => (
                 <button
                   key={p.id}
@@ -86,7 +86,7 @@ export default function Home() {
                   onMouseEnter={() => setPillarIdx(i)}
                   onFocus={() => setPillarIdx(i)}
                   onClick={() => setPillarIdx(i)}
-                  className={`text-left px-4 py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 w-full ${
+                  className={`text-left px-4 py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 w-full min-h-[3rem] ${
                     pillarIdx === i
                       ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 scale-[1.02]'
                       : 'bg-[var(--bg-elevated)] border border-amber-200/80 text-[var(--text-primary)] hover:border-amber-400 hover:bg-amber-50/50 hover:shadow-md'
@@ -99,7 +99,7 @@ export default function Home() {
                   >
                     {p.icon}
                   </motion.span>
-                  <span className="truncate">{p.title}</span>
+                  <span className="line-clamp-2 leading-snug">{p.title}</span>
                 </button>
               ))}
             </div>

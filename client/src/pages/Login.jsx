@@ -80,7 +80,7 @@ export default function Login() {
             transition={{ delay: 0.2 }}
             className="font-display text-4xl font-bold mt-10 leading-tight"
           >
-            Welcome back to your career journey
+            Login to Dream Mantra
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -88,7 +88,7 @@ export default function Login() {
             transition={{ delay: 0.35 }}
             className="text-amber-200 text-lg mt-4 max-w-md leading-relaxed"
           >
-            Secure JWT login with optional two-factor authentication. Access 950+ careers, AI guidance, and your personalised roadmap.
+            Access your dashboard, career library, assessments, and counselling bookings.
           </motion.p>
           <motion.div
             initial={{ opacity: 0 }}
@@ -121,8 +121,8 @@ export default function Login() {
             {step === 'credentials' ? (
               <>
                 <div className="text-center mb-8">
-                  <h1 className="font-display text-2xl font-bold">{t('auth.loginTitle')}</h1>
-                  <p className="text-sand-500 text-sm mt-2">Sign in with email or phone + password</p>
+                  <h1 className="font-display text-2xl font-bold text-[var(--text-primary)]">{t('auth.loginTitle')}</h1>
+                  <p className="text-[var(--text-secondary)] text-sm mt-2">{t('auth.loginSubtitle')}</p>
                 </div>
 
                 {error && (

@@ -376,6 +376,49 @@ function pick(arr, i) {
   return arr[i % arr.length];
 }
 
+function categoryEducation(category, title, stream, id) {
+  const t = title.toLowerCase();
+  if (category === 'Medical & Healthcare') {
+    if (/doctor|mbbs|surgeon/.test(t)) return ['Class 12 PCB with NEET UG', 'MBBS (5.5 years incl. internship)', 'NEET PG for MD/MS specialisation'];
+    if (/dentist/.test(t)) return ['Class 12 PCB with NEET UG', 'BDS (5 years)', 'MDS for specialisation'];
+    if (/nurse/.test(t)) return ['Class 12 PCB/PCMB', 'B.Sc Nursing / GNM', 'M.Sc Nursing / staff nurse recruitment'];
+    if (/pharm/.test(t)) return ['Class 12 PCB/PCM', 'B.Pharm / D.Pharm', 'M.Pharm / drug inspector exams'];
+    if (/physio|occupational|speech/.test(t)) return ['Class 12 PCB', 'BPT / BOT / BSLP', 'MPT / clinical practice licence'];
+    if (/ayurved|homeopath/.test(t)) return ['Class 12 PCB with NEET', 'BAMS / BHMS', 'MD Ayurveda / Homeopathy'];
+    return ['Class 12 PCB (NEET where applicable)', 'Relevant UG (MBBS/BDS/BPT/B.Pharm/B.Sc Nursing)', 'PG / registration with council'];
+  }
+  if (category === 'Engineering & Technology' || category === 'IT & Digital') {
+    if (/software|developer|full stack|mobile app/.test(t)) return ['Class 12 PCM / CS in school', 'B.Tech CSE / BCA / B.Sc CS', 'Internships + system design / cloud certs'];
+    if (/data sc|machine learning|ai engineer/.test(t)) return ['Class 12 PCM + Maths', 'B.Tech / B.Sc Statistics / Maths', 'M.Tech / PG diploma in ML-AI'];
+    if (/civil|structural|geotechnical/.test(t)) return ['Class 12 PCM', 'B.Tech Civil Engineering', 'GATE / M.Tech / site experience'];
+    return ['Class 12 PCM', 'B.Tech / B.E in relevant branch', 'GATE / M.Tech or industry certifications'];
+  }
+  if (category === 'Commerce & Finance') {
+    if (/chartered account/.test(t)) return ['Class 12 Commerce (Maths helpful)', 'CA Foundation → Intermediate → Final', 'Articleship + ICAI membership'];
+    if (/company secretary/.test(t)) return ['Class 12 any stream', 'CS Executive → Professional', 'ICSI membership'];
+    return ['Class 12 Commerce / Maths', 'B.Com / BBA / professional course', 'MBA / CA / CFA as applicable'];
+  }
+  if (category === 'Law & Public Service') {
+    if (/ias|ips|ifs|irs|civil services/.test(t)) return ['Bachelor\'s degree (any discipline)', 'UPSC CSE prelims → mains → interview', 'Foundation course at LBSNAA after selection'];
+    if (/lawyer|legal|advocate/.test(t)) return ['Class 12 any stream', 'BA LLB / LLB (CLAT/AILET)', 'Bar Council enrolment + practice'];
+    return ['Class 12 any stream', 'Relevant UG + competitive exam prep', 'State / central recruitment or PG'];
+  }
+  if (category === 'Defence & Security') {
+    return ['Class 12 (PCM for NDA/AFCAT technical)', 'NDA / CDS / AFCAT / SSC selection', 'Training at academy + commission'];
+  }
+  if (category === 'Design & Creative') {
+    return ['Class 12 any stream', 'B.Des / BFA / diploma from NID/NIFT/PEARL', 'Portfolio + industry internship'];
+  }
+  if (category === 'Trades & Vocational') {
+    return ['Class 8–12 (varies by trade)', 'ITI / NSQF diploma / apprenticeship', 'Skill India certification + on-job experience'];
+  }
+  return [
+    `Class 12 (${stream.join('/')}) with relevant subjects`,
+    id % 3 === 0 ? "Master's or PG diploma for senior roles" : 'Bachelor\'s / diploma in relevant field',
+    'Industry certifications and internships in India',
+  ];
+}
+
 function buildRoadmap(title, category, id, stream) {
   const isMedical = category.includes('Medical');
   const isEng = category.includes('Engineering') || category.includes('IT');
@@ -425,12 +468,7 @@ function buildCareer(id, title, category, config, variantIdx) {
       pick(['Analyze data and prepare reports', 'Manage projects and deliverables', 'Train juniors and share knowledge'], id),
       pick(['Research industry trends', 'Optimize processes for efficiency', 'Support business growth goals'], id + 2),
     ],
-    education: [
-      `Bachelor's degree in a relevant discipline (${stream.join('/')})`,
-      id % 3 === 0 ? "Master's or PG diploma preferred for senior roles" : 'Diploma and certification routes available',
-      'Industry certifications strengthen employability',
-      id % 5 === 0 ? 'Internship or apprenticeship highly recommended' : 'Practical projects add strong portfolio value',
-    ],
+    education: categoryEducation(category, title, stream, id),
     skills: [
       'Communication & presentation', 'Critical thinking', 'Domain expertise',
       pick(['Leadership', 'Teamwork', 'Analytics', 'Creativity', 'Technical proficiency'], id),

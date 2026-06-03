@@ -47,7 +47,8 @@ export default function Layout() {
   const [showChatbot, setShowChatbot] = useState(false);
 
   useEffect(() => {
-    const delay = import.meta.env.PROD ? 2500 : 800;
+    const isMobile = window.matchMedia('(max-width: 1024px)').matches;
+    const delay = isMobile ? (import.meta.env.PROD ? 5000 : 1500) : (import.meta.env.PROD ? 2500 : 800);
     const id = window.setTimeout(() => setShowChatbot(true), delay);
     return () => window.clearTimeout(id);
   }, []);

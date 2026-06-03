@@ -360,7 +360,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                           onClick={() => { setReassignId(p.id); setReassignUserId(String(p.user_id || '')); }}
                           className="text-xs font-bold px-2 py-1 rounded-lg border border-violet-300 text-violet-800 hover:bg-violet-50 inline-flex items-center gap-1"
                         >
-                          <Pencil className="w-3 h-3" /> Change user
+                          <Pencil className="w-3 h-3" /> Edit user
                         </button>
                         </>
                       )}

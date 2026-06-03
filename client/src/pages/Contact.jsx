@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Phone, Mail, Clock, CheckCircle2, Loader2 } from 'lucide-react';
+import { Phone, Mail, Clock, CheckCircle2, Loader2, MapPin } from 'lucide-react';
 import PageHero from '../components/PageHero';
 import TrendPhoto from '../components/TrendPhoto';
 import FooterLocations from '../components/FooterLocations';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
 import { publicApi } from '../api';
+
+/** Clear educational counselling / workshop imagery (not street or roadside scenes) */
+const CONTACT_EDU_IMAGE = IMAGES.counsellingSession;
+const CONTACT_WORKSHOP_IMAGE = IMAGES.workshop;
 
 export default function Contact() {
   const { t, d } = useLang();
@@ -34,8 +38,13 @@ export default function Contact() {
 
   return (
     <>
-      <PageHero title={contact.title} subtitle={contact.subtitle} image={IMAGES.classroom} />
-      <section className="py-20 max-w-7xl mx-auto px-4">
+      <PageHero
+        title={contact.title}
+        subtitle={contact.subtitle}
+        image={CONTACT_EDU_IMAGE}
+        className="contact-page-hero"
+      />
+      <section className="py-20 max-w-7xl mx-auto px-4 contact-page">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="space-y-6">
             {[
@@ -80,41 +89,51 @@ export default function Contact() {
               transition={{ delay: 0.3, duration: 0.45 }}
               className="glass-card p-6"
             >
-              <p className="text-sm text-theme-muted mb-4">{contact.locations}</p>
-              <FooterLocations />
-              <p className="text-brand-600 mt-4 font-semibold text-sm">{contact.panIndia}</p>
+              <p className="contact-locations-heading">
+                <MapPin className="w-4 h-4 text-amber-600" aria-hidden="true" />
+                {contact.locations}
+              </p>
+              <FooterLocations variant="embedded" />
+              <p className="text-amber-700 dark:text-amber-300 mt-4 font-semibold text-sm">{contact.panIndia}</p>
             </motion.div>
           </motion.div>
           <div className="space-y-6">
-            <TrendPhoto src={IMAGES.studentsGroup} alt="Students in a learning session at Dream Mantra" rounded="rounded-2xl" overlay className="shadow-xl min-h-[220px]" />
-          <motion.form
-            initial={{ opacity: 0, y: 28, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.55, delay: 0.15 }}
-            className="glass-card p-8"
-            onSubmit={handleSubmit}
-          >
-            <h3 className="font-display text-xl font-bold mb-6 text-theme-primary">{contact.formTitle}</h3>
-            {success && (
-              <div className="mb-4 p-3 rounded-xl bg-emerald-50 text-emerald-800 text-sm border border-emerald-200 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 shrink-0" /> {success}
+            <TrendPhoto
+              src={CONTACT_WORKSHOP_IMAGE}
+              alt="Career counselling and education workshop at Dream Mantra"
+              rounded="rounded-2xl"
+              overlay={false}
+              aspect="aspect-[16/10]"
+              className="contact-edu-photo shadow-xl ring-1 ring-amber-200/70 dark:ring-amber-700/40"
+            />
+            <motion.form
+              initial={{ opacity: 0, y: 28, scale: 0.98 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: 0.15 }}
+              className="glass-card p-8"
+              onSubmit={handleSubmit}
+            >
+              <h3 className="font-display text-xl font-bold mb-6 text-theme-primary">{contact.formTitle}</h3>
+              {success && (
+                <div className="mb-4 p-3 rounded-xl bg-emerald-50 text-emerald-800 text-sm border border-emerald-200 flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" /> {success}
+                </div>
+              )}
+              {error && (
+                <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
+              )}
+              <div className="space-y-4">
+                <input className="input-field" placeholder={contact.namePlaceholder} required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
+                <input className="input-field" type="email" placeholder={contact.emailPlaceholder} required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                <input className="input-field" placeholder={contact.phonePlaceholder} value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
+                <textarea className="input-field min-h-[120px]" placeholder={contact.messagePlaceholder} required minLength={10} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} />
+                <button type="submit" disabled={submitting} className="btn-primary w-full inline-flex items-center justify-center gap-2">
+                  {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  {submitting ? 'Sending…' : contact.submit}
+                </button>
               </div>
-            )}
-            {error && (
-              <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
-            )}
-            <div className="space-y-4">
-              <input className="input-field" placeholder={contact.namePlaceholder} required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
-              <input className="input-field" type="email" placeholder={contact.emailPlaceholder} required value={form.email} onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
-              <input className="input-field" placeholder={contact.phonePlaceholder} value={form.phone} onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
-              <textarea className="input-field min-h-[120px]" placeholder={contact.messagePlaceholder} required minLength={10} value={form.message} onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))} />
-              <button type="submit" disabled={submitting} className="btn-primary w-full inline-flex items-center justify-center gap-2">
-                {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
-                {submitting ? 'Sending…' : contact.submit}
-              </button>
-            </div>
-          </motion.form>
+            </motion.form>
           </div>
         </div>
       </section>

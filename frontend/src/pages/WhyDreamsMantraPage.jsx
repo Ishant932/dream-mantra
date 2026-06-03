@@ -129,7 +129,7 @@ export default function WhyDreamsMantraPage() {
                 </tbody>
               </table>
             </div>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {content.comparisons.stats.map((s) => (
                 <div key={s.label} className="infigon-card p-5 text-center">
                   <p className="text-2xl font-display font-bold text-amber-600">{s.value}</p>
@@ -138,6 +138,33 @@ export default function WhyDreamsMantraPage() {
                 </div>
               ))}
             </div>
+            {content.comparisons.milestones?.length > 0 && (
+              <div className="mt-10">
+                <h3 className="section-title text-center mb-6">Career guidance at every stage</h3>
+                <div className="overflow-x-auto rounded-2xl border border-amber-200/60 dark:border-amber-800/40 shadow-lg">
+                  <table className="w-full text-sm why-counselling-table min-w-[560px]">
+                    <thead>
+                      <tr>
+                        {(content.comparisons.milestoneHeaders || ['Stage', 'Typical approach', 'Dream Mantra approach']).map((h) => (
+                          <th key={h} className="text-left py-3 px-4 font-bold bg-amber-50 dark:bg-amber-950/40 text-theme-primary">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {content.comparisons.milestones.map((row) => (
+                        <tr key={row[0]} className="border-t border-amber-100 dark:border-amber-900/40">
+                          {row.map((cell, ci) => (
+                            <td key={`${row[0]}-${ci}`} className={`py-3 px-4 align-top ${ci === 2 ? 'bg-amber-50/70 dark:bg-amber-900/20 font-medium text-theme-primary' : 'text-theme-body'}`}>
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
           </motion.div>
         )}
 

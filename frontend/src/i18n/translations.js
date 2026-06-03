@@ -64,7 +64,8 @@ export const translations = {
       partners: 'Partners',
     },
     auth: {
-      loginTitle: 'Welcome Back',
+      loginTitle: 'Login',
+      loginSubtitle: 'Sign in with email or phone and password',
       signupTitle: 'Create Account',
       emailOrPhone: 'Email or Mobile Number',
       password: 'Password',
@@ -203,7 +204,8 @@ export const translations = {
       partners: 'साझेदार',
     },
     auth: {
-      loginTitle: 'वापस स्वागत है',
+      loginTitle: 'लॉगिन',
+      loginSubtitle: 'ईमेल या फोन और पासवर्ड से साइन इन करें',
       signupTitle: 'खाता बनाएं',
       emailOrPhone: 'ईमेल या मोबाइल',
       password: 'पासवर्ड',
@@ -244,7 +246,7 @@ export const translations = {
       trendingCareers: 'Spotlight Careers',
     },
     careers: {
-      title: '950+ करियर अवसर',
+      title: 'करियर अवसर',
       subtitle: 'शिक्षा, वेतन और कौशल',
       search: 'करियर खोजें...',
       all: 'सभी श्रेणियाँ',

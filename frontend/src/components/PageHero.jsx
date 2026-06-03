@@ -2,9 +2,9 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
 
-export default function PageHero({ title, subtitle, image, cta, ctaLink = '/contact' }) {
+export default function PageHero({ title, subtitle, image, cta, ctaLink = '/contact', className = '' }) {
   return (
-    <section className="page-hero relative">
+    <section className={`page-hero relative ${className}`.trim()}>
       <div className="absolute top-1/4 right-[15%] w-72 h-72 rounded-full blur-3xl animate-blob opacity-30 multi-pulse pointer-events-none" style={{ background: 'rgba(255,107,74,0.25)' }} />
       <div className="absolute bottom-0 left-[10%] w-56 h-56 rounded-full blur-3xl animate-blob-slow opacity-25 animate-breathe pointer-events-none" style={{ background: 'rgba(201,168,76,0.2)' }} />
       <div className="absolute top-1/2 right-[8%] w-40 h-40 rounded-full border border-[var(--gold-border)] opacity-20 animate-orbit pointer-events-none" />

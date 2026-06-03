@@ -67,7 +67,7 @@ export default function DashboardSidebarLayout({
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       scrollPageToTop('instant');
-      scrollToRefTop(mainRef, { offset: 8, behavior: 'instant' });
+      scrollToRefTop(headerRef, { offset: 8, behavior: 'instant' });
     });
     return () => cancelAnimationFrame(frame);
   }, [panelTab]);

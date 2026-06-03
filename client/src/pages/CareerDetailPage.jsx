@@ -447,7 +447,7 @@ function DetailBlock({ icon: Icon, title, items }) {
 
     <div className="infigon-card p-6">
 
-      <h3 className="font-bold flex items-center gap-2 mb-3">
+      <h3 className="font-bold flex items-center gap-2 mb-3 text-[var(--text-primary)]">
 
         <Icon className="w-5 h-5 text-amber-600" /> {title}
 

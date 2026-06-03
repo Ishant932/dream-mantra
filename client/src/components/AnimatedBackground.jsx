@@ -290,11 +290,11 @@ export default function AnimatedBackground() {
   const isLight = theme === 'light';
   const [lite, setLite] = useState(() =>
     typeof window !== 'undefined'
-    && (window.matchMedia('(max-width: 768px)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    && (window.matchMedia('(max-width: 1024px)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   );
 
   useEffect(() => {
-    const mq = window.matchMedia('(max-width: 768px)');
+    const mq = window.matchMedia('(max-width: 1024px)');
     const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setLite(mq.matches || motion.matches);
     update();

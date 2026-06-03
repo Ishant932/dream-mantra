@@ -17,7 +17,12 @@ export default function SubTabs({ tabs, defaultTab, children, id = 'tabs' }) {
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       scrollPageToTop('instant');
-      scrollToRefTop(rootRef, { offset: 8, behavior: 'instant' });
+      const header = rootRef.current?.querySelector('.subtab-track');
+      if (header) {
+        scrollToRefTop({ current: header }, { offset: 8, behavior: 'instant' });
+      } else {
+        scrollToRefTop(rootRef, { offset: 8, behavior: 'instant' });
+      }
     });
     return () => cancelAnimationFrame(frame);
   }, [active]);

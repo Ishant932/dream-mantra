@@ -13,13 +13,14 @@ const locVariants = {
   }),
 };
 
-export default function FooterLocations() {
+export default function FooterLocations({ variant = 'footer' }) {
   const { d } = useLang();
   const copy = d('footer.locationsBlock') || {};
+  const isEmbedded = variant === 'embedded';
 
   return (
     <motion.div
-      className="footer-pro__locations"
+      className={`footer-pro__locations ${isEmbedded ? 'footer-pro__locations--embedded' : ''}`}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: '-40px' }}
@@ -31,7 +32,7 @@ export default function FooterLocations() {
             custom={i}
             variants={locVariants}
             whileHover={{ y: -5, scale: 1.02 }}
-            className="footer-pro__loc footer-pro__loc--online"
+            className={`footer-pro__loc footer-pro__loc--online ${isEmbedded ? 'footer-pro__loc--embedded' : ''}`}
           >
             <Globe className="w-4 h-4 footer-pro__loc-icon" aria-hidden="true" />
             <div>
@@ -49,7 +50,7 @@ export default function FooterLocations() {
             href={loc.mapUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="footer-pro__loc"
+            className={`footer-pro__loc ${isEmbedded ? 'footer-pro__loc--embedded' : ''}`}
           >
             <MapPin className="w-4 h-4 footer-pro__loc-icon" aria-hidden="true" />
             <div>

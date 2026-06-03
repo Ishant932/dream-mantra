@@ -95,8 +95,40 @@ export default function CareersPage() {
             </div>
           </form>
           <p className="text-sm text-sand-600 dark:text-[var(--text-secondary)] mt-3">
-            Showing {data.careers?.length || 0} of 950+ opportunities
+            Showing {data.careers?.length || 0} of {data.total || 950}+ opportunities
           </p>
+
+          {data.categories?.length > 0 && (
+            <div className="career-lib-tabs-section mt-4 pt-4 border-t border-amber-100 dark:border-[rgba(201,168,76,0.2)]">
+              <p className="career-lib-section-label">Browse by category</p>
+              <div className="career-lib-tabs-scroll">
+                <div className="career-lib-tabs" role="tablist" aria-label="Career categories">
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={category === 'all'}
+                    onClick={() => updateParams({ category: 'all', page: 1 })}
+                    className={`career-lib-tab ${category === 'all' ? 'career-lib-tab--active' : ''}`}
+                  >
+                    {t('careers.all')}
+                  </button>
+                  {data.categories.map((c) => (
+                    <button
+                      key={c}
+                      type="button"
+                      role="tab"
+                      aria-selected={category === c}
+                      onClick={() => updateParams({ category: c, page: 1 })}
+                      title={c}
+                      className={`career-lib-tab ${category === c ? 'career-lib-tab--active' : ''}`}
+                    >
+                      {c}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </motion.div>
 
         {loading ? (
