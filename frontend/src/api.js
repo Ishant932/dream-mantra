@@ -1,4 +1,7 @@
-const API = '/api';
+const API = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
+const REQUEST_TIMEOUT_MS = import.meta.env.PROD ? 45000 : 12000;
+const RETRY_STATUS = new Set([408, 429, 502, 503, 504]);
+const RETRYABLE_PATHS = /^\/(auth\/me|health|warmup|careers|slots|payments\/products|payments\/mode)/;
 
 function headers(token) {
   const h = { 'Content-Type': 'application/json' };
@@ -6,9 +9,21 @@ function headers(token) {
   return h;
 }
 
-async function request(path, options = {}) {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function shouldRetry(path, method, status) {
+  if (method && method !== 'GET') return false;
+  if (status && RETRY_STATUS.has(status)) return true;
+  return RETRYABLE_PATHS.test(path);
+}
+
+async function request(path, options = {}, attempt = 0) {
+  const method = options.method || 'GET';
+  const maxAttempts = shouldRetry(path, method) ? 3 : 1;
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 12000);
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
   const { signal: externalSignal, ...rest } = options;
 
   if (externalSignal) {
@@ -19,12 +34,28 @@ async function request(path, options = {}) {
   try {
     const res = await fetch(`${API}${path}`, { ...rest, signal: controller.signal });
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new Error(data.message || `Request failed (${res.status})`);
+    if (!res.ok) {
+      if (attempt + 1 < maxAttempts && shouldRetry(path, method, res.status)) {
+        await sleep(1200 * (attempt + 1));
+        return request(path, options, attempt + 1);
+      }
+      throw new Error(data.message || `Request failed (${res.status})`);
+    }
     return data;
   } catch (err) {
-    if (err.name === 'AbortError') throw err;
+    if (err.name === 'AbortError' && attempt + 1 < maxAttempts && shouldRetry(path, method)) {
+      await sleep(1500 * (attempt + 1));
+      return request(path, options, attempt + 1);
+    }
+    if (err.name === 'AbortError') {
+      throw new Error('Server is waking up — please wait a moment and try again.');
+    }
     if (err.message === 'Failed to fetch') {
-      throw new Error('Unable to reach server. Please try again.');
+      if (attempt + 1 < maxAttempts && shouldRetry(path, method)) {
+        await sleep(1500 * (attempt + 1));
+        return request(path, options, attempt + 1);
+      }
+      throw new Error('Unable to reach server. The site may be starting — please retry.');
     }
     throw err;
   } finally {
@@ -198,3 +229,9 @@ export const careersApi = {
   get: (slug) => request(`/careers/${slug}`),
   categories: () => request('/careers/categories'),
 };
+
+/** Ping server early so Render free tier wakes before user actions */
+export function warmupServer() {
+  if (typeof window === 'undefined') return Promise.resolve(null);
+  return request('/warmup').catch(() => request('/health').catch(() => null));
+}

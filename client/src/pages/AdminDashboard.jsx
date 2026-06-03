@@ -756,7 +756,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'payments' && (
-                <AdminPaymentsPanel token={token} onNotice={setNotice} onError={setError} />
+                <AdminPaymentsPanel token={token} users={users} onNotice={setNotice} onError={setError} onViewUser={viewProfile} />
               )}
 
               {tab === 'reports' && (

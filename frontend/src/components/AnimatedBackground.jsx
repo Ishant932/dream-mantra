@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
@@ -288,6 +288,31 @@ export default function AnimatedBackground() {
   const isDark = theme === 'dark';
   const isAurora = theme === 'aurora';
   const isLight = theme === 'light';
+  const [lite, setLite] = useState(() =>
+    typeof window !== 'undefined'
+    && (window.matchMedia('(max-width: 768px)').matches || window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 768px)');
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const update = () => setLite(mq.matches || motion.matches);
+    update();
+    mq.addEventListener('change', update);
+    motion.addEventListener('change', update);
+    return () => {
+      mq.removeEventListener('change', update);
+      motion.removeEventListener('change', update);
+    };
+  }, []);
+
+  if (lite) {
+    return (
+      <div className="live-bg-root live-bg-root--lite fixed inset-0 pointer-events-none overflow-hidden -z-10" aria-hidden>
+        <div className="live-bg-base absolute inset-0" />
+      </div>
+    );
+  }
 
   if (isLight) {
     return (

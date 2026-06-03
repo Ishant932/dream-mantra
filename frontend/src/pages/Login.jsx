@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Shield, Sparkles, ArrowRight, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -200,12 +200,6 @@ export default function Login() {
               </>
             )}
 
-            <p className="text-center mt-8 text-sm text-sand-600">
-              {t('auth.noAccount')}{' '}
-              <Link to="/signup" className="text-amber-600 font-semibold hover:underline">
-                {t('nav.signup')}
-              </Link>
-            </p>
           </div>
         </motion.div>
       </div>

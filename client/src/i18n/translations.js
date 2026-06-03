@@ -23,7 +23,7 @@ export const translations = {
     promo: {
       crp: 'AI Career Launchpad',
       pillars: '7 Pillars Framework',
-      careers: '950+ Career Opportunities',
+      careers: 'Career Library',
       free: 'Free Consultation',
       explore: 'Explore',
       browse: 'Browse',
@@ -105,7 +105,7 @@ export const translations = {
       trendingCareers: 'Spotlight Careers',
     },
     careers: {
-      title: '950+ Career Opportunities',
+      title: 'Career Opportunities',
       subtitle: 'Explore education paths, salaries & skills',
       search: 'Search careers...',
       all: 'All categories',

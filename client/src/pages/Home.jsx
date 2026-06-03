@@ -44,8 +44,10 @@ export default function Home() {
 
       <HomeTrustBar />
 
+      <div className="home-section-divider" aria-hidden="true" />
+
       {/* Modules */}
-      <HomeSection variant="warm">
+      <HomeSection variant="warm" className="home-section--after-trust">
         <HomeModulesIntro />
       </HomeSection>
 
@@ -76,14 +78,15 @@ export default function Home() {
             </p>
           </motion.div>
           <div className="grid lg:grid-cols-[280px_1fr] gap-6">
-            <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-1 gap-2 lg:gap-2">
               {pillars.map((p, i) => (
-                <Link
+                <button
                   key={p.id}
-                  to={p.link}
+                  type="button"
                   onMouseEnter={() => setPillarIdx(i)}
                   onFocus={() => setPillarIdx(i)}
-                  className={`shrink-0 text-left px-4 py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 ${
+                  onClick={() => setPillarIdx(i)}
+                  className={`text-left px-4 py-3 rounded-xl text-sm font-semibold transition-all flex items-center gap-3 w-full ${
                     pillarIdx === i
                       ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 scale-[1.02]'
                       : 'bg-[var(--bg-elevated)] border border-amber-200/80 text-[var(--text-primary)] hover:border-amber-400 hover:bg-amber-50/50 hover:shadow-md'
@@ -92,12 +95,12 @@ export default function Home() {
                   <motion.span
                     animate={pillarIdx === i ? { rotate: [0, -8, 8, 0], scale: [1, 1.15, 1] } : {}}
                     transition={{ duration: 0.5 }}
-                    className="text-xl"
+                    className="text-xl shrink-0"
                   >
                     {p.icon}
                   </motion.span>
                   <span className="truncate">{p.title}</span>
-                </Link>
+                </button>
               ))}
             </div>
             <AnimatePresence mode="wait">

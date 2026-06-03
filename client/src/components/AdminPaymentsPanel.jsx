@@ -46,7 +46,7 @@ function ConfirmationBadge({ payment }) {
   );
 }
 
-export default function AdminPaymentsPanel({ token, onNotice, onError }) {
+export default function AdminPaymentsPanel({ token, users = [], onNotice, onError, onViewUser }) {
   const [payments, setPayments] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 1 });
   const [loading, setLoading] = useState(true);
@@ -59,7 +59,8 @@ export default function AdminPaymentsPanel({ token, onNotice, onError }) {
   const [adminNotes, setAdminNotes] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({ amount: '', adminNote: '', userNote: '' });
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [reassignId, setReassignId] = useState(null);
+  const [reassignUserId, setReassignUserId] = useState('');
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -135,6 +136,22 @@ export default function AdminPaymentsPanel({ token, onNotice, onError }) {
     }
   };
 
+  const saveReassign = async (paymentId) => {
+    if (!reassignUserId) return;
+    setActionId(paymentId);
+    try {
+      await adminApi.updatePayment(token, paymentId, { userId: Number(reassignUserId) });
+      onNotice?.('Payment reassigned to selected user');
+      setReassignId(null);
+      setReassignUserId('');
+      await load();
+    } catch (e) {
+      onError?.(e.message);
+    } finally {
+      setActionId(null);
+    }
+  };
+
   const pendingCount = useMemo(
     () => (statusFilter === 'pending' ? pagination.total : null),
     [statusFilter, pagination.total]
@@ -202,6 +219,15 @@ export default function AdminPaymentsPanel({ token, onNotice, onError }) {
                   <td className="py-3 px-2">
                     <p className="font-semibold">{p.user_name}</p>
                     <CopyableUserId uid={p.user_uid} compact />
+                    {onViewUser && (
+                      <button
+                        type="button"
+                        onClick={() => onViewUser(p.user_id)}
+                        className="text-xs font-semibold text-amber-700 hover:underline mt-1 inline-flex items-center gap-1"
+                      >
+                        <Pencil className="w-3 h-3" /> View profile
+                      </button>
+                    )}
                   </td>
                   <td className="py-3 px-2 text-xs">
                     <p>{p.phone || '—'}</p>
@@ -320,6 +346,7 @@ export default function AdminPaymentsPanel({ token, onNotice, onError }) {
                         </button>
                       )}
                       {p.payment_status === 'confirmed' && (
+                        <>
                         <button
                           type="button"
                           disabled={actionId === p.id}
@@ -328,6 +355,32 @@ export default function AdminPaymentsPanel({ token, onNotice, onError }) {
                         >
                           Mark Refunded
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => { setReassignId(p.id); setReassignUserId(String(p.user_id || '')); }}
+                          className="text-xs font-bold px-2 py-1 rounded-lg border border-violet-300 text-violet-800 hover:bg-violet-50 inline-flex items-center gap-1"
+                        >
+                          <Pencil className="w-3 h-3" /> Change user
+                        </button>
+                        </>
+                      )}
+                      {reassignId === p.id && (
+                        <div className="mt-2 space-y-2 text-left">
+                          <select
+                            className="input-field !py-1.5 !text-xs w-full"
+                            value={reassignUserId}
+                            onChange={(e) => setReassignUserId(e.target.value)}
+                          >
+                            <option value="">Select correct user…</option>
+                            {users.filter((u) => u.role !== 'admin').map((u) => (
+                              <option key={u.id} value={u.id}>{u.user_uid} — {u.name}</option>
+                            ))}
+                          </select>
+                          <div className="flex gap-1 justify-end">
+                            <button type="button" disabled={actionId === p.id || !reassignUserId} onClick={() => saveReassign(p.id)} className="text-xs font-bold px-2 py-1 rounded-lg bg-violet-600 text-white">Save user</button>
+                            <button type="button" onClick={() => { setReassignId(null); setReassignUserId(''); }} className="text-xs font-bold px-2 py-1 rounded-lg bg-sand-200">Cancel</button>
+                          </div>
+                        </div>
                       )}
                     </div>
                       </>

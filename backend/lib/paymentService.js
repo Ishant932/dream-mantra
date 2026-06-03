@@ -361,7 +361,7 @@ export function updatePaymentStatus(paymentId, status, { adminId, adminNote } = 
   return { payment: enrichPaymentRow(pay), assessment };
 }
 
-export function patchPaymentDetails(paymentId, { amount, adminNote, userNote } = {}) {
+export function patchPaymentDetails(paymentId, { amount, adminNote, userNote, userId } = {}) {
   const data = getData();
   const pay = data.payments.find((p) => p.id === Number(paymentId));
   if (!pay) throw new Error('Payment not found');
@@ -371,6 +371,16 @@ export function patchPaymentDetails(paymentId, { amount, adminNote, userNote } =
 
   if (amount != null && pay.payment_status === 'confirmed') {
     throw new Error('Cannot change amount on a confirmed payment');
+  }
+
+  if (userId != null) {
+    const newUser = data.users.find((u) => u.id === Number(userId));
+    if (!newUser) throw new Error('User not found');
+    pay.user_id = newUser.id;
+    if (pay.assessment_id) {
+      const assessment = data.assessments.find((a) => Number(a.id) === Number(pay.assessment_id));
+      if (assessment) assessment.user_id = newUser.id;
+    }
   }
 
   if (amount != null && !Number.isNaN(Number(amount))) {

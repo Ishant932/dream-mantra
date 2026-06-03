@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, Clock, CheckCircle2, Loader2 } from 'lucide-react';
+import { Phone, Mail, Clock, CheckCircle2, Loader2 } from 'lucide-react';
 import PageHero from '../components/PageHero';
 import TrendPhoto from '../components/TrendPhoto';
+import FooterLocations from '../components/FooterLocations';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
 import { publicApi } from '../api';
@@ -33,7 +34,7 @@ export default function Contact() {
 
   return (
     <>
-      <PageHero title={contact.title} subtitle={contact.subtitle} image={IMAGES.counselling} />
+      <PageHero title={contact.title} subtitle={contact.subtitle} image={IMAGES.classroom} />
       <section className="py-20 max-w-7xl mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-start">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="space-y-6">
@@ -58,7 +59,7 @@ export default function Contact() {
                 >
                   <item.icon className="w-7 h-7 text-brand-600" />
                 </motion.div>
-                <div><p className="text-sm text-sand-500">{item.label}</p><p className="font-bold text-xl">{item.value}</p></div>
+                <div><p className="text-sm text-theme-muted">{item.label}</p><p className="font-bold text-xl text-theme-primary">{item.value}</p></div>
               </motion.a>
             ))}
             <motion.div
@@ -70,28 +71,22 @@ export default function Contact() {
               className="glass-card p-6 flex items-center gap-4"
             >
               <div className="w-14 h-14 rounded-xl bg-brand-100 flex items-center justify-center"><Clock className="w-7 h-7 text-brand-600" /></div>
-              <div><p className="text-sm text-sand-500">{contact.hours}</p><p className="font-bold">{t('footer.hours')}</p></div>
+              <div><p className="text-sm text-theme-muted">{contact.hours}</p><p className="font-bold text-theme-primary">{t('footer.hours')}</p></div>
             </motion.div>
             <motion.div
               initial={{ opacity: 0, x: -24 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.3, duration: 0.45 }}
-              whileHover={{ y: -4 }}
-              className="glass-card p-6 flex items-start gap-4"
+              className="glass-card p-6"
             >
-              <div className="w-14 h-14 rounded-xl bg-brand-100 flex items-center justify-center shrink-0"><MapPin className="w-7 h-7 text-brand-600" /></div>
-              <div>
-                <p className="text-sm text-sand-500 mb-2">{contact.locations}</p>
-                <p className="font-semibold">Raja Park, Jaipur</p>
-                <p className="font-semibold">Shastri Nagar, Jaipur</p>
-                <p className="font-semibold">Nirman Nagar, Jaipur</p>
-                <p className="text-brand-600 mt-2">{contact.panIndia}</p>
-              </div>
+              <p className="text-sm text-theme-muted mb-4">{contact.locations}</p>
+              <FooterLocations />
+              <p className="text-brand-600 mt-4 font-semibold text-sm">{contact.panIndia}</p>
             </motion.div>
           </motion.div>
           <div className="space-y-6">
-            <TrendPhoto src={IMAGES.jaipur} alt="Dream Mantra Jaipur" rounded="rounded-2xl" overlay className="shadow-xl" />
+            <TrendPhoto src={IMAGES.studentsGroup} alt="Students in a learning session at Dream Mantra" rounded="rounded-2xl" overlay className="shadow-xl min-h-[220px]" />
           <motion.form
             initial={{ opacity: 0, y: 28, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
@@ -100,7 +95,7 @@ export default function Contact() {
             className="glass-card p-8"
             onSubmit={handleSubmit}
           >
-            <h3 className="font-display text-xl font-bold mb-6">{contact.formTitle}</h3>
+            <h3 className="font-display text-xl font-bold mb-6 text-theme-primary">{contact.formTitle}</h3>
             {success && (
               <div className="mb-4 p-3 rounded-xl bg-emerald-50 text-emerald-800 text-sm border border-emerald-200 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 shrink-0" /> {success}

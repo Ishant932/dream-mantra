@@ -68,7 +68,7 @@ export default function HomeTrustBar() {
           className="flex flex-wrap items-center justify-center gap-2 mb-6"
         >
           <Shield className="w-5 h-5 text-amber-600 shrink-0" />
-          <p className="home-trust-strip__tagline font-accent">{copy.tagline}</p>
+          <p className="home-trust-strip__tagline">{copy.tagline}</p>
         </motion.div>
 
         <div className="home-trust-strip__grid">

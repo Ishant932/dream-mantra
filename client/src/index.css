@@ -10370,3 +10370,79 @@ html.light .dash-root .text-sand-700 {
   color: var(--text-secondary);
 }
 
+/* Home trust → modules divider */
+.home-section-divider {
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.55), rgba(249, 115, 22, 0.55), transparent);
+  margin: 0 auto;
+  max-width: 72rem;
+}
+.home-section--after-trust {
+  padding-top: 2.5rem !important;
+}
+@media (min-width: 1024px) {
+  .home-section--after-trust { padding-top: 3rem !important; }
+}
+.home-trust-strip {
+  padding: 1.5rem 0 1.25rem;
+}
+.home-trust-strip__tagline,
+.home-trust-num,
+.home-trust-chip__label,
+.home-trust-chip__badge-text {
+  font-family: var(--font-display);
+  color: var(--text-primary);
+}
+.home-trust-num { color: var(--text-primary); }
+
+/* Career detail — readable in all themes */
+html.light .career-detail-hero .dm-spectrum-bg { opacity: 0.92; }
+.career-detail-back { color: rgba(255, 251, 235, 0.92); }
+.career-detail-back:hover { color: #fff; }
+html.light .career-detail-back { color: #78350f; }
+html.light .career-detail-back:hover { color: #92400e; }
+.career-detail-title { color: #fffbeb; }
+html.light .career-detail-title { color: #1c1917; }
+.career-detail-subtitle { color: rgba(254, 243, 199, 0.95); }
+html.light .career-detail-subtitle { color: #44403c; }
+.career-detail-chip {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fffbeb;
+}
+html.light .career-detail-chip {
+  background: rgba(255, 255, 255, 0.85);
+  color: #78350f;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+}
+.career-detail-chip--accent { font-weight: 600; }
+.career-detail-meta {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fffbeb;
+}
+html.light .career-detail-meta {
+  background: #fff;
+  color: #1c1917;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+.career-detail-root h2,
+.career-detail-root h3,
+.career-detail-root h4 {
+  color: var(--text-primary);
+}
+.career-detail-root p,
+.career-detail-root li {
+  color: var(--text-body);
+}
+
+.live-bg-root--lite .live-bg-base {
+  opacity: 0.55;
+}
+
+.why-counselling-table th:last-child,
+.why-counselling-table td:last-child {
+  min-width: 11rem;
+}
+

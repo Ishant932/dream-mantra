@@ -1027,6 +1027,26 @@ export const siteEn = {
         { value: '7', label: 'Psychometric frameworks' },
       ],
       locations: ['Raja Park, Jaipur', 'Shastri Nagar, Jaipur', 'Nirman Nagar, Jaipur', 'Pan-India (Online)'],
+      comparisons: {
+        title: 'Why scientific counselling beats guesswork',
+        subtitle: 'Dream Mantra combines Mind Mapping + Skill Mapping with certified counsellors — compared to common alternatives parents and students rely on.',
+        tableHeaders: ['Factor', 'Friends / relatives advice', 'Generic online tests', 'Dream Mantra counselling'],
+        rows: [
+          ['Scientific basis', 'Personal opinion & social bias', 'Single questionnaire, often unverified', 'DMIT in 30+ countries + 7 psychometric frameworks'],
+          ['Personalisation', 'One-size advice from their experience', 'Automated PDF with generic text', 'Fingerprint + behaviour profile mapped to 950+ India careers'],
+          ['Pressure & labels', 'Comparison with cousins & neighbours', 'Ranking without context', 'No pressure. No comparison. Clarity only.'],
+          ['Counsellor support', 'Not trained in career psychology', 'No human follow-up', 'Govt & IIT Madras certified counsellors — 1-on-1 sessions'],
+          ['Roadmap depth', 'Vague “take science” suggestions', 'Career names only', 'Education path, exams (JEE/NEET/CUET), salary bands, institutes'],
+          ['Follow-up', 'Informal chats only', 'No accountability', 'Reports, sessions, module process & parent walkthrough'],
+          ['Accessibility', 'Limited to who you know', 'Self-serve only', 'Jaipur centres + Pan-India online · Mon–Sat 11am–7pm'],
+        ],
+        stats: [
+          { label: 'Students feel confused about stream choice', value: '87%', source: 'Industry surveys — Class 9–12 India' },
+          { label: 'Parents want scientific guidance', value: '92%', source: 'Urban & tier-2 counselling demand' },
+          { label: 'Dream Mantra counsellings completed', value: '7,000+', source: 'Dream Mantra records' },
+          { label: 'Career paths mapped in-app', value: '950+', source: 'India-focused career library' },
+        ],
+      },
     },
 
     instagramReels: [

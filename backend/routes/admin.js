@@ -218,7 +218,7 @@ router.get('/payments', (req, res) => {
 
 router.patch('/payments/:id', (req, res) => {
   try {
-    const { status, adminNote, amount, userNote } = req.body;
+    const { status, adminNote, amount, userNote, userId } = req.body;
     if (status) {
       const result = updatePaymentStatus(req.params.id, status, {
         adminId: req.user.id,
@@ -226,8 +226,8 @@ router.patch('/payments/:id', (req, res) => {
       });
       return res.json(result);
     }
-    if (amount != null || adminNote !== undefined || userNote !== undefined) {
-      const result = patchPaymentDetails(req.params.id, { amount, adminNote, userNote });
+    if (amount != null || adminNote !== undefined || userNote !== undefined || userId != null) {
+      const result = patchPaymentDetails(req.params.id, { amount, adminNote, userNote, userId });
       return res.json(result);
     }
     return res.status(400).json({ message: 'Provide status or payment details to update' });

@@ -87,55 +87,55 @@ export default function CareerDetailPage() {
 
   return (
 
-    <div className="min-h-screen career-detail-root bg-gradient-to-b from-amber-50/50 to-[var(--bg-base)] dark:from-[var(--bg-base)] dark:via-[var(--bg-muted)] dark:to-[var(--bg-alt)]">
+    <div className="min-h-screen career-detail-root bg-gradient-to-b from-amber-50/80 to-[var(--bg-base)] dark:from-[var(--bg-base)] dark:via-[var(--bg-muted)] dark:to-[var(--bg-alt)]">
 
-      <section className="relative pt-28 pb-12 overflow-hidden">
+      <section className="relative pt-28 pb-12 overflow-hidden career-detail-hero">
 
-        <div className="absolute inset-0 dm-spectrum-bg opacity-95" />
+        <div className="absolute inset-0 dm-spectrum-bg opacity-95 dark:opacity-100" />
 
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.05\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
 
         <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} className="relative max-w-7xl mx-auto px-4">
 
-          <Link to="/careers" className="inline-flex items-center gap-2 text-amber-200 hover:text-amber-50 mb-6 text-sm font-medium">
+          <Link to="/careers" className="career-detail-back inline-flex items-center gap-2 mb-6 text-sm font-medium">
 
-            <ArrowLeft className="w-4 h-4" /> 950+ Career Opportunities
+            <ArrowLeft className="w-4 h-4" /> Career Opportunities
 
           </Link>
 
           <div className="flex flex-wrap items-center gap-3 mb-4">
 
-            <span className="px-3 py-1 rounded-full bg-[var(--bg-elevated)]/20 text-amber-50 text-sm">{career.category}</span>
+            <span className="career-detail-chip">{career.category}</span>
 
-            <span className="px-3 py-1 rounded-full bg-amber-400/30 text-amber-100 text-sm font-semibold">{career.outlook} Outlook</span>
+            <span className="career-detail-chip career-detail-chip--accent">{career.outlook} Outlook</span>
 
             {career.aiResilience && (
 
-              <span className="px-3 py-1 rounded-full bg-amber-400/30 text-amber-100 text-sm font-semibold">AI Resilience: {career.aiResilience}</span>
+              <span className="career-detail-chip career-detail-chip--accent">AI Resilience: {career.aiResilience}</span>
 
             )}
 
           </div>
 
-          <h1 className="font-display text-4xl md:text-5xl font-bold text-amber-50 mb-4">{career.title}</h1>
+          <h1 className="font-display text-4xl md:text-5xl font-bold career-detail-title mb-4">{career.title}</h1>
 
-          <p className="text-amber-100 text-lg max-w-3xl">{career.shortDescription}</p>
+          <p className="career-detail-subtitle text-lg max-w-3xl">{career.shortDescription}</p>
 
           <div className="flex flex-wrap gap-4 mt-8">
 
-            <span className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--bg-elevated)]/15 text-amber-50 text-sm">
+            <span className="career-detail-meta flex items-center gap-2 px-4 py-2 rounded-xl text-sm">
 
               <IndianRupee className="w-4 h-4" /> {career.salaryDisplay}
 
             </span>
 
-            <span className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--bg-elevated)]/15 text-amber-50 text-sm">
+            <span className="career-detail-meta flex items-center gap-2 px-4 py-2 rounded-xl text-sm">
 
               <TrendingUp className="w-4 h-4" /> Demand: {career.demand}
 
             </span>
 
-            <span className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--bg-elevated)]/15 text-amber-50 text-sm">
+            <span className="career-detail-meta flex items-center gap-2 px-4 py-2 rounded-xl text-sm">
 
               Stream: {career.stream?.join(', ')}
 

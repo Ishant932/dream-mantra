@@ -1,9 +1,8 @@
-import { Suspense } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SiteHeader from './SiteHeader';
 import Footer from './Footer';
-import Chatbot from './Chatbot';
 import FloatingInfo from './FloatingInfo';
 import AnimatedBackground from './AnimatedBackground';
 import PageTransition from './PageTransition';
@@ -12,6 +11,8 @@ import ScrollToTop from './ScrollToTop';
 import ScrollToTopOnNavigate from './ScrollToTopOnNavigate';
 import HashScrollHandler from './HashScrollHandler';
 import ErrorBoundary from './ErrorBoundary';
+
+const Chatbot = lazy(() => import('./Chatbot'));
 
 function PageLoader() {
   return (
@@ -43,6 +44,13 @@ function PageLoader() {
 
 export default function Layout() {
   const location = useLocation();
+  const [showChatbot, setShowChatbot] = useState(false);
+
+  useEffect(() => {
+    const delay = import.meta.env.PROD ? 2500 : 800;
+    const id = window.setTimeout(() => setShowChatbot(true), delay);
+    return () => window.clearTimeout(id);
+  }, []);
 
   return (
     <div className="layout-shell min-h-screen flex flex-col relative">
@@ -62,7 +70,11 @@ export default function Layout() {
       <ScrollToTopOnNavigate />
       <HashScrollHandler />
       <FloatingInfo />
-      <Chatbot />
+      {showChatbot && (
+        <Suspense fallback={null}>
+          <Chatbot />
+        </Suspense>
+      )}
     </div>
   );
 }

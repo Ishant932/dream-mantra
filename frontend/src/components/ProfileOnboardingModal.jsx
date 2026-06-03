@@ -285,7 +285,7 @@ export default function ProfileOnboardingModal({ open, initialProfile, onSave, o
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 bg-brand-950/60 backdrop-blur-md"
+        className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-3 sm:p-4 pt-[calc(var(--site-header-h,4rem)+0.75rem)] pb-8 bg-brand-950/60 backdrop-blur-md"
       >
         <motion.div
           initial={{ opacity: 0, scale: 0.88, y: 40, rotateX: 8 }}

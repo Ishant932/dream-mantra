@@ -53,6 +53,7 @@ export default function DashboardSidebarLayout({
   const location = useLocation();
   const navigate = useNavigate();
   const mainRef = useRef(null);
+  const headerRef = useRef(null);
   const params = new URLSearchParams(location.search);
   const active = params.get('tab') || defaultTab || tabs[0]?.id;
 
@@ -165,10 +166,11 @@ export default function DashboardSidebarLayout({
         {/* Main content */}
         <div className="dash-sidebar-main" ref={mainRef}>
           <motion.div
+            ref={headerRef}
             key={activeTab?.id}
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            className="dash-sidebar-main-header"
+            className="dash-sidebar-main-header scroll-mt-28"
           >
             {activeTab && (
               <>

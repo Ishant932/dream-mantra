@@ -299,11 +299,74 @@ const aiLevels = ['High', 'Medium', 'Low'];
 const wlb = ['Excellent', 'Good', 'Moderate', 'Demanding'];
 
 const employers = {
-  'Engineering & Technology': ['TCS', 'Infosys', 'Wipro', 'Google India', 'Microsoft India', 'L&T', 'Mahindra'],
-  'Medical & Healthcare': ['Apollo Hospitals', 'Fortis', 'AIIMS', 'Max Healthcare', 'Manipal Hospitals'],
-  'Commerce & Finance': ['Deloitte', 'EY', 'KPMG', 'HDFC Bank', 'ICICI Bank', 'Goldman Sachs India'],
-  default: ['Leading MNCs', 'Top Indian corporates', 'Startups', 'Government sector', 'PSUs'],
+  'Engineering & Technology': ['TCS', 'Infosys', 'Wipro', 'L&T', 'Mahindra', 'Google India', 'Microsoft India'],
+  'Medical & Healthcare': ['AIIMS', 'Apollo Hospitals', 'Fortis', 'Max Healthcare', 'Manipal Hospitals', 'Medanta'],
+  'Commerce & Finance': ['Deloitte India', 'EY India', 'KPMG', 'HDFC Bank', 'ICICI Bank', 'SBI', 'Razorpay'],
+  'IT & Digital': ['TCS', 'Infosys', 'Wipro', 'HCL', 'Flipkart', 'Zomato', 'Freshworks'],
+  'Law & Public Service': ['District Courts', 'High Courts', 'UPSC cadre', 'State PSC', 'Corporate law firms'],
+  default: ['Leading Indian MNCs', 'PSUs', 'Startups', 'Government departments', 'Top private firms'],
 };
+
+const INDIAN_SALARY_BANDS = {
+  'Engineering & Technology': { base: 450000, step: 90000, multMin: 3, multMax: 16 },
+  'Medical & Healthcare': { base: 600000, step: 120000, multMin: 2.5, multMax: 12 },
+  'Commerce & Finance': { base: 350000, step: 70000, multMin: 2.5, multMax: 10 },
+  'IT & Digital': { base: 500000, step: 100000, multMin: 3, multMax: 18 },
+  'Science & Research': { base: 400000, step: 80000, multMin: 2.5, multMax: 9 },
+  'Arts & Humanities': { base: 280000, step: 55000, multMin: 2, multMax: 8 },
+  'Design & Creative': { base: 320000, step: 65000, multMin: 2.5, multMax: 9 },
+  'Law & Public Service': { base: 380000, step: 75000, multMin: 2.5, multMax: 10 },
+  'Defence & Security': { base: 420000, step: 85000, multMin: 2, multMax: 7 },
+  'Education & Training': { base: 300000, step: 60000, multMin: 2, multMax: 7 },
+  'Hospitality & Tourism': { base: 250000, step: 50000, multMin: 2, multMax: 6 },
+  'Agriculture & Environment': { base: 320000, step: 65000, multMin: 2, multMax: 8 },
+  'Sports & Fitness': { base: 280000, step: 55000, multMin: 2, multMax: 7 },
+  'Trades & Vocational': { base: 220000, step: 45000, multMin: 2, multMax: 6 },
+  'Business & Management': { base: 450000, step: 90000, multMin: 3, multMax: 12 },
+  'Media & Communication': { base: 300000, step: 60000, multMin: 2, multMax: 8 },
+  'Emerging & Future Careers': { base: 480000, step: 95000, multMin: 3, multMax: 14 },
+};
+
+const CATEGORY_EXAMS = {
+  'Engineering & Technology': ['JEE Main', 'JEE Advanced', 'BITSAT', 'State CET', 'CUET (UG)'],
+  'Medical & Healthcare': ['NEET UG', 'NEET PG', 'INI CET', 'State medical entrance'],
+  'Commerce & Finance': ['CUET', 'CA Foundation', 'CS Executive', 'CMA Foundation', 'IPMAT'],
+  'IT & Digital': ['JEE Main', 'CUET', 'NIMCET', 'State BCA entrance'],
+  'Law & Public Service': ['CLAT', 'AILET', 'UPSC CSE', 'State PSC', 'Judiciary exams'],
+  'Defence & Security': ['NDA', 'CDS', 'AFCAT', 'SSC CGL', 'State police recruitment'],
+  'Education & Training': ['CUET', 'B.Ed entrance', 'CTET', 'State TET'],
+  default: ['Class 12 board exams', 'CUET', 'State entrance tests', 'University-specific tests'],
+};
+
+const CATEGORY_INSTITUTES = {
+  'Engineering & Technology': ['IITs', 'NITs', 'IIITs', 'GFTIs', 'State engineering colleges'],
+  'Medical & Healthcare': ['AIIMS', 'JIPMER', 'Government medical colleges', 'Private medical colleges (NEET)'],
+  'Commerce & Finance': ['SRCC (Delhi University)', 'Christ University', 'NMIMS', 'Symbiosis', 'Local commerce colleges'],
+  'IT & Digital': ['NITs', 'IIITs', 'BCA/MCA colleges', 'Coding bootcamps (Masai, Scaler)'],
+  default: ['Central universities', 'State universities', 'Autonomous colleges', 'NAAC-accredited institutes'],
+};
+
+function indianSalary(category, id) {
+  const band = INDIAN_SALARY_BANDS[category] || { base: 300000, step: 60000, multMin: 2, multMax: 8 };
+  const salaryMin = band.base + (id % 12) * band.step;
+  const mult = band.multMin + (id % Math.ceil(band.multMax - band.multMin));
+  const salaryMax = Math.round(salaryMin * mult);
+  return {
+    salaryMin,
+    salaryMax,
+    salaryDisplay: `₹${(salaryMin / 100000).toFixed(1)}–${(salaryMax / 100000).toFixed(1)} LPA (India)`,
+  };
+}
+
+function categoryExams(category, id) {
+  const list = CATEGORY_EXAMS[category] || CATEGORY_EXAMS.default;
+  return list.slice(0, 3 + (id % 2));
+}
+
+function categoryInstitutes(category, id) {
+  const list = CATEGORY_INSTITUTES[category] || CATEGORY_INSTITUTES.default;
+  return list.slice(0, 3 + (id % 2));
+}
 
 function slugify(t) {
   return t.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -337,13 +400,12 @@ function buildRoadmap(title, category, id, stream) {
 }
 
 function buildCareer(id, title, category, config, variantIdx) {
-  const salaryBase = 250000 + (id % 30) * 120000;
-  const mult = 2 + (id % 6);
+  const { salaryMin, salaryMax, salaryDisplay } = indianSalary(category, id);
   const emp = employers[category] || employers.default;
   const stream = config.stream;
   const classStreams = resolveClassStreams(category, title, stream);
-  const isMedical = category.includes('Medical');
-  const pg = isMedical ? 'MD / MS / DNB specialisation' : "Master's / PG diploma (optional for senior roles)";
+  const exams = categoryExams(category, id);
+  const institutes = categoryInstitutes(category, id);
 
   return {
     id,
@@ -353,9 +415,9 @@ function buildCareer(id, title, category, config, variantIdx) {
     sector: category.split(' ')[0],
     stream,
     classStreams,
-    shortDescription: `${title} offers strong growth in ${category}. Explore education paths, salary benchmarks, skills, and future scope across India and globally.`,
-    description: `As a ${title}, you work in the ${category} domain with opportunities across India and internationally. This role suits students with aptitude in related subjects and strong interest in the field.\n\nDreams Mantra recommends DMIT and Psychometric assessment before committing to this path. With the right education, certifications, and skills, ${title} offers meaningful career progression and financial stability.\n\nIndia's job market increasingly values specialists in this field — especially those who combine domain expertise with communication, adaptability, and continuous learning.`,
-    dayInLife: `A typical day as ${title} involves planning tasks, collaborating with teams, solving domain-specific problems, and staying updated with industry trends. Work may include client/stakeholder interaction, analysis, documentation, and hands-on execution depending on seniority.`,
+    shortDescription: `${title} is a recognised career path in India for students from ${classStreams.filter((s) => s !== 'Vocational').join(', ') || 'relevant'} streams — with clear UG/PG routes, entrance exams, and growing demand across metros and tier-2 cities.`,
+    description: `${title} professionals in India typically enter through board exams and competitive entrances (where applicable), followed by a domain degree from a recognised Indian university or institute.\n\nIn the Indian job market, ${title} roles are hired by ${emp.slice(0, 3).join(', ')} and similar employers. Freshers often start through campus placements, off-campus drives, or government recruitment.\n\nDream Mantra recommends Mind Mapping + Skill Mapping before finalising this path — to match aptitude, learning style, and family expectations with realistic Indian salary bands and exam timelines.`,
+    dayInLife: `A typical Indian workday as ${title} includes domain tasks, team coordination, stakeholder updates, and compliance with organisation SOPs. Work settings range from offices and hospitals to field sites, depending on employer and city.`,
     responsibilities: [
       `Execute core ${title.split(' ').slice(-1)[0] || 'role'} duties with quality and timelines`,
       'Collaborate with cross-functional teams and stakeholders',
@@ -383,18 +445,12 @@ function buildCareer(id, title, category, config, variantIdx) {
       pick(['B.Tech / B.Sc relevant stream', 'B.Com / BBA where applicable', 'B.A with specialization'], id),
       pick(['Industry bootcamp', 'Diploma from polytechnic/ITI', 'Professional degree pathway'], id + 1),
     ],
-    salaryMin: salaryBase,
-    salaryMax: salaryBase * mult,
-    salaryDisplay: `₹${(salaryBase / 100000).toFixed(1)}–${((salaryBase * mult) / 100000).toFixed(1)} LPA`,
+    salaryMin,
+    salaryMax,
+    salaryDisplay,
     outlook: pick(outlooks, id),
-    exams: id % 2 === 0
-      ? ['CUET', 'JEE/NEET where applicable', 'Domain-specific entrance tests']
-      : ['Class 12 board exams', 'State/national entrance exams', 'College-specific tests'],
-    institutes: [
-      'Top universities and IITs/NITs where applicable',
-      'Leading private colleges with strong placements',
-      pick(['Delhi University colleges', 'State universities', 'Autonomous institutes'], id),
-    ],
+    exams,
+    institutes,
     topEmployers: emp.slice(0, 4 + (id % 3)),
     industries: [category.split(' & ')[0], pick(['Private sector', 'Government', 'Startups', 'Consulting'], id)],
     workEnvironment: pick(environments, id),
@@ -433,7 +489,7 @@ function buildCareer(id, title, category, config, variantIdx) {
     ],
     internshipPath: `Seek internships in ${category.split(' ')[0]} sector from Year 2 of UG — apply via campus, LinkedIn, and Dreams Mantra AI Career Launchpad programme`,
     higherStudies: [
-      pg,
+      category.includes('Medical') ? 'MD / MS / DNB specialisation' : "Master's / PG diploma in India (optional for senior roles)",
       id % 3 === 0 ? 'PhD / research pathway for academia' : 'Executive MBA for leadership track',
       'International certifications for global roles',
     ],
@@ -443,9 +499,9 @@ function buildCareer(id, title, category, config, variantIdx) {
       `Senior: Lead / Manager / Consultant ${title.split(' ').slice(-1)[0] || 'Specialist'}`,
     ],
     salaryProgression: [
-      `Fresher: ${(salaryBase / 100000).toFixed(1)} LPA approx.`,
-      `3–5 years: ${((salaryBase * 1.5) / 100000).toFixed(1)}–${((salaryBase * 2.2) / 100000).toFixed(1)} LPA`,
-      `10+ years: ${((salaryBase * mult * 0.6) / 100000).toFixed(1)}+ LPA (senior/lead roles)`,
+      `Fresher: ${(salaryMin / 100000).toFixed(1)} LPA approx.`,
+      `3–5 years: ${((salaryMin * 1.5) / 100000).toFixed(1)}–${((salaryMin * 2.2) / 100000).toFixed(1)} LPA`,
+      `10+ years: ${((salaryMax * 0.75) / 100000).toFixed(1)}+ LPA (senior/lead roles)`,
     ],
     globalOpportunities: pick([
       'Strong demand in UAE, USA, UK, Canada, Singapore for qualified professionals',
