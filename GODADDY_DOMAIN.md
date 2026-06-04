@@ -15,7 +15,60 @@ Your Render service **dream-mantra** already has these custom domains added:
 
 ---
 
-## Step 1 — Open GoDaddy DNS
+## Important: DNS is on Hostinger right now
+
+Your domain is **registered at GoDaddy**, but nameservers point to **Hostinger**:
+
+- `atlas.dns-parking.com`
+- `hyperion.dns-parking.com`
+
+That is why the old Hostinger site still shows. You must **switch nameservers back to GoDaddy**, then add Render DNS records.
+
+---
+
+## Option A — Automated (recommended)
+
+Create GoDaddy API keys (not your login password):
+
+1. Go to [developer.godaddy.com/keys](https://developer.godaddy.com/keys)
+2. **Create New API Key** → Environment: **Production**
+3. Copy **Key** and **Secret** (secret shown once)
+
+Send them like this (revoke after setup):
+
+```text
+GODADDY_API_KEY=your_key
+GODADDY_API_SECRET=your_secret
+```
+
+We run:
+
+```powershell
+cd "e:\Dreams Mantra"
+$env:GODADDY_API_KEY = "..."
+$env:GODADDY_API_SECRET = "..."
+$env:RENDER_API_KEY = "rnd_..."   # optional, for auto-verify
+node scripts/setup-godaddy-dns.js
+```
+
+The script will:
+
+1. Switch nameservers from Hostinger → GoDaddy
+2. Remove old A/AAAA/CNAME web records
+3. Set `A @ → 216.24.57.1` and `CNAME www → dream-mantra.onrender.com`
+4. Keep email (MX) and TXT records if any
+
+---
+
+## Option B — Manual in GoDaddy
+
+### Step 0 — Fix nameservers (required first)
+
+1. GoDaddy → **dreammantra.in** → **DNS** → **Nameservers** → **Change**
+2. Choose **GoDaddy nameservers** (Default) — NOT custom Hostinger
+3. Save and wait 15–30 minutes
+
+### Step 1 — Open GoDaddy DNS
 
 1. Go to [https://www.godaddy.com](https://www.godaddy.com) and sign in (Customer #709291099).
 2. **My Products** → find **dreammantra.in** → **DNS** or **Manage DNS**.
