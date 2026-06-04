@@ -6,10 +6,8 @@ import { useLang } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
-import NavQuickMenu from './NavQuickMenu';
 import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLink, NavDropdownLinkGroup } from './NavDropdownPanel';
 import { useSiteNav } from '../i18n/useSiteContent';
-import { handleHashNavClick } from '../utils/scrollHash';
 import { isMobilePerf } from '../utils/mobilePerf';
 
 const buildMainNav = (t, counsellingMega, crpMega) => [
@@ -99,7 +97,7 @@ export default function Navbar({ scrolled = false }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobile, setMobile] = useState(false);
-  const { counsellingMega, crpMega, quickLinks } = useSiteNav();
+  const { counsellingMega, crpMega } = useSiteNav();
   const mainNav = buildMainNav(t, counsellingMega, crpMega);
   const navLite = isMobilePerf();
 
@@ -145,47 +143,54 @@ export default function Navbar({ scrolled = false }) {
             ))}
           </nav>
 
-          <div className="nav-header-actions flex items-center gap-1 sm:gap-2 ml-auto shrink-0">
-            <NavQuickMenu />
-            <ThemeToggle compact />
-            {!navLite && (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={toggle}
-                className="lang-toggle xl:inline-flex"
-              >
-                {lang === 'en' ? 'हिंदी' : 'EN'}
-              </motion.button>
-            )}
-            {navLite && (
-              <button type="button" onClick={toggle} className="lang-toggle xl:inline-flex">
-                {lang === 'en' ? 'हिं' : 'EN'}
-              </button>
-            )}
-            {user ? (
-              <>
-                <Link
-                  to={isAdmin ? '/admin' : '/dashboard'}
-                  className="btn-primary !py-2 !px-3 sm:!px-4 !text-xs sm:!text-sm hidden sm:inline-flex whitespace-nowrap"
-                >
-                  {isAdmin ? t('nav.admin') : t('nav.dashboard')}
-                </Link>
+          <div className="nav-header-actions flex items-center gap-1 sm:gap-2 ml-auto min-w-0">
+            <div className="nav-header-actions__tools flex items-center gap-1 shrink-0">
+              <ThemeToggle compact />
+              {!navLite && (
                 <motion.button
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  onClick={handleLogout}
-                  className="hidden md:block text-sm text-sand-500 hover:text-royalOrange font-medium px-1"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={toggle}
+                  className="lang-toggle"
                 >
-                  {t('nav.logout')}
+                  {lang === 'en' ? 'हिंदी' : 'EN'}
                 </motion.button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="hidden sm:block nav-link px-2 whitespace-nowrap">{t('nav.login')}</Link>
-                <Link to="/signup" className="btn-primary !py-2 !px-3 sm:!px-4 !text-xs sm:!text-sm whitespace-nowrap">{t('nav.signup')}</Link>
-              </>
-            )}
+              )}
+              {navLite && (
+                <button type="button" onClick={toggle} className="lang-toggle">
+                  {lang === 'en' ? 'हिं' : 'EN'}
+                </button>
+              )}
+            </div>
+            <div className="nav-header-actions__auth flex items-center gap-1 shrink-0">
+              {user ? (
+                <>
+                  <Link
+                    to={isAdmin ? '/admin' : '/dashboard'}
+                    className="btn-primary nav-header-auth-btn whitespace-nowrap"
+                  >
+                    {isAdmin ? t('nav.admin') : t('nav.dashboard')}
+                  </Link>
+                  <motion.button
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    onClick={handleLogout}
+                    className="hidden md:block text-sm text-sand-500 hover:text-royalOrange font-medium px-1"
+                  >
+                    {t('nav.logout')}
+                  </motion.button>
+                </>
+              ) : (
+                <>
+                  <Link to="/login" className="nav-link nav-header-auth-link whitespace-nowrap">
+                    {t('nav.login')}
+                  </Link>
+                  <Link to="/signup" className="btn-primary nav-header-auth-btn whitespace-nowrap">
+                    {t('nav.signup')}
+                  </Link>
+                </>
+              )}
+            </div>
             <button
               type="button"
               className="xl:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
@@ -202,6 +207,36 @@ export default function Navbar({ scrolled = false }) {
       {mobile && (
           <div className="xl:hidden border-t overflow-hidden bg-[var(--bg-elevated)] dark:bg-brand-900 max-h-[calc(100dvh-var(--site-header-h)-var(--safe-top)-1rem)] nav-mobile-drawer">
             <div className="nav-mobile-menu p-4 overflow-y-auto overscroll-contain space-y-4 pb-safe">
+              <div className="nav-mobile-auth">
+                {user ? (
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      to={isAdmin ? '/admin' : '/dashboard'}
+                      onClick={() => setMobile(false)}
+                      className="btn-primary w-full text-center !py-3"
+                    >
+                      {isAdmin ? t('nav.admin') : t('nav.dashboard')}
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      className="w-full py-3 text-sm font-semibold text-sand-500 hover:text-royalOrange rounded-xl border border-[var(--border-subtle)]"
+                    >
+                      {t('nav.logout')}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <Link to="/login" onClick={() => setMobile(false)} className="btn-outline text-center !py-3">
+                      {t('nav.login')}
+                    </Link>
+                    <Link to="/signup" onClick={() => setMobile(false)} className="btn-primary text-center !py-3">
+                      {t('nav.signup')}
+                    </Link>
+                  </div>
+                )}
+              </div>
+
               {mainNav.map((item) => (
                 <div key={item.label} className="nav-mobile-section">
                   <Link
@@ -244,47 +279,6 @@ export default function Navbar({ scrolled = false }) {
                   ))}
                 </div>
               ))}
-
-              <div className="nav-mobile-section pt-2 border-t border-[var(--border-subtle)]">
-                <p className="text-xs font-bold text-lime uppercase tracking-wider px-1 mb-2">{quickLinks.title}</p>
-                {quickLinks.links.map((l) => (
-                  <Link
-                    key={l.to}
-                    to={l.to}
-                    onClick={(e) => {
-                      if (!handleHashNavClick(e, l.to, location.pathname, () => setMobile(false))) {
-                        setMobile(false);
-                      }
-                    }}
-                    className="block py-2 px-3 text-sm rounded-lg hover:bg-lime/15"
-                  >
-                    {l.label}
-                  </Link>
-                ))}
-              </div>
-
-              {user ? (
-                <div className="nav-mobile-section flex flex-col gap-2 pt-2 border-t border-[var(--border-subtle)]">
-                  <Link
-                    to={isAdmin ? '/admin' : '/dashboard'}
-                    onClick={() => setMobile(false)}
-                    className="btn-primary w-full text-center !py-3"
-                  >
-                    {isAdmin ? t('nav.admin') : t('nav.dashboard')}
-                  </Link>
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="w-full py-3 text-sm font-semibold text-sand-500 hover:text-royalOrange rounded-xl border border-[var(--border-subtle)]"
-                  >
-                    {t('nav.logout')}
-                  </button>
-                </div>
-              ) : (
-                <div className="nav-mobile-section pt-2 border-t border-[var(--border-subtle)]">
-                  <Link to="/login" onClick={() => setMobile(false)} className="btn-outline w-full text-center block">Login</Link>
-                </div>
-              )}
             </div>
           </div>
       )}

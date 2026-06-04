@@ -863,12 +863,65 @@
   .nav-header-actions {
     flex-wrap: nowrap;
     justify-content: flex-end;
+    flex: 1 1 auto;
+    min-width: 0;
   }
   .nav-header-actions__tools,
   .nav-header-actions__auth {
     display: flex;
     align-items: center;
     gap: 0.25rem;
+  }
+  .nav-header-auth-btn {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: 0.45rem 0.65rem !important;
+    font-size: 0.6875rem !important;
+    line-height: 1.2;
+    min-height: 2.25rem;
+  }
+  .nav-header-auth-link {
+    display: inline-flex !important;
+    align-items: center;
+    padding: 0.35rem 0.45rem !important;
+    font-size: 0.6875rem !important;
+    line-height: 1.2;
+    min-height: 2.25rem;
+  }
+  @media (min-width: 480px) {
+    .nav-header-auth-btn {
+      padding: 0.5rem 0.85rem !important;
+      font-size: 0.75rem !important;
+    }
+    .nav-header-auth-link {
+      padding: 0.35rem 0.55rem !important;
+      font-size: 0.8125rem !important;
+    }
+  }
+  @media (min-width: 640px) {
+    .nav-header-auth-btn {
+      padding: 0.5rem 1rem !important;
+      font-size: 0.875rem !important;
+    }
+    .nav-header-auth-link {
+      padding: 0.35rem 0.65rem !important;
+      font-size: 0.875rem !important;
+    }
+  }
+  .nav-mobile-drawer {
+    max-height: calc(100dvh - var(--site-header-h) - var(--safe-top));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nav-mobile-auth {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-elevated);
   }
   @media (max-width: 479px) {
     .nav-header-actions .lang-toggle {
@@ -2733,6 +2786,8 @@ html.aurora .dash-sidebar-uid .copy-user-id__btn {
     gap: 0.5rem;
     padding-bottom: 0.35rem;
     scrollbar-width: thin;
+    mask-image: linear-gradient(to right, #000 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, #000 92%, transparent 100%);
   }
   .dash-sidebar-nav::-webkit-scrollbar {
     height: 4px;

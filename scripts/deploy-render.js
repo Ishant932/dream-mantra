@@ -97,7 +97,7 @@ async function createService(ownerId) {
 async function triggerDeploy(serviceId) {
   return api(`/services/${serviceId}/deploys`, {
     method: 'POST',
-    body: JSON.stringify({ clearCache: false }),
+    body: JSON.stringify({ clearCache: 'clear' }),
   });
 }
 
