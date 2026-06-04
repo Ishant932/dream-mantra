@@ -172,5 +172,5 @@ export function useAboutContent() {
     };
   });
 
-  return { t, d, about, missionVision, founder, managementTeam };
+  return { t, d, about, missionVision, founder, managementTeam, leadership: d('data.leadership') || {}, homeLeadership: d('data.homeLeadership') || {} };
 }

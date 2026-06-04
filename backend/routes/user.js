@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import db, { repo } from '../lib/database.js';
-import { buildModuleSelection, MODULE_CATALOG } from '../lib/moduleCatalog.js';
+import { buildModuleSelection, getActiveModuleCatalog } from '../lib/moduleCatalog.js';
 import { getProduct } from '../config/products.js';
 import { createPendingPaymentForAssessment } from '../lib/paymentService.js';
 import { authRequired } from '../middleware/auth.js';
@@ -84,7 +84,7 @@ router.get('/dashboard', (req, res) => {
       pendingPayment,
       profileCompletion,
     },
-    products: MODULE_CATALOG,
+    products: getActiveModuleCatalog(),
     careerPath: getCareerPathForUser(req.user.id),
     communityLink: getCommunityLink('crp-test'),
     payments: listPaymentsForUser(req.user.id),

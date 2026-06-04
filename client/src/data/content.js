@@ -18,6 +18,11 @@ export const IMAGES = {
   career: u('photo-1600880292203-757bb62b4baf'),
   founder: '/team/esha-lohiya.png',
   coFounder: '/team/shivam-lohiya.png',
+  anilLohiya: '/team/anil-lohiya.jpg',
+  sunilLohiya: '/team/sunil-lohiya.jpg',
+  seemaLohiya: '/team/seema-lohiya.jpg',
+  vinitaTibrewal: '/team/vinita-tibrewal.jpg',
+  ishantGoyal: '/team/ishant-goyal.jpg',
   counselling: u('photo-1552664730-d307ca884978'),
   counsellingSession: u('photo-1556761175-b413da4baf72'),
   professional: u('photo-1600880292203-757bb62b4baf'),
@@ -211,8 +216,8 @@ export const certifications = [
 
 export const managementTeam = [
   {
-    name: 'Esha Lohiya',
-    role: 'Founder & Chief Counsellor',
+    name: 'Esha Tibrewal',
+    role: 'Founder & CEO',
     initials: 'EL',
     image: IMAGES.founder,
     tagline: 'From Naukri.com to unlocking every child\'s potential',
@@ -235,7 +240,7 @@ export const managementTeam = [
   },
   {
     name: 'Shivam Lohiya',
-    role: 'Co-Founder',
+    role: 'Co-Founder – Operations & Technology',
     initials: 'SL',
     image: IMAGES.coFounder,
     tagline: 'PwC consulting rigor powering Dream Mantra at scale',
@@ -259,8 +264,8 @@ export const managementTeam = [
 ];
 
 export const founder = {
-  name: 'Esha Lohiya',
-  role: 'Founder & Chief Counsellor',
+  name: 'Esha Tibrewal',
+  role: 'Founder & CEO',
   quote: 'Every child is a unique key, meant to unlock different doors. At Dream Mantra, we don\'t label or judge — we simply reveal the brilliance that already exists. With science, heart, and lifelong value.',
   longNote: 'In my years at Naukri.com, I saw thousands of professionals stuck in jobs they hated. Bright, capable people who chose the wrong path because of pressure, confusion, or lack of guidance. There was always a mismatch between what they studied, what they were naturally good at, and what the job market actually needed. That\'s why we use Mind Mapping — validated in 30+ countries — and Skill Mapping assessments with 7 frameworks to create the complete picture. We\'re not just decoding fingerprints — we\'re unlocking futures.',
   certs: ['Government of India', 'International Certified Career Counselling', 'Mind Mapping', 'NLP', 'Reliance Foundation', 'IIT Madras'],

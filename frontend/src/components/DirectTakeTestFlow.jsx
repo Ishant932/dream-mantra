@@ -57,12 +57,12 @@ export default function DirectTakeTestFlow({
         };
         const band = data.band || resolveSkillMappingBand(assessment);
         if (!nextIdentity.userUid) {
-          onError?.('Dream Mantra ID not found. Log in with your registered account.');
+          onError?.('Dreams ID not found. Log in with your registered account.');
           onClose?.();
           return;
         }
         if (!band) {
-          onError?.('Select your class band first under Process & Take test.');
+          onError?.('Select your class band first under Process.');
           onClose?.();
           return;
         }

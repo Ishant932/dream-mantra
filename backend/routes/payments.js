@@ -2,10 +2,11 @@ import { Router } from 'express';
 import crypto from 'crypto';
 import db, { repo, getData, saveData } from '../lib/database.js';
 import { getProduct } from '../config/products.js';
-import { validateCoupon, applyDiscount } from '../config/coupons.js';
+import { validateCoupon, applyCouponDiscount } from '../lib/couponService.js';
 import { authRequired } from '../middleware/auth.js';
 import { isGatewayEnabled, getPaymentMode } from '../lib/paymentGateway.js';
-import { syncAssessmentSelection, COUNSELLING_ADDON_PRICE, MODULE_CATALOG, assertSkillMappingBandSelected } from '../lib/moduleCatalog.js';
+import { syncAssessmentSelection, COUNSELLING_ADDON_PRICE, getActiveModuleCatalog, assertSkillMappingBandSelected, buildModuleSelection } from '../lib/moduleCatalog.js';
+import { listPublicVouchers } from '../lib/catalogStore.js';
 import { setAssessmentSkillMappingBand } from '../lib/skillMappingBand.js';
 import {
   confirmPayment,
@@ -22,7 +23,16 @@ import {
 const router = Router();
 
 router.get('/products', (_, res) => {
-  res.json({ products: MODULE_CATALOG });
+  res.set('Cache-Control', 'no-store');
+  res.json({ products: getActiveModuleCatalog() });
+});
+
+router.get('/promotions', (_, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json({
+    products: getActiveModuleCatalog(),
+    vouchers: listPublicVouchers(),
+  });
 });
 
 router.get('/mode', (_, res) => {
@@ -78,11 +88,71 @@ router.get('/order/:assessmentId', authRequired, (req, res) => {
   });
 });
 
+router.patch('/order/:assessmentId/selection', authRequired, (req, res) => {
+  let assessment = db.prepare('SELECT * FROM assessments WHERE id = ?').get(req.params.assessmentId);
+  if (!assessment || Number(assessment.user_id) !== Number(req.user.id)) {
+    return res.status(404).json({ message: 'Order not found' });
+  }
+  if (assessment.status !== 'pending_payment') {
+    return res.status(400).json({ message: 'This order can no longer be changed' });
+  }
+
+  const payment = getPaymentForAssessment(assessment.id);
+  if (payment?.submitted_at) {
+    return res.status(400).json({ message: 'Payment already submitted for this order' });
+  }
+
+  const slug = assessment.product_slug || assessment.progress?.selection?.moduleSlug;
+  const catalog = buildModuleSelection(slug, !!req.body.addCounselling);
+  if (!catalog) {
+    return res.status(400).json({ message: 'Invalid module selection' });
+  }
+
+  const progress = {
+    ...(assessment.progress || {}),
+    addCounselling: catalog.addCounselling,
+    selection: {
+      displayTitle: catalog.displayTitle,
+      lineItems: catalog.lineItems,
+      total: catalog.total,
+      moduleSlug: catalog.moduleSlug,
+      moduleTitle: catalog.moduleTitle,
+      addCounselling: catalog.addCounselling,
+    },
+  };
+
+  repo.updateAssessment(assessment.id, {
+    amount: catalog.total,
+    type: catalog.moduleTitle,
+    product_slug: catalog.moduleSlug,
+    progress,
+  });
+
+  createPendingPaymentForAssessment({
+    userId: req.user.id,
+    assessmentId: assessment.id,
+    amount: catalog.total,
+  });
+
+  assessment = repo.getAssessment(assessment.id);
+  const { assessment: synced, selection } = syncAssessmentSelection(assessment, repo);
+
+  res.json({
+    assessment: synced,
+    selection,
+    addCounselling: !!selection?.addCounselling,
+    total: selection?.total ?? 0,
+  });
+});
+
 router.post('/validate-coupon', authRequired, (req, res) => {
   const paidTests = db
     .prepare("SELECT COUNT(*) as c FROM assessments WHERE user_id = ? AND status = 'paid'")
     .get(req.user.id)?.c ?? 0;
-  const result = validateCoupon(req.body.code, { paidTestsCount: paidTests });
+  const result = validateCoupon(req.body.code, {
+    paidTestsCount: paidTests,
+    moduleSlug: req.body.moduleSlug || null,
+  });
   if (!result.valid) {
     return res.status(400).json({ message: result.message });
   }
@@ -177,11 +247,14 @@ router.post('/create-order', authRequired, async (req, res) => {
     const paidTests = db
       .prepare("SELECT COUNT(*) as c FROM assessments WHERE user_id = ? AND status = 'paid'")
       .get(req.user.id)?.c ?? 0;
-    const coupon = validateCoupon(couponCode, { paidTestsCount: paidTests });
+    const coupon = validateCoupon(couponCode, {
+      paidTestsCount: paidTests,
+      moduleSlug: selection?.moduleSlug || assessment.product_slug,
+    });
     if (!coupon.valid) {
       return res.status(400).json({ message: coupon.message });
     }
-    pricing = { ...applyDiscount(finalPrice, coupon.discountPercent), coupon: coupon.code };
+    pricing = { ...applyCouponDiscount(finalPrice, coupon), coupon: coupon.code };
     finalPrice = pricing.final;
     repo.updateAssessment(assessment.id, { amount: finalPrice });
   } else if (assessment.amount !== finalPrice) {

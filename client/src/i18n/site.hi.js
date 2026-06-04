@@ -1,5 +1,6 @@
 /** Hindi site content — mirrors site.en.js structure */
 import { programPathwaysHi } from '../data/programPathways.hi.js';
+import { partnerDetailsEn, leadershipEn } from './partnerDetails.en.js';
 
 export const siteHi = {
   navMega: {
@@ -79,9 +80,8 @@ export const siteHi = {
     whatsapp: 'WhatsApp चैट',
     copyright: 'Dream Mantra · All rights reserved.',
     agePathways: 'आयु मार्ग',
-    assessments: 'मूल्यांकन',
-    counselling: 'Counselling',
-    explore: 'Explore',
+    counsellingOverview: 'Counselling Overview',
+    quickLinks: 'Quick Links',
     locationsBlock: {
       title: 'हमारे Centres',
       onlineDesc: 'पूरे भारत में video call पर counselling',
@@ -90,13 +90,17 @@ export const siteHi = {
     footerQuickLinks: [
       { to: '/', label: 'होम' },
       { to: '/about', label: 'हमारे बारे में' },
-      { to: '/pillars', label: '7 स्तंभ' },
-      { to: '/careers', label: 'Career Library' },
-      { to: '/marketplace', label: 'Marketplace' },
-      { to: '/counselling', label: 'Counselling' },
       { to: '/contact', label: 'संपर्क' },
       { to: '/terms', label: 'नियम और शर्तें' },
     ],
+    footerCounsellingOverview: {
+      links: [
+        { to: '/assessments/dmit', label: 'Explore Mind Mapping' },
+        { to: '/assessments/psychometric', label: 'Explore Skill Mapping' },
+        { to: '/crp/explore', label: 'AI Career Launchpad' },
+        { to: '/counselling?tab=book', label: 'सत्र बुक करें' },
+      ],
+    },
     footerAgePathways: [
       { to: '/programs/class-1-5', label: 'कक्षा 1-5' },
       { to: '/programs/class-6-8', label: 'कक्षा 6-8' },
@@ -106,26 +110,24 @@ export const siteHi = {
       { to: '/programs/working-professionals', label: 'प्रोफेशनल' },
       { to: '/counselling?tab=programs&pathway=institutions', label: 'संस्थान' },
     ],
-    footerAssessments: [
-      { to: '/assessments/dmit', label: 'Mind Mapping' },
-      { to: '/assessments/psychometric', label: 'Skill Mapping' },
-      { to: '/assessments/dmit-psychometric', label: 'Mind + Skill' },
-      { to: '/assessments/why-dreams-mantra', label: 'Why Counselling' },
-    ],
-    footerCounselling: [
-      { to: '/counselling', label: 'Overview' },
-      { to: '/counselling?tab=dmit', label: 'Mind Mapping' },
-      { to: '/counselling?tab=psychometric', label: 'Skill Mapping' },
-      { to: '/counselling?tab=process', label: '7 चरण' },
-      { to: '/counselling?tab=programs', label: 'आयु मार्ग' },
-      { to: '/counselling?tab=book', label: 'सत्र बुक करें' },
-    ],
-    footerExplore: [
-      { to: '/crp/explore', label: 'AI Career Launchpad' },
-      { to: '/careers', label: 'Career Library' },
-      { to: '/marketplace', label: 'Marketplace' },
-      { to: '/counsellors', label: 'काउंसलर बनें' },
-      { to: '/partner/schools', label: 'Partner With Us' },
+    footerQuickSections: [
+      {
+        title: 'खोजें',
+        links: [
+          { to: '/marketplace', label: 'Marketplace' },
+          { to: '/pillars', label: '7 Pillars Framework' },
+          { to: '/#certifications', label: 'Certifications' },
+        ],
+      },
+      {
+        title: 'जुड़ें',
+        links: [
+          { to: '/counselling?tab=book', label: 'सत्र बुक करें' },
+          { to: '/about', label: 'हमारे बारे में' },
+          { to: '/contact', label: 'संपर्क' },
+          { to: '/terms', label: 'नियम और शर्तें' },
+        ],
+      },
     ],
     footerPrograms: [
       { to: '/programs/class-1-5', label: 'कक्षा 1-5' },
@@ -1150,8 +1152,13 @@ export const siteHi = {
       { slug: 'colleges', title: 'Colleges', desc: 'Dream Mantra powered campus career cells — placement prep, internships और alumni mentoring।' },
       { slug: 'corporates', title: 'Corporates', desc: 'Employee career wellness programs, team assessments और leadership development workshops।' },
       { slug: 'teachers', title: 'Teachers', desc: 'Certified career guide बनें — training, certification और referral income opportunities।' },
-      { slug: 'referral-partner', title: 'Referral Partner', desc: 'Students और professionals को Dream Mantra programs refer करके commission earn करें।' },
+      { slug: 'referral-partner', title: 'Referral Partner', desc: 'Students aur professionals ko Dream Mantra programs refer karke commission earn karein.' },
     ],
+    partnerDetails: partnerDetailsEn,
+    leadership: leadershipEn,
+    homeLeadership: {
+      directors: { title: 'Directors', subtitle: 'Dream Mantra ki vision, strategy aur community outreach ka netritva.' },
+    },
   },
 
   pillars: [

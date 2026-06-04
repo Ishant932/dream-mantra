@@ -26,6 +26,10 @@ const fade = {
   transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
 };
 
+function HomeDivider() {
+  return <div className="home-section-divider" aria-hidden="true" />;
+}
+
 export default function Home() {
   const {
     home,
@@ -42,32 +46,41 @@ export default function Home() {
       {/* 1. Hero + 2. Numbers */}
       <HomeHero />
 
+      <HomeDivider />
+
       <HomeTrustBar />
 
-      <div className="home-section-divider" aria-hidden="true" />
+      <HomeDivider />
 
       {/* Modules */}
       <HomeSection variant="warm" className="home-section--after-trust">
         <HomeModulesIntro />
       </HomeSection>
 
+      <HomeDivider />
+
       <HomeSection variant="cream">
         <HomeHowDreamzWorks />
       </HomeSection>
+
+      <HomeDivider />
 
       {/* Why career counselling — data, no images */}
       <HomeSection variant="elevated">
         <HomeWhyCounselling />
       </HomeSection>
 
+      <HomeDivider />
+
       {/* Who we guide */}
       <HomeSection variant="warm">
         <HomeWhoWeGuide />
       </HomeSection>
 
+      <HomeDivider />
+
       {/* 7 Pillars Framework */}
       <HomeSection variant="cream" id="pillars" className="scroll-mt-28">
-        <div className="absolute top-1/4 -left-32 w-64 h-64 bg-amber-300/20 rounded-full blur-3xl animate-blob" />
         <div className="max-w-7xl mx-auto px-4 relative">
           <motion.div {...fade} className="text-center mb-12">
             <h2 className="home-headline">
@@ -171,6 +184,8 @@ export default function Home() {
         </div>
       </HomeSection>
 
+      <HomeDivider />
+
       {/* Partner & Join */}
       <HomeSection variant="orange">
         <div className="max-w-7xl mx-auto px-4 home-partner-section">
@@ -209,12 +224,20 @@ export default function Home() {
         </div>
       </HomeSection>
 
+      <HomeDivider />
+
       {/* AI-Powered Career Discovery */}
       <AIFeatures />
 
+      <HomeDivider />
+
       <WelcomeOfferBanner />
 
+      <HomeDivider />
+
       <TestimonialMarquee />
+
+      <HomeDivider />
 
       {/* Institutes marquee */}
       <HomeSection variant="mesh" className="!py-14 border-y" style={{ borderColor: 'var(--border-subtle)' }}>
@@ -241,6 +264,8 @@ export default function Home() {
         </MarqueeStrip>
       </HomeSection>
 
+      <HomeDivider />
+
       {/* Management Team */}
       <HomeSection variant="warm">
         <div className="max-w-5xl mx-auto px-4 relative">
@@ -263,7 +288,11 @@ export default function Home() {
         </div>
       </HomeSection>
 
+      <HomeDivider />
+
       <CertificationsShowcase />
+
+      <HomeDivider />
 
       {/* FAQ */}
       <HomeSection variant="base">

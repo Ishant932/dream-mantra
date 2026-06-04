@@ -1,3 +1,5 @@
+import { scrollToElement } from './scrollToTop';
+
 /** Parse "/#section" or "/path#section" for React Router */
 export function parseNavTarget(to) {
   if (typeof to !== 'string') return to;
@@ -12,11 +14,7 @@ export function scrollToSectionId(id, behavior = 'smooth') {
   if (!id) return false;
   const el = document.getElementById(id);
   if (!el) return false;
-
-  const headerVar = getComputedStyle(document.documentElement).getPropertyValue('--site-header-h');
-  const headerOffset = (parseInt(headerVar, 10) || 64) + 12;
-  const top = el.getBoundingClientRect().top + window.scrollY - headerOffset;
-  window.scrollTo({ top: Math.max(0, top), behavior });
+  scrollToElement(el, { offset: 12, behavior });
   return true;
 }
 

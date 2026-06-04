@@ -3,6 +3,22 @@
 export const COUNSELLING_ADDON_PRICE = 699;
 export const COUNSELLING_TOPUP_PRICE = 999;
 
+export const DEFAULT_COUNSELLING_ADDON = {
+  title: 'Counselling session',
+  price: COUNSELLING_ADDON_PRICE,
+  description: 'Add a 1-on-1 session with our certified counsellor',
+};
+
+export function resolveCounsellingAddon(mod) {
+  if (!mod) return { ...DEFAULT_COUNSELLING_ADDON };
+  const raw = mod.counsellingAddon || {};
+  return {
+    title: String(raw.title || DEFAULT_COUNSELLING_ADDON.title).trim(),
+    price: Math.max(0, Number(raw.price ?? DEFAULT_COUNSELLING_ADDON.price)),
+    description: String(raw.description || DEFAULT_COUNSELLING_ADDON.description).trim(),
+  };
+}
+
 export const MODULE_CATALOG = [
   {
     slug: 'dmit',
@@ -170,7 +186,7 @@ export function getSkillMappingTestEmbedUrl(formUrl, prefillData, prefillFields)
   return buildSkillMappingTestUrl(formUrl, prefillData, prefillFields, { embedded: true });
 }
 
-/** Build a Google Form URL with Dream Mantra ID, name & phone prefilled */
+/** Build a Google Form URL with Dreams ID, name & phone prefilled */
 export function buildSkillMappingTestUrl(
   formUrl,
   { userUid, userName, phone } = {},
@@ -213,28 +229,31 @@ export function hasSkillMappingTests(productSlug) {
   return productSlug === 'psychometric' || productSlug === 'dmit-psychometric';
 }
 
-export function getModuleBySlug(slug) {
-  return MODULE_CATALOG.find((m) => m.slug === slug);
+export function getModuleBySlug(slug, catalog = MODULE_CATALOG) {
+  return catalog.find((m) => m.slug === slug);
 }
 
 /** Build checkout selection from dashboard module catalog — single source of truth for prices */
-export function buildModuleSelection(slug, addCounselling = false) {
-  const mod = getModuleBySlug(slug);
+export function buildModuleSelection(slug, addCounselling = false, catalog = MODULE_CATALOG) {
+  const mod = getModuleBySlug(slug, catalog);
   if (!mod) return null;
 
   const withCounselling = !!(addCounselling && mod.optionalCounselling);
   const lineItems = [{ label: mod.title, amount: mod.price, slug: mod.slug, type: 'module' }];
 
   if (withCounselling) {
+    const addon = resolveCounsellingAddon(mod);
     lineItems.push({
-      label: 'Counselling session',
-      amount: COUNSELLING_ADDON_PRICE,
+      label: addon.title,
+      amount: addon.price,
       type: 'counselling',
+      description: addon.description,
     });
   }
 
   const total = lineItems.reduce((sum, item) => sum + item.amount, 0);
-  const displayTitle = withCounselling ? `${mod.title} + Counselling` : mod.title;
+  const addon = resolveCounsellingAddon(mod);
+  const displayTitle = withCounselling ? `${mod.title} + ${addon.title}` : mod.title;
 
   return {
     slug: mod.slug,

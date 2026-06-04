@@ -2,13 +2,13 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  CreditCard, Shield, CheckCircle, Loader2, Tag, Sparkles, Clock,
-  AlertCircle, RefreshCw, UserCheck, Smartphone,
+  CreditCard, Shield, CheckCircle, Loader2, Tag, Clock,
+  AlertCircle, RefreshCw, UserCheck, Smartphone, MessageCircle,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { paymentsApi, userApi } from '../api';
-import { WELCOME_OFFER, calcDiscountedPrice } from '../data/promotions';
-import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests } from '../data/moduleCatalog';
+import { WELCOME_OFFER, applyVoucherPrice } from '../data/promotions';
+import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests, MODULE_CATALOG, resolveCounsellingAddon } from '../data/moduleCatalog';
 import { purchaseIncludesCounselling } from '../utils/moduleAccess';
 import SkillMappingBandPicker from '../components/SkillMappingBandPicker';
 
@@ -50,6 +50,22 @@ export default function PaymentPage() {
   const [proofFileName, setProofFileName] = useState('');
   const [userNote, setUserNote] = useState('');
   const [skillMappingBand, setSkillMappingBand] = useState('');
+  const [catalog, setCatalog] = useState(MODULE_CATALOG);
+  const [liveVouchers, setLiveVouchers] = useState([]);
+  const [updatingCounselling, setUpdatingCounselling] = useState(false);
+
+  useEffect(() => {
+    paymentsApi.products()
+      .then((res) => {
+        if (Array.isArray(res.products) && res.products.length) setCatalog(res.products);
+      })
+      .catch(() => {});
+    paymentsApi.promotions()
+      .then((res) => {
+        if (Array.isArray(res.vouchers)) setLiveVouchers(res.vouchers);
+      })
+      .catch(() => {});
+  }, []);
 
   const loadOrder = useCallback(async () => {
     if (!token) return;
@@ -93,7 +109,7 @@ export default function PaymentPage() {
       assessment?.progress?.addCounselling ??
       false;
 
-    const fromCatalog = buildModuleSelection(slug, addCounselling);
+    const fromCatalog = buildModuleSelection(slug, addCounselling, catalog);
     if (!fromCatalog) return null;
 
     const lineItems =
@@ -103,12 +119,12 @@ export default function PaymentPage() {
 
     return {
       slug,
-      moduleMeta: fromCatalog.module,
+      moduleMeta: getModuleBySlug(slug, catalog) || fromCatalog.module,
       displayTitle: apiSelection?.displayTitle || navSelection?.displayTitle || fromCatalog.displayTitle,
       lineItems,
       catalogTotal: fromCatalog.total,
     };
-  }, [order, navSelection]);
+  }, [order, navSelection, catalog]);
 
   const gatewayEnabled = order?.gatewayEnabled === true;
   const payment = order?.payment;
@@ -153,7 +169,7 @@ export default function PaymentPage() {
     setValidating(true);
     setError('');
     try {
-      const res = await paymentsApi.validateCoupon(token, coupon.trim());
+      const res = await paymentsApi.validateCoupon(token, coupon.trim(), checkout?.slug);
       setCouponApplied(res);
     } catch (e) {
       setCouponApplied(null);
@@ -193,6 +209,30 @@ export default function PaymentPage() {
     lineItems: checkout?.lineItems,
     addCounselling: checkout?.lineItems?.some((li) => li.type === 'counselling'),
   });
+
+  const showCounsellingToggle = !!(
+    checkout?.moduleMeta?.optionalCounselling
+    && !checkout?.moduleMeta?.includesCounselling
+  );
+  const counsellingAddon = checkout?.moduleMeta ? resolveCounsellingAddon(checkout.moduleMeta) : null;
+  const hasCounsellingInOrder = checkout?.lineItems?.some((li) => li.type === 'counselling');
+
+  const toggleCounsellingAddon = async () => {
+    if (!token || !assessmentId || updatingCounselling) return;
+    setUpdatingCounselling(true);
+    setError('');
+    try {
+      await paymentsApi.updateOrderSelection(token, assessmentId, {
+        addCounselling: !hasCounsellingInOrder,
+      });
+      setCouponApplied(null);
+      await loadOrder();
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setUpdatingCounselling(false);
+    }
+  };
 
   const handleCancelOrder = async () => {
     setCancelling(true);
@@ -326,10 +366,9 @@ export default function PaymentPage() {
 
   const { lineItems, displayTitle, catalogTotal, moduleMeta, slug } = checkout;
   const originalPrice = catalogTotal;
-  const finalPrice = couponApplied
-    ? calcDiscountedPrice(originalPrice, couponApplied.discountPercent)
-    : originalPrice;
-  const savings = originalPrice - finalPrice;
+  const { final: finalPrice, savings } = couponApplied
+    ? applyVoucherPrice(originalPrice, couponApplied)
+    : { final: originalPrice, savings: 0 };
 
   if (isConfirmed) {
     return (
@@ -445,6 +484,74 @@ export default function PaymentPage() {
             </div>
           )}
 
+          {showCounsellingToggle && counsellingAddon && (
+            <div className="mb-6">
+              <button
+                type="button"
+                disabled={updatingCounselling}
+                onClick={toggleCounsellingAddon}
+                className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
+                  hasCounsellingInOrder
+                    ? 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20'
+                    : 'border-amber-200 dark:border-amber-800/40 hover:border-amber-400'
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <MessageCircle className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+                  <div className="flex-1">
+                    <p className="font-bold text-sm">{counsellingAddon.title}</p>
+                    <p className="text-xs text-sand-600 mt-1">{counsellingAddon.description}</p>
+                    <p className="text-sm font-semibold text-amber-700 mt-2">+{formatPrice(counsellingAddon.price)}</p>
+                  </div>
+                  <span className="text-xs font-bold shrink-0">
+                    {updatingCounselling ? 'Updating…' : hasCounsellingInOrder ? 'Added ✓' : 'Add'}
+                  </span>
+                </div>
+              </button>
+            </div>
+          )}
+
+          <div className="mb-6">
+            {liveVouchers.length > 0 && (
+              <div className="mb-4 p-3 rounded-xl bg-amber-50/80 dark:bg-amber-950/20 border border-amber-200/60">
+                <p className="text-xs font-bold uppercase tracking-wide text-amber-800 mb-2">Available offers</p>
+                <div className="flex flex-wrap gap-2">
+                  {liveVouchers.map((v) => (
+                    <button
+                      key={v.code}
+                      type="button"
+                      onClick={() => { setCoupon(v.code); setCouponApplied(null); }}
+                      className="text-xs px-2.5 py-1 rounded-full border border-amber-300 bg-white dark:bg-stone-900 font-mono font-bold hover:border-amber-500"
+                    >
+                      {v.code}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <label className="text-sm font-semibold flex items-center gap-2 mb-2">
+              <Tag className="w-4 h-4 text-amber-600" /> Coupon Code
+            </label>
+            <div className="flex gap-2">
+              <input
+                value={coupon}
+                onChange={(e) => { setCoupon(e.target.value.toUpperCase()); setCouponApplied(null); }}
+                placeholder={liveVouchers[0]?.code || WELCOME_OFFER.code}
+                className="input-field flex-1 !py-2.5 font-mono uppercase"
+              />
+              <button type="button" onClick={applyCoupon} disabled={validating || !coupon.trim()} className="btn-outline !py-2.5">
+                {validating ? '...' : 'Apply'}
+              </button>
+            </div>
+            {couponApplied && (
+              <p className="text-sm text-amber-600 mt-2 flex items-center gap-1">
+                <CheckCircle className="w-4 h-4" /> {couponApplied.label} applied!
+                {savings > 0 && <span className="text-sand-500"> (save {formatPrice(savings)})</span>}
+              </p>
+            )}
+          </div>
+
           <div className="mb-6">
             <p className="text-sm font-semibold mb-3">Payment method</p>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -516,41 +623,6 @@ export default function PaymentPage() {
                 />
               </div>
             </div>
-          )}
-
-          {paymentMethod === 'razorpay' && gatewayEnabled && (
-            <>
-              <motion.div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-amber-50 to-amber-50 border border-amber-200 flex items-start gap-3">
-                <Sparkles className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                <div>
-                  <p className="text-sm font-bold text-amber-800">First-time offer: {WELCOME_OFFER.code}</p>
-                  <p className="text-xs text-sand-600 mt-0.5">{WELCOME_OFFER.discountPercent}% off your first assessment</p>
-                </div>
-              </motion.div>
-
-              <div className="mb-6">
-                <label className="text-sm font-semibold flex items-center gap-2 mb-2">
-                  <Tag className="w-4 h-4 text-amber-600" /> Coupon Code
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    value={coupon}
-                    onChange={(e) => { setCoupon(e.target.value.toUpperCase()); setCouponApplied(null); }}
-                    placeholder={WELCOME_OFFER.code}
-                    className="input-field flex-1 !py-2.5 font-mono uppercase"
-                  />
-                  <button type="button" onClick={applyCoupon} disabled={validating || !coupon.trim()} className="btn-outline !py-2.5">
-                    {validating ? '...' : 'Apply'}
-                  </button>
-                </div>
-                {couponApplied && (
-                  <p className="text-sm text-amber-600 mt-2 flex items-center gap-1">
-                    <CheckCircle className="w-4 h-4" /> {couponApplied.label} applied!
-                    {savings > 0 && <span className="text-sand-500"> (save {formatPrice(savings)})</span>}
-                  </p>
-                )}
-              </div>
-            </>
           )}
 
           <ul className="space-y-2 mb-6 text-sm text-sand-600">

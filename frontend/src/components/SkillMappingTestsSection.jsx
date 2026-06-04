@@ -1,21 +1,17 @@
 import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Clock, Lock, Sparkles, CheckCircle2, AlertCircle, UserCircle, Mail, Copy, Play, ShieldCheck } from 'lucide-react';
+import { Clock, Lock, Sparkles, CheckCircle2, AlertCircle, UserCircle, Mail, Copy, Play } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { userApi } from '../api';
 import CopyableUserId from './CopyableUserId';
 import SkillMappingBandPicker from './SkillMappingBandPicker';
-import VerifyTestAccessModal from './VerifyTestAccessModal';
-import {
-  isTestAccessVerified,
-  setTestAccessVerified,
-} from '../utils/testAccessSession';
 import {
   SKILL_MAPPING_BANDS,
   getSkillMappingTestsForBand,
   isSkillMappingBandAllowed,
   resolveSkillMappingBand,
   buildSkillMappingTestUrl,
+  getSkillMappingTestEmbedUrl,
 } from '../data/moduleCatalog';
 
 const ease = [0.22, 1, 0.36, 1];
@@ -46,20 +42,20 @@ const panelMotion = {
 };
 
 function buildPrefilledTests(bandId, { userUid, userName, userPhone }) {
-  return getSkillMappingTestsForBand(bandId).map((t) => ({
-    id: t.id,
-    title: t.title,
-    shortTitle: t.shortTitle,
-    desc: t.desc,
-    duration: t.duration,
-    icon: t.icon,
-    url: buildSkillMappingTestUrl(
-      t.url,
-      { userUid, userName, phone: userPhone },
-      t.prefill || {},
-      { embedded: false }
-    ),
-  }));
+  return getSkillMappingTestsForBand(bandId).map((t) => {
+    const prefillData = { userUid, userName, phone: userPhone };
+    const prefillFields = t.prefill || {};
+    return {
+      id: t.id,
+      title: t.title,
+      shortTitle: t.shortTitle,
+      desc: t.desc,
+      duration: t.duration,
+      icon: t.icon,
+      url: buildSkillMappingTestUrl(t.url, prefillData, prefillFields, { embedded: false }),
+      embedUrl: getSkillMappingTestEmbedUrl(t.url, prefillData, prefillFields),
+    };
+  });
 }
 
 export default function SkillMappingTestsSection({
@@ -83,14 +79,8 @@ export default function SkillMappingTestsSection({
   const [identity, setIdentity] = useState(null);
   const [bandTests, setBandTests] = useState([]);
   const [copied, setCopied] = useState(false);
-  const [testVerified, setTestVerified] = useState(false);
-  const [verifyOpen, setVerifyOpen] = useState(false);
-  const [verifyError, setVerifyError] = useState('');
-  const [verifying, setVerifying] = useState(false);
-  const [openTestAfterVerify, setOpenTestAfterVerify] = useState(false);
-  const [testToOpenAfterVerify, setTestToOpenAfterVerify] = useState(null);
+  const [embedOpen, setEmbedOpen] = useState(false);
   const autoOpenHandled = useRef(false);
-  const [testOpenedDirect, setTestOpenedDirect] = useState(false);
 
   const setBandTestsForBand = useCallback((nextBandId, id) => {
     if (!nextBandId || !id?.userUid) {
@@ -157,6 +147,7 @@ export default function SkillMappingTestsSection({
   useEffect(() => {
     if (!identity?.userUid || !bandId) return;
     setBandTestsForBand(bandId, identity);
+    setEmbedOpen(false);
   }, [bandId, identity, setBandTestsForBand]);
 
   useEffect(() => {
@@ -168,10 +159,6 @@ export default function SkillMappingTestsSection({
   const registeredUid = identity?.userUid || '';
   const registeredEmail = identity?.userEmail || '';
   const registeredName = identity?.userName || '';
-
-  useEffect(() => {
-    setTestVerified(isTestAccessVerified(registeredUid));
-  }, [registeredUid]);
 
   const activeBand = useMemo(
     () => SKILL_MAPPING_BANDS.find((b) => b.id === bandId) || SKILL_MAPPING_BANDS[0],
@@ -206,80 +193,24 @@ export default function SkillMappingTestsSection({
     }
   };
 
-  const openInNewTab = (test) => {
-    const t = test || activeTest;
-    if (t?.url) {
-      window.open(t.url, '_blank', 'noopener,noreferrer');
-      setTestOpenedDirect(true);
-    }
-  };
-
-  const promptVerify = (openAfter = true, test = null) => {
-    setVerifyError('');
-    setOpenTestAfterVerify(openAfter);
-    if (openAfter) setTestToOpenAfterVerify(test || activeTest);
-    setVerifyOpen(true);
+  const openEmbeddedForm = (test) => {
+    if (test?.id) setTestId(test.id);
+    setEmbedOpen(true);
   };
 
   const handleTestSelect = (t) => {
-    setTestId(t.id);
-    if (testVerified) {
-      openInNewTab(t);
-    } else {
-      promptVerify(true, t);
-    }
+    openEmbeddedForm(t);
   };
 
   const handleStartTest = () => {
-    if (!testVerified) {
-      promptVerify(true, activeTest);
-      return;
-    }
-    openInNewTab(activeTest);
-  };
-
-  const handleCopyLink = () => {
-    if (!testVerified) {
-      promptVerify(false);
-      return;
-    }
-    copyTestLink(activeTest);
+    openEmbeddedForm(activeTest);
   };
 
   useEffect(() => {
     if (!openTestOnLoad || autoOpenHandled.current || loading || !bandTests.length || !registeredUid) return;
     autoOpenHandled.current = true;
-    const first = bandTests[0];
-    if (testVerified) {
-      openInNewTab(first);
-    } else {
-      promptVerify(true, first);
-    }
-  }, [openTestOnLoad, loading, bandTests, testVerified, registeredUid]);
-
-  const compactAfterOpen = openTestOnLoad && testOpenedDirect;
-
-  const handleVerify = async ({ userUid, password }) => {
-    if (!assessment?.id || !token) return;
-    setVerifying(true);
-    setVerifyError('');
-    try {
-      const data = await userApi.verifyTestAccess(token, assessment.id, { userUid, password });
-      const verifiedUid = String(data.registeredUserUid || userUid || registeredUid).trim();
-      setTestAccessVerified(verifiedUid);
-      setTestVerified(true);
-      setVerifyOpen(false);
-      if (openTestAfterVerify) {
-        openInNewTab(testToOpenAfterVerify || activeTest);
-      }
-      setTestToOpenAfterVerify(null);
-      setOpenTestAfterVerify(false);
-    } catch (err) {
-      setVerifyError(err.message || 'Verification failed');
-    } finally {
-      setVerifying(false);
-    }
-  };
+    openEmbeddedForm(bandTests[0]);
+  }, [openTestOnLoad, loading, bandTests, registeredUid]);
 
   if (!unlockedBand) {
     return (
@@ -331,7 +262,7 @@ export default function SkillMappingTestsSection({
     return (
       <div className="p-5 rounded-xl border border-amber-200/60 bg-amber-50/80 dark:bg-amber-950/20 text-center">
         <AlertCircle className="w-10 h-10 text-amber-600 mx-auto mb-3" />
-        <p className="font-bold text-sm">{loadError || 'Dream Mantra ID not found'}</p>
+        <p className="font-bold text-sm">{loadError || 'Dreams ID not found'}</p>
         <p className="text-sm dash-card-meta mt-2 max-w-md mx-auto">
           Log out and log in with the account you registered. Contact support at 9680102276 if this continues.
         </p>
@@ -344,28 +275,6 @@ export default function SkillMappingTestsSection({
 
   return (
     <div className="modules-tests-section no-reveal">
-      <VerifyTestAccessModal
-        open={verifyOpen}
-        onClose={() => {
-          setVerifyOpen(false);
-          setOpenTestAfterVerify(false);
-          setVerifyError('');
-        }}
-        registeredUid={registeredUid}
-        registeredEmail={registeredEmail}
-        registeredName={registeredName}
-        testTitle={activeTest?.title}
-        onVerify={handleVerify}
-        verifying={verifying}
-        error={verifyError}
-      />
-
-      <div className="modules-tests-bg" aria-hidden="true">
-        <span className="modules-tests-orb modules-tests-orb--1" />
-        <span className="modules-tests-orb modules-tests-orb--2" />
-        <span className="modules-tests-shimmer" />
-      </div>
-
       <motion.div
         className="p-4 rounded-xl border border-emerald-200/60 bg-emerald-50/70 dark:bg-emerald-950/20 mb-3 flex flex-wrap items-start gap-3"
         initial={{ opacity: 0, y: -8 }}
@@ -429,7 +338,7 @@ export default function SkillMappingTestsSection({
       <motion.p
         className="modules-test-step-label"
         initial={{ opacity: 0, x: -8 }}
-        animate={{ opacity: 1, y: 0 }}
+        animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 0.1, duration: 0.35 }}
       >
         <span className="modules-test-step-label__dot" />
@@ -530,19 +439,9 @@ export default function SkillMappingTestsSection({
       </motion.div>
 
       <AnimatePresence mode="wait">
-        {compactAfterOpen ? (
+        {activeTest && (
           <motion.div
-            key="test-opened-banner"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-4 rounded-xl border border-emerald-200/60 bg-emerald-50/80 dark:bg-emerald-950/25 text-sm"
-          >
-            <CheckCircle2 className="w-4 h-4 inline-block mr-1.5 text-emerald-600 align-[-2px]" />
-            Test opened in a new tab. Select another test above to open a different form.
-          </motion.div>
-        ) : activeTest && (
-          <motion.div
-            key={`${registeredUid}-${bandId}-${testId}`}
+            key={`${registeredUid}-${bandId}-${testId}-${embedOpen ? 'embed' : 'panel'}`}
             className="modules-test-panel modules-test-panel--animated"
             variants={panelMotion}
             initial="initial"
@@ -571,104 +470,87 @@ export default function SkillMappingTestsSection({
               </div>
             </div>
 
-            {activeTest.url ? (
-              <motion.div
-                className={`modules-test-launch ${!testVerified ? 'modules-test-launch--locked' : ''}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1, duration: 0.35 }}
-              >
-                {testVerified && (
-                  <div className="modules-test-verified-badge">
-                    <ShieldCheck className="w-4 h-4" />
-                    Verified — {registeredEmail || registeredName || registeredUid}
+            {activeTest.embedUrl ? (
+              embedOpen ? (
+                <motion.div
+                  className="modules-test-iframe-wrap"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                >
+                  <div className="modules-test-form-account-bar mx-3 mt-3" aria-label="Registered account for this test">
+                    <Mail className="w-4 h-4 shrink-0 opacity-70" aria-hidden="true" />
+                    <span>
+                      Dreams ID <strong>{registeredUid}</strong>
+                      {registeredEmail ? <> · {registeredEmail}</> : null}
+                    </span>
                   </div>
-                )}
+                  <iframe
+                    title={activeTest.title}
+                    src={activeTest.embedUrl}
+                    className="modules-test-iframe"
+                    allow="clipboard-write"
+                  />
+                </motion.div>
+              ) : (
+                <motion.div
+                  className="modules-test-launch"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1, duration: 0.35 }}
+                >
+                  <div className="modules-test-launch__body">
+                    <p className="modules-test-launch__lead">
+                      Your Dreams ID, name, and phone are prefilled in the form below when you start.
+                    </p>
 
-                <div className="modules-test-form-account-bar" aria-label="Registered account for this test">
-                  <Mail className="w-4 h-4 shrink-0 opacity-70" aria-hidden="true" />
-                  <span>
-                    Registered email:{' '}
-                    <strong>{registeredEmail || 'Not set — add email in profile'}</strong>
-                  </span>
-                </div>
+                    <dl className="modules-test-launch__fields">
+                      <div>
+                        <dt>Dreamz ID</dt>
+                        <dd>{registeredUid}</dd>
+                      </div>
+                      {registeredName && (
+                        <div>
+                          <dt>Name</dt>
+                          <dd>{registeredName}</dd>
+                        </div>
+                      )}
+                      {identity?.userPhone && (
+                        <div>
+                          <dt>Phone</dt>
+                          <dd>{identity.userPhone}</dd>
+                        </div>
+                      )}
+                      {registeredEmail && (
+                        <div>
+                          <dt>Email</dt>
+                          <dd>{registeredEmail}</dd>
+                        </div>
+                      )}
+                    </dl>
 
-                <div className="modules-test-launch__body">
-                  {!testVerified ? (
-                    <div className="modules-test-launch__locked">
-                      <Lock className="w-10 h-10 text-amber-600 mx-auto mb-3" />
-                      <p className="font-bold text-center">Verify your registered account first</p>
-                      <p className="text-sm dash-card-meta text-center mt-2 max-w-sm mx-auto">
-                        Enter your Dream Mantra ID and password — the test form will open automatically in a new tab.
-                      </p>
+                    <div className="modules-test-launch__actions">
+                      <motion.button
+                        type="button"
+                        onClick={handleStartTest}
+                        className="btn-primary inline-flex items-center gap-2 !py-3 !px-6"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Play className="w-4 h-4" />
+                        Start {activeTest.shortTitle} test
+                      </motion.button>
                       <button
                         type="button"
-                        className="btn-primary mt-4 mx-auto block !py-2.5 !px-6"
-                        onClick={() => promptVerify(true, activeTest)}
+                        onClick={() => copyTestLink(activeTest)}
+                        className="modules-test-launch__copy"
                       >
-                        <ShieldCheck className="w-4 h-4 inline-block mr-1.5 align-[-2px]" />
-                        Login with registered ID
+                        <Copy className="w-4 h-4" />
+                        {copied ? 'Link copied' : 'Copy test link'}
                       </button>
                     </div>
-                  ) : (
-                    <>
-                      <p className="modules-test-launch__lead">
-                        Your details are prefilled in the form. Only your registered account is used — no other email.
-                      </p>
-
-                      <dl className="modules-test-launch__fields">
-                        <div>
-                          <dt>Dreamz ID</dt>
-                          <dd>{registeredUid}</dd>
-                        </div>
-                        {registeredName && (
-                          <div>
-                            <dt>Name</dt>
-                            <dd>{registeredName}</dd>
-                          </div>
-                        )}
-                        {identity?.userPhone && (
-                          <div>
-                            <dt>Phone</dt>
-                            <dd>{identity.userPhone}</dd>
-                          </div>
-                        )}
-                        {registeredEmail && (
-                          <div>
-                            <dt>Email</dt>
-                            <dd>{registeredEmail}</dd>
-                          </div>
-                        )}
-                      </dl>
-
-                      <div className="modules-test-launch__actions">
-                        <motion.button
-                          type="button"
-                          onClick={handleStartTest}
-                          className="btn-primary inline-flex items-center gap-2 !py-3 !px-6"
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <Play className="w-4 h-4" />
-                          Start {activeTest.shortTitle} test
-                        </motion.button>
-                        <button
-                          type="button"
-                          onClick={handleCopyLink}
-                          className="modules-test-launch__copy"
-                        >
-                          <Copy className="w-4 h-4" />
-                          {copied ? 'Link copied' : 'Copy test link'}
-                        </button>
-                      </div>
-
-                      <p className="modules-test-launch__hint text-xs dash-card-meta">
-                        When the form opens, use <strong>{registeredEmail || 'your registered email'}</strong> only if Google asks you to sign in.
-                      </p>
-                    </>
-                  )}
-                </div>
-              </motion.div>
+                  </div>
+                </motion.div>
+              )
             ) : (
               <p className="text-sm dash-card-meta p-4">Test form unavailable.</p>
             )}

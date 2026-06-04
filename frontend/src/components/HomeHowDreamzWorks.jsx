@@ -27,11 +27,6 @@ export default function HomeHowDreamzWorks() {
 
   return (
     <div className="home-how-dreamz relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 rounded-full blur-3xl opacity-25 animate-blob" style={{ background: 'var(--gold-dim)' }} />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full blur-3xl opacity-20 animate-blob-slow" style={{ background: 'var(--orange-soft)' }} />
-      </div>
-
       <div className="max-w-7xl mx-auto px-4 relative">
         <motion.div
           initial={{ opacity: 0, y: 28 }}

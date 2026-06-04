@@ -16,6 +16,13 @@ export function ensureSiteSettings() {
     data.site_settings.community_links = { ...DEFAULTS.community_links };
     saveData();
   }
+  if (!Array.isArray(data.site_settings.catalog_modules)) {
+    data.site_settings.catalog_modules = [];
+  }
+  if (!Array.isArray(data.site_settings.vouchers)) {
+    data.site_settings.vouchers = [];
+    saveData();
+  }
   return data.site_settings;
 }
 

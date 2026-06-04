@@ -16,10 +16,6 @@ export default function HomeHero() {
   return (
     <>
       <section className="relative min-h-0 sm:min-h-[88vh] flex items-center overflow-hidden pt-6 sm:pt-10 pb-10 sm:pb-16">
-        <div className="absolute top-20 -right-16 sm:right-0 w-[min(480px,85vw)] h-[min(480px,85vw)] rounded-full blur-[100px] animate-blob opacity-40 multi-pulse pointer-events-none" style={{ background: 'var(--orb-2)' }} />
-        <div className="absolute bottom-10 -left-16 sm:left-0 w-[min(380px,75vw)] h-[min(380px,75vw)] rounded-full blur-[90px] animate-blob-slow opacity-30 animate-breathe pointer-events-none" style={{ background: 'var(--orb-1)' }} />
-        <div className="absolute top-1/2 left-1/2 w-[min(600px,95vw)] h-[min(600px,95vw)] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[var(--gold-border)] opacity-[0.07] animate-orbit pointer-events-none" />
-
         <div className="relative max-w-7xl mx-auto px-4 py-8 sm:py-16 w-full">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>

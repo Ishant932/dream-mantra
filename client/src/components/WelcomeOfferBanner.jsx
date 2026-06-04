@@ -1,22 +1,69 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Tag, Copy, Check, Sparkles, TrendingUp, Gift, ArrowRight, Percent } from 'lucide-react';
 import { WELCOME_OFFER } from '../data/promotions';
 import { useLang } from '../context/LanguageContext';
+import { paymentsApi } from '../api';
+
+function voucherDiscountLabel(v) {
+  if (v.discountFixed != null) return `₹${Number(v.discountFixed).toLocaleString('en-IN')} off`;
+  if (v.discountPercent != null) return `${v.discountPercent}% off`;
+  return 'Special offer';
+}
+
+function VoucherChip({ voucher, copiedCode, onCopy, variant = 'light' }) {
+  const isDark = variant === 'dark';
+  return (
+    <button
+      type="button"
+      onClick={() => onCopy(voucher.code)}
+      className={
+        isDark
+          ? 'inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white/15 border border-white/25 text-white text-sm font-semibold hover:bg-white/20 transition'
+          : 'inline-flex items-center gap-2 px-3 py-2 rounded-full bg-white/90 dark:bg-stone-900/60 border border-amber-200/70 text-xs font-semibold hover:border-amber-400 transition'
+      }
+    >
+      <Tag className={`w-3.5 h-3.5 ${isDark ? 'text-amber-200' : 'text-amber-600'}`} />
+      <code>{voucher.code}</code>
+      <span className={isDark ? 'text-white/80 text-xs' : 'opacity-70'}>{voucher.label || voucherDiscountLabel(voucher)}</span>
+      <span className={isDark ? 'text-white/70 text-xs' : 'text-amber-700 font-bold'}>{voucherDiscountLabel(voucher)}</span>
+      {copiedCode === voucher.code ? <Check className={`w-3.5 h-3.5 ${isDark ? 'text-emerald-300' : 'text-emerald-600'}`} /> : null}
+    </button>
+  );
+}
 
 export default function WelcomeOfferBanner({ variant = 'home', compact = false }) {
   const { d } = useLang();
   const offer = d('welcomeOffer');
-  const [copied, setCopied] = useState(false);
+  const [vouchers, setVouchers] = useState([]);
+  const [copiedCode, setCopiedCode] = useState('');
 
-  const copyCode = async () => {
+  const loadVouchers = useCallback(() => {
+    paymentsApi.promotions()
+      .then((res) => setVouchers(Array.isArray(res.vouchers) ? res.vouchers : []))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    loadVouchers();
+    const onFocus = () => loadVouchers();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [loadVouchers]);
+
+  const featured = useMemo(() => {
+    if (!vouchers.length) return { code: WELCOME_OFFER.code, label: offer.discountLine || WELCOME_OFFER.headline };
+    return vouchers.find((v) => v.code === WELCOME_OFFER.code) || vouchers[0];
+  }, [vouchers, offer.discountLine]);
+
+  const copyCode = async (code) => {
     try {
-      await navigator.clipboard.writeText(WELCOME_OFFER.code);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
+      await navigator.clipboard.writeText(code);
+      setCopiedCode(code);
+      setTimeout(() => setCopiedCode(''), 2500);
     } catch {
-      setCopied(false);
+      setCopiedCode('');
     }
   };
 
@@ -37,23 +84,42 @@ export default function WelcomeOfferBanner({ variant = 'home', compact = false }
               <p className="text-xs font-bold text-amber-800 uppercase tracking-wide flex items-center gap-1">
                 <TrendingUp className="w-3 h-3" /> {offer.badge}
               </p>
-              <p className="font-accent font-bold text-sand-900 dark:text-amber-50">{offer.headline}</p>
+              <p className="font-accent font-bold text-sand-900 dark:text-amber-50">
+                {vouchers.length > 1 ? `${vouchers.length} active offers` : (featured.label || offer.headline)}
+              </p>
               <p className="text-xs text-sand-600">{offer.validFor}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <code className="coupon-code-pill">{WELCOME_OFFER.code}</code>
-            <motion.button
-              type="button"
-              whileTap={{ scale: 0.94 }}
-              onClick={copyCode}
-              className="coupon-copy-btn"
-              aria-label={offer.copyCoupon}
-            >
-              {copied ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
-            </motion.button>
-          </div>
+          {vouchers.length <= 1 && (
+            <div className="flex items-center gap-2">
+              <code className="coupon-code-pill">{featured.code}</code>
+              <motion.button
+                type="button"
+                whileTap={{ scale: 0.94 }}
+                onClick={() => copyCode(featured.code)}
+                className="coupon-copy-btn"
+                aria-label={offer.copyCoupon}
+              >
+                {copiedCode === featured.code ? <Check className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+              </motion.button>
+            </div>
+          )}
         </div>
+        {vouchers.length > 0 ? (
+          <div className="relative flex flex-wrap gap-2 mt-4 pt-4 border-t border-amber-200/50">
+            {vouchers.map((v) => (
+              <VoucherChip key={v.code} voucher={v} copiedCode={copiedCode} onCopy={copyCode} />
+            ))}
+          </div>
+        ) : (
+          <div className="relative flex flex-wrap gap-2 mt-4 pt-4 border-t border-amber-200/50">
+            <VoucherChip
+              voucher={{ code: WELCOME_OFFER.code, label: offer.discountLine, discountPercent: WELCOME_OFFER.discountPercent }}
+              copiedCode={copiedCode}
+              onCopy={copyCode}
+            />
+          </div>
+        )}
       </motion.div>
     );
   }
@@ -98,6 +164,14 @@ export default function WelcomeOfferBanner({ variant = 'home', compact = false }
                   {offer.exploreAssessments}
                 </Link>
               </div>
+              <div className="mt-6">
+                <p className="text-xs font-bold uppercase tracking-wider text-white/70 mb-3">Active coupon codes</p>
+                <div className="flex flex-wrap gap-2">
+                  {(vouchers.length ? vouchers : [{ code: WELCOME_OFFER.code, label: offer.discountLine, discountPercent: WELCOME_OFFER.discountPercent }]).map((v) => (
+                    <VoucherChip key={v.code} voucher={v} copiedCode={copiedCode} onCopy={copyCode} variant="dark" />
+                  ))}
+                </div>
+              </div>
             </div>
 
             <motion.div
@@ -119,17 +193,17 @@ export default function WelcomeOfferBanner({ variant = 'home', compact = false }
                   transition={{ duration: 2.2, repeat: Infinity }}
                   className="coupon-ticket__code-wrap"
                 >
-                  <code className="coupon-ticket__code">{WELCOME_OFFER.code}</code>
+                  <code className="coupon-ticket__code">{featured.code}</code>
                 </motion.div>
-                <p className="text-amber-800 font-bold text-base mt-3 mb-5">{offer.discountLine}</p>
+                <p className="text-amber-800 font-bold text-base mt-3 mb-5">{featured.label || offer.discountLine}</p>
                 <motion.button
                   type="button"
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.96 }}
-                  onClick={copyCode}
+                  onClick={() => copyCode(featured.code)}
                   className="coupon-ticket__copy w-full"
                 >
-                  {copied ? <><Check className="w-5 h-5 text-emerald-600" /> {offer.copied}</> : <><Copy className="w-5 h-5" /> {offer.copyCode}</>}
+                  {copiedCode === featured.code ? <><Check className="w-5 h-5 text-emerald-600" /> {offer.copied}</> : <><Copy className="w-5 h-5" /> {offer.copyCode}</>}
                 </motion.button>
               </div>
             </motion.div>

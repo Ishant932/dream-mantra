@@ -1,5 +1,6 @@
 /** English site content — mirrors site.hi.js structure */
 import { programPathwaysEn } from '../data/programPathways.en.js';
+import { partnerDetailsEn, leadershipEn } from './partnerDetails.en.js';
 
 export const siteEn = {
   navMega: {
@@ -79,9 +80,8 @@ export const siteEn = {
     whatsapp: 'WhatsApp Chat',
     copyright: 'Dream Mantra · All rights reserved.',
     agePathways: 'Age Pathways',
-    assessments: 'Assessments',
-    counselling: 'Counselling',
-    explore: 'Explore',
+    counsellingOverview: 'Counselling Overview',
+    quickLinks: 'Quick Links',
     locationsBlock: {
       title: 'Our Centres',
       onlineDesc: 'Counselling via video call anywhere in India',
@@ -90,13 +90,17 @@ export const siteEn = {
     footerQuickLinks: [
       { to: '/', label: 'Home' },
       { to: '/about', label: 'About Us' },
-      { to: '/pillars', label: '7 Pillars' },
-      { to: '/careers', label: 'Career Library' },
-      { to: '/marketplace', label: 'Marketplace' },
-      { to: '/counselling', label: 'Counselling' },
       { to: '/contact', label: 'Contact' },
       { to: '/terms', label: 'Terms & Conditions' },
     ],
+    footerCounsellingOverview: {
+      links: [
+        { to: '/assessments/dmit', label: 'Explore Mind Mapping' },
+        { to: '/assessments/psychometric', label: 'Explore Skill Mapping' },
+        { to: '/crp/explore', label: 'AI Career Launchpad' },
+        { to: '/counselling?tab=book', label: 'Book Session' },
+      ],
+    },
     footerAgePathways: [
       { to: '/programs/class-1-5', label: 'Class 1-5' },
       { to: '/programs/class-6-8', label: 'Class 6-8' },
@@ -106,26 +110,24 @@ export const siteEn = {
       { to: '/programs/working-professionals', label: 'Professionals' },
       { to: '/counselling?tab=programs&pathway=institutions', label: 'Institutions' },
     ],
-    footerAssessments: [
-      { to: '/assessments/dmit', label: 'Mind Mapping' },
-      { to: '/assessments/psychometric', label: 'Skill Mapping' },
-      { to: '/assessments/dmit-psychometric', label: 'Mind + Skill' },
-      { to: '/assessments/why-dreams-mantra', label: 'Why Counselling' },
-    ],
-    footerCounselling: [
-      { to: '/counselling', label: 'Overview' },
-      { to: '/counselling?tab=dmit', label: 'Mind Mapping' },
-      { to: '/counselling?tab=psychometric', label: 'Skill Mapping' },
-      { to: '/counselling?tab=process', label: '7 Steps' },
-      { to: '/counselling?tab=programs', label: 'Age Pathways' },
-      { to: '/counselling?tab=book', label: 'Book Session' },
-    ],
-    footerExplore: [
-      { to: '/crp/explore', label: 'AI Career Launchpad' },
-      { to: '/careers', label: 'Career Library' },
-      { to: '/marketplace', label: 'Marketplace' },
-      { to: '/counsellors', label: 'Join as Counsellor' },
-      { to: '/partner/schools', label: 'Partner With Us' },
+    footerQuickSections: [
+      {
+        title: 'Discover',
+        links: [
+          { to: '/marketplace', label: 'Marketplace' },
+          { to: '/pillars', label: '7 Pillars Framework' },
+          { to: '/#certifications', label: 'Certifications' },
+        ],
+      },
+      {
+        title: 'Connect',
+        links: [
+          { to: '/counselling?tab=book', label: 'Book Session' },
+          { to: '/about', label: 'About Us' },
+          { to: '/contact', label: 'Contact' },
+          { to: '/terms', label: 'Terms & Conditions' },
+        ],
+      },
     ],
     footerPrograms: [
       { to: '/programs/class-1-5', label: 'Class 1-5' },
@@ -784,14 +786,14 @@ export const siteEn = {
 
     managementTeam: [
       {
-        name: 'Esha Lohiya',
-        role: 'Founder & Chief Counsellor',
+        name: 'Esha Tibrewal',
+        role: 'Founder & CEO',
         tagline: 'From Naukri.com to unlocking every child\'s potential',
         bio: 'A passionate counsellor and the guiding force behind Dream Mantra, Esha brings a unique blend of corporate recruitment experience and counseling expertise. She witnessed firsthand the gap between what people study, what they\'re suited for, and what the market actually needs.',
       },
       {
         name: 'Shivam Lohiya',
-        role: 'Co-Founder',
+        role: 'Co-Founder – Operations & Technology',
         tagline: 'PwC consulting rigor powering Dream Mantra at scale',
         bio: 'A strategic leader who builds the technology and operations backbone of Dream Mantra, Shivam brings consulting rigor from large-scale government projects. He understood that impact at scale requires robust technology, seamless operations, and processes that thousands can trust.',
       },
@@ -1220,6 +1222,13 @@ export const siteEn = {
       { slug: 'teachers', title: 'Teachers', desc: 'Become a certified career guide — training, certification, and referral income opportunities.' },
       { slug: 'referral-partner', title: 'Referral Partner', desc: 'Earn commissions by referring students and professionals to Dream Mantra programs.' },
     ],
+    partnerDetails: partnerDetailsEn,
+    leadership: leadershipEn,
+    homeLeadership: {
+      founding: { title: 'Founding Leadership', subtitle: 'The visionaries who built Dream Mantra from the ground up.' },
+      directors: { title: 'Board of Directors', subtitle: 'Strategic leadership guiding long-term direction, growth, and community impact.' },
+      executive: { title: 'Executive Leadership Team', subtitle: 'Regional leaders driving marketing, counselling excellence, and business expansion.' },
+    },
   },
 
   pillars: [
@@ -1543,9 +1552,9 @@ export const siteEn = {
         ],
       },
       managementTeam: {
-        label: 'Meet The Management Team',
-        title: 'The Advisory Panel',
-        subtitle: 'Together, we bring years of experience in psychology, counselling, education, and business with one mission: to help children grow with clarity and confidence.',
+        label: 'Leadership Team',
+        title: 'Founding Leadership',
+        subtitle: 'The founders who combine counselling expertise, technology, and operations to deliver clarity at scale.',
       },
       founderNote: {
         label: "Founder's Note",

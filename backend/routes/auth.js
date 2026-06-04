@@ -95,7 +95,7 @@ router.post('/register', (req, res) => {
       token,
       user: sanitize(user),
       user_uid: user.user_uid,
-      message: `Account created successfully. Your Unique ID is ${user.user_uid}`,
+      message: `Account created successfully. Your Dreams ID is ${user.user_uid}`,
     });
   } catch (e) {
     if (e.message?.includes('UNIQUE')) {

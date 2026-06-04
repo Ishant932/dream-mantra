@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -9,9 +10,10 @@ import SubTabs from '../components/SubTabs';
 import WelcomeOfferBanner from '../components/WelcomeOfferBanner';
 import { assessments, IMAGES } from '../data/content';
 import { PRODUCTS } from '../data/products';
-import { WELCOME_OFFER, calcDiscountedPrice } from '../data/promotions';
+import { WELCOME_OFFER, applyVoucherPrice } from '../data/promotions';
 import { useLang } from '../context/LanguageContext';
 import { assessmentPath } from '../utils/routes';
+import { paymentsApi } from '../api';
 
 const fade = {
   initial: { opacity: 0, y: 20 },
@@ -21,16 +23,51 @@ const fade = {
 
 export default function MarketplaceHub() {
   const { t, d } = useLang();
+  const [liveProducts, setLiveProducts] = useState([]);
+  const [liveVouchers, setLiveVouchers] = useState([]);
   const marketplacePage = d('pages.marketplace');
   const marketplaceTabs = d('data.marketplaceTabs');
   const localizedAssessments = d('data.assessments').map((loc, i) => ({
     ...assessments[i],
     ...loc,
   }));
-  const localizedProducts = d('data.products').map((loc) => ({
-    ...PRODUCTS[loc.slug],
-    ...loc,
-  }));
+
+  useEffect(() => {
+    paymentsApi.promotions()
+      .then((res) => {
+        if (Array.isArray(res.products)) setLiveProducts(res.products);
+        if (Array.isArray(res.vouchers)) setLiveVouchers(res.vouchers);
+      })
+      .catch(() => {});
+  }, []);
+
+  const localizedProducts = useMemo(() => {
+    const base = d('data.products').map((loc) => {
+      const staticP = PRODUCTS[loc.slug] || {};
+      const live = liveProducts.find((p) => p.slug === loc.slug);
+      return {
+        ...staticP,
+        ...loc,
+        ...live,
+        title: live?.title || loc.title || staticP.title,
+        price: live?.price ?? staticP.price,
+        description: live?.description || loc.description || staticP.description,
+      };
+    });
+    const known = new Set(base.map((p) => p.slug));
+    const extras = liveProducts
+      .filter((p) => !known.has(p.slug) && !p.hidden && !p.followUpOnly)
+      .map((p) => ({
+        slug: p.slug,
+        title: p.title,
+        price: p.price,
+        description: p.description || '',
+      }));
+    return [...base, ...extras];
+  }, [d, liveProducts]);
+
+  const promoCode = liveVouchers[0]?.code || WELCOME_OFFER.code;
+  const promoCoupon = liveVouchers[0] || { discountPercent: WELCOME_OFFER.discountPercent };
 
   return (
     <>
@@ -109,7 +146,7 @@ export default function MarketplaceHub() {
                           <div className="mt-3 flex items-baseline gap-2">
                             <span className="text-lg font-bold text-amber-700">₹{p.price.toLocaleString('en-IN')}</span>
                             <span className="text-xs text-amber-600 font-semibold">
-                              ₹{calcDiscountedPrice(p.price)} {marketplacePage.tests.withCode} {WELCOME_OFFER.code}
+                              ₹{applyVoucherPrice(p.price, promoCoupon).final.toLocaleString('en-IN')} {marketplacePage.tests.withCode} {promoCode}
                             </span>
                           </div>
                           <Link to="/signup" className="text-sm text-amber-600 font-semibold mt-3 inline-block hover:underline">

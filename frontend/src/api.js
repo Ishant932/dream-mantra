@@ -1,7 +1,7 @@
 const API = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
 const REQUEST_TIMEOUT_MS = import.meta.env.PROD ? 45000 : 12000;
 const RETRY_STATUS = new Set([408, 429, 502, 503, 504]);
-const RETRYABLE_PATHS = /^\/(auth\/me|health|warmup|careers|slots|payments\/products|payments\/mode)/;
+const RETRYABLE_PATHS = /^\/(auth\/me|health|warmup|careers|slots|payments\/(products|promotions|mode))/;
 
 function headers(token) {
   const h = { 'Content-Type': 'application/json' };
@@ -139,18 +139,25 @@ export const userApi = {
 
 export const paymentsApi = {
   products: () => request('/payments/products'),
+  promotions: () => request('/payments/promotions'),
   getOrder: (token, assessmentId) => request(`/payments/order/${assessmentId}`, { headers: headers(token) }),
+  updateOrderSelection: (token, assessmentId, body) =>
+    request(`/payments/order/${assessmentId}/selection`, {
+      method: 'PATCH',
+      headers: headers(token),
+      body: JSON.stringify(body),
+    }),
   createOrder: (token, assessmentId, couponCode, skillMappingBand) =>
     request('/payments/create-order', {
       method: 'POST',
       headers: headers(token),
       body: JSON.stringify({ assessmentId, couponCode, skillMappingBand }),
     }),
-  validateCoupon: (token, code) =>
+  validateCoupon: (token, code, moduleSlug) =>
     request('/payments/validate-coupon', {
       method: 'POST',
       headers: headers(token),
-      body: JSON.stringify({ code }),
+      body: JSON.stringify({ code, moduleSlug: moduleSlug || null }),
     }),
   verify: (token, body) =>
     request('/payments/verify', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
@@ -205,6 +212,20 @@ export const adminApi = {
   },
   updateLead: (token, id, body) =>
     request(`/admin/leads/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  modules: (token) => request('/admin/modules', { headers: headers(token) }),
+  createModule: (token, body) =>
+    request('/admin/modules', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  updateModule: (token, slug, body) =>
+    request(`/admin/modules/${slug}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteModule: (token, slug) =>
+    request(`/admin/modules/${slug}`, { method: 'DELETE', headers: headers(token) }),
+  vouchers: (token) => request('/admin/vouchers', { headers: headers(token) }),
+  createVoucher: (token, body) =>
+    request('/admin/vouchers', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  updateVoucher: (token, code, body) =>
+    request(`/admin/vouchers/${encodeURIComponent(code)}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteVoucher: (token, code) =>
+    request(`/admin/vouchers/${encodeURIComponent(code)}`, { method: 'DELETE', headers: headers(token) }),
 };
 
 export const chatApi = {

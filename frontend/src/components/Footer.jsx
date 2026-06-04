@@ -5,6 +5,7 @@ import { useLang } from '../context/LanguageContext';
 import Logo from './Logo';
 import FooterLocations from './FooterLocations';
 import { footerSocial } from '../data/siteLinks';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 function WhatsAppIcon({ className }) {
   return (
@@ -15,63 +16,114 @@ function WhatsAppIcon({ className }) {
 }
 
 function FooterColumn({ title, links, index = 0 }) {
+  const lite = isMobilePerf();
+  const FadeBox = lite ? 'div' : motion.div;
+  const motionProps = lite ? {} : {
+    initial: { opacity: 0, y: 16 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+  };
+
   return (
-    <motion.div
-      className="footer-col"
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: index * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-    >
+    <FadeBox className="footer-col" {...motionProps}>
       <h4 className="footer-col__title">{title}</h4>
       <ul className="footer-col__list">
-        {links.map(({ to, label }, i) => (
-          <motion.li
-            key={to + label}
-            initial={{ opacity: 0, x: -8 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: index * 0.08 + i * 0.04 }}
-          >
+        {links.map(({ to, label }) => (
+          <li key={to + label}>
             <Link to={to} className="footer-col__link">
-              <motion.span whileHover={{ x: 3 }} transition={{ type: 'spring', stiffness: 400 }}>
-                {label}
-              </motion.span>
+              {label}
             </Link>
-          </motion.li>
+          </li>
         ))}
       </ul>
-    </motion.div>
+    </FadeBox>
+  );
+}
+
+function FooterCounsellingOverview({ title, links = [], index = 0 }) {
+  const lite = isMobilePerf();
+  const FadeBox = lite ? 'div' : motion.div;
+  const motionProps = lite ? {} : {
+    initial: { opacity: 0, y: 16 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+  };
+
+  return (
+    <FadeBox className="footer-col footer-col--counselling" {...motionProps}>
+      <h4 className="footer-col__title">{title}</h4>
+      <ul className="footer-col__list footer-col__list--cta">
+        {links.map(({ to, label }) => (
+          <li key={to + label}>
+            <Link to={to} className="footer-col__link footer-col__link--cta">{label}</Link>
+          </li>
+        ))}
+      </ul>
+    </FadeBox>
+  );
+}
+
+function FooterQuickSections({ title, sections = [], index = 0 }) {
+  const lite = isMobilePerf();
+  const FadeBox = lite ? 'div' : motion.div;
+  const motionProps = lite ? {} : {
+    initial: { opacity: 0, y: 16 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+  };
+
+  return (
+    <FadeBox className="footer-col footer-col--quick" {...motionProps}>
+      <h4 className="footer-col__title">{title}</h4>
+      <div className="footer-col__split">
+        {sections.map((section, i) => (
+          <div
+            key={section.title}
+            className={`footer-col__group ${i === 0 ? 'footer-col__group--discover' : 'footer-col__group--connect'}`}
+          >
+            <p className="footer-col__subtitle">{section.title}</p>
+            <ul className="footer-col__list">
+              {section.links.map(({ to, label }) => (
+                <li key={to + label}>
+                  <Link to={to} className="footer-col__link">{label}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </FadeBox>
   );
 }
 
 export default function Footer() {
   const { t, d } = useLang();
   const footer = d('footer');
-
-  const columns = [
-    { title: footer.counselling, links: footer.footerCounselling },
-    { title: footer.agePathways, links: footer.footerAgePathways },
-    { title: footer.assessments, links: footer.footerAssessments },
-    { title: footer.explore, links: footer.footerExplore },
-  ];
+  const lite = isMobilePerf();
+  const FadeBox = lite ? 'div' : motion.div;
+  const topMotion = lite ? {} : {
+    initial: { opacity: 0, y: 16 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+  };
+  const locMotion = lite ? {} : {
+    initial: { opacity: 0, y: 12 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.35, delay: 0.06 },
+  };
 
   return (
     <footer className="footer-pro footer-pro--orange">
-      <div className="footer-pro__wave" aria-hidden="true" />
-      <div className="footer-pro__ambient" aria-hidden="true" />
-      <div className="footer-pro__orb footer-pro__orb--a" aria-hidden="true" />
-      <div className="footer-pro__orb footer-pro__orb--b" aria-hidden="true" />
-      <div className="footer-pro__shimmer" aria-hidden="true" />
+      {!lite && <div className="footer-pro__wave" aria-hidden="true" />}
+      {!lite && <div className="footer-pro__ambient" aria-hidden="true" />}
 
       <div className="footer-pro__container">
-        <motion.div
-          className="footer-pro__top"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-        >
+        <FadeBox className="footer-pro__top" {...topMotion}>
           <div className="footer-pro__brand">
             <Logo size="sm" variant="dark" asLink={false} />
             <p className="footer-pro__tagline">{t('footer.tagline')}</p>
@@ -100,79 +152,58 @@ export default function Footer() {
                   { href: footerSocial.instagram, icon: Instagram, label: 'Instagram' },
                   { href: footerSocial.linkedin, icon: Linkedin, label: 'LinkedIn' },
                   { href: footerSocial.facebook, icon: Facebook, label: 'Facebook' },
-                ].map(({ href, icon: Icon, label }, i) => (
-                  <motion.a
+                ].map(({ href, icon: Icon, label }) => (
+                  <a
                     key={label}
                     href={href}
                     target="_blank"
                     rel="noreferrer"
                     className="footer-pro__social-btn"
                     aria-label={label}
-                    whileHover={{ scale: 1.08, y: -2 }}
-                    whileTap={{ scale: 0.95 }}
-                    initial={{ opacity: 0, y: 8 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.06 }}
                   >
                     <Icon className="w-4 h-4" />
-                  </motion.a>
+                  </a>
                 ))}
               </div>
             </div>
           </div>
 
           <div className="footer-pro__columns">
-            {columns.map((col, i) => (
-              <FooterColumn key={col.title} {...col} index={i} />
-            ))}
+            <FooterCounsellingOverview
+              title={footer.counsellingOverview}
+              links={footer.footerCounsellingOverview?.links}
+              index={0}
+            />
+            <FooterColumn title={footer.agePathways} links={footer.footerAgePathways} index={1} />
+            <FooterQuickSections title={footer.quickLinks} sections={footer.footerQuickSections} index={2} />
           </div>
-        </motion.div>
+        </FadeBox>
 
-        <motion.div
-          className="footer-pro__locations-wrap"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.08 }}
-        >
+        <FadeBox className="footer-pro__locations-wrap" {...locMotion}>
           <h4 className="footer-pro__locations-heading">
             <MapPin className="w-4 h-4" aria-hidden="true" />
             {footer.locationsBlock?.title || 'Our Centres'}
           </h4>
           <FooterLocations />
-        </motion.div>
+        </FadeBox>
 
         <div className="footer-pro__bottom">
           <nav className="footer-pro__quick-nav" aria-label="Footer quick links">
             {footer.footerQuickLinks.map(({ to, label }, i) => (
-              <motion.span
-                key={to}
-                className="footer-pro__quick-item"
-                initial={{ opacity: 0, y: 8 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-              >
+              <span key={to} className="footer-pro__quick-item">
                 {i > 0 && <span className="footer-pro__quick-sep" aria-hidden="true">·</span>}
                 <Link to={to} className="footer-pro__quick-link">{label}</Link>
-              </motion.span>
+              </span>
             ))}
           </nav>
         </div>
       </div>
 
-      <motion.div
-        className="footer-pro__copyright"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
+      <div className="footer-pro__copyright">
         <div className="footer-pro__container footer-pro__copyright-inner">
           © {new Date().getFullYear()} {footer.copyright}
         </div>
-      </motion.div>
+      </div>
     </footer>
   );
 }

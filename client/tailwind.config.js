@@ -92,9 +92,9 @@ export default {
         slateGray: { DEFAULT: '#4A5A4A', light: '#7A8A7A', dark: '#1E2E1E' },
       },
       fontFamily: {
-        display: ['Outfit', 'system-ui', 'sans-serif'],
-        body: ['DM Sans', 'system-ui', 'sans-serif'],
-        logo: ['Outfit', 'system-ui', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        body: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        logo: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
       },
       animation: {
         'fade-up': 'heroFadeUp 0.6s ease-out forwards',

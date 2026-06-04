@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Shield, Sparkles, ArrowRight, Phone } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -161,6 +161,13 @@ export default function Login() {
                     {!loading && <ArrowRight className="w-4 h-4" />}
                   </button>
                 </form>
+
+                <p className="text-center mt-8 text-sm text-[var(--text-secondary)]">
+                  New here?{' '}
+                  <Link to="/signup" className="text-amber-600 font-semibold hover:underline">
+                    Create an account
+                  </Link>
+                </p>
               </>
             ) : (
               <>

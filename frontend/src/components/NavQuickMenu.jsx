@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutGrid, X } from 'lucide-react';
 import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLink } from './NavDropdownPanel';
 import { useLang } from '../context/LanguageContext';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 const panelVariants = {
   hidden: { opacity: 0, y: -16, scale: 0.92, filter: 'blur(8px)' },
@@ -20,6 +21,7 @@ const panelVariants = {
 export default function NavQuickMenu() {
   const { d } = useLang();
   const navQuickMenu = d('navQuickMenu');
+  const lite = isMobilePerf();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const location = useLocation();
@@ -60,7 +62,7 @@ export default function NavQuickMenu() {
         whileTap={{ scale: 0.94 }}
         className="relative group"
       >
-        {!open && (
+        {!open && !lite && (
           <motion.span
             className="absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 opacity-40 blur-md scale-110"
             animate={{ opacity: [0.25, 0.45, 0.25], scale: [1.05, 1.15, 1.05] }}

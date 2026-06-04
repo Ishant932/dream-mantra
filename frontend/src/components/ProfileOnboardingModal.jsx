@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X, Sparkles, GraduationCap, MapPin, Target, User, ChevronRight, ChevronLeft,
@@ -244,6 +245,11 @@ export default function ProfileOnboardingModal({ open, initialProfile, onSave, o
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({ ...emptyForm, ...initialProfile });
   const [direction, setDirection] = useState(1);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (open) {
@@ -252,6 +258,24 @@ export default function ProfileOnboardingModal({ open, initialProfile, onSave, o
       setDirection(1);
     }
   }, [open, initialProfile]);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    const scrollY = window.scrollY;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.overflow = '';
+      window.scrollTo({ top: scrollY, left: 0, behavior: 'instant' });
+    };
+  }, [open]);
 
   const current = STEPS[step];
   const theme = STEP_THEMES[step];
@@ -277,23 +301,29 @@ export default function ProfileOnboardingModal({ open, initialProfile, onSave, o
     setStep((s) => s - 1);
   };
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div
+        key="profile-modal-backdrop"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-3 sm:p-4 pt-[calc(var(--site-header-h,4rem)+0.75rem)] pb-8 bg-brand-950/60 backdrop-blur-md"
+        className="fixed inset-0 z-[200] flex items-center justify-center p-3 sm:p-4 bg-brand-950/60 backdrop-blur-md"
+        onClick={onSkip}
+        role="presentation"
       >
         <motion.div
-          initial={{ opacity: 0, scale: 0.88, y: 40, rotateX: 8 }}
-          animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
-          exit={{ opacity: 0, scale: 0.92, y: 24 }}
+          initial={{ opacity: 0, scale: 0.92, y: 24 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.94, y: 16 }}
           transition={{ type: 'spring', stiffness: 280, damping: 26 }}
-          className="relative w-full max-w-md sm:max-w-lg bg-[var(--bg-elevated)] dark:bg-[#523010] rounded-3xl shadow-2xl overflow-hidden border border-amber-100/20"
-          style={{ perspective: 1000 }}
+          className="relative w-full max-w-md sm:max-w-lg max-h-[min(92dvh,calc(100dvh-2rem))] flex flex-col bg-[var(--bg-elevated)] dark:bg-[#523010] rounded-3xl shadow-2xl overflow-hidden border border-amber-100/20"
+          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profile-modal-title"
         >
           {/* Animated header */}
           <motion.div
@@ -354,7 +384,7 @@ export default function ProfileOnboardingModal({ open, initialProfile, onSave, o
                 <span className="text-[10px] font-bold text-amber-50/80 uppercase tracking-widest flex items-center gap-1">
                   <Sparkles className="w-3 h-3" /> Step {step + 1} of {STEPS.length}
                 </span>
-                <h2 className="font-display text-lg sm:text-xl font-bold">{current.title}</h2>
+                <h2 id="profile-modal-title" className="font-display text-lg sm:text-xl font-bold">{current.title}</h2>
                 <p className="text-xs text-amber-50/85">{current.subtitle}</p>
               </div>
             </motion.div>
@@ -370,7 +400,7 @@ export default function ProfileOnboardingModal({ open, initialProfile, onSave, o
           </motion.div>
 
           {/* Form body */}
-          <div className="px-5 sm:px-6 py-5 max-h-[min(52vh,420px)] overflow-y-auto bg-gradient-to-b from-sand-50/80 to-[var(--bg-base)] dark:from-sand-900/50 dark:to-[#523010]">
+          <div className="px-5 sm:px-6 py-5 flex-1 min-h-0 overflow-y-auto bg-gradient-to-b from-sand-50/80 to-[var(--bg-base)] dark:from-sand-900/50 dark:to-[#523010]">
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={step}
@@ -483,6 +513,7 @@ export default function ProfileOnboardingModal({ open, initialProfile, onSave, o
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }

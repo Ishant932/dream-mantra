@@ -80,6 +80,7 @@ function tagRevealElements() {
 
   document.querySelectorAll('main section > .max-w-7xl > p:first-of-type, main section > p.lead').forEach((el) => {
     if (el.classList.contains('reveal-blur') || shouldSkip(el)) return;
+    if (document.documentElement.classList.contains('is-mobile-perf')) return;
     tagClass(el, 'reveal-blur');
   });
 
@@ -141,9 +142,7 @@ export default function ScrollRevealInit() {
     };
 
     run();
-    const t1 = setTimeout(run, 80);
-    const t2 = setTimeout(run, 400);
-    const t3 = setTimeout(run, 900);
+    const t1 = setTimeout(run, 120);
 
     const fallback = setTimeout(() => {
       REVEAL_CLASSES.forEach((cls) => {
@@ -155,8 +154,6 @@ export default function ScrollRevealInit() {
       cancelled = true;
       observerRef.current?.disconnect();
       clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
       clearTimeout(fallback);
     };
   }, [location.pathname, location.search]);

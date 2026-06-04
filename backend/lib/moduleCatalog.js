@@ -1,45 +1,16 @@
-/** Dashboard module catalog — must stay in sync with client/src/data/moduleCatalog.js */
+/** Dashboard module catalog — sync client/src/data/moduleCatalog.js with BASE in catalogStore.js */
+import {
+  getActiveModuleCatalog,
+  COUNSELLING_ADDON_PRICE,
+  COUNSELLING_TOPUP_PRICE,
+  BASE_MODULE_CATALOG,
+  resolveCounsellingAddon,
+} from './catalogStore.js';
 
-export const COUNSELLING_ADDON_PRICE = 699;
-export const COUNSELLING_TOPUP_PRICE = 999;
-
-export const MODULE_CATALOG = [
-  {
-    slug: 'dmit',
-    title: 'Mind Mapping',
-    price: 1999,
-    optionalCounselling: true,
-  },
-  {
-    slug: 'psychometric',
-    title: 'Skill Mapping',
-    price: 699,
-    optionalCounselling: true,
-  },
-  {
-    slug: 'dmit-psychometric',
-    title: 'Mind + Skill + Counselling',
-    price: 2999,
-    optionalCounselling: false,
-    includesCounselling: true,
-  },
-  {
-    slug: 'crp-test',
-    title: 'AI Career Launchpad',
-    price: 1499,
-    optionalCounselling: false,
-  },
-  {
-    slug: 'counselling-topup',
-    title: 'Additional Counselling Session',
-    price: COUNSELLING_TOPUP_PRICE,
-    optionalCounselling: false,
-    includesCounselling: true,
-  },
-];
+export { COUNSELLING_ADDON_PRICE, COUNSELLING_TOPUP_PRICE, resolveCounsellingAddon };export const MODULE_CATALOG = BASE_MODULE_CATALOG;
 
 export function getModuleBySlug(slug) {
-  return MODULE_CATALOG.find((m) => m.slug === slug);
+  return getActiveModuleCatalog().find((m) => m.slug === slug);
 }
 
 export function buildModuleSelection(slug, addCounselling = false) {
@@ -50,15 +21,18 @@ export function buildModuleSelection(slug, addCounselling = false) {
   const lineItems = [{ label: mod.title, amount: mod.price, slug: mod.slug, type: 'module' }];
 
   if (withCounselling) {
+    const addon = resolveCounsellingAddon(mod);
     lineItems.push({
-      label: 'Counselling session',
-      amount: COUNSELLING_ADDON_PRICE,
+      label: addon.title,
+      amount: addon.price,
       type: 'counselling',
+      description: addon.description,
     });
   }
 
   const total = lineItems.reduce((sum, item) => sum + item.amount, 0);
-  const displayTitle = withCounselling ? `${mod.title} + Counselling` : mod.title;
+  const addon = resolveCounsellingAddon(mod);
+  const displayTitle = withCounselling ? `${mod.title} + ${addon.title}` : mod.title;
 
   return {
     slug: mod.slug,
@@ -169,3 +143,5 @@ export function assertSkillMappingBandSelected(assessment) {
   }
   return band;
 }
+
+export { getActiveModuleCatalog };

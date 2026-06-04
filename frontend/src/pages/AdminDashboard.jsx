@@ -14,6 +14,8 @@ import AdminUserProfileModal from '../components/AdminUserProfileModal';
 import AdminAnalyticsPanel from '../components/AdminAnalyticsPanel';
 import AdminPaymentsPanel from '../components/AdminPaymentsPanel';
 import AdminLeadsPanel from '../components/AdminLeadsPanel';
+import AdminModulesPanel from '../components/AdminModulesPanel';
+import AdminVouchersPanel from '../components/AdminVouchersPanel';
 import CopyableUserId from '../components/CopyableUserId';
 import SlotCalendar from '../components/SlotCalendar';
 import AdminOpenSlotCard from '../components/AdminOpenSlotCard';
@@ -32,6 +34,8 @@ const ADMIN_TABS = [
   { id: 'bookings', label: 'Booking Management', desc: 'Slots, calendar & sessions' },
   { id: 'users', label: 'User Management', desc: 'Registered students & profiles' },
   { id: 'payments', label: 'Payment Management', desc: 'Paid assessments & orders' },
+  { id: 'modules', label: 'Module Catalog', desc: 'Add & edit checkout modules' },
+  { id: 'vouchers', label: 'Vouchers', desc: 'Discount codes by module' },
   { id: 'reports', label: 'Report Management', desc: 'Deliver reports to users' },
   { id: 'leads', label: 'Contact Leads', desc: 'Website enquiries & messages' },
   { id: 'settings', label: 'Community & Links', desc: 'AI Launchpad community URL' },
@@ -117,6 +121,11 @@ export default function AdminDashboard() {
   const [analyticsError, setAnalyticsError] = useState('');
   const [profileSaving, setProfileSaving] = useState(false);
   const [loadErrors, setLoadErrors] = useState([]);
+  const [catalogModules, setCatalogModules] = useState([]);
+
+  const handleCatalogChange = useCallback((list) => {
+    setCatalogModules(Array.isArray(list) ? list : []);
+  }, []);
 
   const loadSlots = useCallback(async () => {
     if (!token) return;
@@ -171,6 +180,7 @@ export default function AdminDashboard() {
       { key: 'reports', fn: () => adminApi.reports(token), set: (v) => setReports(v.reports || []) },
       { key: 'settings', fn: () => adminApi.settings(token), set: (v) => setCommunityLink(v.settings?.community_links?.['crp-test'] || '') },
       { key: 'analytics', fn: () => adminApi.analytics(token), set: (v) => setAnalytics(v.analytics || null) },
+      { key: 'modules', fn: () => adminApi.modules(token), set: (v) => setCatalogModules(v.modules || []) },
     ];
 
     await Promise.all(
@@ -609,7 +619,7 @@ export default function AdminDashboard() {
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-5 p-4 rounded-2xl bg-sand-50 dark:bg-sand-800/40 border border-sand-200/60 dark:border-sand-700/40">
                     <div className="sm:col-span-2">
                       <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
-                        <Search className="w-3 h-3" /> Unique ID / Name
+                        <Search className="w-3 h-3" /> Dreams ID / Name
                       </label>
                       <input
                         type="search"
@@ -692,7 +702,7 @@ export default function AdminDashboard() {
                       <table className="w-full text-sm admin-data-table min-w-[760px]">
                         <thead>
                           <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
-                            <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Unique ID</th>
+                            <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Dreams ID</th>
                             <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Name</th>
                             <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Contact</th>
                             <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Class / Stream</th>
@@ -759,6 +769,19 @@ export default function AdminDashboard() {
                 <AdminPaymentsPanel token={token} users={users} onNotice={setNotice} onError={setError} onViewUser={viewProfile} />
               )}
 
+              {tab === 'modules' && (
+                <AdminModulesPanel
+                  token={token}
+                  onNotice={setNotice}
+                  onError={setError}
+                  onCatalogChange={handleCatalogChange}
+                />
+              )}
+
+              {tab === 'vouchers' && (
+                <AdminVouchersPanel token={token} modules={catalogModules} onNotice={setNotice} onError={setError} />
+              )}
+
               {tab === 'reports' && (
                 <div className="space-y-6">
                   <DashCard className="!p-5 sm:!p-6">
@@ -766,7 +789,7 @@ export default function AdminDashboard() {
                     <p className="text-sm opacity-70 mb-5">Paste a Google Drive, PDF or report URL — it will appear in the user's Reports tab.</p>
                     <form onSubmit={submitReport} className="grid sm:grid-cols-2 gap-4 max-w-3xl">
                       <select className="input-field" value={reportForm.userUid} onChange={(e) => setReportForm({ ...reportForm, userUid: e.target.value, assessmentId: '' })} required>
-                        <option value="">Select user by Unique ID</option>
+                        <option value="">Select user by Dreams ID</option>
                         {users.map((u) => (
                           <option key={u.id} value={u.user_uid}>{u.user_uid} — {u.name}</option>
                         ))}
@@ -792,7 +815,7 @@ export default function AdminDashboard() {
                         <table className="w-full text-sm admin-data-table min-w-[560px]">
                           <thead>
                             <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
-                              <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Unique ID</th>
+                              <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Dreams ID</th>
                               <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Student</th>
                               <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Report</th>
                               <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Updated</th>

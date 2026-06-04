@@ -15,7 +15,7 @@ import {
   getAvailableProcessGuideTabs,
   getConfirmedPaidAssessments,
   getProcessGuideIdsForAssessment,
-  hasQuestionnaireAccess,
+  moduleHasTakeTest,
   resolveAssessmentSlug,
 } from '../utils/moduleAccess';
 import { getAssessmentDisplayTitle } from '../utils/assessmentHelpers';
@@ -87,6 +87,7 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
   const [searchParams] = useSearchParams();
   const sectionParam = searchParams.get('section');
   const openTestOnLoad = searchParams.get('open') === '1';
+
   const paidModules = useMemo(
     () => getConfirmedPaidAssessments(assessments),
     [assessments]
@@ -96,8 +97,6 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
     () => getAvailableProcessGuideTabs(assessments),
     [assessments]
   );
-
-  const showQuestionnaires = hasQuestionnaireAccess(assessments);
 
   const [mainSection, setMainSection] = useState(sectionParam === 'tests' ? 'questionnaires' : 'process');
   const [activeProcess, setActiveProcess] = useState(null);
@@ -130,14 +129,21 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
     : tabsForProduct[0] || null;
 
   const guide = currentProcess ? PROCESS_GUIDES[currentProcess] : null;
-  const effectiveSection = showQuestionnaires ? mainSection : 'process';
+  const showQuestionnairesForProduct = moduleHasTakeTest(activeProduct?.slug);
+  const effectiveSection = showQuestionnairesForProduct ? mainSection : 'process';
   const showCommunityLink = activeProduct?.slug === 'crp-test';
   const hasCommunityLink = Boolean(communityLink?.trim());
 
   useEffect(() => {
-    if (sectionParam === 'tests' && showQuestionnaires) setMainSection('questionnaires');
+    if (sectionParam === 'tests' && showQuestionnairesForProduct) setMainSection('questionnaires');
     if (sectionParam === 'process') setMainSection('process');
-  }, [sectionParam, showQuestionnaires]);
+  }, [sectionParam, showQuestionnairesForProduct]);
+
+  useEffect(() => {
+    if (!showQuestionnairesForProduct && mainSection === 'questionnaires') {
+      setMainSection('process');
+    }
+  }, [showQuestionnairesForProduct, mainSection]);
 
   useEffect(() => {
     if (productOptions.length && !productOptions.some((p) => p.assessment.id === activeProductId)) {
@@ -180,7 +186,7 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
           <div>
             <p className="font-bold text-sm">Your purchased modules</p>
             <p className="text-xs dash-card-meta mt-1">
-              Process steps and questionnaires are shown only for products you have paid for.
+              Process steps and tests are shown only for products you have paid for.
             </p>
           </div>
         </div>
@@ -208,7 +214,7 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
         )}
       </DashCard>
 
-      {showQuestionnaires && (
+      {showQuestionnairesForProduct && (
         <div className="modules-subtabs flex-wrap">
           <button
             type="button"
@@ -244,7 +250,7 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
             </div>
             {user?.user_uid && (
               <div className="text-xs">
-                <span className="opacity-60 block mb-1">Your ID for all forms</span>
+                <span className="opacity-60 block mb-1">Your Dreams ID for all forms</span>
                 <CopyableUserId uid={user.user_uid} compact animate={false} />
               </div>
             )}
@@ -281,13 +287,9 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
               className="mt-6 p-5 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20 border border-amber-200/60 dark:border-amber-700/40"
             >
               <div className="flex items-start gap-3">
-                <motion.span
-                  className="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0"
-                  animate={{ scale: [1, 1.06, 1] }}
-                  transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-                >
+                <span className="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">
                   <Users className="w-5 h-5 text-amber-700 dark:text-amber-300" />
-                </motion.span>
+                </span>
                 <div className="min-w-0 flex-1">
                   <h3 className="font-bold text-base">Join Community</h3>
                   <p className="text-sm dash-card-meta mt-1">
@@ -314,7 +316,7 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
         </DashCard>
       )}
 
-      {effectiveSection === 'questionnaires' && showQuestionnaires && (
+      {effectiveSection === 'questionnaires' && showQuestionnairesForProduct && (
         <DashCard className="!p-5 sm:!p-6" glow delay={0.05}>
           <div className="flex items-center gap-2 mb-4">
             <ClipboardList className="w-5 h-5 text-amber-600" />
@@ -322,7 +324,7 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
               <h3 className="font-bold text-lg">Take test</h3>
               <p className="text-sm dash-card-meta">
                 Skill Mapping forms for {activeProduct ? getAssessmentDisplayTitle(activeProduct.assessment) : 'your module'}.
-                Tests open with your registered Dream Mantra ID, name, and phone prefilled.
+                The form opens here in your dashboard with your Dreams ID prefilled.
               </p>
             </div>
           </div>

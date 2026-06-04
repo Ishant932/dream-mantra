@@ -6,6 +6,7 @@ const sizes = {
   md: 'w-20 h-20 rounded-2xl',
   lg: 'w-24 h-24 rounded-2xl',
   xl: 'w-32 h-32 rounded-2xl',
+  portrait: 'w-36 h-44 sm:w-40 sm:h-48 rounded-2xl',
   hero: 'w-40 h-40 rounded-3xl',
 };
 
@@ -33,7 +34,7 @@ export default function PersonPhoto({
     <img
       src={src}
       alt={alt || name}
-      className={`w-full h-full object-cover ${isFounder ? 'founder-photo-img' : ''}`}
+      className={`w-full h-full object-cover object-top ${isFounder ? 'founder-photo-img' : ''}`}
       loading="lazy"
       onError={() => setFailed(true)}
     />

@@ -4,6 +4,7 @@ import { Users, Target, Zap, Heart, Sparkles, Microscope } from 'lucide-react';
 import PageHero from '../components/PageHero';
 import { IMAGES } from '../data/content';
 import AdvisoryPersonCard from '../components/AdvisoryPersonCard';
+import LeadershipGrid from '../components/LeadershipGrid';
 import PersonPhoto from '../components/PersonPhoto';
 import AboutCertifications from '../components/AboutCertifications';
 import { useAboutContent } from '../i18n/useSiteContent';
@@ -18,7 +19,7 @@ const fade = {
 const valueIcons = [Target, Users, Zap, Heart];
 
 export default function About() {
-  const { about, missionVision, founder, managementTeam } = useAboutContent();
+  const { about, missionVision, founder, managementTeam, leadership, homeLeadership } = useAboutContent();
   const values = about.values.items.map((item, i) => ({
     ...item,
     icon: valueIcons[i],
@@ -148,6 +149,22 @@ export default function About() {
           </div>
         </div>
       </section>
+
+      <LeadershipGrid
+        title={homeLeadership.directors?.title}
+        subtitle={homeLeadership.directors?.subtitle}
+        people={leadership.directors || []}
+        columns={2}
+        featured
+      />
+
+      <LeadershipGrid
+        title={homeLeadership.executive?.title}
+        subtitle={homeLeadership.executive?.subtitle}
+        people={leadership.executive || []}
+        layout="executive"
+        featured
+      />
 
       {/* Founder Note */}
       <section className="py-20" style={{ background: 'var(--bg-muted)' }}>

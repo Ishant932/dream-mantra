@@ -10,6 +10,7 @@ import NavQuickMenu from './NavQuickMenu';
 import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLink, NavDropdownLinkGroup } from './NavDropdownPanel';
 import { useSiteNav } from '../i18n/useSiteContent';
 import { handleHashNavClick } from '../utils/scrollHash';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 const buildMainNav = (t, counsellingMega, crpMega) => [
   {
@@ -100,6 +101,7 @@ export default function Navbar({ scrolled = false }) {
   const [mobile, setMobile] = useState(false);
   const { counsellingMega, crpMega, quickLinks } = useSiteNav();
   const mainNav = buildMainNav(t, counsellingMega, crpMega);
+  const navLite = isMobilePerf();
 
   const handleLogout = () => {
     logout();
@@ -129,73 +131,140 @@ export default function Navbar({ scrolled = false }) {
   }, [location.pathname]);
 
   return (
-    <motion.header
-      initial={{ y: -8, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+    <header
       className={`nav relative border-b transition-all duration-300 ${scrolled ? 'scrolled nav--scrolled-anim' : ''}`}
       style={{ borderColor: 'var(--border-subtle)' }}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-4">
-        <div className="flex items-center justify-between h-14 sm:h-16">
+        <div className="nav-header-inner flex items-center gap-2 sm:gap-3 h-14 sm:h-16 min-w-0">
           <Logo size="md" />
 
-          <nav className="hidden xl:flex items-center gap-4">
+          <nav className="hidden xl:flex items-center gap-4 flex-1 justify-center min-w-0">
             {mainNav.map((item) => (
               <MegaMenu key={item.label} item={item} />
             ))}
           </nav>
 
-          <div className="flex items-center gap-1.5 sm:gap-3">
+          <div className="nav-header-actions flex items-center gap-1 sm:gap-2 ml-auto shrink-0">
+            <NavQuickMenu />
             <ThemeToggle compact />
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={toggle} className="lang-toggle hidden xl:inline-flex">
-              {lang === 'en' ? 'हिंदी' : 'EN'}
-            </motion.button>
-            <div className="hidden xl:block">
-              <NavQuickMenu />
-            </div>
+            {!navLite && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={toggle}
+                className="lang-toggle xl:inline-flex"
+              >
+                {lang === 'en' ? 'हिंदी' : 'EN'}
+              </motion.button>
+            )}
+            {navLite && (
+              <button type="button" onClick={toggle} className="lang-toggle xl:inline-flex">
+                {lang === 'en' ? 'हिं' : 'EN'}
+              </button>
+            )}
             {user ? (
               <>
-                <Link to={isAdmin ? '/admin' : '/dashboard'} className="btn-primary !py-2 !px-4 !text-sm hidden sm:inline-flex">
+                <Link
+                  to={isAdmin ? '/admin' : '/dashboard'}
+                  className="btn-primary !py-2 !px-3 sm:!px-4 !text-xs sm:!text-sm hidden sm:inline-flex whitespace-nowrap"
+                >
                   {isAdmin ? t('nav.admin') : t('nav.dashboard')}
                 </Link>
                 <motion.button
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={handleLogout}
-                  className="hidden sm:block text-sm text-sand-500 hover:text-royalOrange font-medium px-1"
+                  className="hidden md:block text-sm text-sand-500 hover:text-royalOrange font-medium px-1"
                 >
                   {t('nav.logout')}
                 </motion.button>
               </>
             ) : (
               <>
-                <Link to="/login" className="hidden sm:block nav-link px-2">{t('nav.login')}</Link>
+                <Link to="/login" className="hidden sm:block nav-link px-2 whitespace-nowrap">{t('nav.login')}</Link>
                 <Link to="/signup" className="btn-primary !py-2 !px-3 sm:!px-4 !text-xs sm:!text-sm whitespace-nowrap">{t('nav.signup')}</Link>
               </>
             )}
-            <button className="xl:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center" onClick={() => setMobile(!mobile)} aria-label="Menu" aria-expanded={mobile}>
+            <button
+              type="button"
+              className="xl:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
+              onClick={() => setMobile(!mobile)}
+              aria-label="Menu"
+              aria-expanded={mobile}
+            >
               {mobile ? <X /> : <Menu />}
             </button>
           </div>
         </div>
       </div>
 
-      <AnimatePresence>
-        {mobile && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="xl:hidden border-t overflow-hidden bg-[var(--bg-elevated)] dark:bg-brand-900 max-h-[calc(100dvh-var(--site-header-h)-var(--safe-top)-1rem)]"
-          >
-            <div className="p-4 overflow-y-auto overscroll-contain space-y-3 pb-safe">
-              <button type="button" onClick={toggle} className="lang-toggle w-full mb-2">
-                {lang === 'en' ? 'हिंदी में देखें' : 'View in English'}
-              </button>
-              {user && (
-                <div className="flex flex-col gap-2 pb-2 border-b border-[var(--border-subtle)]">
+      {mobile && (
+          <div className="xl:hidden border-t overflow-hidden bg-[var(--bg-elevated)] dark:bg-brand-900 max-h-[calc(100dvh-var(--site-header-h)-var(--safe-top)-1rem)] nav-mobile-drawer">
+            <div className="nav-mobile-menu p-4 overflow-y-auto overscroll-contain space-y-4 pb-safe">
+              {mainNav.map((item) => (
+                <div key={item.label} className="nav-mobile-section">
+                  <Link
+                    to={item.to}
+                    onClick={() => setMobile(false)}
+                    className={`font-bold block mb-2 px-1 ${item.highlight ? 'text-gold' : 'text-brand-700'}`}
+                  >
+                    {item.label}
+                  </Link>
+                  {item.mega?.map((col) => (
+                    <div key={col.title} className="mb-2">
+                      <p className="text-xs font-semibold text-royalOrange pl-1 mb-1">{col.title}</p>
+                      {col.groups
+                        ? col.groups.map((g) => (
+                            <div key={g.label} className="mb-2 pl-1">
+                              <p className="text-xs font-bold text-sand-700 pl-2 mb-1">{g.icon} {g.label}</p>
+                              {g.links.map((l) => (
+                                <Link
+                                  key={l.to + l.label}
+                                  to={l.to}
+                                  onClick={() => setMobile(false)}
+                                  className="block py-1.5 pl-4 text-sm text-sand-600 rounded-lg hover:bg-lime/10"
+                                >
+                                  {l.icon ? `${l.icon} ` : ''}{l.label}
+                                </Link>
+                              ))}
+                            </div>
+                          ))
+                        : col.links.map((l) => (
+                            <Link
+                              key={l.to + l.label}
+                              to={l.to}
+                              onClick={() => setMobile(false)}
+                              className="block py-1.5 pl-4 text-sm text-sand-600 rounded-lg hover:bg-lime/10"
+                            >
+                              {l.icon ? `${l.icon} ` : ''}{l.label}
+                            </Link>
+                          ))}
+                    </div>
+                  ))}
+                </div>
+              ))}
+
+              <div className="nav-mobile-section pt-2 border-t border-[var(--border-subtle)]">
+                <p className="text-xs font-bold text-lime uppercase tracking-wider px-1 mb-2">{quickLinks.title}</p>
+                {quickLinks.links.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    onClick={(e) => {
+                      if (!handleHashNavClick(e, l.to, location.pathname, () => setMobile(false))) {
+                        setMobile(false);
+                      }
+                    }}
+                    className="block py-2 px-3 text-sm rounded-lg hover:bg-lime/15"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </div>
+
+              {user ? (
+                <div className="nav-mobile-section flex flex-col gap-2 pt-2 border-t border-[var(--border-subtle)]">
                   <Link
                     to={isAdmin ? '/admin' : '/dashboard'}
                     onClick={() => setMobile(false)}
@@ -211,55 +280,14 @@ export default function Navbar({ scrolled = false }) {
                     {t('nav.logout')}
                   </button>
                 </div>
-              )}
-              <p className="text-xs font-bold text-lime uppercase tracking-wider px-1">{quickLinks.title}</p>
-              {quickLinks.links.map((l, i) => (
-                <motion.div key={l.to} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
-                  <Link
-                    to={l.to}
-                    onClick={(e) => {
-                      if (!handleHashNavClick(e, l.to, location.pathname, () => setMobile(false))) {
-                        setMobile(false);
-                      }
-                    }}
-                    className="block py-2 px-3 text-sm rounded-lg hover:bg-lime/15"
-                  >
-                    {l.label}
-                  </Link>
-                </motion.div>
-              ))}
-              <Link to="/crp/explore" onClick={() => setMobile(false)} className="block font-bold text-gold bg-gradient-to-r from-bottleGreen to-bottleGreen-light rounded-xl px-4 py-3 border border-lime/30">{t('nav.crp')}</Link>
-              {mainNav.map((item) => (
-                <div key={item.label}>
-                  <Link to={item.to} onClick={() => setMobile(false)} className="font-bold text-brand-700 block mb-1">{item.label}</Link>
-                  {item.mega?.map((col) => (
-                    <div key={col.title} className="mb-2">
-                      <p className="text-xs font-semibold text-royalOrange pl-3 mb-1">{col.title}</p>
-                      {col.groups
-                        ? col.groups.map((g) => (
-                            <div key={g.label} className="mb-2 pl-3">
-                              <p className="text-xs font-bold text-sand-700 pl-2 mb-1">{g.icon} {g.label}</p>
-                              {g.links.map((l) => (
-                                <Link key={l.to + l.label} to={l.to} onClick={() => setMobile(false)} className="block py-1.5 pl-5 text-sm text-sand-600">
-                                  {l.icon ? `${l.icon} ` : ''}{l.label}
-                                </Link>
-                              ))}
-                            </div>
-                          ))
-                        : col.links.map((l) => (
-                            <Link key={l.to + l.label} to={l.to} onClick={() => setMobile(false)} className="block py-1.5 pl-5 text-sm text-sand-600">
-                              {l.icon ? `${l.icon} ` : ''}{l.label}
-                            </Link>
-                          ))}
-                    </div>
-                  ))}
+              ) : (
+                <div className="nav-mobile-section pt-2 border-t border-[var(--border-subtle)]">
+                  <Link to="/login" onClick={() => setMobile(false)} className="btn-outline w-full text-center block">Login</Link>
                 </div>
-              ))}
-              {!user && <Link to="/login" onClick={() => setMobile(false)} className="btn-outline w-full text-center block mt-2">Login</Link>}
+              )}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.header>
+          </div>
+      )}
+    </header>
   );
 }

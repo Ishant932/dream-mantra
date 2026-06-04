@@ -5,15 +5,12 @@ import {
   CheckCircle2, AlertCircle, Sparkles, MessageCircle, Clock, XCircle, Trash2,
   Receipt, ArrowRight, X,
 } from 'lucide-react';
-import { userApi } from '../api';
+import { userApi, paymentsApi } from '../api';
 import { DashCard } from './DashboardUI';
 import CopyableUserId from './CopyableUserId';
 import {
   MODULE_CATALOG,
-  COUNSELLING_ADDON_PRICE,
-  getModuleBySlug,
-  buildModuleSelection,
-  hasSkillMappingTests,
+  resolveCounsellingAddon,
 } from '../data/moduleCatalog';
 import {
   canCancelAssessment,
@@ -27,8 +24,8 @@ import {
   resolveAssessmentSlug,
   canShowCounsellingTopUp,
   assessmentGrantsSlotBooking,
+  moduleHasTakeTest,
 } from '../utils/moduleAccess';
-import DirectTakeTestFlow from './DirectTakeTestFlow';
 
 function formatPrice(n) {
   return `₹${Number(n || 0).toLocaleString('en-IN')}`;
@@ -142,7 +139,8 @@ function ModulesStatBar({ active, pending, completed }) {
 }
 
 function UnpaidModuleCard({ module, selected, onSelect, onClear, addCounselling, onCounsellingToggle }) {
-  const cardTotal = module.price + (selected && addCounselling && module.optionalCounselling ? COUNSELLING_ADDON_PRICE : 0);
+  const addon = resolveCounsellingAddon(module);
+  const cardTotal = module.price + (selected && addCounselling && module.optionalCounselling ? addon.price : 0);
 
   return (
     <div className={`modules-product-card ${selected ? 'modules-product-card--selected' : ''}`}>
@@ -182,8 +180,9 @@ function UnpaidModuleCard({ module, selected, onSelect, onClear, addCounselling,
             <div className="flex items-start gap-3">
               <span className="text-2xl">💬</span>
               <div className="flex-1">
-                <p className="font-bold text-sm">Add counselling session</p>
-                <p className="text-xs dash-card-meta mt-0.5">+{formatPrice(COUNSELLING_ADDON_PRICE)}</p>
+                <p className="font-bold text-sm">{addon.title}</p>
+                <p className="text-xs dash-card-meta mt-0.5">{addon.description || `+${formatPrice(addon.price)}`}</p>
+                {addon.description && <p className="text-xs font-semibold text-amber-700 mt-0.5">+{formatPrice(addon.price)}</p>}
               </div>
               <span className="text-xs font-bold">{addCounselling ? 'Added ✓' : 'Add'}</span>
             </div>
@@ -238,7 +237,52 @@ export default function ModulesPanel({
   const [activePaidId, setActivePaidId] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
   const [removedIds, setRemovedIds] = useState(() => new Set());
-  const [directTestAssessment, setDirectTestAssessment] = useState(null);
+  const [catalog, setCatalog] = useState(MODULE_CATALOG);
+  const [liveVouchers, setLiveVouchers] = useState([]);
+
+  const reloadCatalog = useCallback(() => {
+    paymentsApi.products()
+      .then((res) => {
+        if (Array.isArray(res.products) && res.products.length) setCatalog(res.products);
+      })
+      .catch(() => {});
+    paymentsApi.promotions()
+      .then((res) => {
+        if (Array.isArray(res.vouchers)) setLiveVouchers(res.vouchers);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => { reloadCatalog(); }, [reloadCatalog]);
+
+  useEffect(() => {
+    const onFocus = () => reloadCatalog();
+    window.addEventListener('focus', onFocus);
+    return () => window.removeEventListener('focus', onFocus);
+  }, [reloadCatalog]);
+
+  const getMod = useCallback((slug) => catalog.find((m) => m.slug === slug), [catalog]);
+  const buildSelection = useCallback((slug, addCouns) => {
+    const mod = getMod(slug);
+    if (!mod) return null;
+    const withCounselling = !!(addCouns && mod.optionalCounselling);
+    const lineItems = [{ label: mod.title, amount: mod.price, slug: mod.slug, type: 'module' }];
+    if (withCounselling) {
+      const addon = resolveCounsellingAddon(mod);
+      lineItems.push({ label: addon.title, amount: addon.price, type: 'counselling', description: addon.description });
+    }
+    const total = lineItems.reduce((s, i) => s + i.amount, 0);
+    const addon = resolveCounsellingAddon(mod);
+    return {
+      slug: mod.slug,
+      moduleTitle: mod.title,
+      lineItems,
+      addCounselling: withCounselling,
+      total,
+      displayTitle: withCounselling ? `${mod.title} + ${addon.title}` : mod.title,
+      moduleSlug: mod.slug,
+    };
+  }, [getMod]);
 
   const visibleAssessments = useMemo(
     () => assessments.filter((a) => !removedIds.has(Number(a.id))),
@@ -285,7 +329,7 @@ export default function ModulesPanel({
 
   const blockedSlugs = getBlockedCatalogSlugs(visibleAssessments);
   const showCounsellingTopUp = canShowCounsellingTopUp(visibleAssessments, consultations);
-  const catalogModules = MODULE_CATALOG.filter((mod) => {
+  const catalogModules = catalog.filter((mod) => {
     if (blockedSlugs.has(mod.slug)) return false;
     if (mod.followUpOnly && !showCounsellingTopUp) return false;
     return true;
@@ -293,7 +337,7 @@ export default function ModulesPanel({
   const hasConfirmed = confirmedAssessments.length > 0;
 
   const addCounselling = selectedSlug ? !!counsellingBySlug[selectedSlug] : false;
-  const selection = selectedSlug ? buildModuleSelection(selectedSlug, addCounselling) : null;
+  const selection = selectedSlug ? buildSelection(selectedSlug, addCounselling) : null;
   const checkoutTotal = selection?.total || 0;
 
   const activePaid = activePaidId
@@ -301,8 +345,7 @@ export default function ModulesPanel({
     : confirmedAssessments[0];
 
   const activePaidSlug = activePaid ? resolveAssessmentSlug(activePaid) : null;
-  const activeShowTest = activePaidSlug
-    && (hasSkillMappingTests(activePaidSlug) || ['dmit', 'dmit-psychometric'].includes(activePaidSlug));
+  const activeShowTest = activePaidSlug && moduleHasTakeTest(activePaidSlug);
   const activeShowBook = activePaid && assessmentGrantsSlotBooking(activePaid);
   const activeShowProcess = activePaidSlug !== 'counselling-topup';
 
@@ -356,21 +399,7 @@ export default function ModulesPanel({
     if (onGoProcessGuides) onGoProcessGuides(section);
   };
 
-  const pickSkillMappingAssessment = () => {
-    const withTests = confirmedAssessments.filter((a) => hasSkillMappingTests(resolveAssessmentSlug(a)));
-    if (!withTests.length) return null;
-    if (activePaidId && withTests.some((a) => Number(a.id) === Number(activePaidId))) {
-      return withTests.find((a) => Number(a.id) === Number(activePaidId));
-    }
-    return withTests[0];
-  };
-
   const goToTakeTest = () => {
-    const target = pickSkillMappingAssessment();
-    if (target) {
-      setDirectTestAssessment(target);
-      return;
-    }
     if (onGoTakeTest) onGoTakeTest();
     else goToProcessGuides('tests');
   };
@@ -429,9 +458,9 @@ export default function ModulesPanel({
           <div className="space-y-2 mb-4">
             {confirmedAssessments.map((a) => {
               const slug = resolveAssessmentSlug(a);
-              const mod = getModuleBySlug(slug) || { icon: '📋' };
+              const mod = getMod(slug) || { icon: '📋' };
               const selected = Number(activePaid?.id) === Number(a.id);
-              const showTest = slug && (hasSkillMappingTests(slug) || ['dmit', 'dmit-psychometric'].includes(slug));
+              const showTest = slug && moduleHasTakeTest(slug);
               const showProcess = slug !== 'counselling-topup';
               const showBook = assessmentGrantsSlotBooking(a);
               return (
@@ -488,7 +517,7 @@ export default function ModulesPanel({
           <div className="modules-order-list">
             {pendingOrders.map((a) => {
               const pay = paymentByAssessment.get(Number(a.id));
-              const sel = buildModuleSelection(
+              const sel = buildSelection(
                 resolveAssessmentSlug(a),
                 a.progress?.addCounselling ?? a.progress?.selection?.addCounselling
               );
@@ -585,7 +614,22 @@ export default function ModulesPanel({
             {hasConfirmed ? 'Add another module' : 'Browse modules'}
           </h3>
           <p className="text-sm dash-card-meta mb-5">Select → Pay → Get access after confirmation</p>
-          {!hasConfirmed && (
+          {!hasConfirmed && liveVouchers.length > 0 && (
+            <div className="text-sm text-amber-800 bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 rounded-xl px-4 py-3 mb-5">
+              <p className="font-semibold mb-2">Active coupon codes</p>
+              <div className="flex flex-wrap gap-2">
+                {liveVouchers.map((v) => (
+                  <span key={v.code} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white dark:bg-stone-900 border border-amber-200 text-xs font-mono font-bold">
+                    {v.code}
+                    <span className="font-sans font-normal opacity-70">
+                      {v.discountPercent != null ? `${v.discountPercent}% off` : v.discountFixed != null ? `₹${v.discountFixed} off` : ''}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {!hasConfirmed && liveVouchers.length === 0 && (
             <p className="text-sm text-amber-800 bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 rounded-xl px-4 py-2 mb-5">
               Use code <strong className="font-mono">DREAMS20</strong> at checkout for 20% off your first module.
             </p>
@@ -637,21 +681,10 @@ export default function ModulesPanel({
 
       {user?.user_uid && (
         <p className="text-xs text-center dash-card-meta flex flex-wrap items-center justify-center gap-2">
-          Your ID for all forms: <CopyableUserId uid={user.user_uid} compact animate={false} />
+          Your Dreams ID for all forms: <CopyableUserId uid={user.user_uid} compact animate={false} />
         </p>
       )}
 
-      {directTestAssessment && (
-        <DirectTakeTestFlow
-          assessment={directTestAssessment}
-          userUid={user?.user_uid}
-          userName={user?.name}
-          userEmail={user?.email}
-          userPhone={user?.phone || profile?.whatsappNumber}
-          onClose={() => setDirectTestAssessment(null)}
-          onError={onError}
-        />
-      )}
     </div>
   );
 }

@@ -71,7 +71,7 @@ export default function DashboardOverview({
       title: 'Continue your assessment',
       desc: 'Follow the process steps or take your skill mapping tests.',
       cta: 'Process & Take test',
-      onClick: onProcess,
+      onClick: onProductAction || onProcess,
     };
   } else if (counsellingAccess && !upcomingBookings.length) {
     nextAction = {
@@ -91,7 +91,7 @@ export default function DashboardOverview({
           className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 border border-amber-200/70"
         >
           <p className="font-bold text-amber-900 dark:text-amber-100 mb-1">Welcome! Your account is ready.</p>
-          <p className="text-sm text-sand-600 dark:text-sand-400 mb-3">Save your Unique ID for support and forms.</p>
+          <p className="text-sm text-sand-600 dark:text-sand-400 mb-3">Save your Dreams ID for support and forms.</p>
           <CopyableUserId uid={welcomeUid} />
         </motion.div>
       )}

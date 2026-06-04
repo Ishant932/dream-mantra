@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import {
   Calendar, FlaskConical, User, CheckCircle, Award, Briefcase,
@@ -30,6 +30,7 @@ import {
 import { canCancelAssessment } from '../utils/assessmentHelpers';
 import { hasSkillMappingTests } from '../data/moduleCatalog';
 import { prefetchCareers } from '../utils/loadCareers';
+import { scrollToElement } from '../utils/scrollToTop';
 
 const CareerLibraryExplorer = lazy(() => import('../components/CareerLibraryExplorer'));
 const AICornerPanel = lazy(() => import('../components/AICornerPanel'));
@@ -72,6 +73,7 @@ export default function UserDashboard() {
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const dashAnchorRef = useRef(null);
 
   const counsellingAccess = useMemo(
     () => data.counsellingAccess === true || hasCounsellingAccess(data.assessments || []),
@@ -178,6 +180,18 @@ export default function UserDashboard() {
   }, [tabParam, data.assessments, navigate, loading, counsellingAccess]);
 
   useEffect(() => {
+    if (loading) return undefined;
+    const run = () => {
+      if (dashAnchorRef.current) {
+        scrollToElement(dashAnchorRef.current, { offset: 8, behavior: 'instant' });
+      }
+    };
+    run();
+    const timer = window.setTimeout(run, 120);
+    return () => window.clearTimeout(timer);
+  }, [loading, tabParam]);
+
+  useEffect(() => {
     const slotId = new URLSearchParams(location.search).get('slot_id');
     if (!slotId || loading) return;
     if (!counsellingAccess) {
@@ -202,11 +216,17 @@ export default function UserDashboard() {
     if (match) setSelectedSlot(match);
   }, [location.search, slots, counsellingAccess]);
 
-  const goTab = (tabId, extraSearch = '') => navigate({ pathname: '/dashboard', search: `?tab=${tabId}${extraSearch}` });
+  const goTab = (tabId, extraSearch = '') => {
+    navigate({ pathname: '/dashboard', search: `?tab=${tabId}${extraSearch}` });
+  };
+
+  const openProfileModal = () => setShowProfileModal(true);
 
   const goProcessGuides = (section = 'process') => {
     goTab('process-guides', section === 'tests' ? '&section=tests&open=1' : '&section=process');
   };
+
+  const goToTakeTest = () => goProcessGuides('tests');
 
   const bookConsultation = async (e) => {
     e.preventDefault();
@@ -320,11 +340,13 @@ export default function UserDashboard() {
           />
         </div>
 
+        <div ref={dashAnchorRef} id="user-dashboard-anchor" className="scroll-mt-28">
         <DashSection title={t('dashboard.myDashboard')} icon={User} staticLayout>
           <DashboardSidebarLayout
             tabs={dashboardTabs}
             defaultTab={tabParam}
             id="user-dashboard"
+            anchorRef={dashAnchorRef}
             user={displayUser}
             profileCompletion={profileCompletion}
           >
@@ -339,7 +361,7 @@ export default function UserDashboard() {
                       counsellingAccess={counsellingAccess}
                       pendingPayment={pendingPayment}
                       paidAssessment={paidAssessment}
-                      onCompleteProfile={() => setShowProfileModal(true)}
+                      onCompleteProfile={openProfileModal}
                       onBookModule={() => goTab('assess')}
                       onPayment={() => pendingPayment && navigate(`/payment/${pendingPayment.id}`)}
                       onProcess={() => goTab('process-guides')}
@@ -386,7 +408,7 @@ export default function UserDashboard() {
                   onSuccess={setMsg}
                   onRefresh={refreshDashboard}
                   onGoProcessGuides={goProcessGuides}
-                  onGoTakeTest={() => goProcessGuides('tests')}
+                  onGoTakeTest={goToTakeTest}
                 />
               )}
 
@@ -422,7 +444,7 @@ export default function UserDashboard() {
                   onRefresh={refreshDashboard}
                 />
               )}
-
+              
               {tab === 'reports' && (
                 <div className="space-y-6 max-w-4xl">
                   <DashCard className="!p-6 sm:!p-8" glow={false} hover={false}>
@@ -518,6 +540,7 @@ export default function UserDashboard() {
             )}
           </DashboardSidebarLayout>
         </DashSection>
+        </div>
 
         <DashSection title={t('dashboard.navigation')} icon={Sparkles} className="mt-10">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

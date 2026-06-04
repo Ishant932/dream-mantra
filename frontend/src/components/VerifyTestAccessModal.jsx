@@ -106,7 +106,7 @@ export default function VerifyTestAccessModal({
               <form onSubmit={handleSubmit} className="space-y-3">
                 <div>
                   <label htmlFor="verify-test-uid" className="block text-xs font-bold uppercase tracking-wide mb-1.5">
-                    Dream Mantra ID
+                    Dreams ID
                   </label>
                   <input
                     id="verify-test-uid"

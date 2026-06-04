@@ -61,6 +61,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
   const [editForm, setEditForm] = useState({ amount: '', adminNote: '', userNote: '' });
   const [reassignId, setReassignId] = useState(null);
   const [reassignUserId, setReassignUserId] = useState('');
+  const [previewUrl, setPreviewUrl] = useState(null);
 
   const load = useCallback(async () => {
     if (!token) return;

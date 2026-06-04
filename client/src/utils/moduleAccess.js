@@ -154,6 +154,15 @@ export function hasSkillMappingAccess(assessments = []) {
   );
 }
 
+/** Skill Mapping modules only — hide Take test for Mind Mapping & AI Career Launchpad */
+export function moduleHasTakeTest(slug) {
+  return hasSkillMappingTests(slug);
+}
+
+export function moduleUsesSkillMappingForms(slug) {
+  return hasSkillMappingTests(slug);
+}
+
 export function hasQuestionnaireAccess(assessments = []) {
   return hasSkillMappingAccess(assessments);
 }

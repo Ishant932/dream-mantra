@@ -19,6 +19,14 @@ import { summarizeUserAssessments, isPendingUser } from '../lib/adminUsers.js';
 import { getPlatformAnalytics } from '../lib/analytics.js';
 import { getData, saveData } from '../lib/database.js';
 import { listContactLeads, updateContactLead, countNewLeads } from '../lib/leads.js';
+import {
+  listModulesForAdmin,
+  upsertModule,
+  removeModule,
+  listVouchers,
+  upsertVoucher,
+  removeVoucher,
+} from '../lib/catalogStore.js';
 
 function istIso(date, time) {
   return new Date(`${date}T${time}:00+05:30`).toISOString();
@@ -280,6 +288,60 @@ router.patch('/leads/:id', (req, res) => {
   const lead = updateContactLead(req.params.id, req.body);
   if (!lead) return res.status(404).json({ message: 'Lead not found' });
   res.json({ lead });
+});
+
+router.get('/modules', (req, res) => {
+  res.json({ modules: listModulesForAdmin() });
+});
+
+router.post('/modules', (req, res) => {
+  try {
+    const module = upsertModule(req.body);
+    res.json({ module, modules: listModulesForAdmin() });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.patch('/modules/:slug', (req, res) => {
+  try {
+    const module = upsertModule({ ...req.body, slug: req.params.slug });
+    res.json({ module, modules: listModulesForAdmin() });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.delete('/modules/:slug', (req, res) => {
+  removeModule(req.params.slug);
+  res.json({ modules: listModulesForAdmin() });
+});
+
+router.get('/vouchers', (req, res) => {
+  res.json({ vouchers: listVouchers() });
+});
+
+router.post('/vouchers', (req, res) => {
+  try {
+    const voucher = upsertVoucher(req.body);
+    res.json({ voucher, vouchers: listVouchers() });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.patch('/vouchers/:code', (req, res) => {
+  try {
+    const voucher = upsertVoucher({ ...req.body, code: req.params.code });
+    res.json({ voucher, vouchers: listVouchers() });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.delete('/vouchers/:code', (req, res) => {
+  removeVoucher(req.params.code);
+  res.json({ vouchers: listVouchers() });
 });
 
 export default router;

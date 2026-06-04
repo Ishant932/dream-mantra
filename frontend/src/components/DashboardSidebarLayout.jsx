@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -15,7 +15,8 @@ import {
   BarChart3,
 } from 'lucide-react';
 import CopyableUserId from './CopyableUserId';
-import { scrollPageToTop, scrollToRefTop } from '../utils/scrollToTop';
+import { scrollToElement } from '../utils/scrollToTop';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 const TAB_ICONS = {
   overview: LayoutGrid,
@@ -49,6 +50,7 @@ export default function DashboardSidebarLayout({
   profileCompletion = 0,
   showProfileCompletion = true,
   sectionTitle,
+  anchorRef,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -57,20 +59,26 @@ export default function DashboardSidebarLayout({
   const params = new URLSearchParams(location.search);
   const active = params.get('tab') || defaultTab || tabs[0]?.id;
 
-  const setTab = (tabId) => {
-    navigate({ pathname: location.pathname, search: `?tab=${tabId}` }, { replace: true });
-  };
-
   const activeTab = tabs.find((t) => t.id === active) || tabs[0];
   const panelTab = tabs.some((t) => t.id === active) ? active : (activeTab?.id || 'overview');
+  const lite = isMobilePerf();
+
+  const scrollToTabStart = useCallback(() => {
+    const el = anchorRef?.current || headerRef.current || mainRef.current;
+    scrollToElement(el, { offset: 8, behavior: 'instant' });
+  }, [anchorRef]);
+
+  const setTab = (tabId) => {
+    if (tabId === active) return;
+    navigate({ pathname: location.pathname, search: `?tab=${tabId}` }, { replace: true });
+    requestAnimationFrame(() => requestAnimationFrame(scrollToTabStart));
+  };
 
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      scrollPageToTop('instant');
-      scrollToRefTop(headerRef, { offset: 8, behavior: 'instant' });
-    });
-    return () => cancelAnimationFrame(frame);
-  }, [panelTab]);
+    scrollToTabStart();
+    const timers = [50, 150, 400].map((ms) => window.setTimeout(scrollToTabStart, ms));
+    return () => timers.forEach((id) => window.clearTimeout(id));
+  }, [panelTab, scrollToTabStart]);
 
   return (
     <div className="dash-sidebar-layout no-reveal">
@@ -115,7 +123,7 @@ export default function DashboardSidebarLayout({
                   <p className="dash-sidebar-name truncate">{user.name}</p>
                   {showProfileCompletion && user.user_uid ? (
                     <div className="dash-sidebar-uid-block mt-1.5">
-                      <p className="dash-sidebar-uid-label">Unique ID</p>
+                      <p className="dash-sidebar-uid-label">Dreams ID</p>
                       <CopyableUserId uid={user.user_uid} compact animate={false} className="dash-sidebar-uid" />
                     </div>
                   ) : showProfileCompletion ? (
@@ -164,13 +172,11 @@ export default function DashboardSidebarLayout({
         </aside>
 
         {/* Main content */}
-        <div className="dash-sidebar-main" ref={mainRef}>
-          <motion.div
+        <div className="dash-sidebar-main scroll-mt-28" ref={mainRef}>
+          <div
             ref={headerRef}
-            key={activeTab?.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="dash-sidebar-main-header scroll-mt-28"
+            id={`${id}-tab-header`}
+            className="dash-sidebar-main-header"
           >
             {activeTab && (
               <>
@@ -188,20 +194,26 @@ export default function DashboardSidebarLayout({
                 </div>
               </>
             )}
-          </motion.div>
+          </div>
 
           <div className="dash-sidebar-panel" role="tabpanel" id={`${id}-panel`}>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={panelTab}
-                variants={panelVariants}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-              >
+            {lite ? (
+              <div key={panelTab}>
                 {typeof children === 'function' ? children(panelTab) : children}
-              </motion.div>
-            </AnimatePresence>
+              </div>
+            ) : (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={panelTab}
+                  variants={panelVariants}
+                  initial="initial"
+                  animate="animate"
+                  exit="exit"
+                >
+                  {typeof children === 'function' ? children(panelTab) : children}
+                </motion.div>
+              </AnimatePresence>
+            )}
           </div>
         </div>
       </div>

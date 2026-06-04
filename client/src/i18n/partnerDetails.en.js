@@ -1,0 +1,153 @@
+/** Partner category detail copy — aligned with Dreamz Roadmap Partner With Us */
+export const partnerDetailsEn = {
+  schools: {
+    tagline: 'Bring scientific career guidance into your school ecosystem',
+    intro: 'Dream Mantra partners with schools to integrate Mind Mapping, Skill Mapping, and structured counselling into student life — from Class 1 through Class 12. We help students discover strengths early, choose streams wisely, and align parents with evidence-based guidance.',
+    benefits: [
+      'Certified career counsellors for campus workshops & parent sessions',
+      'Mind Mapping & Skill Mapping assessments at group rates',
+      'Stream selection support for Class 9–10 students',
+      'Teacher orientation on career guidance basics',
+      'Co-branded reports and parent communication templates',
+      'Annual career awareness calendar for your school',
+    ],
+    idealFor: ['CBSE / ICSE / State board schools', 'K–12 institutions in Jaipur & pan-India (online)', 'Schools planning career cells or counselling upgrades'],
+    offerings: ['On-campus assessment days', 'Virtual counselling for boarding schools', 'Principal & counsellor training modules'],
+    howItWorks: ['Intro call with school leadership', 'Custom partnership proposal', 'Pilot batch → full rollout', 'Ongoing support & reporting'],
+  },
+  'coaching-centers': {
+    tagline: 'Differentiate your institute with scientific career assessments',
+    intro: 'Coaching institutes preparing students for boards and competitive exams can offer Mind Mapping & Skill Mapping as a premium value-add — helping students choose the right stream and career before they invest years in the wrong path.',
+    benefits: [
+      'White-label assessment packages for your students',
+      'Referral commissions on module bookings',
+      'Career clarity sessions bundled with academic coaching',
+      'Marketing collaterals & parent seminar support',
+      'Priority scheduling for group assessments',
+      'Student progress dashboards for centre admins',
+    ],
+    idealFor: ['JEE / NEET / CA foundation institutes', 'Board exam coaching centres', 'Multi-branch coaching networks'],
+    offerings: ['Bulk student assessment camps', 'Career counselling add-on at checkout', 'Teacher-as-referral-partner program'],
+    howItWorks: ['Partnership onboarding', 'Staff briefing session', 'Student enrollment drive', 'Monthly performance review'],
+  },
+  colleges: {
+    tagline: 'Power your campus career cell with Dream Mantra',
+    intro: 'Colleges and universities partner with us for degree validation, internship mapping, placement readiness, and AI Career Launchpad sessions — bridging the gap between academics and employability.',
+    benefits: [
+      'Campus career fairs & recruiter connect (Jaipur network)',
+      'AI Career Launchpad — 5-session job-ready accelerator',
+      'Degree-to-career mapping workshops',
+      'Internship & skill-gap analysis for students',
+      'Placement cell training for TPO teams',
+      'Alumni mentoring network access',
+    ],
+    idealFor: ['Undergraduate & postgraduate colleges', 'Professional & vocational institutes', 'University placement departments'],
+    offerings: ['Semester-wise career roadmap', 'Mock interviews & resume clinics', 'Industry trend briefings for faculty'],
+    howItWorks: ['MoU & scope alignment', 'Batch-wise scheduling', 'Faculty coordinator assigned', 'Impact report each semester'],
+  },
+  corporates: {
+    tagline: 'Career wellness & talent development for your workforce',
+    intro: 'Corporates partner with Dream Mantra for employee career clarity programs, leadership assessments, team workshops, and CSR initiatives focused on youth career guidance in Rajasthan and beyond.',
+    benefits: [
+      'Employee career counselling & switch guidance',
+      'Team DISC / Skill Mapping workshops',
+      'CSR school & college outreach programs',
+      'Leadership development sessions',
+      'Custom reports for HR & L&D teams',
+      'Pan-India online delivery available',
+    ],
+    idealFor: ['IT & services companies', 'Manufacturing & retail HR teams', 'CSR-focused enterprises'],
+    offerings: ['Half-day / full-day workshops', 'Annual employee wellness calendar', 'Campus-to-corporate hiring bridges'],
+    howItWorks: ['Needs assessment with HR', 'Proposal & pricing', 'Pilot cohort', 'Scale across business units'],
+  },
+  teachers: {
+    tagline: 'Become a certified career guide in your community',
+    intro: 'Teachers and educators join Dream Mantra to upskill in career counselling, earn referral income, and guide students with Mind Mapping & Skill Mapping science — without leaving their teaching profession.',
+    benefits: [
+      'Career counsellor certification pathway',
+      'Referral income on every successful enrollment',
+      'Training on Mind Mapping & Skill Mapping interpretation',
+      'Access to 950+ career library for classroom use',
+      'Dedicated partner support manager',
+      'Marketing kit for parent outreach',
+    ],
+    idealFor: ['School teachers & academic coordinators', 'Independent tutors & mentors', 'Retired educators passionate about guidance'],
+    offerings: ['Online certification batches', 'Monthly mentor webinars', 'Local referral tracking dashboard'],
+    howItWorks: ['Apply via partnership form', 'Orientation & training', 'Certification exam', 'Start referring & earning'],
+  },
+  'referral-partner': {
+    tagline: 'Earn by connecting students to the right career path',
+    intro: 'Referral partners — influencers, counsellors, bloggers, and community leaders — earn commissions when students they refer enroll in Dream Mantra modules or counselling programs.',
+    benefits: [
+      'Transparent commission on confirmed payments',
+      'Unique referral tracking & monthly statements',
+      'Co-branded digital assets & WhatsApp creatives',
+      'No cap on referrals — pan-India',
+      'Dedicated WhatsApp support line',
+      'Early access to new programs & offers',
+    ],
+    idealFor: ['Education influencers & content creators', 'Independent counsellors', 'Community leaders & parent networks', 'School bus vendors, uniform shops & local businesses serving families'],
+    offerings: ['Individual referral codes', 'Bulk school referral drives', 'Seasonal campaign bonuses'],
+    howItWorks: ['Register as referral partner', 'Receive your referral kit', 'Share with your network', 'Commission on every confirmed booking'],
+  },
+};
+
+export const leadershipEn = {
+  founding: [
+    { name: 'Esha Tibrewal', role: 'Founder & CEO' },
+    { name: 'Shivam Lohiya', role: 'Co-Founder – Operations & Technology' },
+  ],
+  directors: [
+    {
+      name: 'Anil Lohiya',
+      role: 'Chief Strategic Advisor',
+      image: '/team/anil-lohiya.jpg',
+      bio: 'With deep business insight and visionary thinking, Anil Lohiya contributes to the organization\'s long-term strategic direction and growth planning. His leadership approach emphasizes sustainable expansion, structured decision-making, and building a strong organizational foundation.',
+    },
+    {
+      name: 'Sunil Lohiya',
+      role: 'Director – Business Growth & Strategic Development',
+      image: '/team/sunil-lohiya.jpg',
+      bio: 'Sunil Lohiya brings strong expertise in business development, organizational planning, and strategic execution. His ability to identify growth opportunities and strengthen operational direction contributes significantly to the company\'s evolving success journey.',
+    },
+    {
+      name: 'Seema Lohiya',
+      role: 'Director – Community Relations & Development',
+      image: '/team/seema-lohiya.jpg',
+      bio: 'Known for her strong interpersonal leadership and people-centric approach, Seema Lohiya plays a key role in building meaningful relationships and fostering collaborative growth. Her contribution strengthens the organization\'s culture, outreach, and community engagement initiatives.',
+    },
+    {
+      name: 'Vinita Tibrewal',
+      role: 'Director – Public Relations & Strategic Alliances',
+      image: '/team/vinita-tibrewal.jpg',
+      bio: 'Vinita Tibrewal contributes towards strengthening professional relationships, collaborative partnerships, and organizational outreach. With a refined communication approach and strong relationship-building skills, she plays an important role in expanding the organization\'s presence and impact.',
+    },
+  ],
+  executive: [
+    {
+      name: 'Ishant Goyal',
+      role: 'Vice President – Head of Website Development & Management and AI Specialist',
+      location: 'Jaipur, Rajasthan',
+      image: '/team/ishant-goyal.jpg',
+      bio: 'Ishant Goyal leads the planning, development, optimization, and management of web platforms to ensure high performance and exceptional user experiences. With expertise in modern web technologies and digital transformation, he drives innovative solutions that align with business goals. He also focuses on integrating Artificial Intelligence (AI) technologies to enhance website functionality, automation, personalization, and operational efficiency.',
+    },
+    {
+      name: 'Mahak Singhal',
+      role: 'Vice President – Marketing & Social Media',
+      location: 'Delhi NCR',
+      bio: 'Mahak Singhal leads the organization\'s marketing and digital branding initiatives across Delhi NCR. With a creative and audience-focused approach, she works towards strengthening online presence, brand visibility, and meaningful engagement with students and parents.',
+    },
+    {
+      name: 'Vinni Tyagi',
+      role: 'Vice President – Head of Counsellors',
+      location: 'Delhi NCR',
+      bio: 'With a strong passion for student mentorship and guidance, Vinni Tyagi leads the counsellor network across Delhi NCR. She focuses on ensuring quality counselling experiences, mentor coordination, and impactful student support systems.',
+    },
+    {
+      name: 'Amit Kumar',
+      role: 'Vice President – Sales & Business Expansion',
+      location: 'Delhi NCR',
+      bio: 'Amit Kumar leads sales growth and expansion initiatives with a relationship-driven and performance-focused approach. His contribution towards outreach, partnerships, and organizational growth supports the company\'s expanding vision and market presence.',
+    },
+  ],
+};

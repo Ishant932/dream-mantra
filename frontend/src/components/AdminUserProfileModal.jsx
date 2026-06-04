@@ -90,7 +90,7 @@ export default function AdminUserProfileModal({ user, open, onClose, loading, on
               <form onSubmit={handleSubmit} className="space-y-5">
                 {user.user_uid && (
                   <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60">
-                    <p className="text-xs font-bold uppercase tracking-wide opacity-60 mb-2">Unique ID</p>
+                    <p className="text-xs font-bold uppercase tracking-wide opacity-60 mb-2">Dreams ID</p>
                     <CopyableUserId uid={user.user_uid} />
                     <p className="text-xs opacity-60 mt-2">Joined {user.created_at && new Date(user.created_at).toLocaleDateString('en-IN', { dateStyle: 'medium' })}</p>
                   </div>

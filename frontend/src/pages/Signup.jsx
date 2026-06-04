@@ -184,9 +184,9 @@ export default function Signup() {
             </form>
 
             <p className="text-center mt-8 text-sm text-sand-600">
-              {t('auth.hasAccount')}{' '}
+              Already have an account?{' '}
               <Link to="/login" className="text-amber-600 font-semibold hover:underline">
-                {t('nav.login')}
+                Sign in
               </Link>
             </p>
           </div>
