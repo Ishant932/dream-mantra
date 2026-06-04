@@ -6,6 +6,7 @@ import { useLang } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
+import NavQuickMenu from './NavQuickMenu';
 import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLink, NavDropdownLinkGroup } from './NavDropdownPanel';
 import { useSiteNav } from '../i18n/useSiteContent';
 import { isMobilePerf } from '../utils/mobilePerf';
@@ -145,6 +146,7 @@ export default function Navbar({ scrolled = false }) {
 
           <div className="nav-header-actions flex items-center gap-1 sm:gap-2 ml-auto min-w-0">
             <div className="nav-header-actions__tools flex items-center gap-1 shrink-0">
+              <NavQuickMenu />
               <ThemeToggle compact />
               {!navLite && (
                 <motion.button

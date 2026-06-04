@@ -122,7 +122,6 @@ export const siteEn = {
       {
         title: 'Connect',
         links: [
-          { to: '/counselling?tab=book', label: 'Book Session' },
           { to: '/about', label: 'About Us' },
           { to: '/contact', label: 'Contact' },
           { to: '/terms', label: 'Terms & Conditions' },

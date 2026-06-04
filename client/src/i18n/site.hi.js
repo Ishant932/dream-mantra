@@ -122,7 +122,6 @@ export const siteHi = {
       {
         title: 'जुड़ें',
         links: [
-          { to: '/counselling?tab=book', label: 'सत्र बुक करें' },
           { to: '/about', label: 'हमारे बारे में' },
           { to: '/contact', label: 'संपर्क' },
           { to: '/terms', label: 'नियम और शर्तें' },
