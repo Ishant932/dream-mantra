@@ -1,0 +1,26 @@
+# Triggers a Render redeploy on every push to main.
+# One-time setup: Render Dashboard → dream-mantra → Settings → Deploy Hook → copy URL
+# GitHub repo → Settings → Secrets → Actions → New secret: RENDER_DEPLOY_HOOK
+
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy hook
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "RENDER_DEPLOY_HOOK secret is not set."
+            echo "Add it from Render → dream-mantra → Settings → Deploy Hook"
+            echo "Or use Manual Deploy in the Render dashboard for this push."
+            exit 0
+          fi
+          curl -fsS -X POST "$HOOK"
+          echo "Render deploy triggered."

@@ -72,8 +72,9 @@ async function createService(ownerId) {
       region: 'singapore',
       healthCheckPath: '/api/health',
       envSpecificDetails: {
-        buildCommand: 'npm run install:all && npm run build',
-        startCommand: 'cd backend && node index.js',
+        buildCommand:
+          'npm install && npm install --prefix backend && npm install --include=dev --prefix client && npm run build --prefix client',
+        startCommand: 'node backend/index.js',
       },
       envVars: [
         { key: 'NODE_ENV', value: 'production' },

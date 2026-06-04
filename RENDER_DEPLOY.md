@@ -67,6 +67,29 @@ Render dashboard → your service → **Settings** → **Custom Domains** → ad
 
 ---
 
+## Site not updating after git push?
+
+Render is still running the **previous build** until a new deploy finishes. Check:
+
+1. **Render Dashboard** → **dream-mantra** → **Events** — is there a deploy for your latest commit?
+2. If **no deploy** after push: **Settings** → confirm repo is `DreamsMantra/dream-mantra`, branch `main`, **Auto-Deploy** is ON.
+3. **Manual redeploy (fastest fix):** **Manual Deploy** → **Deploy latest commit** → enable **Clear build cache** → Deploy.
+4. **Deploy hook (auto redeploy on every push):**
+   - Render → **dream-mantra** → **Settings** → **Deploy Hook** → copy URL
+   - GitHub → repo **Settings** → **Secrets and variables** → **Actions** → add `RENDER_DEPLOY_HOOK` with that URL
+   - Next push to `main` triggers deploy via `.github/workflows/render-deploy.yml`
+
+**Verify live site:** View page source on https://dream-mantra.onrender.com — updated build uses **Plus Jakarta Sans** fonts (not DM Sans / Outfit).
+
+**CLI redeploy** (optional):
+
+```powershell
+$env:RENDER_API_KEY = "rnd_your_key_from_render_dashboard"
+node scripts/deploy-render.js
+```
+
+---
+
 ## Notes
 
 - Do **not** put passwords in GitHub — set them only in Render Environment
