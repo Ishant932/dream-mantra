@@ -61,9 +61,22 @@ Your live URL will be like: **`https://dream-mantra.onrender.com`**
 
 ---
 
-## Custom domain (optional)
+## Custom domain — dreammantra.in (GoDaddy)
 
-Render dashboard → your service → **Settings** → **Custom Domains** → add `dreammantra.in`
+**Already added on Render:** `dreammantra.in` + `www.dreammantra.in`
+
+Follow the full guide: **[GODADDY_DOMAIN.md](./GODADDY_DOMAIN.md)**
+
+Quick DNS at GoDaddy (after removing old Hostinger A/AAAA/CNAME records):
+
+| Type | Name | Value |
+|------|------|-------|
+| A | `@` | `216.24.57.1` |
+| CNAME | `www` | `dream-mantra.onrender.com` |
+
+Then Render Dashboard → **dream-mantra** → **Settings** → **Custom Domains** → **Verify**.
+
+**Never share GoDaddy passwords** — only DNS record changes are needed.
 
 ---
 
