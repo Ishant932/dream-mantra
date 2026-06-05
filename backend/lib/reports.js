@@ -25,12 +25,14 @@ export function listReportsForUser(userId) {
 
 function enrichReport(row) {
   const data = getData();
-  const user = data.users.find((u) => u.id === row.user_id);
+  const user = data.users.find((u) => Number(u.id) === Number(row.user_id));
   const assessment = row.assessment_id
-    ? data.assessments.find((a) => a.id === row.assessment_id)
+    ? data.assessments.find((a) => Number(a.id) === Number(row.assessment_id))
     : null;
   return {
     ...row,
+    id: Number(row.id),
+    user_id: Number(row.user_id),
     user_name: user?.name,
     user_uid: user?.user_uid,
     user_email: user?.email,
@@ -42,45 +44,44 @@ function enrichReport(row) {
   };
 }
 
+function syncAssessmentReportLink(assessmentId, reportLink) {
+  if (assessmentId == null || reportLink === undefined) return;
+  const data = getData();
+  const assessment = data.assessments.find((a) => Number(a.id) === Number(assessmentId));
+  if (assessment) assessment.report_link = reportLink || null;
+}
+
 export function upsertReport({ id, userId, userUid, assessmentId, productSlug, productTitle, reportLink, reportTitle, adminNotes, resendNotification }) {
   ensureReportsInitialized();
   const data = getData();
-  let resolvedUserId = userId != null && userId !== '' ? Number(userId) : null;
-  if (!resolvedUserId && userUid) {
-    const byUid = findUserByUid(userUid, data);
-    if (!byUid) throw new Error(`User not found for ID ${userUid}`);
-    resolvedUserId = byUid.id;
-  }
-  const user = resolvedUserId ? data.users.find((u) => u.id === resolvedUserId) : null;
-  if (!user) throw new Error('User not found');
+  const reportId = id != null && id !== '' ? Number(id) : null;
 
-  const assessment = assessmentId
-    ? data.assessments.find((a) => a.id === Number(assessmentId))
-    : null;
-
-  if (id) {
-    const row = data.user_reports.find((r) => Number(r.id) === Number(id));
+  if (reportId) {
+    const row = data.user_reports.find((r) => Number(r.id) === reportId);
     if (!row) throw new Error('Report not found');
+
     const prevLink = row.report_link;
     const prevTitle = row.report_title;
     const prevNotes = row.admin_notes;
-    if (reportLink !== undefined) row.report_link = reportLink;
-    if (reportTitle !== undefined) row.report_title = reportTitle;
-    if (adminNotes !== undefined) row.admin_notes = adminNotes;
+
+    if (reportLink !== undefined) row.report_link = String(reportLink).trim();
+    if (reportTitle !== undefined) row.report_title = String(reportTitle).trim() || row.report_title;
+    if (adminNotes !== undefined) row.admin_notes = adminNotes ? String(adminNotes).trim() : null;
     if (productTitle !== undefined) row.product_title = productTitle;
     row.updated_at = new Date().toISOString();
-    const linkedAssessment = assessment
-      || (row.assessment_id ? data.assessments.find((a) => a.id === row.assessment_id) : null);
-    if (linkedAssessment && reportLink !== undefined) {
-      linkedAssessment.report_link = reportLink;
+
+    if (reportLink !== undefined && row.assessment_id) {
+      syncAssessmentReportLink(row.assessment_id, row.report_link);
     }
+
     saveData();
     const enriched = enrichReport(row);
     const contentChanged =
-      (reportLink !== undefined && reportLink !== prevLink)
-      || (reportTitle !== undefined && reportTitle !== prevTitle)
-      || (adminNotes !== undefined && adminNotes !== prevNotes);
+      (reportLink !== undefined && row.report_link !== prevLink)
+      || (reportTitle !== undefined && row.report_title !== prevTitle)
+      || (adminNotes !== undefined && row.admin_notes !== prevNotes);
     const shouldNotify = resendNotification || contentChanged;
+
     if (shouldNotify && row.report_link) {
       notifyUser(row.user_id, {
         type: 'report',
@@ -90,8 +91,23 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
         meta: { reportId: row.id },
       });
     }
+
     return enriched;
   }
+
+  let resolvedUserId = userId != null && userId !== '' ? Number(userId) : null;
+  if (!resolvedUserId && userUid) {
+    const byUid = findUserByUid(userUid, data);
+    if (!byUid) throw new Error(`User not found for ID ${userUid}`);
+    resolvedUserId = byUid.id;
+  }
+
+  const user = resolvedUserId ? data.users.find((u) => Number(u.id) === resolvedUserId) : null;
+  if (!user) throw new Error('User not found');
+
+  const assessment = assessmentId
+    ? data.assessments.find((a) => Number(a.id) === Number(assessmentId))
+    : null;
 
   const newId = data.nextId.user_reports++;
   const row = {
@@ -100,21 +116,21 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
     assessment_id: assessmentId ? Number(assessmentId) : null,
     product_slug: productSlug || assessment?.product_slug || null,
     product_title: productTitle || assessment?.type || 'Assessment Report',
-    report_link: reportLink || '',
-    report_title: reportTitle || 'Your Report',
-    admin_notes: adminNotes || null,
+    report_link: reportLink ? String(reportLink).trim() : '',
+    report_title: reportTitle ? String(reportTitle).trim() : 'Your Report',
+    admin_notes: adminNotes ? String(adminNotes).trim() : null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
   data.user_reports.push(row);
 
-  if (assessment && reportLink) {
-    assessment.report_link = reportLink;
+  if (assessment && row.report_link) {
+    syncAssessmentReportLink(assessment.id, row.report_link);
   }
 
   saveData();
 
-  if (reportLink) {
+  if (row.report_link) {
     notifyUser(resolvedUserId, {
       type: 'report',
       title: 'Your report is ready',
@@ -138,8 +154,7 @@ export function deleteReport(id) {
   const userId = row.user_id;
 
   if (row.assessment_id) {
-    const assessment = data.assessments.find((a) => Number(a.id) === Number(row.assessment_id));
-    if (assessment) assessment.report_link = null;
+    syncAssessmentReportLink(row.assessment_id, null);
   }
 
   data.user_reports.splice(idx, 1);
@@ -162,7 +177,7 @@ export function getPaidAssessmentsWithUsers() {
     .filter((a) => a.status === 'paid')
     .map((a) => {
       const user = data.users.find((u) => u.id === a.user_id);
-      const report = (data.user_reports || []).find((r) => r.assessment_id === a.id);
+      const report = (data.user_reports || []).find((r) => Number(r.assessment_id) === Number(a.id));
       return {
         id: a.id,
         user_id: a.user_id,

@@ -337,7 +337,7 @@ export default function AdminDashboard() {
   };
 
   const startEditReport = (report) => {
-    setEditingReportId(report.id);
+    setEditingReportId(Number(report.id));
     setEditReportForm({
       reportTitle: report.report_title || '',
       reportLink: report.report_link || '',
@@ -352,12 +352,17 @@ export default function AdminDashboard() {
 
   const saveEditReport = async (resend = false) => {
     if (!editingReportId) return;
+    const link = editReportForm.reportLink.trim();
+    if (!link) {
+      setError('Report URL is required');
+      return;
+    }
     setReportSavingId(editingReportId);
     setError('');
     try {
       await adminApi.updateReport(token, editingReportId, {
         reportTitle: editReportForm.reportTitle.trim(),
-        reportLink: editReportForm.reportLink.trim(),
+        reportLink: link,
         adminNotes: editReportForm.adminNotes.trim(),
         resendNotification: resend,
       });
@@ -869,7 +874,7 @@ export default function AdminDashboard() {
                           <tbody>
                             {reports.map((r) => (
                               <tr key={r.id} className="border-b border-sand-100 dark:border-sand-800/60 hover:bg-amber-50/40 dark:hover:bg-sand-800/30 transition align-top">
-                                {editingReportId === r.id ? (
+                                {Number(editingReportId) === Number(r.id) ? (
                                   <>
                                     <td className="py-3 px-3"><CopyableUserId uid={r.user_uid} compact /></td>
                                     <td className="py-3 px-3 font-semibold">{r.user_name}</td>
@@ -902,7 +907,7 @@ export default function AdminDashboard() {
                                       <div className="flex flex-wrap gap-1.5 justify-end">
                                         <button
                                           type="button"
-                                          disabled={reportSavingId === r.id}
+                                          disabled={Number(reportSavingId) === Number(r.id)}
                                           onClick={() => saveEditReport(false)}
                                           className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 inline-flex items-center gap-1"
                                         >
@@ -910,7 +915,7 @@ export default function AdminDashboard() {
                                         </button>
                                         <button
                                           type="button"
-                                          disabled={reportSavingId === r.id || !editReportForm.reportLink}
+                                          disabled={Number(reportSavingId) === Number(r.id) || !editReportForm.reportLink.trim()}
                                           onClick={() => saveEditReport(true)}
                                           className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-amber-600 text-white hover:bg-amber-700 disabled:opacity-50 inline-flex items-center gap-1"
                                         >
@@ -947,18 +952,18 @@ export default function AdminDashboard() {
                                     <button
                                       type="button"
                                       onClick={() => startEditReport(r)}
-                                      disabled={reportDeletingId === r.id}
-                                      className="text-xs font-bold px-2.5 py-1.5 rounded-lg border border-amber-300 text-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 inline-flex items-center gap-1"
+                                      disabled={Number(reportDeletingId) === Number(r.id)}
+                                      className="text-xs font-bold px-2.5 py-1.5 rounded-lg border border-amber-300 text-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 inline-flex items-center gap-1 disabled:opacity-50"
                                     >
                                       <Pencil className="w-3.5 h-3.5" /> Edit
                                     </button>
                                     <button
                                       type="button"
                                       onClick={() => removeReport(r)}
-                                      disabled={reportDeletingId === r.id}
+                                      disabled={Number(reportDeletingId) === Number(r.id)}
                                       className="text-xs font-bold px-2.5 py-1.5 rounded-lg border border-red-300 text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 inline-flex items-center gap-1 disabled:opacity-50"
                                     >
-                                      <Trash2 className="w-3.5 h-3.5" /> {reportDeletingId === r.id ? 'Removing…' : 'Remove'}
+                                      <Trash2 className="w-3.5 h-3.5" /> {Number(reportDeletingId) === Number(r.id) ? 'Removing…' : 'Remove'}
                                     </button>
                                   </div>
                                 </td>
