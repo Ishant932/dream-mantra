@@ -49,6 +49,14 @@ services:
         sync: false
       - key: EMAIL_FROM
         sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
 
   # Pings both URLs every 5 min to reduce Render free-tier cold starts
   - type: cron

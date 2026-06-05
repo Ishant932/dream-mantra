@@ -1,29 +1,81 @@
 import nodemailer from 'nodemailer';
 
-export function isEmailConfigured() {
-  return Boolean(process.env.SMTP_USER?.trim() && process.env.SMTP_PASS?.trim());
+function smtpUser() {
+  return process.env.SMTP_USER?.trim() || process.env.EMAIL_USER?.trim() || '';
 }
 
-function createTransport() {
-  return nodemailer.createTransport({
+function smtpPass() {
+  return process.env.SMTP_PASS?.trim() || process.env.EMAIL_PASS?.trim() || '';
+}
+
+export function isEmailConfigured() {
+  if (process.env.RESEND_API_KEY?.trim()) return true;
+  return Boolean(smtpUser() && smtpPass());
+}
+
+function defaultFrom() {
+  return (
+    process.env.EMAIL_FROM?.trim() ||
+    process.env.RESEND_FROM?.trim() ||
+    `Dream Mantra <${smtpUser() || 'onboarding@resend.dev'}>`
+  );
+}
+
+async function sendViaResend({ to, subject, text, html }) {
+  const key = process.env.RESEND_API_KEY?.trim();
+  if (!key) return { ok: false, skipped: true, reason: 'Resend not configured' };
+
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${key}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: defaultFrom(),
+      to: [to],
+      subject,
+      text,
+      html,
+    }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data.message || data.error || `Resend HTTP ${res.status}`);
+  }
+  return { ok: true, provider: 'resend', id: data.id };
+}
+
+async function sendViaSmtp({ to, subject, text, html }) {
+  if (!isEmailConfigured() || !smtpUser() || !smtpPass()) {
+    return { ok: false, skipped: true, reason: 'SMTP not configured' };
+  }
+
+  const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST?.trim() || 'smtp.gmail.com',
     port: Number(process.env.SMTP_PORT || 587),
     secure: process.env.SMTP_SECURE === 'true',
-    auth: {
-      user: process.env.SMTP_USER?.trim(),
-      pass: process.env.SMTP_PASS?.trim(),
-    },
+    auth: { user: smtpUser(), pass: smtpPass() },
   });
+
+  await transporter.sendMail({ from: defaultFrom(), to, subject, text, html });
+  return { ok: true, provider: 'smtp' };
 }
 
 export async function sendMail({ to, subject, text, html }) {
-  if (!isEmailConfigured()) {
-    return { ok: false, skipped: true, reason: 'SMTP not configured' };
+  if (process.env.RESEND_API_KEY?.trim()) {
+    try {
+      return await sendViaResend({ to, subject, text, html });
+    } catch (err) {
+      console.error('Resend failed, trying SMTP:', err.message);
+      if (smtpUser() && smtpPass()) {
+        return sendViaSmtp({ to, subject, text, html });
+      }
+      throw err;
+    }
   }
-  const from = process.env.EMAIL_FROM?.trim() || process.env.SMTP_USER?.trim();
-  const transporter = createTransport();
-  await transporter.sendMail({ from, to, subject, text, html });
-  return { ok: true };
+  return sendViaSmtp({ to, subject, text, html });
 }
 
 export async function sendPasswordResetOtp({ to, name, otp }) {
