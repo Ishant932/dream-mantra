@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import { defaultProfile, normalizeProfile } from './profile.js';
 import { ensureAllUserUids, nextUserUid } from './userUid.js';
 import { connectMongo, isMongoConfigured, getMongoStatus } from './mongo.js';
+import AppState from '../models/AppState.js';
 import { normalizePhone } from '../utils/passwordReset.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
