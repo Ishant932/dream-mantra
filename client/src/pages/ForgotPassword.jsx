@@ -1,55 +1,20 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Phone, ArrowRight, CheckCircle, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 import { authApi } from '../api';
-import { useAuth } from '../context/AuthContext';
 import Logo from '../components/Logo';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
-  const { persist } = useAuth();
-  const [step, setStep] = useState('request');
-  const [identifier, setIdentifier] = useState('');
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
+  const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [info, setInfo] = useState('');
-  const [devOtp, setDevOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
 
-  const handleSendOtp = async (e) => {
-    e.preventDefault();
-    setError('');
-    setInfo('');
-    if (!identifier.trim()) {
-      setError('Enter your login email or phone');
-      return;
-    }
-    if (!phone.trim()) {
-      setError('Registered mobile number is required');
-      return;
-    }
-    setLoading(true);
-    try {
-      const data = await authApi.forgotPassword({
-        identifier: identifier.trim(),
-        phone: phone.trim(),
-      });
-      setInfo(data.message || 'If details match, a code was sent to your email.');
-      if (data.devOtp) setDevOtp(data.devOtp);
-      if (data.emailSent !== false) setStep('reset');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleReset = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     if (newPassword !== confirmPassword) {
@@ -60,23 +25,14 @@ export default function ForgotPassword() {
       setError('Password must be at least 6 characters');
       return;
     }
-    if (otp.trim().length !== 6) {
-      setError('Enter the 6-digit code from your email');
-      return;
-    }
     setLoading(true);
     try {
-      const data = await authApi.resetPassword({
-        identifier: identifier.trim(),
-        phone: phone.trim(),
-        otp: otp.trim(),
+      await authApi.resetPassword({
+        email: email.trim(),
         newPassword,
       });
-      persist(data.token, data.user);
       setDone(true);
-      setTimeout(() => {
-        navigate(data.user?.role === 'admin' ? '/admin' : '/dashboard', { replace: true });
-      }, 1500);
+      setTimeout(() => navigate('/login', { replace: true }), 2000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -96,123 +52,69 @@ export default function ForgotPassword() {
             <div className="text-center py-6">
               <CheckCircle className="w-14 h-14 text-emerald-500 mx-auto mb-4" />
               <h1 className="font-display text-2xl font-bold text-[var(--text-primary)]">Password updated</h1>
-              <p className="text-[var(--text-secondary)] text-sm mt-2">Signing you in…</p>
+              <p className="text-[var(--text-secondary)] text-sm mt-2">Redirecting to login…</p>
             </div>
           ) : (
             <>
               <div className="text-center mb-8">
                 <h1 className="font-display text-2xl font-bold text-[var(--text-primary)]">Reset password</h1>
                 <p className="text-[var(--text-secondary)] text-sm mt-2">
-                  {step === 'request'
-                    ? 'Enter login details and registered mobile. We send a code to your email.'
-                    : 'Enter the email OTP and your new password.'}
+                  Enter your registered email and choose a new password.
                 </p>
               </div>
 
               {error && (
                 <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
               )}
-              {info && (
-                <div className="mb-4 p-3 rounded-xl bg-emerald-50 text-emerald-800 text-sm border border-emerald-200">{info}</div>
-              )}
-              {devOtp && (
-                <div className="mb-4 p-3 rounded-xl bg-amber-50 text-amber-800 text-sm border border-amber-200">
-                  Dev OTP: <strong>{devOtp}</strong>
-                </div>
-              )}
 
-              {step === 'request' ? (
-                <form onSubmit={handleSendOtp} className="space-y-4">
-                  <div>
-                    <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
-                      <Mail className="w-4 h-4 text-amber-600" /> Login email or phone *
-                    </label>
-                    <input
-                      className="input-field"
-                      value={identifier}
-                      onChange={(e) => setIdentifier(e.target.value)}
-                      placeholder="email@example.com or 98XXXXXXXX"
-                      autoComplete="username"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
-                      <Phone className="w-4 h-4 text-amber-600" /> Registered mobile number *
-                    </label>
-                    <input
-                      className="input-field"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="98XXXXXXXX"
-                      inputMode="tel"
-                      autoComplete="tel"
-                      required
-                    />
-                  </div>
-                  <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
-                    {loading ? 'Sending code…' : 'Send reset code to email'}
-                    {!loading && <ArrowRight className="w-4 h-4" />}
-                  </button>
-                </form>
-              ) : (
-                <form onSubmit={handleReset} className="space-y-4">
-                  <div>
-                    <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
-                      <ShieldCheck className="w-4 h-4 text-amber-600" /> Email OTP *
-                    </label>
-                    <input
-                      className="input-field text-center text-lg tracking-[0.4em] font-mono"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                      placeholder="000000"
-                      inputMode="numeric"
-                      autoComplete="one-time-code"
-                      maxLength={6}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
-                      <Lock className="w-4 h-4 text-amber-600" /> New password *
-                    </label>
-                    <input
-                      type="password"
-                      className="input-field"
-                      value={newPassword}
-                      onChange={(e) => setNewPassword(e.target.value)}
-                      autoComplete="new-password"
-                      minLength={6}
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 mb-1.5 block">
-                      Confirm new password *
-                    </label>
-                    <input
-                      type="password"
-                      className="input-field"
-                      value={confirmPassword}
-                      onChange={(e) => setConfirmPassword(e.target.value)}
-                      autoComplete="new-password"
-                      minLength={6}
-                      required
-                    />
-                  </div>
-                  <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
-                    {loading ? 'Updating…' : 'Set new password & sign in'}
-                    {!loading && <ArrowRight className="w-4 h-4" />}
-                  </button>
-                  <button
-                    type="button"
-                    className="w-full text-sm text-amber-600 font-semibold hover:underline"
-                    onClick={() => { setStep('request'); setOtp(''); setDevOtp(''); setInfo(''); }}
-                  >
-                    ← Resend code
-                  </button>
-                </form>
-              )}
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
+                    <Mail className="w-4 h-4 text-amber-600" /> Registered email
+                  </label>
+                  <input
+                    type="email"
+                    className="input-field"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your@email.com"
+                    autoComplete="email"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
+                    <Lock className="w-4 h-4 text-amber-600" /> New password
+                  </label>
+                  <input
+                    type="password"
+                    className="input-field"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    autoComplete="new-password"
+                    minLength={6}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 mb-1.5 block">
+                    Confirm new password
+                  </label>
+                  <input
+                    type="password"
+                    className="input-field"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    autoComplete="new-password"
+                    minLength={6}
+                    required
+                  />
+                </div>
+                <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
+                  {loading ? 'Updating…' : 'Update password'}
+                  {!loading && <ArrowRight className="w-4 h-4" />}
+                </button>
+              </form>
 
               <p className="text-center mt-8 text-sm text-[var(--text-secondary)]">
                 Remember your password?{' '}
