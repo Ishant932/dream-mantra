@@ -64,7 +64,12 @@ app.get('/api/health', (_, res) => {
 });
 
 app.get('/api/warmup', (_, res) => {
-  loadCareersData();
+  try {
+    loadCareersData();
+    getAvailableSlots({ from: new Date().toISOString() });
+  } catch {
+    /* warm paths best-effort */
+  }
   res.set('Cache-Control', 'no-store');
   res.json({ ok: true, ready: true, ts: Date.now() });
 });

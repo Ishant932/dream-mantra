@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import { warmupServer } from './api';
-import { runWhenIdle } from './utils/mobilePerf';
 import './index.css';
 
 function applyPerformanceHints() {
@@ -17,12 +16,7 @@ function applyPerformanceHints() {
 }
 
 applyPerformanceHints();
-
-if (document.documentElement.classList.contains('is-mobile-perf')) {
-  runWhenIdle(() => warmupServer(), 10000);
-} else {
-  warmupServer();
-}
+warmupServer();
 
 const root = document.getElementById('root');
 if (!root) {

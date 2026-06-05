@@ -38,12 +38,12 @@ services:
       - key: SEED_SAMPLE_SLOTS
         value: true
 
-  # Pings the web service every 14 min to reduce Render free-tier cold starts
+  # Pings both URLs every 5 min to reduce Render free-tier cold starts
   - type: cron
     name: dream-mantra-keepalive
     runtime: node
-    schedule: "*/14 * * * *"
+    schedule: "*/5 * * * *"
     buildCommand: echo "keepalive"
-    startCommand: node -e "fetch('https://dream-mantra.onrender.com/api/warmup').catch(()=>fetch('https://dream-mantra.onrender.com/api/health'))"
+    startCommand: node -e "const urls=['https://dreammantra.in/api/warmup','https://dream-mantra.onrender.com/api/warmup'];Promise.allSettled(urls.map(u=>fetch(u,{headers:{'Cache-Control':'no-store'}}).then(r=>console.log(u,r.status))))"
     plan: free
     region: singapore

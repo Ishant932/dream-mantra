@@ -1602,7 +1602,7 @@ export const siteEn = {
       statItems: [
         { label: '5 Sprints', sub: 'Skill modules' },
         { label: '7.5 hrs', sub: 'Total training' },
-        { label: '20 Params', sub: 'Full clarity' },
+        { label: '20 Parameters', sub: 'Full clarity' },
         { label: '7th Pillar', sub: 'Dream Mantra' },
       ],
       badge: '7th Pillar · AI Career Launchpad',

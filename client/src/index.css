@@ -11252,3 +11252,127 @@ html.dark .leadership-card__role--highlight {
   min-width: 11rem;
 }
 
+/* ── Sitewide mobile / dashboard responsiveness ── */
+@media (max-width: 1023px) {
+  .dash-content {
+    padding-left: max(0.75rem, var(--safe-left));
+    padding-right: max(0.75rem, var(--safe-right));
+    min-width: 0;
+  }
+  .dash-hero {
+    padding-top: 5.5rem !important;
+    padding-bottom: 2rem !important;
+  }
+  .dash-hero .max-w-7xl {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  .dash-hero-title {
+    font-size: clamp(1.35rem, 5vw, 1.75rem) !important;
+  }
+  .dash-sidebar-main {
+    padding: 0.75rem !important;
+    min-width: 0;
+    overflow-x: hidden;
+  }
+  .dash-sidebar-panel {
+    min-width: 0;
+    overflow-x: hidden;
+  }
+  .dash-card,
+  .dash-root .infigon-card {
+    padding: 1rem !important;
+  }
+  .dash-sidebar-main-header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .dash-sidebar-main-title {
+    font-size: 1.05rem;
+  }
+  .modules-panel-grid,
+  .modules-shop-grid,
+  .dash-overview-grid,
+  .dash-stat-row {
+    grid-template-columns: 1fr !important;
+  }
+  .career-lib-toolbar,
+  .career-lib-toolbar--embedded {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 0.65rem;
+  }
+  .career-lib-filters {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .process-q-grid,
+  .process-q-cards {
+    grid-template-columns: 1fr !important;
+  }
+  .partner-page-grid,
+  .age-pathways-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .table-scroll,
+  .dash-table-wrap,
+  .overflow-x-auto,
+  .admin-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+  .page-hero__inner {
+    flex-direction: column;
+    text-align: center;
+  }
+  .page-hero__img-wrap {
+    max-width: 100%;
+    margin-inline: auto;
+  }
+  .subtab-track {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+  .crp-stats-strip,
+  .crp-stat-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+  .form-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+  .payment-page-grid,
+  .checkout-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+@media (max-width: 639px) {
+  .dash-stat-card {
+    padding: 0.85rem !important;
+  }
+  .dash-avatar {
+    width: 3.25rem;
+    height: 3.25rem;
+    font-size: 1.25rem;
+  }
+  .footer-col__split {
+    grid-template-columns: 1fr !important;
+  }
+  .nav-header-auth-btn,
+  .nav-header-auth-link {
+    font-size: 0.625rem !important;
+    padding: 0.35rem 0.45rem !important;
+  }
+  .leadership-grid--executive-split {
+    gap: 1rem;
+  }
+  .why-counselling-table th:last-child,
+  .why-counselling-table td:last-child {
+    min-width: 8rem;
+  }
+}
+

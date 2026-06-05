@@ -15,6 +15,10 @@ export const IMAGES = {
   students: u('photo-1503676260728-1c00da094a0b'),
   studentsGroup: u('photo-1522202176988-66273c2fd55f'),
   classroom: u('photo-1582719478250-c89cae4dc85b'),
+  /** Class 6–8 program — middle-school students learning together */
+  class6to8: u('photo-1529390079861-591de354faf5'),
+  /** Schools partnership — campus / institutional setting */
+  schoolsCampus: u('photo-1523050854058-775743a369ce'),
   career: u('photo-1600880292203-757bb62b4baf'),
   founder: '/team/esha-lohiya.png',
   coFounder: '/team/shivam-lohiya.png',
@@ -128,7 +132,7 @@ export const assessments = [
 
 export const programs = [
   { slug: 'class-1-5', title: 'Class 1-5', titleHi: 'कक्षा 1-5', subtitle: 'Talent Discovery', image: IMAGES.kids },
-  { slug: 'class-6-8', title: 'Class 6-8', titleHi: 'कक्षा 6-8', subtitle: 'Self Discovery', image: IMAGES.classroom },
+  { slug: 'class-6-8', title: 'Class 6-8', titleHi: 'कक्षा 6-8', subtitle: 'Self Discovery', image: IMAGES.class6to8 },
   { slug: 'class-9-10', title: 'Class 9-10', titleHi: 'कक्षा 9-10', subtitle: 'Stream Selection', image: IMAGES.students },
   { slug: 'class-11-12', title: 'Class 11-12', titleHi: 'कक्षा 11-12', subtitle: 'Career Direction', image: IMAGES.college },
   { slug: 'college-students', title: 'College Students', titleHi: 'कॉलेज छात्र', subtitle: 'Degree & Career Clarity', image: IMAGES.college },
@@ -136,7 +140,7 @@ export const programs = [
 ];
 
 export const partners = [
-  { slug: 'schools', title: 'Schools', icon: '🏫', image: IMAGES.classroom },
+  { slug: 'schools', title: 'Schools', icon: '🏫', image: IMAGES.schoolsCampus },
   { slug: 'coaching-centers', title: 'Coaching Centers', icon: '📖', image: IMAGES.studentsGroup },
   { slug: 'colleges', title: 'Colleges', icon: '🎓', image: IMAGES.college },
   { slug: 'corporates', title: 'Corporates', icon: '🏢', image: IMAGES.professional },
