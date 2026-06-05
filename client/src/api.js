@@ -73,6 +73,8 @@ export const publicApi = {
 };
 
 export const authApi = {
+  sendRegisterOtp: (body) =>
+    request('/auth/send-register-otp', { method: 'POST', headers: headers(), body: JSON.stringify(body) }),
   register: (body) =>
     request('/auth/register', { method: 'POST', headers: headers(), body: JSON.stringify(body) }),
   login: (body) =>
@@ -87,6 +89,8 @@ export const authApi = {
     request('/auth/2fa/disable', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   changePassword: (token, body) =>
     request('/auth/password', { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  forgotPassword: (body) =>
+    request('/auth/forgot-password', { method: 'POST', headers: headers(), body: JSON.stringify(body) }),
   resetPassword: (body) =>
     request('/auth/reset-password', { method: 'POST', headers: headers(), body: JSON.stringify(body) }),
 };

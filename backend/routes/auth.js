@@ -9,12 +9,18 @@ import { generateTwoFactorSecret, qrCodeDataUrl, verifyTotp } from '../utils/tot
 import { normalizeProfile } from '../lib/profile.js';
 import {
   normalizeIdentifier,
-  verifyAccountSecret,
+  normalizePhone,
+  validateEmail,
+  validatePhone,
+  phonesMatch,
 } from '../utils/passwordReset.js';
+import { isEmailConfigured, sendOtpEmail, maskEmail } from '../utils/mail.js';
+import { generateOtp, saveOtp, verifyOtp, clearOtp } from '../utils/otp.js';
 
 const router = Router();
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 12, keyPrefix: 'login' });
-const resetLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'pwd-reset' });
+const otpLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 6, keyPrefix: 'otp-send' });
+const resetLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 8, keyPrefix: 'pwd-reset' });
 const JWT_SECRET = () => process.env.JWT_SECRET || 'dreams-mantra-secret-key';
 const JWT_EXPIRES = () => process.env.JWT_EXPIRES_IN || '7d';
 
@@ -60,39 +66,93 @@ function validatePassword(password) {
   return null;
 }
 
-// ─── Register (JWT — no OTP) ───────────────────────────────────────────────
-router.post('/register', (req, res) => {
-  const { name, email, phone, password, identifier } = req.body;
+function validateRegistrationFields({ name, email, phone }) {
   const trimmedName = name?.trim();
+  if (!trimmedName || trimmedName.length < 2) return 'Full name is required';
+  const emailErr = validateEmail(email);
+  if (emailErr) return emailErr;
+  const phoneErr = validatePhone(phone);
+  if (phoneErr) return phoneErr;
+  return null;
+}
+
+async function dispatchOtp({ to, name, otp, purpose }) {
+  if (!isEmailConfigured() && process.env.NODE_ENV === 'production') {
+    const err = new Error('Email OTP is temporarily unavailable. Please contact support.');
+    err.status = 503;
+    throw err;
+  }
+  return sendOtpEmail({ to, name, otp, purpose });
+}
+
+// ─── Send registration OTP (email verification) ────────────────────────────
+router.post('/send-register-otp', otpLimiter, async (req, res) => {
+  const { name, email, phone } = req.body || {};
+  const fieldErr = validateRegistrationFields({ name, email, phone });
+  if (fieldErr) return res.status(400).json({ message: fieldErr });
+
+  const userEmail = String(email).trim().toLowerCase();
+  const userPhone = normalizePhone(phone);
+
+  if (db.prepare('SELECT * FROM users WHERE email = ?').get(userEmail)) {
+    return res.status(409).json({ message: 'Email already registered. Try logging in.' });
+  }
+  const existingByPhone = db.prepare('SELECT * FROM users WHERE phone = ?').get(userPhone);
+  if (existingByPhone && phonesMatch(existingByPhone.phone, userPhone)) {
+    return res.status(409).json({ message: 'Mobile number already registered.' });
+  }
+
+  const otp = generateOtp();
+  saveOtp('register', userEmail, otp);
+
+  try {
+    const result = await dispatchOtp({
+      to: userEmail,
+      name: name.trim(),
+      otp,
+      purpose: 'register',
+    });
+    res.json({
+      message: `6-digit code sent to ${maskEmail(userEmail)}`,
+      emailSent: result.channel !== 'console',
+      ...(result.devOtp ? { devOtp: result.devOtp } : {}),
+    });
+  } catch (err) {
+    clearOtp('register', userEmail);
+    console.error('Register OTP email failed:', err.message);
+    res.status(err.status || 500).json({
+      message: err.message || 'Could not send verification email. Try again later.',
+    });
+  }
+});
+
+// ─── Register (email OTP + JWT) ────────────────────────────────────────────
+router.post('/register', (req, res) => {
+  const { name, email, phone, password, otp } = req.body || {};
+  const fieldErr = validateRegistrationFields({ name, email, phone });
+  if (fieldErr) return res.status(400).json({ message: fieldErr });
   const pwdErr = validatePassword(password);
-  if (!trimmedName) return res.status(400).json({ message: 'Name is required' });
   if (pwdErr) return res.status(400).json({ message: pwdErr });
+  if (!otp) return res.status(400).json({ message: 'Enter the 6-digit code from your email' });
 
-  let userEmail = (email || '').trim() || null;
-  let userPhone = (phone || '').trim() || null;
+  const userEmail = String(email).trim().toLowerCase();
+  const userPhone = normalizePhone(phone);
 
-  if (identifier?.trim()) {
-    const id = identifier.trim();
-    if (id.includes('@')) userEmail = id;
-    else userPhone = id;
-  }
+  const otpCheck = verifyOtp('register', userEmail, otp);
+  if (!otpCheck.ok) return res.status(401).json({ message: otpCheck.message });
 
-  if (!userEmail && !userPhone) {
-    return res.status(400).json({ message: 'Email or phone number is required' });
-  }
-
-  if (userEmail && db.prepare('SELECT * FROM users WHERE email = ?').get(userEmail)) {
+  if (db.prepare('SELECT * FROM users WHERE email = ?').get(userEmail)) {
     return res.status(409).json({ message: 'Email already registered' });
   }
-  if (userPhone && db.prepare('SELECT * FROM users WHERE phone = ?').get(userPhone)) {
-    return res.status(409).json({ message: 'Phone number already registered' });
+  if (db.prepare('SELECT * FROM users WHERE phone = ?').get(userPhone)) {
+    return res.status(409).json({ message: 'Mobile number already registered' });
   }
 
   try {
     const hash = bcrypt.hashSync(password, 10);
     const result = db.prepare(
       'INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, ?)'
-    ).run(trimmedName, userEmail, userPhone, hash, 'user');
+    ).run(name.trim(), userEmail, userPhone, hash, 'user');
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
     const token = signToken(user);
@@ -100,7 +160,7 @@ router.post('/register', (req, res) => {
       token,
       user: sanitize(user),
       user_uid: user.user_uid,
-      message: `Account created successfully. Your Dreams ID is ${user.user_uid}`,
+      message: `Account created. Your Dreams ID is ${user.user_uid}`,
     });
   } catch (e) {
     if (e.message?.includes('UNIQUE')) {
@@ -259,26 +319,76 @@ router.patch('/password', authRequired, (req, res) => {
   res.json({ message: 'Password updated successfully' });
 });
 
-// ─── Forgot password (verify mobile / Dreams ID — no email) ────────────────
-router.post('/reset-password', resetLimiter, (req, res) => {
+// ─── Forgot password — send email OTP (verify phone) ───────────────────────
+router.post('/forgot-password', otpLimiter, async (req, res) => {
   const normalizedId = normalizeIdentifier(req.body?.identifier);
-  const secret = String(req.body?.verify || req.body?.phone || '').trim();
-  const { newPassword } = req.body || {};
-  const pwdErr = validatePassword(newPassword);
+  const phone = String(req.body?.phone || '').trim();
+  const phoneErr = validatePhone(phone);
 
-  if (!normalizedId || !secret) {
+  if (!normalizedId) {
+    return res.status(400).json({ message: 'Enter your login email or phone number' });
+  }
+  if (phoneErr) return res.status(400).json({ message: phoneErr });
+
+  const user = findByIdentifier(normalizedId);
+  const genericMsg = 'If the details match our records, a reset code has been sent to your email.';
+
+  if (!user || !phonesMatch(user.phone, phone)) {
+    return res.json({ message: genericMsg, emailSent: false });
+  }
+
+  if (!user.email) {
+    const supportPhone = process.env.ADMIN_PHONE || '9680102276';
     return res.status(400).json({
-      message: 'Enter your login email/phone and registered mobile or Dreams ID',
+      message: `No email on file. Call or WhatsApp ${supportPhone} for help.`,
     });
   }
+
+  const otp = generateOtp();
+  saveOtp('reset', normalizedId, otp);
+
+  try {
+    const result = await dispatchOtp({
+      to: user.email,
+      name: user.name,
+      otp,
+      purpose: 'reset',
+    });
+    res.json({
+      message: genericMsg,
+      emailSent: true,
+      email: maskEmail(user.email),
+      ...(result.devOtp ? { devOtp: result.devOtp } : {}),
+    });
+  } catch (err) {
+    clearOtp('reset', normalizedId);
+    console.error('Reset OTP email failed:', err.message);
+    res.status(err.status || 500).json({
+      message: err.message || 'Could not send reset email. Try again later.',
+    });
+  }
+});
+
+router.post('/reset-password', resetLimiter, (req, res) => {
+  const normalizedId = normalizeIdentifier(req.body?.identifier);
+  const phone = String(req.body?.phone || '').trim();
+  const { otp, newPassword } = req.body || {};
+  const pwdErr = validatePassword(newPassword);
+  const phoneErr = validatePhone(phone);
+
+  if (!normalizedId || !otp) {
+    return res.status(400).json({ message: 'Login email/phone, mobile, and OTP are required' });
+  }
+  if (phoneErr) return res.status(400).json({ message: phoneErr });
   if (pwdErr) return res.status(400).json({ message: pwdErr });
 
   const user = findByIdentifier(normalizedId);
-  if (!user || !verifyAccountSecret(user, secret)) {
-    return res.status(401).json({
-      message: 'Details do not match our records. Check email/phone and your registered mobile or Dreams ID.',
-    });
+  if (!user || !phonesMatch(user.phone, phone)) {
+    return res.status(401).json({ message: 'Details do not match our records.' });
   }
+
+  const otpCheck = verifyOtp('reset', normalizedId, otp);
+  if (!otpCheck.ok) return res.status(401).json({ message: otpCheck.message });
 
   repo.updateUser(user.id, { password: bcrypt.hashSync(newPassword, 10) });
 

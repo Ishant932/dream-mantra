@@ -11,16 +11,21 @@ export function normalizePhone(phone) {
   return digits;
 }
 
-export function normalizeUid(uid) {
-  return String(uid || '').trim().toUpperCase();
+export function validateEmail(email) {
+  const e = String(email || '').trim().toLowerCase();
+  if (!e) return 'Email is required';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) return 'Enter a valid email address';
+  return null;
 }
 
-/** Match registered mobile or Dreams ID */
-export function verifyAccountSecret(user, secret) {
-  const raw = String(secret || '').trim();
-  if (!raw || !user) return false;
+export function validatePhone(phone) {
+  const digits = normalizePhone(phone);
+  if (!digits) return 'Mobile number is required';
+  if (digits.length !== 10) return 'Enter a valid 10-digit mobile number';
+  if (!/^[6-9]/.test(digits)) return 'Enter a valid Indian mobile number';
+  return null;
+}
 
-  if (user.phone && normalizePhone(user.phone) === normalizePhone(raw)) return true;
-  if (user.user_uid && normalizeUid(user.user_uid) === normalizeUid(raw)) return true;
-  return false;
+export function phonesMatch(stored, input) {
+  return normalizePhone(stored) === normalizePhone(input);
 }
