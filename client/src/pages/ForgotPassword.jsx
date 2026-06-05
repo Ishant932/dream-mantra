@@ -5,6 +5,10 @@ import { Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 import { authApi } from '../api';
 import Logo from '../components/Logo';
 
+function normalizeEmail(value) {
+  return String(value || '').trim().toLowerCase();
+}
+
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -17,6 +21,16 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    const normalizedEmail = normalizeEmail(email);
+    if (!normalizedEmail) {
+      setError('Registered email is required');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      setError('Enter a valid email address');
+      return;
+    }
     if (newPassword !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -25,16 +39,26 @@ export default function ForgotPassword() {
       setError('Password must be at least 6 characters');
       return;
     }
+
     setLoading(true);
     try {
       await authApi.resetPassword({
-        email: email.trim(),
+        email: normalizedEmail,
         newPassword,
+        confirmPassword,
       });
       setDone(true);
-      setTimeout(() => navigate('/login', { replace: true }), 2000);
+      setTimeout(() => {
+        navigate('/login', {
+          replace: true,
+          state: {
+            passwordReset: true,
+            email: normalizedEmail,
+          },
+        });
+      }, 1800);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Could not reset password. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -59,12 +83,14 @@ export default function ForgotPassword() {
               <div className="text-center mb-8">
                 <h1 className="font-display text-2xl font-bold text-[var(--text-primary)]">Reset password</h1>
                 <p className="text-[var(--text-secondary)] text-sm mt-2">
-                  Enter your registered email address, then set a new password.
+                  Enter the email address you used when creating your account, then set a new password.
                 </p>
               </div>
 
               {error && (
-                <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
+                <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200 dark:bg-red-950/30 dark:text-red-200 dark:border-red-800/50">
+                  {error}
+                </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
@@ -116,7 +142,11 @@ export default function ForgotPassword() {
                 </button>
               </form>
 
-              <p className="text-center mt-8 text-sm text-[var(--text-secondary)]">
+              <p className="text-center mt-6 text-xs text-[var(--text-secondary)]">
+                Signed up with mobile only? Use your phone number on the login page instead.
+              </p>
+
+              <p className="text-center mt-4 text-sm text-[var(--text-secondary)]">
                 Remember your password?{' '}
                 <Link to="/login" className="text-amber-600 font-semibold hover:underline">
                   Back to login

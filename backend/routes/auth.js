@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import db from '../db.js';
-import { repo } from '../lib/database.js';
+import db, { repo, flushDatabase } from '../db.js';
 import { authRequired } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 import { generateTwoFactorSecret, qrCodeDataUrl, verifyTotp } from '../utils/totp.js';
@@ -11,6 +10,11 @@ import {
   normalizeIdentifier,
   validateEmail,
 } from '../utils/passwordReset.js';
+import {
+  findUserByEmail,
+  findUserByLoginIdentifier,
+  safeComparePassword,
+} from '../lib/authHelpers.js';
 
 const router = Router();
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 12, keyPrefix: 'login' });
@@ -45,12 +49,7 @@ function sanitize(user) {
 }
 
 function findByIdentifier(identifier) {
-  const id = normalizeIdentifier(identifier);
-  if (!id) return null;
-  if (id.includes('@')) {
-    return db.prepare('SELECT * FROM users WHERE email = ?').get(id);
-  }
-  return db.prepare('SELECT * FROM users WHERE phone = ?').get(id);
+  return findUserByLoginIdentifier(identifier);
 }
 
 function validatePassword(password) {
@@ -119,8 +118,8 @@ router.post('/login', loginLimiter, (req, res) => {
   }
 
   const user = findByIdentifier(identifier);
-  if (!user || !bcrypt.compareSync(password, user.password)) {
-    return res.status(401).json({ message: 'Invalid email/phone or password' });
+  if (!user || !safeComparePassword(password, user.password)) {
+    return res.status(401).json({ message: 'Invalid email, phone, Dreams ID, or password' });
   }
 
   if (user.twoFactorEnabled && user.twoFactorSecret) {
@@ -221,7 +220,7 @@ router.post('/2fa/disable', authRequired, (req, res) => {
   if (!user.twoFactorEnabled) {
     return res.status(400).json({ message: 'Two-factor authentication is not enabled' });
   }
-  if (!password || !bcrypt.compareSync(password, user.password)) {
+  if (!password || !safeComparePassword(password, user.password)) {
     return res.status(401).json({ message: 'Incorrect password' });
   }
   if (!verifyTotp(user.twoFactorSecret, code)) {
@@ -251,7 +250,7 @@ router.patch('/password', authRequired, (req, res) => {
 
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
   if (!user) return res.status(404).json({ message: 'User not found' });
-  if (!bcrypt.compareSync(currentPassword, user.password)) {
+  if (!safeComparePassword(currentPassword, user.password)) {
     return res.status(401).json({ message: 'Current password is incorrect' });
   }
 
@@ -260,22 +259,38 @@ router.patch('/password', authRequired, (req, res) => {
 });
 
 // ─── Reset password (registered email + new password) ─────────────────────
-router.post('/reset-password', resetLimiter, (req, res) => {
+router.post('/reset-password', resetLimiter, async (req, res) => {
   const email = normalizeIdentifier(req.body?.email || req.body?.identifier);
-  const { newPassword } = req.body || {};
+  const { newPassword, confirmPassword } = req.body || {};
   const emailErr = validateEmail(email);
   const pwdErr = validatePassword(newPassword);
 
   if (emailErr) return res.status(400).json({ message: emailErr });
   if (pwdErr) return res.status(400).json({ message: pwdErr });
-
-  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-  if (!user) {
-    return res.status(401).json({ message: 'No account found with this email address.' });
+  if (confirmPassword != null && confirmPassword !== newPassword) {
+    return res.status(400).json({ message: 'Passwords do not match' });
   }
 
-  repo.updateUser(user.id, { password: bcrypt.hashSync(newPassword, 10) });
-  res.json({ message: 'Password updated successfully. Sign in with your new password.' });
+  const user = findUserByEmail(email);
+  if (!user) {
+    return res.status(404).json({
+      message: 'No account found with this email address. Use the email you used at signup. If you registered with mobile only, sign in with your phone number or contact 9680102276.',
+    });
+  }
+  if (!user.email) {
+    return res.status(400).json({
+      message: 'This account has no registered email. Sign in with your mobile number or contact support at 9680102276.',
+    });
+  }
+
+  try {
+    repo.updateUser(user.id, { password: bcrypt.hashSync(newPassword, 10) });
+    await flushDatabase();
+    res.json({ message: 'Password updated successfully. Sign in with your new password.' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ message: 'Could not update password. Please try again.' });
+  }
 });
 
 export default router;

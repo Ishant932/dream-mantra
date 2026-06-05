@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Shield, Sparkles, ArrowRight, Phone } from 'lucide-react';
+import { Mail, Lock, Shield, Sparkles, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
@@ -12,6 +12,8 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const slotId = new URLSearchParams(location.search).get('slot_id');
+  const resetNotice = location.state?.passwordReset ? 'Password updated successfully. Sign in with your new password.' : '';
+  const prefilledEmail = location.state?.email || '';
   const postAuthPath = (role) => {
     if (role === 'admin') return '/admin';
     return slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard';
@@ -27,19 +29,29 @@ export default function Login() {
   }, [authLoading, user, navigate, slotId]);
 
   const [step, setStep] = useState('credentials');
-  const [identifier, setIdentifier] = useState('');
+  const [identifier, setIdentifier] = useState(prefilledEmail);
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [tempToken, setTempToken] = useState('');
   const [error, setError] = useState('');
+  const [notice, setNotice] = useState(resetNotice);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (resetNotice) {
+      window.history.replaceState({}, document.title);
+    }
+  }, [resetNotice]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setNotice('');
     setLoading(true);
     try {
-      const data = await login(identifier.trim(), password);
+      const trimmed = identifier.trim();
+      const loginId = trimmed.includes('@') ? trimmed.toLowerCase() : trimmed.replace(/\s+/g, '');
+      const data = await login(loginId, password);
       if (data.requires2FA) {
         setTempToken(data.tempToken);
         setStep('2fa');
@@ -47,7 +59,7 @@ export default function Login() {
         finishLogin(data);
       }
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'Sign in failed. Please check your details and try again.');
     } finally {
       setLoading(false);
     }
@@ -125,8 +137,14 @@ export default function Login() {
                   <p className="text-[var(--text-secondary)] text-sm mt-2">{t('auth.loginSubtitle')}</p>
                 </div>
 
+                {notice && (
+                  <div className="mb-4 p-3 rounded-xl bg-emerald-50 text-emerald-800 text-sm border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-200 dark:border-emerald-800/50">
+                    {notice}
+                  </div>
+                )}
+
                 {error && (
-                  <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
+                  <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200 dark:bg-red-950/30 dark:text-red-200 dark:border-red-800/50">{error}</div>
                 )}
 
                 <form onSubmit={handleLogin} className="space-y-5">
@@ -138,7 +156,7 @@ export default function Login() {
                       className="input-field"
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
-                      placeholder="email@example.com or 98XXXXXXXX"
+                      placeholder="email@example.com, phone, or Dreams ID"
                       autoComplete="username"
                       required
                     />
