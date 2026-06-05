@@ -35,7 +35,7 @@ export function DashboardLoading({ variant = 'user' }) {
 
 export function DashboardHero({ user, title, subtitle, badge, cta, stats = [] }) {
   return (
-    <section className="dash-hero relative pt-28 pb-14 overflow-hidden">
+    <section className="dash-hero relative pt-20 sm:pt-24 lg:pt-28 pb-10 sm:pb-14 overflow-hidden">
       <div className="dash-hero-glow" />
       <motion.div
         initial={{ opacity: 0, y: 28 }}
@@ -91,7 +91,7 @@ export function DashboardHero({ user, title, subtitle, badge, cta, stats = [] })
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-10"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-10"
           >
             {stats.map((s) => (
               <motion.div key={s.label} variants={itemVariants} className="dash-stat-card group">

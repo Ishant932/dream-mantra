@@ -11491,3 +11491,139 @@ html.dark .leadership-card__role--highlight {
   }
 }
 
+/* ── Dashboard mobile v2 — tab picker, layout, panels ── */
+@media (max-width: 1023px) {
+  .layout-shell--dashboard .site-footer {
+    display: none;
+  }
+  .layout-shell--dashboard main {
+    padding-bottom: max(1rem, var(--safe-bottom));
+  }
+  .dash-root {
+    overflow-x: hidden;
+    max-width: 100vw;
+  }
+  .dash-sidebar-layout {
+    margin-top: 0;
+  }
+  .dash-sidebar {
+    width: 100%;
+    max-width: 100%;
+  }
+  .dash-sidebar-inner {
+    padding: 0.75rem;
+    border-radius: 1rem;
+  }
+  .dash-sidebar-profile {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.65rem;
+  }
+  .dash-sidebar-uid-block {
+    display: none;
+  }
+  .dash-sidebar-name {
+    font-size: 0.85rem;
+  }
+  .dash-mobile-tab-picker {
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+  .dash-mobile-tab-picker-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+    padding-left: 0.15rem;
+  }
+  .dash-mobile-tab-select {
+    width: 100%;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    padding: 0.65rem 0.85rem;
+    min-height: 2.75rem;
+  }
+  .dash-sidebar-nav--desktop {
+    display: none !important;
+  }
+  .dash-sidebar-main {
+    width: 100%;
+    min-width: 0;
+    padding: 0.5rem 0 !important;
+  }
+  .dash-sidebar-main-header {
+    margin-bottom: 0.75rem;
+  }
+  .dash-hero {
+    padding-top: 4.5rem !important;
+    padding-bottom: 1.25rem !important;
+    margin-bottom: 0.25rem;
+  }
+  .dash-hero .max-w-7xl {
+    padding-left: max(0.65rem, var(--safe-left)) !important;
+    padding-right: max(0.65rem, var(--safe-right)) !important;
+  }
+  .dash-hero-title {
+    font-size: clamp(1.2rem, 5.5vw, 1.55rem) !important;
+    line-height: 1.25;
+  }
+  .dash-hero-subtitle,
+  .dash-hero .text-lg {
+    font-size: 0.875rem !important;
+  }
+  .dash-stat-card {
+    padding: 0.75rem !important;
+  }
+  .dash-stat-card .text-2xl {
+    font-size: 1.25rem !important;
+  }
+  .dash-root-admin .admin-stat-grid,
+  .dash-root-admin .grid.sm\\:grid-cols-2,
+  .dash-root-admin .grid.lg\\:grid-cols-4 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+  .admin-table-wrap,
+  .dash-table-wrap {
+    margin-left: -0.25rem;
+    margin-right: -0.25rem;
+    padding-bottom: 0.25rem;
+  }
+  .admin-table-wrap::after,
+  .dash-table-wrap::after {
+    content: 'Swipe →';
+    display: block;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-align: right;
+    padding: 0.25rem 0.35rem 0;
+    opacity: 0.7;
+  }
+  .modules-panel-grid,
+  .modules-shop-grid {
+    gap: 0.75rem !important;
+  }
+  .slot-calendar-grid {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dash-overview-actions {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .dash-overview-actions .btn-primary,
+  .dash-overview-actions .btn-outline {
+    width: 100%;
+    justify-content: center;
+  }
+}
+@media (min-width: 1024px) {
+  .dash-mobile-tab-picker {
+    display: none;
+  }
+}
+

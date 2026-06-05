@@ -31,6 +31,8 @@ function PageLoader() {
 export default function Layout() {
   const location = useLocation();
   const mobilePerf = isMobilePerf();
+  const isDashboard =
+    location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin');
   const [loadChatbot, setLoadChatbot] = useState(!mobilePerf);
   const [enableScrollReveal, setEnableScrollReveal] = useState(false);
 
@@ -45,7 +47,9 @@ export default function Layout() {
   }, [mobilePerf]);
 
   return (
-    <div className="layout-shell min-h-screen flex flex-col relative">
+    <div
+      className={`layout-shell min-h-screen flex flex-col relative${isDashboard ? ' layout-shell--dashboard' : ''}`}
+    >
       <AnimatedBackground />
       {enableScrollReveal && <ScrollRevealInit />}
       <SiteHeader />

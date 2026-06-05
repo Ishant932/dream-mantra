@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import { defaultProfile, normalizeProfile } from './profile.js';
 import { ensureAllUserUids, nextUserUid } from './userUid.js';
 import { connectMongo, isMongoConfigured, getMongoStatus } from './mongo.js';
-import AppState from '../models/AppState.js';
+import { normalizePhone } from '../utils/passwordReset.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = path.join(__dirname, '../data.json');
@@ -222,7 +222,15 @@ function runQuery(sql, params, mode) {
     const q = String(p[0] || '').trim().toLowerCase();
     return data.users.find((u) => u.email?.toLowerCase() === q);
   }
-  if (sql.includes('SELECT * FROM users WHERE phone')) return data.users.find((u) => u.phone === p[0]);
+  if (sql.includes('SELECT * FROM users WHERE phone')) {
+    const q = String(p[0] || '').trim();
+    const qNorm = normalizePhone(q);
+    return data.users.find((u) => {
+      if (!u.phone) return false;
+      if (u.phone === q) return true;
+      return qNorm.length >= 10 && normalizePhone(u.phone) === qNorm;
+    });
+  }
   if (sql.includes('SELECT id FROM users WHERE role')) return data.users.find((u) => u.role === p[0]);
   if (sql.includes('COUNT(*)') && sql.includes('users') && sql.includes('role')) {
     return { c: data.users.filter((u) => u.role === p[0]).length };

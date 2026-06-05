@@ -50,20 +50,9 @@ async function findService() {
 }
 
 async function upsertEnvVar(serviceId, key, value) {
-  const existing = await api(`/services/${serviceId}/env-vars?limit=100`);
-  const list = Array.isArray(existing) ? existing : existing?.data || [];
-  const found = list.find((e) => e.envVar?.key === key)?.envVar;
-
-  if (found?.id) {
-    return api(`/services/${serviceId}/env-vars/${found.id}`, {
-      method: 'PUT',
-      body: JSON.stringify({ value }),
-    });
-  }
-
-  return api(`/services/${serviceId}/env-vars`, {
-    method: 'POST',
-    body: JSON.stringify({ key, value }),
+  return api(`/services/${serviceId}/env-vars/${encodeURIComponent(key)}`, {
+    method: 'PUT',
+    body: JSON.stringify({ value }),
   });
 }
 

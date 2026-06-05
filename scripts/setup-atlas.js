@@ -86,6 +86,18 @@ function generatePassword() {
   return crypto.randomBytes(18).toString('base64url');
 }
 
+function readExistingDbPassword() {
+  const envPath = path.join(ROOT, 'backend/.env');
+  if (!fs.existsSync(envPath)) return null;
+  const match = fs.readFileSync(envPath, 'utf8').match(/^MONGODB_URI=mongodb\+srv:\/\/dreammantra:([^@]+)@/m);
+  if (!match) return null;
+  try {
+    return decodeURIComponent(match[1]);
+  } catch {
+    return match[1];
+  }
+}
+
 function buildUri(user, pass, host) {
   return `mongodb+srv://${user}:${encodeURIComponent(pass)}@${host}/${DB_NAME}?retryWrites=true&w=majority`;
 }
@@ -213,17 +225,10 @@ async function linkRender(uri) {
     const envList = Array.isArray(envs) ? envs : envs?.data || [];
     const found = envList.find((e) => e.envVar?.key === 'MONGODB_URI')?.envVar;
 
-    if (found?.id) {
-      await renderApi(`/services/${service.id}/env-vars/${found.id}`, {
-        method: 'PUT',
-        body: JSON.stringify({ value: uri }),
-      });
-    } else {
-      await renderApi(`/services/${service.id}/env-vars`, {
-        method: 'POST',
-        body: JSON.stringify({ key: 'MONGODB_URI', value: uri }),
-      });
-    }
+    await renderApi(`/services/${service.id}/env-vars/MONGODB_URI`, {
+      method: 'PUT',
+      body: JSON.stringify({ value: uri }),
+    });
     console.log('MONGODB_URI set on Render.');
     try {
       await renderApi(`/services/${service.id}/deploys`, {
@@ -244,7 +249,8 @@ async function linkRender(uri) {
 async function main() {
   const publicKey = requireEnv('ATLAS_PUBLIC_KEY');
   const privateKey = requireEnv('ATLAS_PRIVATE_KEY');
-  const password = process.env.ATLAS_DB_PASSWORD?.trim() || generatePassword();
+  const password =
+    process.env.ATLAS_DB_PASSWORD?.trim() || readExistingDbPassword() || generatePassword();
   const client = createAtlasClient(publicKey, privateKey);
 
   console.log('\nDream Mantra → MongoDB Atlas automated setup\n');

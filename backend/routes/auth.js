@@ -7,13 +7,9 @@ import { authRequired } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 import { generateTwoFactorSecret, qrCodeDataUrl, verifyTotp } from '../utils/totp.js';
 import { normalizeProfile } from '../lib/profile.js';
-import { sendPasswordResetOtp, isEmailConfigured } from '../utils/mail.js';
 import {
   normalizeIdentifier,
-  generateOtp,
-  savePasswordResetOtp,
-  getPasswordResetOtp,
-  clearPasswordResetOtp,
+  verifyAccountSecret,
 } from '../utils/passwordReset.js';
 
 const router = Router();
@@ -49,7 +45,7 @@ function sanitize(user) {
 }
 
 function findByIdentifier(identifier) {
-  const id = (identifier || '').trim();
+  const id = normalizeIdentifier(identifier);
   if (!id) return null;
   if (id.includes('@')) {
     return db.prepare('SELECT * FROM users WHERE email = ?').get(id);
@@ -263,83 +259,35 @@ router.patch('/password', authRequired, (req, res) => {
   res.json({ message: 'Password updated successfully' });
 });
 
-// ─── Forgot password (email OTP — users & admin) ───────────────────────────
-router.post('/forgot-password', resetLimiter, async (req, res) => {
-  const normalizedId = normalizeIdentifier(req.body?.identifier);
-  if (!normalizedId) {
-    return res.status(400).json({ message: 'Email or phone number is required' });
-  }
-
-  const user = findByIdentifier(normalizedId);
-  const genericMsg = 'If an account exists with that email, a reset code has been sent.';
-
-  if (!user) {
-    return res.json({ message: genericMsg, emailSent: false });
-  }
-
-  if (!user.email) {
-    const supportPhone = process.env.ADMIN_PHONE || '9680102276';
-    return res.status(400).json({
-      message: `This account has no email on file. Call or WhatsApp ${supportPhone} for password help.`,
-    });
-  }
-
-  if (!isEmailConfigured()) {
-    console.error('Password reset requested but SMTP is not configured');
-    return res.status(503).json({
-      message: 'Password reset email is temporarily unavailable. Please contact support.',
-    });
-  }
-
-  const otp = generateOtp();
-  savePasswordResetOtp(normalizedId, otp);
-
-  try {
-    await sendPasswordResetOtp({ to: user.email, name: user.name, otp });
-    res.json({ message: genericMsg, emailSent: true, email: maskEmail(user.email) });
-  } catch (err) {
-    console.error('Password reset email failed:', err.message);
-    clearPasswordResetOtp(normalizedId);
-    res.status(500).json({ message: 'Could not send reset email. Try again later.' });
-  }
-});
-
+// ─── Forgot password (verify mobile / Dreams ID — no email) ────────────────
 router.post('/reset-password', resetLimiter, (req, res) => {
   const normalizedId = normalizeIdentifier(req.body?.identifier);
-  const { otp, newPassword } = req.body || {};
+  const secret = String(req.body?.verify || req.body?.phone || '').trim();
+  const { newPassword } = req.body || {};
   const pwdErr = validatePassword(newPassword);
 
-  if (!normalizedId || !otp) {
-    return res.status(400).json({ message: 'Email/phone and reset code are required' });
+  if (!normalizedId || !secret) {
+    return res.status(400).json({
+      message: 'Enter your login email/phone and registered mobile or Dreams ID',
+    });
   }
   if (pwdErr) return res.status(400).json({ message: pwdErr });
 
-  const entry = getPasswordResetOtp(normalizedId);
-  if (!entry || String(entry.otp) !== String(otp).trim()) {
-    return res.status(401).json({ message: 'Invalid or expired reset code' });
-  }
-
   const user = findByIdentifier(normalizedId);
-  if (!user) {
-    return res.status(404).json({ message: 'Account not found' });
+  if (!user || !verifyAccountSecret(user, secret)) {
+    return res.status(401).json({
+      message: 'Details do not match our records. Check email/phone and your registered mobile or Dreams ID.',
+    });
   }
 
   repo.updateUser(user.id, { password: bcrypt.hashSync(newPassword, 10) });
-  clearPasswordResetOtp(normalizedId);
 
   const token = signToken(user);
   res.json({
     token,
     user: sanitize(user),
-    message: 'Password reset successful. You are now logged in.',
+    message: 'Password updated. You are now logged in.',
   });
 });
-
-function maskEmail(email) {
-  const [local, domain] = String(email).split('@');
-  if (!domain) return '***';
-  const visible = local.slice(0, Math.min(2, local.length));
-  return `${visible}***@${domain}`;
-}
 
 export default router;
