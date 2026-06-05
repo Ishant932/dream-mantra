@@ -65,25 +65,25 @@ export default function CareersPage() {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="sticky top-[calc(var(--site-header-h)+var(--safe-top)+0.5rem)] z-30 mb-8 p-4 rounded-2xl bg-[var(--bg-elevated)]/95 backdrop-blur-xl border border-amber-100 dark:border-[rgba(201,168,76,0.25)] shadow-lg"
+          className="career-lib-toolbar career-page-filters mb-6 sm:mb-8 p-3 sm:p-4 rounded-2xl bg-[var(--bg-elevated)]/95 backdrop-blur-xl border border-amber-100 dark:border-[rgba(201,168,76,0.25)] shadow-lg"
         >
-          <form onSubmit={handleSearch} className="flex flex-col lg:flex-row gap-4">
-            <div className="flex-1 relative">
+          <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:gap-4">
+            <div className="flex-1 relative min-w-0">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-sand-400" />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder={t('careers.search')}
-                className="input-field pl-12"
+                className="input-field pl-12 w-full"
               />
             </div>
-            <div className="flex gap-3 flex-wrap">
-              <div className="relative flex-1 min-w-[200px]">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
+              <div className="relative flex-1 min-w-0">
                 <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sand-400" />
                 <select
                   value={category}
                   onChange={(e) => updateParams({ category: e.target.value, page: 1 })}
-                  className="input-field pl-10 appearance-none"
+                  className="input-field pl-10 appearance-none w-full"
                 >
                   <option value="all">{t('careers.all')}</option>
                   {data.categories?.map((c) => (
@@ -91,7 +91,7 @@ export default function CareersPage() {
                   ))}
                 </select>
               </div>
-              <button type="submit" className="btn-primary px-8">Search</button>
+              <button type="submit" className="btn-primary w-full sm:w-auto sm:px-8 shrink-0">Search</button>
             </div>
           </form>
           <p className="text-sm text-sand-600 dark:text-[var(--text-secondary)] mt-3">
@@ -132,8 +132,8 @@ export default function CareersPage() {
         </motion.div>
 
         {loading ? (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(12)].map((_, i) => (
+          <div className="grid career-lib-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {[...Array(6)].map((_, i) => (
               <div key={i} className="h-48 rounded-2xl bg-sand-100 dark:bg-sand-800 animate-pulse" />
             ))}
           </div>
@@ -145,7 +145,7 @@ export default function CareersPage() {
             </button>
           </div>
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid career-lib-grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {data.careers.map((career, i) => (
               <motion.div
                 key={career.slug || career.id}

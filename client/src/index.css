@@ -3056,7 +3056,15 @@ html.light .dash-root .subtab-btn.active {
 .dash-journey .text-amber-200 { color: rgba(255, 251, 235, 0.92) !important; }
 
 /* Career Library — dashboard + explorer */
-.career-lib-root { width: 100%; }
+.career-lib-root {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+.career-lib-grid {
+  width: 100%;
+  min-width: 0;
+}
 .career-lib-root--embedded { padding-bottom: 1.5rem; padding-top: 0; }
 
 .career-lib-toolbar {
@@ -11298,9 +11306,81 @@ html.dark .leadership-card__role--highlight {
   }
   .career-lib-toolbar,
   .career-lib-toolbar--embedded {
+    max-width: 100%;
+  }
+  .career-lib-root {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  .career-lib-toolbar--standalone {
+    position: relative !important;
+    top: auto !important;
+    z-index: 10;
+  }
+  .career-lib-toolbar--standalone .career-lib-toolbar-inner,
+  .dash-sidebar-panel .career-lib-toolbar--embedded {
+    padding: 0.75rem !important;
+  }
+  .career-lib-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .career-lib-tab {
+    max-width: 10rem;
+    font-size: 0.72rem;
+    padding: 0.38rem 0.65rem;
+  }
+  .career-lib-card {
+    min-height: 0;
+    padding: 1rem;
+  }
+  .career-lib-card__title {
+    font-size: 0.9375rem;
+    word-break: break-word;
+  }
+  .career-lib-card__tags .career-lib-tag {
+    font-size: 0.65rem;
+    line-height: 1.35;
+    max-width: 100%;
+  }
+  .career-lib-filters-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .career-lib-search-actions {
+    width: 100%;
+  }
+  .career-lib-search-actions .btn-primary,
+  .career-lib-search-actions .btn-outline {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.8125rem;
+    padding: 0.55rem 0.75rem;
+  }
+  .career-lib-header-row {
     flex-direction: column;
     align-items: stretch !important;
-    gap: 0.65rem;
+  }
+  .career-lib-results-meta {
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+  .career-lib-chips {
+    gap: 0.35rem;
+  }
+  .career-lib-chip {
+    font-size: 0.72rem;
+    max-width: 100%;
+  }
+  .career-page-root .sticky {
+    position: relative !important;
+    top: auto !important;
+  }
+  .career-page-root h1 {
+    font-size: clamp(1.5rem, 6.5vw, 2.25rem) !important;
+  }
+  .career-page-root section {
+    padding-left: max(0.75rem, var(--safe-left));
+    padding-right: max(0.75rem, var(--safe-right));
   }
   .career-lib-filters {
     flex-wrap: wrap;
@@ -11353,6 +11433,41 @@ html.dark .leadership-card__role--highlight {
 @media (max-width: 639px) {
   .dash-stat-card {
     padding: 0.85rem !important;
+  }
+  .career-lib-tabs-scroll {
+    margin: 0;
+    padding-bottom: 0.25rem;
+  }
+  .career-lib-tab {
+    max-width: 8.5rem;
+    font-size: 0.6875rem;
+  }
+  .career-lib-card__desc {
+    font-size: 0.8125rem;
+    -webkit-line-clamp: 2;
+  }
+  .career-lib-pagination {
+    gap: 0.25rem;
+  }
+  .career-lib-page-btn {
+    width: 2rem !important;
+    height: 2rem !important;
+    font-size: 0.6875rem !important;
+  }
+  .max-w-7xl,
+  .max-w-4xl,
+  .max-w-5xl,
+  .max-w-6xl {
+    padding-left: max(0.75rem, var(--safe-left)) !important;
+    padding-right: max(0.75rem, var(--safe-right)) !important;
+  }
+  .page-hero {
+    padding-left: max(0.75rem, var(--safe-left));
+    padding-right: max(0.75rem, var(--safe-right));
+  }
+  .infigon-card,
+  .glass-card {
+    overflow-x: hidden;
   }
   .dash-avatar {
     width: 3.25rem;
