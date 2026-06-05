@@ -272,6 +272,18 @@ export function listPublicVouchers() {
     }));
 }
 
+function isSystemVoucherCode(code) {
+  return Object.prototype.hasOwnProperty.call(STATIC_COUPONS, String(code || '').trim().toUpperCase());
+}
+
+export function findStoredVoucher(code) {
+  ensureSiteSettings();
+  const normalized = String(code || '').trim().toUpperCase();
+  return (getSiteSettings().vouchers || [])
+    .map(normalizeVoucherRecord)
+    .find((v) => v.code === normalized) || null;
+}
+
 export function upsertVoucher(input) {
   ensureSiteSettings();
   const data = getData();
@@ -280,6 +292,7 @@ export function upsertVoucher(input) {
   }
   const code = String(input.code || '').trim().toUpperCase();
   if (!code) throw new Error('Voucher code is required');
+  const deactivating = input.active === false;
   const voucher = {
     code,
     label: String(input.label || '').trim() || code,
@@ -289,23 +302,41 @@ export function upsertVoucher(input) {
     active: input.active !== false,
     firstTimeOnly: !!input.firstTimeOnly,
     expiresAt: input.expiresAt || null,
+    source: isSystemVoucherCode(code) ? 'override' : 'custom',
   };
-  if (!voucher.discountPercent && !voucher.discountFixed) {
+  if (!deactivating && !voucher.discountPercent && !voucher.discountFixed) {
     throw new Error('Set a discount percent or fixed amount');
+  }
+  if (deactivating && !voucher.discountPercent && !voucher.discountFixed) {
+    voucher.discountPercent = 0;
   }
   const idx = data.site_settings.vouchers.findIndex(
     (v) => String(v.code || '').trim().toUpperCase() === code
   );
-  if (idx >= 0) data.site_settings.vouchers[idx] = { ...data.site_settings.vouchers[idx], ...voucher };
-  else data.site_settings.vouchers.push(voucher);
+  if (idx >= 0) {
+    data.site_settings.vouchers[idx] = { ...data.site_settings.vouchers[idx], ...voucher };
+  } else {
+    data.site_settings.vouchers.push(voucher);
+  }
   saveData();
-  return normalizeVoucherRecord(voucher);
+  const saved = data.site_settings.vouchers[idx >= 0 ? idx : data.site_settings.vouchers.length - 1];
+  return normalizeVoucherRecord(saved);
 }
 
 export function removeVoucher(code) {
   ensureSiteSettings();
-  const data = getData();
   const normalized = String(code || '').trim().toUpperCase();
+  if (isSystemVoucherCode(normalized)) {
+    upsertVoucher({
+      code: normalized,
+      active: false,
+      discountPercent: 0,
+      label: 'Disabled',
+      moduleSlugs: ['all'],
+    });
+    return true;
+  }
+  const data = getData();
   data.site_settings.vouchers = (data.site_settings.vouchers || []).filter(
     (v) => String(v.code || '').trim().toUpperCase() !== normalized
   );
@@ -315,5 +346,10 @@ export function removeVoucher(code) {
 
 export function findVoucher(code) {
   const normalized = String(code || '').trim().toUpperCase();
-  return listVouchers().find((v) => v.code === normalized && v.active !== false);
+  const stored = findStoredVoucher(normalized);
+  if (stored) {
+    if (stored.active === false) return null;
+    return stored;
+  }
+  return staticVouchersFromConfig().find((v) => v.code === normalized && v.active !== false) || null;
 }

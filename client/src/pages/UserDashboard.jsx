@@ -185,6 +185,14 @@ export default function UserDashboard() {
   }, [tabParam, token, loading]);
 
   useEffect(() => {
+    if (!token || tabParam !== 'reports') return undefined;
+    const timer = window.setInterval(() => {
+      userApi.dashboard(token).then((dash) => setData(dash)).catch(() => {});
+    }, 30000);
+    return () => window.clearInterval(timer);
+  }, [token, tabParam]);
+
+  useEffect(() => {
     if (loading) return undefined;
     const run = () => {
       if (dashAnchorRef.current) {
@@ -485,6 +493,9 @@ export default function UserDashboard() {
                           Personalised Mind Mapping, Skill Mapping and assessment reports — published here after counsellor review.
                         </p>
                       </div>
+                      <button type="button" onClick={refreshDashboard} className="btn-outline !py-2 !px-4 text-sm shrink-0">
+                        Refresh
+                      </button>
                     </div>
                   </DashCard>
 

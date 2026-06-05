@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import db from '../db.js';
+import db, { flushDatabase } from '../db.js';
 import { authRequired, adminRequired } from '../middleware/auth.js';
 import { calcProfileCompletion, normalizeProfile, profileChecklist, defaultProfile } from '../lib/profile.js';
 import {
@@ -12,7 +12,7 @@ import {
   listConsultationsEnriched,
   updateConsultation,
 } from '../lib/slots.js';
-import { listAllReports, upsertReport, getPaidAssessmentsWithUsers } from '../lib/reports.js';
+import { listAllReports, upsertReport, deleteReport, getPaidAssessmentsWithUsers } from '../lib/reports.js';
 import { listPaymentsForAdmin, updatePaymentStatus, patchPaymentDetails } from '../lib/paymentService.js';
 import { getSiteSettings, updateSiteSettings } from '../lib/siteSettings.js';
 import { summarizeUserAssessments, isPendingUser } from '../lib/adminUsers.js';
@@ -248,19 +248,31 @@ router.get('/reports', (req, res) => {
   res.json({ reports: listAllReports() });
 });
 
-router.post('/reports', (req, res) => {
+router.post('/reports', async (req, res) => {
   try {
     const report = upsertReport(req.body);
+    await flushDatabase();
     res.status(201).json({ report });
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
 });
 
-router.patch('/reports/:id', (req, res) => {
+router.patch('/reports/:id', async (req, res) => {
   try {
     const report = upsertReport({ id: Number(req.params.id), ...req.body });
+    await flushDatabase();
     res.json({ report });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.delete('/reports/:id', async (req, res) => {
+  try {
+    const result = deleteReport(Number(req.params.id));
+    await flushDatabase();
+    res.json({ ...result, reports: listAllReports() });
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
@@ -321,27 +333,34 @@ router.get('/vouchers', (req, res) => {
   res.json({ vouchers: listVouchers() });
 });
 
-router.post('/vouchers', (req, res) => {
+router.post('/vouchers', async (req, res) => {
   try {
     const voucher = upsertVoucher(req.body);
+    await flushDatabase();
     res.json({ voucher, vouchers: listVouchers() });
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
 });
 
-router.patch('/vouchers/:code', (req, res) => {
+router.patch('/vouchers/:code', async (req, res) => {
   try {
     const voucher = upsertVoucher({ ...req.body, code: req.params.code });
+    await flushDatabase();
     res.json({ voucher, vouchers: listVouchers() });
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
 });
 
-router.delete('/vouchers/:code', (req, res) => {
-  removeVoucher(req.params.code);
-  res.json({ vouchers: listVouchers() });
+router.delete('/vouchers/:code', async (req, res) => {
+  try {
+    removeVoucher(req.params.code);
+    await flushDatabase();
+    res.json({ vouchers: listVouchers() });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
 });
 
 export default router;

@@ -19,7 +19,8 @@ export function listAllReports() {
 }
 
 export function listReportsForUser(userId) {
-  return listAllReports().filter((r) => r.user_id === Number(userId));
+  const uid = Number(userId);
+  return listAllReports().filter((r) => Number(r.user_id) === uid);
 }
 
 function enrichReport(row) {
@@ -58,7 +59,7 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
     : null;
 
   if (id) {
-    const row = data.user_reports.find((r) => r.id === Number(id));
+    const row = data.user_reports.find((r) => Number(r.id) === Number(id));
     if (!row) throw new Error('Report not found');
     const prevLink = row.report_link;
     const prevTitle = row.report_title;
@@ -124,6 +125,35 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
   }
 
   return enrichReport(row);
+}
+
+export function deleteReport(id) {
+  ensureReportsInitialized();
+  const data = getData();
+  const reportId = Number(id);
+  const idx = (data.user_reports || []).findIndex((r) => Number(r.id) === reportId);
+  if (idx < 0) throw new Error('Report not found');
+
+  const row = data.user_reports[idx];
+  const userId = row.user_id;
+
+  if (row.assessment_id) {
+    const assessment = data.assessments.find((a) => Number(a.id) === Number(row.assessment_id));
+    if (assessment) assessment.report_link = null;
+  }
+
+  data.user_reports.splice(idx, 1);
+  saveData();
+
+  notifyUser(userId, {
+    type: 'report',
+    title: 'Report removed',
+    body: `${row.report_title || 'An assessment report'} was removed from your dashboard. Contact support if this was unexpected.`,
+    link: '/dashboard?tab=reports',
+    meta: { reportId: row.id },
+  });
+
+  return { id: reportId, deleted: true };
 }
 
 export function getPaidAssessmentsWithUsers() {

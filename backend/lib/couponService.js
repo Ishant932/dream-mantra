@@ -1,5 +1,5 @@
 import { COUPONS as STATIC_COUPONS, applyDiscount as staticApplyDiscount } from '../config/coupons.js';
-import { findVoucher, isVoucherExpired } from './catalogStore.js';
+import { findStoredVoucher, findVoucher, isVoucherExpired } from './catalogStore.js';
 
 export { applyDiscount } from '../config/coupons.js';
 
@@ -7,6 +7,32 @@ export function validateCoupon(code, { paidTestsCount = 0, moduleSlug = null } =
   const normalized = (code || '').trim().toUpperCase();
   if (!normalized) {
     return { valid: false, message: 'Enter a coupon code' };
+  }
+
+  const stored = findStoredVoucher(normalized);
+  if (stored) {
+    if (stored.active === false) {
+      return { valid: false, message: 'This voucher is no longer active' };
+    }
+    if (isVoucherExpired(stored.expiresAt)) {
+      return { valid: false, message: 'This voucher has expired' };
+    }
+    if (stored.firstTimeOnly && paidTestsCount > 0) {
+      return { valid: false, message: 'This offer is for first-time bookings only' };
+    }
+    const slugs = Array.isArray(stored.moduleSlugs) && stored.moduleSlugs.length
+      ? stored.moduleSlugs
+      : ['all'];
+    if (moduleSlug && !slugs.includes('all') && !slugs.includes(moduleSlug)) {
+      return { valid: false, message: 'This voucher does not apply to the selected module' };
+    }
+    return {
+      valid: true,
+      code: normalized,
+      discountPercent: stored.discountPercent ?? null,
+      discountFixed: stored.discountFixed ?? null,
+      label: stored.label || normalized,
+    };
   }
 
   const dynamic = findVoucher(normalized);

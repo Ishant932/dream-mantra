@@ -204,6 +204,8 @@ export const adminApi = {
     request('/admin/reports', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   updateReport: (token, id, body) =>
     request(`/admin/reports/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteReport: (token, id) =>
+    request(`/admin/reports/${id}`, { method: 'DELETE', headers: headers(token) }),
   settings: (token) => request('/admin/settings', { headers: headers(token) }),
   updateSettings: (token, body) =>
     request('/admin/settings', { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),

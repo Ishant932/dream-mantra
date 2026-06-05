@@ -14,8 +14,7 @@ const emptyForm = {
   expiresAt: '',
 };
 
-function VoucherRow({ v, onEdit, onRemove }) {
-  const isSystem = v.source === 'system';
+function VoucherRow({ v, onEdit, onRemove, deletingCode }) {
   const discount = v.discountPercent != null
     ? `${v.discountPercent}% off`
     : v.discountFixed != null
@@ -28,14 +27,11 @@ function VoucherRow({ v, onEdit, onRemove }) {
         <div>
           <p className="font-mono font-bold">{v.code}</p>
           <p className="text-xs opacity-60">{v.label}</p>
+          {v.source === 'system' && <p className="text-xs text-amber-700 font-semibold mt-0.5">Default offer — editable</p>}
         </div>
         <div className="flex gap-1 shrink-0">
-          {!isSystem && (
-            <>
-              <button type="button" onClick={() => onEdit(v)} className="p-2 rounded-lg border"><Pencil className="w-4 h-4" /></button>
-              <button type="button" onClick={() => onRemove(v.code)} className="p-2 rounded-lg border text-red-700"><Trash2 className="w-4 h-4" /></button>
-            </>
-          )}
+          <button type="button" onClick={() => onEdit(v)} className="p-2 rounded-lg border"><Pencil className="w-4 h-4" /></button>
+          <button type="button" onClick={() => onRemove(v.code)} disabled={deletingCode === v.code} className="p-2 rounded-lg border text-red-700 disabled:opacity-50"><Trash2 className="w-4 h-4" /></button>
         </div>
       </div>
       <div className="flex flex-wrap gap-2 text-xs">
@@ -45,7 +41,6 @@ function VoucherRow({ v, onEdit, onRemove }) {
         ) : (
           <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold">Not live</span>
         )}
-        {isSystem && <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">Built-in</span>}
       </div>
       <p className="text-xs opacity-70">Modules: {(v.moduleSlugs || ['all']).join(', ')}</p>
     </div>
@@ -57,6 +52,7 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
   const [moduleOptions, setModuleOptions] = useState(modules);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [deletingCode, setDeletingCode] = useState(null);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
 
@@ -97,10 +93,6 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
   };
 
   const startEdit = (v) => {
-    if (v.source === 'system') {
-      onError?.('Built-in vouchers are managed in code. Create a custom voucher with the same code to override it.');
-      return;
-    }
     setEditing(v.code);
     setForm({
       code: v.code,
@@ -146,11 +138,11 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
       };
       if (editing === 'new') {
         const res = await adminApi.createVoucher(token, body);
-        onNotice?.('Voucher created');
+        onNotice?.('Voucher created — live on website and checkout.');
         setVouchers(res.vouchers || []);
       } else {
         const res = await adminApi.updateVoucher(token, editing, body);
-        onNotice?.('Voucher updated');
+        onNotice?.('Voucher updated — changes are live for users.');
         setVouchers(res.vouchers || []);
       }
       cancel();
@@ -163,18 +155,19 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
   };
 
   const remove = async (code) => {
-    const voucher = vouchers.find((v) => v.code === code);
-    if (voucher?.source === 'system') {
-      onError?.('Built-in vouchers cannot be deleted.');
-      return;
-    }
-    if (!window.confirm(`Delete voucher ${code}?`)) return;
+    if (!window.confirm(`Delete voucher ${code}? It will be removed from the website and checkout.`)) return;
+    setDeletingCode(code);
+    onError?.('');
     try {
-      await adminApi.deleteVoucher(token, code);
-      onNotice?.('Voucher deleted');
+      const res = await adminApi.deleteVoucher(token, code);
+      onNotice?.('Voucher removed from website.');
+      setVouchers(res.vouchers || []);
+      if (editing === code) cancel();
       await load();
     } catch (err) {
       onError?.(err.message);
+    } finally {
+      setDeletingCode(null);
     }
   };
 
@@ -234,7 +227,7 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
         <>
           <div className="space-y-3 sm:hidden">
             {vouchers.map((v) => (
-              <VoucherRow key={v.code} v={v} onEdit={startEdit} onRemove={remove} />
+              <VoucherRow key={v.code} v={v} onEdit={startEdit} onRemove={remove} deletingCode={deletingCode} />
             ))}
           </div>
 
@@ -255,7 +248,7 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
                     <td className="py-3 px-2">
                       <p className="font-mono font-bold">{v.code}</p>
                       <p className="text-xs opacity-60">{v.label}</p>
-                      {v.source === 'system' && <p className="text-xs text-amber-700 font-semibold mt-0.5">Built-in offer</p>}
+                      {v.source === 'system' && <p className="text-xs text-amber-700 font-semibold mt-0.5">Default offer — editable</p>}
                     </td>
                     <td className="py-3 px-2">
                       {v.discountPercent != null ? `${v.discountPercent}% off` : v.discountFixed != null ? `₹${v.discountFixed} off` : '—'}
@@ -272,14 +265,10 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
                       {v.expiresAt && <p className="opacity-60">Expires {v.expiresAt.slice(0, 10)}</p>}
                     </td>
                     <td className="py-3 px-2 text-right">
-                      {v.source !== 'system' ? (
-                        <div className="flex justify-end gap-1">
-                          <button type="button" onClick={() => startEdit(v)} className="p-2 rounded-lg border"><Pencil className="w-4 h-4" /></button>
-                          <button type="button" onClick={() => remove(v.code)} className="p-2 rounded-lg border text-red-700"><Trash2 className="w-4 h-4" /></button>
-                        </div>
-                      ) : (
-                        <span className="text-xs opacity-50">Read-only</span>
-                      )}
+                      <div className="flex justify-end gap-1">
+                        <button type="button" onClick={() => startEdit(v)} className="p-2 rounded-lg border"><Pencil className="w-4 h-4" /></button>
+                        <button type="button" onClick={() => remove(v.code)} disabled={deletingCode === v.code} className="p-2 rounded-lg border text-red-700 disabled:opacity-50"><Trash2 className="w-4 h-4" /></button>
+                      </div>
                     </td>
                   </tr>
                 ))}

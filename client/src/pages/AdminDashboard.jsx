@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import {
   Users, Calendar, FlaskConical, Clock, Shield, AlertCircle, UserCircle,
   CreditCard, FileText, MapPin, Link2, Phone, Mail, Save, ExternalLink, Settings,
-  Search, Filter, X, Pencil, Send, Check,
+  Search, Filter, X, Pencil, Send, Check, Trash2,
 } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
@@ -108,6 +108,7 @@ export default function AdminDashboard() {
   const [editingReportId, setEditingReportId] = useState(null);
   const [editReportForm, setEditReportForm] = useState({ reportTitle: '', reportLink: '', adminNotes: '' });
   const [reportSavingId, setReportSavingId] = useState(null);
+  const [reportDeletingId, setReportDeletingId] = useState(null);
   const [communityLink, setCommunityLink] = useState('');
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [analytics, setAnalytics] = useState(null);
@@ -352,21 +353,40 @@ export default function AdminDashboard() {
   const saveEditReport = async (resend = false) => {
     if (!editingReportId) return;
     setReportSavingId(editingReportId);
+    setError('');
     try {
       await adminApi.updateReport(token, editingReportId, {
-        reportTitle: editReportForm.reportTitle,
-        reportLink: editReportForm.reportLink,
-        adminNotes: editReportForm.adminNotes,
+        reportTitle: editReportForm.reportTitle.trim(),
+        reportLink: editReportForm.reportLink.trim(),
+        adminNotes: editReportForm.adminNotes.trim(),
         resendNotification: resend,
       });
       const r = await adminApi.reports(token);
       setReports(r.reports || []);
-      setNotice(resend ? 'Report updated and notification resent to user.' : 'Report updated successfully.');
+      setNotice(resend ? 'Report updated and notification sent to user.' : 'Report updated — user will see changes on their dashboard.');
       cancelEditReport();
     } catch (err) {
       setError(err.message);
     } finally {
       setReportSavingId(null);
+    }
+  };
+
+  const removeReport = async (report) => {
+    if (!window.confirm(`Remove report "${report.report_title}" for ${report.user_name || report.user_uid}? The user will no longer see it.`)) {
+      return;
+    }
+    setReportDeletingId(report.id);
+    setError('');
+    try {
+      const r = await adminApi.deleteReport(token, report.id);
+      setReports(r.reports || []);
+      if (editingReportId === report.id) cancelEditReport();
+      setNotice('Report removed from user dashboard.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setReportDeletingId(null);
     }
   };
 
@@ -927,9 +947,18 @@ export default function AdminDashboard() {
                                     <button
                                       type="button"
                                       onClick={() => startEditReport(r)}
+                                      disabled={reportDeletingId === r.id}
                                       className="text-xs font-bold px-2.5 py-1.5 rounded-lg border border-amber-300 text-amber-800 hover:bg-amber-50 dark:hover:bg-amber-900/20 inline-flex items-center gap-1"
                                     >
                                       <Pencil className="w-3.5 h-3.5" /> Edit
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={() => removeReport(r)}
+                                      disabled={reportDeletingId === r.id}
+                                      className="text-xs font-bold px-2.5 py-1.5 rounded-lg border border-red-300 text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 inline-flex items-center gap-1 disabled:opacity-50"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" /> {reportDeletingId === r.id ? 'Removing…' : 'Remove'}
                                     </button>
                                   </div>
                                 </td>
