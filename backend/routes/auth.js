@@ -10,8 +10,6 @@ import { normalizeProfile } from '../lib/profile.js';
 import {
   normalizeIdentifier,
   validateEmail,
-  validatePhone,
-  phonesMatch,
 } from '../utils/passwordReset.js';
 
 const router = Router();
@@ -261,22 +259,19 @@ router.patch('/password', authRequired, (req, res) => {
   res.json({ message: 'Password updated successfully' });
 });
 
-// ─── Reset password (registered email + phone + new password) ─────────────
+// ─── Reset password (registered email + new password) ─────────────────────
 router.post('/reset-password', resetLimiter, (req, res) => {
   const email = normalizeIdentifier(req.body?.email || req.body?.identifier);
-  const phone = String(req.body?.phone || '').trim();
   const { newPassword } = req.body || {};
   const emailErr = validateEmail(email);
-  const phoneErr = validatePhone(phone);
   const pwdErr = validatePassword(newPassword);
 
   if (emailErr) return res.status(400).json({ message: emailErr });
-  if (phoneErr) return res.status(400).json({ message: phoneErr });
   if (pwdErr) return res.status(400).json({ message: pwdErr });
 
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-  if (!user || !phonesMatch(user.phone, phone)) {
-    return res.status(401).json({ message: 'Email and mobile number do not match our records.' });
+  if (!user) {
+    return res.status(401).json({ message: 'No account found with this email address.' });
   }
 
   repo.updateUser(user.id, { password: bcrypt.hashSync(newPassword, 10) });

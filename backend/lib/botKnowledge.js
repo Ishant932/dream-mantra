@@ -293,7 +293,7 @@ Forgot password: Dashboard → Security, or contact 9680102276`,
   },
   {
     patterns: ['forgot password', 'reset password', 'change password login', 'lost password'],
-    en: 'FORGOT PASSWORD\n\n1. Go to dreammantra.in/login → Forgot password?\n2. Enter your registered email AND mobile number (from signup)\n3. Set new password + confirm\n4. Sign in at /login with the new password\n\nBoth email and phone must match your account. Admin uses the same flow.\n\nSupport: 9680102276',
+    en: 'FORGOT PASSWORD\n\n1. Go to dreammantra.in/login → Forgot password?\n2. Enter your registered email address\n3. Set new password + confirm\n4. Sign in at /login with the new password\n\nSupport: 9680102276',
     hi: 'Password reset: Login → Forgot password → email + mobile → naya password → login। 9680102276',
   },
   {

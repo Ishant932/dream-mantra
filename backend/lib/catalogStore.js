@@ -1,5 +1,6 @@
 import { ensureSiteSettings, getSiteSettings } from './siteSettings.js';
 import { getData, saveData } from './database.js';
+import { COUPONS as STATIC_COUPONS } from '../config/coupons.js';
 
 export const COUNSELLING_ADDON_PRICE = 699;
 export const COUNSELLING_TOPUP_PRICE = 999;
@@ -105,6 +106,32 @@ function normalizeVoucherRecord(voucher) {
     moduleSlugs: normalizeModuleSlugs(voucher.moduleSlugs),
     active: voucher.active !== false,
   };
+}
+
+function staticVouchersFromConfig() {
+  return Object.values(STATIC_COUPONS).map((coupon) => normalizeVoucherRecord({
+    ...coupon,
+    moduleSlugs: coupon.moduleSlugs || ['all'],
+    active: coupon.active !== false,
+    source: 'system',
+  }));
+}
+
+function isVoucherLive(voucher, now = new Date()) {
+  return voucher.active !== false && !isVoucherExpired(voucher.expiresAt, now);
+}
+
+function mergeVoucherLists(dbVouchers = [], systemVouchers = []) {
+  const dbCodes = new Set(dbVouchers.map((v) => v.code));
+  const merged = [
+    ...dbVouchers.map((v) => ({ ...v, source: v.source || 'custom' })),
+    ...systemVouchers.filter((v) => !dbCodes.has(v.code)),
+  ];
+  return merged.sort((a, b) => {
+    const liveDiff = Number(isVoucherLive(b)) - Number(isVoucherLive(a));
+    if (liveDiff !== 0) return liveDiff;
+    return a.code.localeCompare(b.code);
+  });
 }
 function slugify(text) {
   return String(text || '')
@@ -223,24 +250,26 @@ export function removeModule(slug) {
 
 export function listVouchers() {
   ensureSiteSettings();
-  return (getSiteSettings().vouchers || []).map(normalizeVoucherRecord);
+  const dbVouchers = (getSiteSettings().vouchers || []).map(normalizeVoucherRecord);
+  return mergeVoucherLists(dbVouchers, staticVouchersFromConfig()).map((v) => ({
+    ...v,
+    live: isVoucherLive(v),
+  }));
 }
 
 export function listPublicVouchers() {
   const now = new Date();
-  return listVouchers().filter((v) => {
-    if (v.active === false) return false;
-    if (isVoucherExpired(v.expiresAt, now)) return false;
-    return true;
-  }).map(({ code, label, discountPercent, discountFixed, firstTimeOnly, moduleSlugs, expiresAt }) => ({
-    code,
-    label,
-    discountPercent,
-    discountFixed,
-    firstTimeOnly: !!firstTimeOnly,
-    moduleSlugs,
-    expiresAt,
-  }));
+  return listVouchers()
+    .filter((v) => isVoucherLive(v, now))
+    .map(({ code, label, discountPercent, discountFixed, firstTimeOnly, moduleSlugs, expiresAt }) => ({
+      code,
+      label,
+      discountPercent,
+      discountFixed,
+      firstTimeOnly: !!firstTimeOnly,
+      moduleSlugs,
+      expiresAt,
+    }));
 }
 
 export function upsertVoucher(input) {
@@ -264,7 +293,9 @@ export function upsertVoucher(input) {
   if (!voucher.discountPercent && !voucher.discountFixed) {
     throw new Error('Set a discount percent or fixed amount');
   }
-  const idx = data.site_settings.vouchers.findIndex((v) => v.code === code);
+  const idx = data.site_settings.vouchers.findIndex(
+    (v) => String(v.code || '').trim().toUpperCase() === code
+  );
   if (idx >= 0) data.site_settings.vouchers[idx] = { ...data.site_settings.vouchers[idx], ...voucher };
   else data.site_settings.vouchers.push(voucher);
   saveData();
@@ -275,7 +306,9 @@ export function removeVoucher(code) {
   ensureSiteSettings();
   const data = getData();
   const normalized = String(code || '').trim().toUpperCase();
-  data.site_settings.vouchers = (data.site_settings.vouchers || []).filter((v) => v.code !== normalized);
+  data.site_settings.vouchers = (data.site_settings.vouchers || []).filter(
+    (v) => String(v.code || '').trim().toUpperCase() !== normalized
+  );
   saveData();
   return true;
 }

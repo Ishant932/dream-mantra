@@ -47,10 +47,10 @@ USER DASHBOARD MODULES:
 • Dashboard tabs: Overview, Career Library, AI Corner, Modules, Process & Take test, My Reports, Book Session, Security
 • Modules tab — book Mind Mapping, Skill Mapping & combo assessments after payment
 • My Reports — counsellor-published PDF/Drive links; check notifications when updated
-• Forgot password — Login → Forgot password → registered email + mobile → new password
+• Forgot password — Login → Forgot password → registered email → new password
 
 PASSWORD RESET:
-• Users reset at /forgot-password with registered email AND mobile number, then login with new password
+• Users reset at /forgot-password with registered email, then login with new password
 
 THE DREAMZ PROMISE:
 At Dreamz, we believe every child holds untapped brilliance. In a world driven by pressure and comparison, we offer clarity, confidence, and direction.

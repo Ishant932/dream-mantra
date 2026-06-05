@@ -1,14 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Phone, ArrowRight, CheckCircle } from 'lucide-react';
+import { Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 import { authApi } from '../api';
 import Logo from '../components/Logo';
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
@@ -30,7 +29,6 @@ export default function ForgotPassword() {
     try {
       await authApi.resetPassword({
         email: email.trim(),
-        phone: phone.trim(),
         newPassword,
       });
       setDone(true);
@@ -61,7 +59,7 @@ export default function ForgotPassword() {
               <div className="text-center mb-8">
                 <h1 className="font-display text-2xl font-bold text-[var(--text-primary)]">Reset password</h1>
                 <p className="text-[var(--text-secondary)] text-sm mt-2">
-                  Enter your registered email and mobile number, then set a new password.
+                  Enter your registered email address, then set a new password.
                 </p>
               </div>
 
@@ -81,20 +79,6 @@ export default function ForgotPassword() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
                     autoComplete="email"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
-                    <Phone className="w-4 h-4 text-amber-600" /> Registered mobile
-                  </label>
-                  <input
-                    className="input-field"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="98XXXXXXXX"
-                    inputMode="tel"
-                    autoComplete="tel"
                     required
                   />
                 </div>

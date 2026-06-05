@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Ticket, Plus, Pencil, Trash2, Save, X } from 'lucide-react';
 import { adminApi } from '../api';
 import { DashCard } from './DashboardUI';
@@ -14,6 +14,44 @@ const emptyForm = {
   expiresAt: '',
 };
 
+function VoucherRow({ v, onEdit, onRemove }) {
+  const isSystem = v.source === 'system';
+  const discount = v.discountPercent != null
+    ? `${v.discountPercent}% off`
+    : v.discountFixed != null
+      ? `₹${v.discountFixed} off`
+      : '—';
+
+  return (
+    <div className="rounded-xl border border-sand-200 dark:border-sand-700 p-4 space-y-2 sm:hidden">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-mono font-bold">{v.code}</p>
+          <p className="text-xs opacity-60">{v.label}</p>
+        </div>
+        <div className="flex gap-1 shrink-0">
+          {!isSystem && (
+            <>
+              <button type="button" onClick={() => onEdit(v)} className="p-2 rounded-lg border"><Pencil className="w-4 h-4" /></button>
+              <button type="button" onClick={() => onRemove(v.code)} className="p-2 rounded-lg border text-red-700"><Trash2 className="w-4 h-4" /></button>
+            </>
+          )}
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2 text-xs">
+        <span className="px-2 py-0.5 rounded-full bg-sand-100 dark:bg-sand-800">{discount}</span>
+        {v.live ? (
+          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">Live on site</span>
+        ) : (
+          <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-semibold">Not live</span>
+        )}
+        {isSystem && <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">Built-in</span>}
+      </div>
+      <p className="text-xs opacity-70">Modules: {(v.moduleSlugs || ['all']).join(', ')}</p>
+    </div>
+  );
+}
+
 export default function AdminVouchersPanel({ token, modules = [], onNotice, onError }) {
   const [vouchers, setVouchers] = useState([]);
   const [moduleOptions, setModuleOptions] = useState(modules);
@@ -21,6 +59,8 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
   const [saving, setSaving] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
+
+  const liveCount = useMemo(() => vouchers.filter((v) => v.live).length, [vouchers]);
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -57,6 +97,10 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
   };
 
   const startEdit = (v) => {
+    if (v.source === 'system') {
+      onError?.('Built-in vouchers are managed in code. Create a custom voucher with the same code to override it.');
+      return;
+    }
     setEditing(v.code);
     setForm({
       code: v.code,
@@ -119,6 +163,11 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
   };
 
   const remove = async (code) => {
+    const voucher = vouchers.find((v) => v.code === code);
+    if (voucher?.source === 'system') {
+      onError?.('Built-in vouchers cannot be deleted.');
+      return;
+    }
     if (!window.confirm(`Delete voucher ${code}?`)) return;
     try {
       await adminApi.deleteVoucher(token, code);
@@ -136,7 +185,9 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
           <h2 className="text-lg font-bold flex items-center gap-2">
             <Ticket className="w-5 h-5 text-amber-500" /> Vouchers & Discount Codes
           </h2>
-          <p className="text-sm opacity-70 mt-1">Create codes for specific modules or all modules.</p>
+          <p className="text-sm opacity-70 mt-1">
+            {loading ? 'Loading…' : `${vouchers.length} total · ${liveCount} live on site`}
+          </p>
         </div>
         {!editing && (
           <button type="button" onClick={startNew} className="btn-primary !py-2 !px-4 text-sm inline-flex items-center gap-2">
@@ -180,43 +231,62 @@ export default function AdminVouchersPanel({ token, modules = [], onNotice, onEr
       ) : vouchers.length === 0 ? (
         <p className="text-sm opacity-60 py-6 text-center">No vouchers yet. Create one above.</p>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm admin-data-table min-w-[560px]">
-            <thead>
-              <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
-                <th className="py-2 px-2 text-xs uppercase opacity-60">Code</th>
-                <th className="py-2 px-2 text-xs uppercase opacity-60">Discount</th>
-                <th className="py-2 px-2 text-xs uppercase opacity-60">Modules</th>
-                <th className="py-2 px-2 text-xs uppercase opacity-60">Status</th>
-                <th className="py-2 px-2 text-xs uppercase opacity-60 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vouchers.map((v) => (
-                <tr key={v.code} className="border-b border-sand-100 dark:border-sand-800/60">
-                  <td className="py-3 px-2">
-                    <p className="font-mono font-bold">{v.code}</p>
-                    <p className="text-xs opacity-60">{v.label}</p>
-                  </td>
-                  <td className="py-3 px-2">
-                    {v.discountPercent != null ? `${v.discountPercent}% off` : v.discountFixed != null ? `₹${v.discountFixed} off` : '—'}
-                  </td>
-                  <td className="py-3 px-2 text-xs">{(v.moduleSlugs || ['all']).join(', ')}</td>
-                  <td className="py-3 px-2 text-xs">
-                    <span className={v.active !== false ? 'text-emerald-700 font-semibold' : 'text-red-600'}>{v.active !== false ? 'Active' : 'Inactive'}</span>
-                    {v.firstTimeOnly && <p className="opacity-60">First-time only</p>}
-                  </td>
-                  <td className="py-3 px-2 text-right">
-                    <div className="flex justify-end gap-1">
-                      <button type="button" onClick={() => startEdit(v)} className="p-2 rounded-lg border"><Pencil className="w-4 h-4" /></button>
-                      <button type="button" onClick={() => remove(v.code)} className="p-2 rounded-lg border text-red-700"><Trash2 className="w-4 h-4" /></button>
-                    </div>
-                  </td>
+        <>
+          <div className="space-y-3 sm:hidden">
+            {vouchers.map((v) => (
+              <VoucherRow key={v.code} v={v} onEdit={startEdit} onRemove={remove} />
+            ))}
+          </div>
+
+          <div className="hidden sm:block overflow-x-auto admin-table-wrap">
+            <table className="w-full text-sm admin-data-table min-w-[640px]">
+              <thead>
+                <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
+                  <th className="py-2 px-2 text-xs uppercase opacity-60">Code</th>
+                  <th className="py-2 px-2 text-xs uppercase opacity-60">Discount</th>
+                  <th className="py-2 px-2 text-xs uppercase opacity-60">Modules</th>
+                  <th className="py-2 px-2 text-xs uppercase opacity-60">Status</th>
+                  <th className="py-2 px-2 text-xs uppercase opacity-60 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {vouchers.map((v) => (
+                  <tr key={v.code} className="border-b border-sand-100 dark:border-sand-800/60">
+                    <td className="py-3 px-2">
+                      <p className="font-mono font-bold">{v.code}</p>
+                      <p className="text-xs opacity-60">{v.label}</p>
+                      {v.source === 'system' && <p className="text-xs text-amber-700 font-semibold mt-0.5">Built-in offer</p>}
+                    </td>
+                    <td className="py-3 px-2">
+                      {v.discountPercent != null ? `${v.discountPercent}% off` : v.discountFixed != null ? `₹${v.discountFixed} off` : '—'}
+                    </td>
+                    <td className="py-3 px-2 text-xs">{(v.moduleSlugs || ['all']).join(', ')}</td>
+                    <td className="py-3 px-2 text-xs">
+                      {v.live ? (
+                        <span className="text-emerald-700 font-semibold">Live on site</span>
+                      ) : (
+                        <span className="text-red-600 font-semibold">Not live</span>
+                      )}
+                      {v.active === false && <p className="opacity-60">Inactive</p>}
+                      {v.firstTimeOnly && <p className="opacity-60">First-time only</p>}
+                      {v.expiresAt && <p className="opacity-60">Expires {v.expiresAt.slice(0, 10)}</p>}
+                    </td>
+                    <td className="py-3 px-2 text-right">
+                      {v.source !== 'system' ? (
+                        <div className="flex justify-end gap-1">
+                          <button type="button" onClick={() => startEdit(v)} className="p-2 rounded-lg border"><Pencil className="w-4 h-4" /></button>
+                          <button type="button" onClick={() => remove(v.code)} className="p-2 rounded-lg border text-red-700"><Trash2 className="w-4 h-4" /></button>
+                        </div>
+                      ) : (
+                        <span className="text-xs opacity-50">Read-only</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
     </DashCard>
   );
