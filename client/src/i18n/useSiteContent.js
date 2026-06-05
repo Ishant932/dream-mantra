@@ -74,16 +74,16 @@ export function useHomeContent() {
   const portraitList = [
     PORTRAITS.parent1,
     PORTRAITS.student2,
-    PORTRAITS.parent2,
+    null,
     PORTRAITS.professional1,
     PORTRAITS.parent1,
     PORTRAITS.student1,
-    PORTRAITS.parent2,
+    null,
     PORTRAITS.professional1,
   ];
   const testimonials = d('data.testimonials').map((item, i) => ({
     ...item,
-    image: portraitList[i],
+    image: portraitList[i] || null,
   }));
 
   const locMgmt = d('data.managementTeam');

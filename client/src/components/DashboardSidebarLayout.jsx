@@ -151,7 +151,7 @@ export default function DashboardSidebarLayout({
               >
                 {tabs.map((tab) => (
                   <option key={tab.id} value={tab.id}>
-                    {tab.label}
+                    {tab.label}{tab.locked ? ' (locked)' : ''}
                   </option>
                 ))}
               </select>
@@ -181,7 +181,10 @@ export default function DashboardSidebarLayout({
                       <Icon className="w-[18px] h-[18px]" />
                     </span>
                     <span className="dash-sidebar-label-wrap">
-                      <span className="dash-sidebar-label">{tab.label}</span>
+                      <span className="dash-sidebar-label">
+                        {tab.label}
+                        {tab.locked && <span className="text-[10px] ml-1 opacity-60">🔒</span>}
+                      </span>
                       {tab.desc && (
                         <span className="dash-sidebar-desc">{tab.desc}</span>
                       )}

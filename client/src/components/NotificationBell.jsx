@@ -28,6 +28,13 @@ export default function NotificationBell({ token, initialUnread = 0, onRefresh }
   }, [initialUnread]);
 
   useEffect(() => {
+    if (!token) return undefined;
+    load();
+    const timer = window.setInterval(load, 45000);
+    return () => window.clearInterval(timer);
+  }, [token, load]);
+
+  useEffect(() => {
     if (!open || !token) return;
     load();
   }, [open, token, load]);

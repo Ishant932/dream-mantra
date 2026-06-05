@@ -114,7 +114,7 @@ export const siteHi = {
       {
         title: 'खोजें',
         links: [
-          { to: '/marketplace', label: 'Marketplace' },
+      { to: '/marketplace', label: 'Marketplace' },
           { to: '/pillars', label: '7 Pillars Framework' },
           { to: '/#certifications', label: 'Certifications' },
         ],
@@ -123,8 +123,8 @@ export const siteHi = {
         title: 'जुड़ें',
         links: [
           { to: '/about', label: 'हमारे बारे में' },
-          { to: '/contact', label: 'संपर्क' },
-          { to: '/terms', label: 'नियम और शर्तें' },
+      { to: '/contact', label: 'संपर्क' },
+      { to: '/terms', label: 'नियम और शर्तें' },
         ],
       },
     ],

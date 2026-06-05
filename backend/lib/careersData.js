@@ -7,8 +7,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PATHS = [
   path.join(__dirname, '../data/careers.json'),
-  path.join(__dirname, '../../frontend/public/data/careers.json'),
-  path.join(__dirname, '../../frontend/dist/data/careers.json'),
   path.join(__dirname, '../../client/public/data/careers.json'),
   path.join(__dirname, '../../client/dist/data/careers.json'),
 ];

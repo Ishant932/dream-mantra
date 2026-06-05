@@ -18,7 +18,7 @@ export const IMAGES = {
   /** Class 6–8 program — middle-school students learning together */
   class6to8: u('photo-1529390079861-591de354faf5'),
   /** Schools partnership — campus / institutional setting */
-  schoolsCampus: u('photo-1523050854058-775743a369ce'),
+  schoolsCampus: u('photo-1582719478250-c89cae4dc85b'),
   career: u('photo-1600880292203-757bb62b4baf'),
   founder: '/team/esha-lohiya.png',
   coFounder: '/team/shivam-lohiya.png',

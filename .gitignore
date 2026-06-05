@@ -17,7 +17,6 @@ backend/uploads/
 # Build output
 dist/
 client/dist/
-frontend/dist/
 build/
 
 # Logs & OS

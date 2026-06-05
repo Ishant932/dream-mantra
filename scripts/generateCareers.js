@@ -593,7 +593,6 @@ const out = {
 };
 
 const outPaths = [
-  path.join(__dirname, '../frontend/public/data/careers.json'),
   path.join(__dirname, '../client/public/data/careers.json'),
   path.join(__dirname, '../backend/data/careers.json'),
 ];

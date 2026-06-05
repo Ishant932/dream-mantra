@@ -114,7 +114,7 @@ export const siteEn = {
       {
         title: 'Discover',
         links: [
-          { to: '/marketplace', label: 'Marketplace' },
+      { to: '/marketplace', label: 'Marketplace' },
           { to: '/pillars', label: '7 Pillars Framework' },
           { to: '/#certifications', label: 'Certifications' },
         ],
@@ -123,8 +123,8 @@ export const siteEn = {
         title: 'Connect',
         links: [
           { to: '/about', label: 'About Us' },
-          { to: '/contact', label: 'Contact' },
-          { to: '/terms', label: 'Terms & Conditions' },
+      { to: '/contact', label: 'Contact' },
+      { to: '/terms', label: 'Terms & Conditions' },
         ],
       },
     ],

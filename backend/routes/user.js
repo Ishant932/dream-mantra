@@ -33,10 +33,7 @@ import {
 } from '../lib/notifications.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const careersPath = [
-  path.join(__dirname, '../../frontend/public/data/careers.json'),
-  path.join(__dirname, '../../client/public/data/careers.json'),
-].find((p) => fs.existsSync(p)) || path.join(__dirname, '../../client/public/data/careers.json');
+const careersPath = path.join(__dirname, '../../client/public/data/careers.json');
 
 const router = Router();
 router.use(authRequired);

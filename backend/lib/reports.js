@@ -61,6 +61,8 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
     const row = data.user_reports.find((r) => r.id === Number(id));
     if (!row) throw new Error('Report not found');
     const prevLink = row.report_link;
+    const prevTitle = row.report_title;
+    const prevNotes = row.admin_notes;
     if (reportLink !== undefined) row.report_link = reportLink;
     if (reportTitle !== undefined) row.report_title = reportTitle;
     if (adminNotes !== undefined) row.admin_notes = adminNotes;
@@ -73,7 +75,11 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
     }
     saveData();
     const enriched = enrichReport(row);
-    const shouldNotify = resendNotification || (reportLink && reportLink !== prevLink);
+    const contentChanged =
+      (reportLink !== undefined && reportLink !== prevLink)
+      || (reportTitle !== undefined && reportTitle !== prevTitle)
+      || (adminNotes !== undefined && adminNotes !== prevNotes);
+    const shouldNotify = resendNotification || contentChanged;
     if (shouldNotify && row.report_link) {
       notifyUser(row.user_id, {
         type: 'report',

@@ -13,6 +13,10 @@ export const partnerDetailsEn = {
       'Class-wise pathway modules: Talent Discovery (1–5), Self Discovery (6–8), Stream Selection (9–10), Career Direction (11–12)',
       'Principal and counsellor briefings with actionable student insights',
       'Pan-India online delivery for boarding schools and multi-campus groups',
+      'Parent orientation evenings in English & Hindi with Q&A',
+      'Career week assembly programs and classroom micro-sessions',
+      'Student report handover ceremonies with privacy-compliant sharing',
+      'Integration with existing school ERP / student ID where needed',
     ],
     idealFor: [
       'CBSE / ICSE / State board schools',

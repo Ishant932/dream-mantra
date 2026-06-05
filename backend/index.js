@@ -27,11 +27,7 @@ if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
 }
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const distCandidates = [
-  path.join(__dirname, '../client/dist'),
-  path.join(__dirname, '../frontend/dist'),
-];
-const clientDist = distCandidates.find((p) => fs.existsSync(path.join(p, 'index.html'))) || distCandidates[1];
+const clientDist = path.join(__dirname, '../client/dist');
 const hasBuiltClient = fs.existsSync(path.join(clientDist, 'index.html'));
 
 const app = express();

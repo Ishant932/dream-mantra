@@ -291,6 +291,26 @@ Forgot password: Dashboard → Security, or contact 9680102276`,
     en: "You're welcome! I'm Esh — ask anytime about Mind Mapping, Skill Mapping, careers, booking, or your Dashboard.\n\n9680102276 | dreammantra.in",
     hi: 'आपका स्वागत है! Mind Mapping, Skill Mapping, careers, booking — कुछ भी पूछें। 9680102276',
   },
+  {
+    patterns: ['forgot password', 'reset password', 'change password login', 'lost password'],
+    en: 'FORGOT PASSWORD\n\n1. Go to dreammantra.in/login → Forgot password?\n2. Enter your registered email AND mobile number (from signup)\n3. Set new password + confirm\n4. Sign in at /login with the new password\n\nBoth email and phone must match your account. Admin uses the same flow.\n\nSupport: 9680102276',
+    hi: 'Password reset: Login → Forgot password → email + mobile → naya password → login। 9680102276',
+  },
+  {
+    patterns: ['my reports', 'report link', 'where is my report', 'assessment report'],
+    en: 'MY REPORTS (Dashboard)\n\nAfter your counsellor publishes your report:\n• Log in → Dashboard → My Reports tab (/dashboard?tab=reports)\n• Open the Google Drive / PDF link\n• You get a notification when a new or updated report is ready\n\nIf empty, your report may still be in review. Call 9680102276 with your Dreams ID.',
+    hi: 'Reports: Dashboard → My Reports tab। Notification aayegi jab report ready ho। 9680102276',
+  },
+  {
+    patterns: ['dashboard tabs', 'user dashboard', 'what is in dashboard', 'security tab'],
+    en: 'USER DASHBOARD TABS\n\n• Overview — profile, Dreams ID, stats\n• Career Library — 950+ careers\n• AI Corner — ask Esh for guidance\n• Modules — buy Mind Mapping, Skill Mapping, CRP\n• Process & Take test — guides + Skill Mapping tests (after payment)\n• My Reports — published assessment reports\n• Book Session — counselling slots (after counselling module)\n• Security — change password, 2FA\n\nLogin: dreammantra.in/login',
+    hi: 'Dashboard tabs: Overview, Careers, AI, Modules, Process, Reports, Book, Security। dreammantra.in/login',
+  },
+  {
+    patterns: ['partner with us', 'school partnership', 'coaching partner', 'referral partner'],
+    en: 'PARTNER WITH DREAM MANTRA\n\nCategories at dreammantra.in/partner/*:\n• Schools — campus assessments & stream guidance\n• Coaching centres — white-label assessments & referrals\n• Colleges — placement cell & CRP programs\n• Corporates — CSR & employee career wellness\n• Teachers — certification & referral income\n• Referral partners — commissions on enrollments\n\nDetails: /partner/schools and other categories. Contact: 9680102276 | info@dreammantra.in',
+    hi: 'Partner categories: Schools, Coaching, Colleges, Corporates, Teachers, Referral। /partner/schools | 9680102276',
+  },
 ];
 
 export function matchExactQA(message, lang = 'en') {

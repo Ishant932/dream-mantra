@@ -104,6 +104,7 @@ export default function AdminDashboard() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [meetingLinks, setMeetingLinks] = useState({});
   const [reportForm, setReportForm] = useState({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report' });
+  const [reportUserSearch, setReportUserSearch] = useState('');
   const [editingReportId, setEditingReportId] = useState(null);
   const [editReportForm, setEditReportForm] = useState({ reportTitle: '', reportLink: '', adminNotes: '' });
   const [reportSavingId, setReportSavingId] = useState(null);
@@ -149,6 +150,19 @@ export default function AdminDashboard() {
     () => users.find((u) => u.user_uid === reportForm.userUid),
     [users, reportForm.userUid]
   );
+
+  const reportUserOptions = useMemo(() => {
+    const q = reportUserSearch.trim().toLowerCase();
+    if (!q) return users;
+    return users.filter((u) => {
+      const name = (u.name || '').toLowerCase();
+      const uid = (u.user_uid || '').toLowerCase();
+      const email = (u.email || '').toLowerCase();
+      const phone = (u.phone || '').replace(/\D/g, '');
+      const qDigits = q.replace(/\D/g, '');
+      return name.includes(q) || uid.includes(q) || email.includes(q) || (qDigits && phone.includes(qDigits));
+    });
+  }, [users, reportUserSearch]);
 
   const loadAnalytics = useCallback(async () => {
     if (!token) return;
@@ -788,16 +802,26 @@ export default function AdminDashboard() {
                     <h2 className="text-lg font-bold mb-2 flex items-center gap-2"><FileText className="w-5 h-5 text-amber-500" /> Add / Update Report Link</h2>
                     <p className="text-sm opacity-70 mb-5">Paste a Google Drive, PDF or report URL — it will appear in the user's Reports tab.</p>
                     <form onSubmit={submitReport} className="grid sm:grid-cols-2 gap-4 max-w-3xl">
+                      <div className="sm:col-span-2">
+                        <label className="text-xs font-bold uppercase tracking-wide opacity-60 mb-1.5 block">Search student</label>
+                        <input
+                          type="search"
+                          className="input-field"
+                          placeholder="Type name, Dreams ID, email or phone…"
+                          value={reportUserSearch}
+                          onChange={(e) => setReportUserSearch(e.target.value)}
+                        />
+                      </div>
                       <select className="input-field" value={reportForm.userUid} onChange={(e) => setReportForm({ ...reportForm, userUid: e.target.value, assessmentId: '' })} required>
                         <option value="">Select user by Dreams ID</option>
-                        {users.map((u) => (
+                        {reportUserOptions.map((u) => (
                           <option key={u.id} value={u.user_uid}>{u.user_uid} — {u.name}</option>
                         ))}
                       </select>
                       <select className="input-field" value={reportForm.assessmentId} onChange={(e) => setReportForm({ ...reportForm, assessmentId: e.target.value })} disabled={!reportForm.userUid}>
                         <option value="">Link to paid course (optional)</option>
-                        {payments.filter((p) => selectedReportUser && p.user_id === selectedReportUser.id).map((p) => (
-                          <option key={p.id} value={p.id}>{p.type} — ₹{p.amount}</option>
+                        {payments.filter((p) => selectedReportUser && p.user_id === selectedReportUser.id && p.assessment_id).map((p) => (
+                          <option key={p.id} value={p.assessment_id}>{p.type || p.product_title} — ₹{p.amount}</option>
                         ))}
                       </select>
                       <input type="text" className="input-field sm:col-span-2" placeholder="Report title" value={reportForm.reportTitle} onChange={(e) => setReportForm({ ...reportForm, reportTitle: e.target.value })} />

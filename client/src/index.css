@@ -11548,7 +11548,30 @@ html.dark .leadership-card__role--highlight {
     min-height: 2.75rem;
   }
   .dash-sidebar-nav--desktop {
-    display: none !important;
+    display: flex !important;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 0.35rem;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .dash-sidebar-nav--desktop .dash-sidebar-item {
+    flex: 0 0 auto;
+    min-width: max-content;
+    scroll-snap-align: start;
+    padding: 0.5rem 0.75rem;
+  }
+  .dash-sidebar-nav--desktop .dash-sidebar-desc,
+  .dash-sidebar-nav--desktop .dash-sidebar-chevron {
+    display: none;
+  }
+  .dash-sidebar-panel {
+    min-height: 40vh;
+    overflow: visible;
   }
   .dash-sidebar-main {
     width: 100%;

@@ -1,52 +1,61 @@
-# Dreams Mantra — Project Structure
+# Dream Mantra — Project Structure
+
+Production uses **`client/`** (React UI) + **`backend/`** (Express API). Render builds `client/dist` and serves it from the API on one URL.
 
 ```
-dreams-mantra/
-├── frontend/              # React + Vite + Tailwind (UI) — currently at `client/` until folder rename
+Dream Mantra/
+├── client/                     # ★ Frontend (Vite + React + Tailwind)
 │   ├── src/
-│   │   ├── components/    # Reusable UI (Navbar, Chatbot, SecuritySettings…)
-│   │   ├── pages/         # Route pages (Home, Login, Dashboard…)
-│   │   ├── context/       # Auth, Theme, Language
-│   │   ├── data/          # Static content & careers metadata
-│   │   ├── api.js         # API client
-│   │   └── App.jsx        # Routes
-│   ├── public/data/       # careers.json (950+ careers)
-│   └── package.json
+│   │   ├── pages/              # Routes: Home, Login, Dashboards, Partner…
+│   │   ├── components/         # Reusable UI (Navbar, Chatbot, panels…)
+│   │   ├── i18n/               # English & Hindi site copy
+│   │   ├── data/               # Static content, images, module catalog
+│   │   ├── context/            # Auth, language, theme providers
+│   │   └── api.js              # HTTP client for backend
+│   ├── public/                 # Team photos, certifications, careers.json
+│   └── scripts/                # Image checks, dev utilities
 │
-├── backend/               # Express API + JWT auth + 2FA
-│   ├── index.js           # Server entry (port 5000)
-│   ├── routes/            # auth, user, admin, careers, chatbot, payments
-│   ├── middleware/        # JWT authRequired, adminRequired
-│   ├── utils/             # TOTP 2FA helpers
-│   ├── lib/               # database, careersData
-│   ├── config/            # products config
-│   ├── data/              # careers.json copy, products
-│   └── data.json          # JSON database (users, bookings…)
+├── backend/                    # ★ API server (Express + MongoDB/SQLite)
+│   ├── index.js                # Entry — serves client/dist in production
+│   ├── routes/                 # auth, admin, user, chatbot, payments…
+│   ├── lib/                    # DB, reports, notifications, bot knowledge
+│   ├── models/                 # MongoDB AppState schema
+│   ├── middleware/             # JWT auth, rate limiting
+│   └── utils/                  # Mail, OTP, password reset
 │
-├── scripts/               # Utility scripts
-│   └── generateCareers.js # Generate 950+ careers JSON
-│
-├── node_modules/          # Root dev dependencies (concurrently)
-├── package.json           # Root scripts: dev, build, start
-├── START.bat              # Windows launcher
-├── render.yaml            # Deploy config
-└── README.md
+├── scripts/                    # Build & deploy helpers (careers generator, DNS)
+├── .github/workflows/          # Auto-trigger Render deploy on push to main
+├── render.yaml                 # Render Blueprint (build + env vars)
+├── package.json                # Root scripts: dev, build, start
+├── README.md                   # Quick start guide
+└── DEPLOY.md / RENDER_DEPLOY.md  # Deployment notes
 ```
 
-## Quick commands
+## Removed / legacy (do not add back)
 
-| Command | Description |
-|---------|-------------|
-| `npm run install:all` | Install root + backend + frontend deps |
-| `npm run dev` | Dev: frontend :5173 + backend :5000 |
-| `npm start` | Build frontend + serve on :5000 |
-| `npm run generate:careers` | Regenerate careers JSON |
+| Item | Reason |
+|------|--------|
+| `frontend/` | Duplicate of `client/` — removed to avoid confusion |
+| Root `index.html`, `css/`, `js/` | Old static prototype — app lives in `client/` |
 
-## Auth (JWT + 2FA)
+## Commands
 
-- **Register:** `POST /api/auth/register` — name, email/phone, password → JWT
-- **Login:** `POST /api/auth/login` — identifier + password → JWT (or 2FA challenge)
-- **2FA verify:** `POST /api/auth/verify-2fa` — tempToken + 6-digit TOTP code
-- **Enable 2FA:** Dashboard → Security tab → scan QR with Authenticator app
+```bash
+# Install everything
+npm run install:all
 
-> **Note:** The UI lives in `client/` today (Windows file lock). Scripts use `client/`; `frontend/` is the planned name. Backend auto-detects both paths.
+# Local development (API :5000 + UI :5173)
+npm run dev
+
+# Production build (same as Render)
+npm install && npm install --prefix backend && npm install --prefix client && npm run build --prefix client
+node backend/index.js
+```
+
+## Environment
+
+Copy `backend/.env.example` → `backend/.env`
+
+Key variables: `JWT_SECRET`, `MONGODB_URI`, `GEMINI_API_KEY`, `RESEND_API_KEY`
+
+**Live site:** https://dreammantra.in

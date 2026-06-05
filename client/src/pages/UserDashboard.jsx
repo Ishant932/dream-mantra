@@ -82,14 +82,15 @@ export default function UserDashboard() {
 
   const dashboardTabs = useMemo(() => {
     const tabs = Array.isArray(d('data.dashboardTabs')) ? d('data.dashboardTabs') : [];
-    let filtered = tabs;
-    if (!canShowProcessTab(data.assessments)) {
-      filtered = filtered.filter((tab) => tab.id !== 'process-guides');
-    }
-    if (!counsellingAccess) {
-      filtered = filtered.filter((tab) => tab.id !== 'book');
-    }
-    return filtered;
+    return tabs.map((tab) => {
+      if (tab.id === 'process-guides' && !canShowProcessTab(data.assessments)) {
+        return { ...tab, locked: true, desc: 'Purchase & confirm a module to unlock' };
+      }
+      if (tab.id === 'book' && !counsellingAccess) {
+        return { ...tab, locked: true, desc: 'Unlock with a counselling module' };
+      }
+      return tab;
+    });
   }, [d, data.assessments, counsellingAccess]);
 
   const toolkit = useMemo(() => {
@@ -170,14 +171,18 @@ export default function UserDashboard() {
   );
 
   useEffect(() => {
-    if (loading) return;
-    if (tabParam === 'process-guides' && !canShowProcessTab(data.assessments)) {
-      navigate({ pathname: '/dashboard', search: '?tab=assess' }, { replace: true });
-    }
-    if (tabParam === 'book' && !counsellingAccess) {
-      navigate({ pathname: '/dashboard', search: '?tab=assess' }, { replace: true });
-    }
-  }, [tabParam, data.assessments, navigate, loading, counsellingAccess]);
+    if (!token || loading) return undefined;
+    let cancelled = false;
+    (async () => {
+      try {
+        const dash = await userApi.dashboard(token);
+        if (!cancelled) setData(dash);
+      } catch {
+        /* silent refresh on tab change */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [tabParam, token, loading]);
 
   useEffect(() => {
     if (loading) return undefined;
@@ -413,6 +418,16 @@ export default function UserDashboard() {
               )}
 
               {tab === 'book' && (
+                !counsellingAccess ? (
+                  <DashCard className="!p-8 text-center" glow={false} hover={false}>
+                    <Calendar className="w-12 h-12 text-amber-500 mx-auto mb-4 opacity-80" />
+                    <h3 className="font-bold text-lg mb-2">Book Session — locked</h3>
+                    <p className="text-sm opacity-70 mb-4 max-w-md mx-auto">
+                      Purchase Mind Mapping, Skill Mapping, Combo or CRP with counselling access, then return here to pick a slot.
+                    </p>
+                    <button type="button" className="btn-primary" onClick={() => goTab('assess')}>Browse modules</button>
+                  </DashCard>
+                ) : (
                 <CounsellingBookingPanel
                   counsellingAccess={counsellingAccess}
                   onBrowseModules={() => goTab('assess')}
@@ -433,9 +448,20 @@ export default function UserDashboard() {
                   bookings={(data.consultations || []).filter((c) => c.status !== 'cancelled')}
                   t={t}
                 />
+                )
               )}
 
               {tab === 'process-guides' && (
+                !canShowProcessTab(data.assessments) ? (
+                  <DashCard className="!p-8 text-center" glow={false} hover={false}>
+                    <FlaskConical className="w-12 h-12 text-amber-500 mx-auto mb-4 opacity-80" />
+                    <h3 className="font-bold text-lg mb-2">Process &amp; Take test — locked</h3>
+                    <p className="text-sm opacity-70 mb-4 max-w-md mx-auto">
+                      Buy and confirm payment for a module first. Then process guides, questionnaires and tests appear here.
+                    </p>
+                    <button type="button" className="btn-primary" onClick={() => goTab('assess')}>Go to modules</button>
+                  </DashCard>
+                ) : (
                 <ProcessQuestionnairesPanel
                   assessments={data.assessments || []}
                   profile={data.profile}
@@ -443,6 +469,7 @@ export default function UserDashboard() {
                   communityLink={data.communityLink}
                   onRefresh={refreshDashboard}
                 />
+                )
               )}
               
               {tab === 'reports' && (
