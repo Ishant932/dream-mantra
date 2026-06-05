@@ -39,6 +39,16 @@ services:
         value: true
       - key: MONGODB_URI
         sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
 
   # Pings both URLs every 5 min to reduce Render free-tier cold starts
   - type: cron

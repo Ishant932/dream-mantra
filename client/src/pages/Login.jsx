@@ -144,9 +144,14 @@ export default function Login() {
                     />
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
-                      <Lock className="w-4 h-4 text-amber-600" /> {t('auth.password')}
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2">
+                        <Lock className="w-4 h-4 text-amber-600" /> {t('auth.password')}
+                      </label>
+                      <Link to="/forgot-password" className="text-xs font-semibold text-amber-600 hover:underline">
+                        Forgot password?
+                      </Link>
+                    </div>
                     <input
                       type="password"
                       className="input-field"

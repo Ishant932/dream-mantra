@@ -7,7 +7,7 @@ Dream Mantra stores **users, logins, payments, bookings, assessments, and admin 
 ## Step 1 — Create Atlas cluster (your account)
 
 1. Sign in at [MongoDB Atlas](https://cloud.mongodb.com) (same email as your other accounts).
-2. **Create project:** name it `Dream Mantra`.
+2. Left sidebar → **All Projects** → **New Project** → name it `Dream Mantra`.
 3. **Build a cluster:**
    - Click **Create** → **M Deploy** (free tier M0).
    - Provider: **AWS** (or Google Cloud).
@@ -119,6 +119,24 @@ node backend/scripts/migrate-to-mongo.js
 ```
 
 On first Render deploy with `MONGODB_URI` set, existing `data.json` on the server is auto-migrated to Atlas.
+
+---
+
+## API keys (optional — for automated setup only)
+
+The old link `#/org/access/apiKeys` often shows **“Oops! Something went wrong”**. MongoDB moved API keys here:
+
+1. [cloud.mongodb.com](https://cloud.mongodb.com) — make sure you are at **Organization** level (not inside a project).
+2. Left sidebar → **Identity & Access** → **Applications**
+3. Click **Add new API Key**
+4. Description: `dream-mantra-setup`
+5. Organization permission: **Organization Project Creator** (or **Organization Owner**)
+6. Copy **Public Key** + **Private Key** (private key shown only once)
+7. Add access list → **Use Current IP Address** → **Save** → **Done**
+
+Paste those keys here and the automated script will create the cluster and link Render.
+
+Docs: [Atlas programmatic access](https://www.mongodb.com/docs/atlas/configure-api-access/)
 
 ---
 

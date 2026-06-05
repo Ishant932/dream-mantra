@@ -14,6 +14,7 @@ const Terms = lazy(() => import('./pages/Terms'));
 const Privacy = lazy(() => import('./pages/Privacy'));
 const Login = lazy(() => import('./pages/Login'));
 const Signup = lazy(() => import('./pages/Signup'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const AssessmentsHub = lazy(() => import('./pages/AssessmentsHub'));
 const AssessmentPage = lazy(() => import('./pages/AssessmentPage'));
 const WhyDreamsMantraPage = lazy(() => import('./pages/WhyDreamsMantraPage'));
@@ -121,6 +122,7 @@ export default function App() {
             </Route>
             <Route path="login" element={<AuthPage><Login /></AuthPage>} />
             <Route path="signup" element={<AuthPage><Signup /></AuthPage>} />
+            <Route path="forgot-password" element={<AuthPage><ForgotPassword /></AuthPage>} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

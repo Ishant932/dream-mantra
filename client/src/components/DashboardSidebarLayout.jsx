@@ -138,7 +138,30 @@ export default function DashboardSidebarLayout({
               </div>
             )}
 
-            <nav className="dash-sidebar-nav" role="tablist" aria-label="Dashboard sections">
+            <div className="dash-mobile-tab-picker">
+              <label htmlFor={`${id}-tab-select`} className="dash-mobile-tab-picker-label">
+                Section
+              </label>
+              <select
+                id={`${id}-tab-select`}
+                className="dash-mobile-tab-select input-field"
+                value={panelTab}
+                onChange={(e) => setTab(e.target.value)}
+                aria-label="Choose dashboard section"
+              >
+                {tabs.map((tab) => (
+                  <option key={tab.id} value={tab.id}>
+                    {tab.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <nav
+              className="dash-sidebar-nav dash-sidebar-nav--desktop"
+              role="tablist"
+              aria-label="Dashboard sections"
+            >
               {tabs.map((tab) => {
                 const Icon = TAB_ICONS[tab.id] || LayoutGrid;
                 const isActive = active === tab.id;
