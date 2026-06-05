@@ -129,13 +129,6 @@ export default function Logo({
             >
               Mantra
             </motion.span>
-            <motion.span
-              custom={2}
-              variants={textStagger}
-              className={`logo-tagline hidden sm:block ${s.tag}`}
-            >
-              Career Clarity
-            </motion.span>
             <span className="logo-text-underline" aria-hidden="true" />
           </motion.div>
         )}

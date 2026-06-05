@@ -4,9 +4,16 @@ import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import { defaultProfile, normalizeProfile } from './profile.js';
 import { ensureAllUserUids, nextUserUid } from './userUid.js';
+import { connectMongo, isMongoConfigured, getMongoStatus } from './mongo.js';
+import AppState from '../models/AppState.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const DB_PATH = path.join(__dirname, '../data.json');
+
+let mongoEnabled = false;
+let dbMode = 'file';
+let persistTimer = null;
+let persistInFlight = null;
 
 const defaultData = {
   users: [],
@@ -31,31 +38,35 @@ const defaultData = {
   },
 };
 
-function load() {
+function normalizePayload(parsed) {
+  parsed.otpStore = parsed.otpStore || [];
+  parsed.contact_leads = parsed.contact_leads || [];
+  parsed.user_notifications = parsed.user_notifications || [];
+  parsed.payments = parsed.payments || [];
+  parsed.availability_slots = parsed.availability_slots || [];
+  parsed.user_reports = parsed.user_reports || [];
+  parsed.site_settings = {
+    ...defaultData.site_settings,
+    ...parsed.site_settings,
+    community_links: {
+      ...defaultData.site_settings.community_links,
+      ...(parsed.site_settings?.community_links || {}),
+    },
+  };
+  parsed.nextId = { ...defaultData.nextId, ...parsed.nextId };
+  parsed.users = (parsed.users || []).map((u) => ({
+    ...u,
+    profile: normalizeProfile(u.profile),
+  }));
+  return parsed;
+}
+
+function loadFromFile() {
   try {
     if (fs.existsSync(DB_PATH)) {
-      const parsed = JSON.parse(fs.readFileSync(DB_PATH, 'utf8'));
-      parsed.otpStore = parsed.otpStore || [];
-      parsed.contact_leads = parsed.contact_leads || [];
-      parsed.user_notifications = parsed.user_notifications || [];
-      parsed.payments = parsed.payments || [];
-      parsed.availability_slots = parsed.availability_slots || [];
-      parsed.user_reports = parsed.user_reports || [];
-      parsed.site_settings = {
-        ...defaultData.site_settings,
-        ...parsed.site_settings,
-        community_links: {
-          ...defaultData.site_settings.community_links,
-          ...(parsed.site_settings?.community_links || {}),
-        },
-      };
-      parsed.nextId = { ...defaultData.nextId, ...parsed.nextId };
-      parsed.users = (parsed.users || []).map((u) => ({
-        ...u,
-        profile: normalizeProfile(u.profile),
-      }));
+      const parsed = normalizePayload(JSON.parse(fs.readFileSync(DB_PATH, 'utf8')));
       const changed = ensureAllUserUids(parsed);
-      if (changed) persist(parsed);
+      if (changed && !mongoEnabled) persistToFile(parsed);
       return parsed;
     }
   } catch (e) {
@@ -64,11 +75,97 @@ function load() {
   return structuredClone(defaultData);
 }
 
-function persist(data) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+function persistToFile(snapshot = data) {
+  fs.writeFileSync(DB_PATH, JSON.stringify(snapshot, null, 2));
 }
 
-let data = load();
+async function persistToMongo(snapshot = data) {
+  await AppState.findByIdAndUpdate(
+    'main',
+    { payload: snapshot, updatedAt: new Date() },
+    { upsert: true, new: true }
+  );
+}
+
+function schedulePersist() {
+  if (!mongoEnabled) {
+    persistToFile();
+    return;
+  }
+  clearTimeout(persistTimer);
+  persistTimer = setTimeout(() => {
+    persistInFlight = persistToMongo()
+      .catch((err) => console.error('MongoDB save failed:', err.message))
+      .finally(() => {
+        persistInFlight = null;
+      });
+  }, 250);
+}
+
+function load() {
+  return loadFromFile();
+}
+
+function persist() {
+  schedulePersist();
+}
+
+let data = structuredClone(defaultData);
+
+export async function initDatabase() {
+  if (!isMongoConfigured()) {
+    data = loadFromFile();
+    dbMode = 'file';
+    console.log('Database: local data.json (set MONGODB_URI for MongoDB Atlas)');
+    return { mode: dbMode };
+  }
+
+  await connectMongo();
+  mongoEnabled = true;
+  dbMode = 'mongodb';
+
+  const doc = await AppState.findById('main').lean();
+  if (doc?.payload) {
+    data = normalizePayload(structuredClone(doc.payload));
+    const changed = ensureAllUserUids(data);
+    if (changed) await persistToMongo(data);
+    console.log('Database: MongoDB Atlas (loaded existing data)');
+    return { mode: dbMode };
+  }
+
+  if (fs.existsSync(DB_PATH)) {
+    data = loadFromFile();
+    await persistToMongo(data);
+    console.log('Database: MongoDB Atlas (migrated from data.json)');
+    return { mode: dbMode, migrated: true };
+  }
+
+  data = structuredClone(defaultData);
+  await persistToMongo(data);
+  console.log('Database: MongoDB Atlas (initialized empty store)');
+  return { mode: dbMode, initialized: true };
+}
+
+export async function flushDatabase() {
+  clearTimeout(persistTimer);
+  if (mongoEnabled) {
+    if (persistInFlight) await persistInFlight;
+    await persistToMongo();
+    return;
+  }
+  persistToFile();
+}
+
+export function getDbMode() {
+  return dbMode;
+}
+
+export function getDbStatus() {
+  return {
+    mode: dbMode,
+    mongo: getMongoStatus(),
+  };
+}
 
 export function getData() {
   return data;

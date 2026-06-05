@@ -30,6 +30,7 @@ export default function PartnerPage() {
 
   const sections = [
     { title: 'Why partner with us', items: details.benefits },
+    { title: 'Focus areas', items: details.focusAreas },
     { title: 'Ideal for', items: details.idealFor },
     { title: 'What we offer', items: details.offerings },
     { title: 'How it works', items: details.howItWorks },

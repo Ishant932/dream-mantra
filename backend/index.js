@@ -6,7 +6,8 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getUploadsDir } from './lib/paymentProof.js';
-import { seedAdmin } from './db.js';
+import { seedAdmin, initDatabase, flushDatabase, getDbStatus } from './db.js';
+import { disconnectMongo } from './lib/mongo.js';
 import { seedSampleSlots, getAvailableSlots } from './lib/slots.js';
 import { migrateLegacyPayments } from './lib/paymentService.js';
 import { loadCareersData } from './lib/careersData.js';
@@ -24,8 +25,6 @@ if (process.env.NODE_ENV === 'production' && !process.env.JWT_SECRET) {
   console.error('FATAL: JWT_SECRET must be set in production.');
   process.exit(1);
 }
-
-seedAdmin();
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const distCandidates = [
@@ -60,7 +59,7 @@ app.use('/api/uploads/payment-proofs', express.static(getUploadsDir(), { maxAge:
 
 app.get('/api/health', (_, res) => {
   res.set('Cache-Control', 'no-store');
-  res.json({ ok: true, ts: Date.now() });
+  res.json({ ok: true, ts: Date.now(), db: getDbStatus() });
 });
 
 app.get('/api/warmup', (_, res) => {
@@ -115,32 +114,58 @@ if (hasBuiltClient) {
   });
 }
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log('');
-  console.log('  Dream Mantra is running!');
-  if (hasBuiltClient) {
-    console.log(`  Open in browser: http://localhost:${PORT}`);
-  } else {
-    console.log(`  API: http://localhost:${PORT}`);
-    console.log('  Build the site first: npm run build');
-    console.log('  Or use dev mode: npm run dev  →  http://localhost:5173');
-  }
-  console.log('');
+async function startServer() {
+  try {
+    const dbInfo = await initDatabase();
+    seedAdmin();
 
-  setImmediate(() => {
-    try {
-      loadCareersData();
-      seedSampleSlots();
-      migrateLegacyPayments();
-    } catch (err) {
-      console.error('Background startup task failed:', err.message);
-    }
-  });
-}).on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`\n  Port ${PORT} is already in use. Stop the other process or set PORT in .env\n`);
-  } else {
-    console.error('\n  Server failed to start:', err.message, '\n');
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log('');
+      console.log('  Dream Mantra is running!');
+      console.log(`  Database: ${dbInfo.mode}`);
+      if (hasBuiltClient) {
+        console.log(`  Open in browser: http://localhost:${PORT}`);
+      } else {
+        console.log(`  API: http://localhost:${PORT}`);
+        console.log('  Build the site first: npm run build');
+        console.log('  Or use dev mode: npm run dev  →  http://localhost:5173');
+      }
+      console.log('');
+
+      setImmediate(() => {
+        try {
+          loadCareersData();
+          seedSampleSlots();
+          migrateLegacyPayments();
+        } catch (err) {
+          console.error('Background startup task failed:', err.message);
+        }
+      });
+    }).on('error', (err) => {
+      if (err.code === 'EADDRINUSE') {
+        console.error(`\n  Port ${PORT} is already in use. Stop the other process or set PORT in .env\n`);
+      } else {
+        console.error('\n  Server failed to start:', err.message, '\n');
+      }
+      process.exit(1);
+    });
+  } catch (err) {
+    console.error('\n  Database startup failed:', err.message, '\n');
+    process.exit(1);
   }
-  process.exit(1);
-});
+}
+
+async function shutdown() {
+  try {
+    await flushDatabase();
+    await disconnectMongo();
+  } catch (err) {
+    console.error('Shutdown error:', err.message);
+  }
+  process.exit(0);
+}
+
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+
+startServer();

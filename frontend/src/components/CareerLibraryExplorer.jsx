@@ -45,7 +45,17 @@ export default function CareerLibraryExplorer({
   const [sort, setSort] = useState('default');
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(embedded ? 48 : 24);
-  const [filtersOpen, setFiltersOpen] = useState(embedded);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [isNarrow, setIsNarrow] = useState(() =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 1023px)').matches
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 1023px)');
+    const apply = () => setIsNarrow(mq.matches);
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
 
   const activeFilters = [category, stream, demand, sort].filter((v) => v && v !== 'all' && v !== 'default').length;
 
@@ -107,9 +117,9 @@ export default function CareerLibraryExplorer({
 
   const filterBarClass = embedded
     ? 'career-lib-toolbar career-lib-toolbar--embedded'
-    : 'career-lib-toolbar career-lib-toolbar--standalone sticky top-[calc(var(--site-header-h,4.5rem)+0.75rem)] z-20';
+    : `career-lib-toolbar career-lib-toolbar--standalone${isNarrow ? '' : ' sticky top-[calc(var(--site-header-h,4.5rem)+0.75rem)] z-20'}`;
 
-  const showFilterPanel = embedded || filtersOpen;
+  const showFilterPanel = embedded ? !isNarrow : filtersOpen;
 
   const categoryPills = (
     <div className="career-lib-tabs" role="tablist" aria-label="Career categories">
@@ -171,14 +181,14 @@ export default function CareerLibraryExplorer({
         <motion.div
           initial={{ opacity: 0, y: -12 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`flex flex-wrap items-center justify-between gap-3 ${embedded ? 'mb-2' : 'mb-6'}`}
+          className={`career-lib-header-row flex flex-wrap items-center justify-between gap-3 ${embedded ? 'mb-2' : 'mb-6'}`}
         >
-          <div>
-            <h2 className="text-xl font-bold flex items-center gap-2 text-[var(--text-primary)]">
-              <Sparkles className="w-6 h-6 text-amber-600" />
+          <div className="min-w-0 flex-1">
+            <h2 className="text-lg sm:text-xl font-bold flex items-center gap-2 text-[var(--text-primary)]">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600 shrink-0" />
               Career Library
             </h2>
-            <p className="text-sm text-[var(--text-secondary)] mt-1">
+            <p className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1">
               Search, filter &amp; bookmark careers — full database access
             </p>
           </div>
@@ -186,7 +196,7 @@ export default function CareerLibraryExplorer({
             key={data.total}
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            className="px-4 py-2 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-amber-50 text-sm font-bold shadow-lg shadow-amber-500/25"
+            className="career-lib-header-badge shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-amber-50 text-xs sm:text-sm font-bold shadow-lg shadow-amber-500/25"
           >
             {data.total || 950} careers
           </motion.span>
@@ -394,9 +404,9 @@ export default function CareerLibraryExplorer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"
+            className="grid career-lib-grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4"
           >
-            {[...Array(Math.min(limit, 12))].map((_, i) => (
+            {[...Array(Math.min(limit, isNarrow ? 6 : 12))].map((_, i) => (
               <div
                 key={i}
                 className="h-56 rounded-2xl bg-gradient-to-br from-amber-100 to-sand-100 dark:from-sand-800 dark:to-sand-700 animate-pulse"
@@ -420,7 +430,7 @@ export default function CareerLibraryExplorer({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4"
+            className="grid career-lib-grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4"
           >
             {data.careers.map((c, i) => {
               const saved = savedCareers.some((s) => s.slug === c.slug);
@@ -458,17 +468,17 @@ export default function CareerLibraryExplorer({
                     <p className="career-lib-card__desc line-clamp-3">
                       {c.shortDescription}
                     </p>
-                    <div className="flex flex-wrap gap-2 mt-4">
+                    <div className="career-lib-card__tags flex flex-wrap gap-1.5 sm:gap-2 mt-3 sm:mt-4">
                       <span className="career-lib-tag">{c.salaryDisplay || 'Salary varies'}</span>
                       <span className="career-lib-tag career-lib-tag--accent">Demand: {c.demand || c.outlook || 'High'}</span>
                       {((c.classStreams?.length ? c.classStreams : c.stream) || [])
                         .filter((s) => s !== 'PCMB')
-                        .slice(0, 4)
+                        .slice(0, isNarrow ? 2 : 4)
                         .length > 0 && (
                         <span className="career-lib-tag">
                           Stream: {(c.classStreams?.length ? c.classStreams : c.stream)
                             .filter((s) => s !== 'PCMB')
-                            .slice(0, 4)
+                            .slice(0, isNarrow ? 2 : 4)
                             .join(' · ')}
                         </span>
                       )}
@@ -488,29 +498,31 @@ export default function CareerLibraryExplorer({
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap items-center justify-center gap-4 mt-10"
+          className="career-lib-pagination flex flex-wrap items-center justify-center gap-2 sm:gap-4 mt-8 sm:mt-10"
         >
           <button
             type="button"
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
-            className="p-3 rounded-xl border border-amber-200 disabled:opacity-40 hover:bg-amber-50 transition"
+            className="p-2.5 sm:p-3 rounded-xl border border-amber-200 disabled:opacity-40 hover:bg-amber-50 transition"
+            aria-label="Previous page"
           >
             <ChevronLeft className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-1 flex-wrap justify-center">
-            {[...Array(Math.min(data.pages, 7))].map((_, i) => {
+          <div className="flex items-center gap-1 flex-wrap justify-center max-w-full">
+            {[...Array(Math.min(data.pages, isNarrow ? 5 : 7))].map((_, i) => {
               let pageNum;
-              if (data.pages <= 7) pageNum = i + 1;
-              else if (page <= 4) pageNum = i + 1;
-              else if (page >= data.pages - 3) pageNum = data.pages - 6 + i;
-              else pageNum = page - 3 + i;
+              const maxPages = isNarrow ? 5 : 7;
+              if (data.pages <= maxPages) pageNum = i + 1;
+              else if (page <= Math.floor(maxPages / 2) + 1) pageNum = i + 1;
+              else if (page >= data.pages - Math.floor(maxPages / 2)) pageNum = data.pages - maxPages + 1 + i;
+              else pageNum = page - Math.floor(maxPages / 2) + i;
               return (
                 <button
                   key={pageNum}
                   type="button"
                   onClick={() => setPage(pageNum)}
-                  className={`w-10 h-10 rounded-xl text-sm font-semibold transition ${
+                  className={`career-lib-page-btn w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-xs sm:text-sm font-semibold transition ${
                     page === pageNum
                       ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-amber-50 shadow-lg'
                       : 'hover:bg-amber-50 text-sand-600 dark:text-[var(--text-secondary)]'
@@ -525,7 +537,8 @@ export default function CareerLibraryExplorer({
             type="button"
             disabled={page >= data.pages}
             onClick={() => setPage((p) => p + 1)}
-            className="p-3 rounded-xl border border-amber-200 disabled:opacity-40 hover:bg-amber-50 transition"
+            className="p-2.5 sm:p-3 rounded-xl border border-amber-200 disabled:opacity-40 hover:bg-amber-50 transition"
+            aria-label="Next page"
           >
             <ChevronRight className="w-5 h-5" />
           </button>

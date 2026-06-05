@@ -1,1 +1,1 @@
-export { default, seedAdmin, repo, getData, saveData } from './lib/database.js';
+export { default, seedAdmin, repo, getData, saveData, initDatabase, flushDatabase, getDbMode, getDbStatus } from './lib/database.js';

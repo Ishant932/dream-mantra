@@ -37,6 +37,8 @@ services:
         sync: false
       - key: SEED_SAMPLE_SLOTS
         value: true
+      - key: MONGODB_URI
+        sync: false
 
   # Pings both URLs every 5 min to reduce Render free-tier cold starts
   - type: cron
