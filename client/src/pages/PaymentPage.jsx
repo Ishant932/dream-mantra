@@ -32,7 +32,7 @@ function loadRazorpayScript() {
 
 export default function PaymentPage() {
   const { assessmentId } = useParams();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const navSelection = location.state?.selection;
@@ -83,6 +83,12 @@ export default function PaymentPage() {
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }, [token, assessmentId, navigate, loadOrder]);
+
+  useEffect(() => {
+    if (order?.gatewayEnabled) {
+      setPaymentMethod('razorpay');
+    }
+  }, [order?.gatewayEnabled]);
 
   useEffect(() => {
     const pay = order?.payment;
@@ -314,14 +320,31 @@ export default function PaymentPage() {
         name: 'Dream Mantra',
         description: checkout?.displayTitle,
         order_id: created.orderId,
+        prefill: {
+          name: user?.name || '',
+          email: user?.email || '',
+          contact: user?.phone || '',
+        },
+        notes: {
+          assessment_id: String(assessmentId),
+        },
         handler: async (response) => {
-          await paymentsApi.verify(token, {
-            assessmentId: Number(assessmentId),
-            orderId: response.razorpay_order_id,
-            paymentId: response.razorpay_payment_id,
-            signature: response.razorpay_signature,
-          });
-          navigate(postPayPath(checkout?.slug, Number(assessmentId), checkout?.lineItems));
+          try {
+            setPaying(true);
+            await paymentsApi.verify(token, {
+              assessmentId: Number(assessmentId),
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+            });
+            navigate(postPayPath(checkout?.slug, Number(assessmentId), checkout?.lineItems));
+          } catch (verifyErr) {
+            setError(verifyErr.message || 'Payment verification failed. Contact support with your payment ID.');
+            setPaying(false);
+          }
+        },
+        modal: {
+          ondismiss: () => setPaying(false),
         },
         theme: { color: '#ea580c' },
       };
@@ -584,7 +607,7 @@ export default function PaymentPage() {
                 <Smartphone className={`w-6 h-6 mb-2 ${paymentMethod === 'razorpay' ? 'text-brand-600' : 'text-sand-500'}`} />
                 <p className="font-bold text-sm">Pay via Razorpay</p>
                 <p className="text-xs text-sand-500 mt-1">
-                  {gatewayEnabled ? 'Instant online payment' : 'Coming soon — not connected yet'}
+                  {gatewayEnabled ? 'UPI, cards, netbanking — instant unlock' : 'Add Razorpay keys in server settings to enable'}
                 </p>
               </button>
             </div>

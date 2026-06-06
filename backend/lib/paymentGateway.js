@@ -1,15 +1,21 @@
 /**
- * Payment gateway toggle — manual flow until explicitly enabled.
- * Set PAYMENT_GATEWAY_ENABLED=true plus Razorpay keys to activate auto-confirmation.
+ * Payment gateway — enabled when Razorpay keys are configured.
+ * Set PAYMENT_GATEWAY_ENABLED=false to force manual-only mode.
  */
 export function isGatewayEnabled() {
-  return (
-    process.env.PAYMENT_GATEWAY_ENABLED === 'true' &&
-    !!process.env.RAZORPAY_KEY_ID &&
-    !!process.env.RAZORPAY_KEY_SECRET
-  );
+  if (process.env.PAYMENT_GATEWAY_ENABLED === 'false') return false;
+  return !!(process.env.RAZORPAY_KEY_ID?.trim() && process.env.RAZORPAY_KEY_SECRET?.trim());
 }
 
 export function getPaymentMode() {
   return isGatewayEnabled() ? 'gateway' : 'manual';
+}
+
+export function getGatewayPublicConfig() {
+  return {
+    mode: getPaymentMode(),
+    gatewayEnabled: isGatewayEnabled(),
+    razorpayKeyId: isGatewayEnabled() ? process.env.RAZORPAY_KEY_ID : null,
+    webhookConfigured: !!process.env.RAZORPAY_WEBHOOK_SECRET?.trim(),
+  };
 }

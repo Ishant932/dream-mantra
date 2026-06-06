@@ -10,7 +10,8 @@ import { seedAdmin, seedCounsellors, initDatabase, flushDatabase, getDbStatus } 
 import { disconnectMongo } from './lib/mongo.js';
 import { APP_VERSION } from './version.js';
 import { seedSampleSlots, getAvailableSlots } from './lib/slots.js';
-import { migrateLegacyPayments } from './lib/paymentService.js';
+import { migrateLegacyPayments, handleRazorpayWebhook } from './lib/paymentService.js';
+import { isGatewayEnabled, getGatewayPublicConfig } from './lib/paymentGateway.js';
 import { loadCareersData } from './lib/careersData.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
@@ -51,6 +52,25 @@ const corsOrigins = process.env.CORS_ORIGIN
     ];
 
 app.use(cors({ origin: corsOrigins, credentials: true }));
+
+/** Razorpay webhook must use raw body for signature verification */
+app.post('/api/payments/webhook/razorpay', express.raw({ type: 'application/json' }), (req, res) => {
+  try {
+    if (!isGatewayEnabled()) {
+      return res.status(503).json({ message: 'Payment gateway is disabled. Manual admin confirmation only.' });
+    }
+    const signature = req.headers['x-razorpay-signature'];
+    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+    const rawBody = req.body?.toString?.() || '';
+    const body = rawBody ? JSON.parse(rawBody) : {};
+    const result = handleRazorpayWebhook(body, signature, secret, rawBody);
+    res.json(result);
+  } catch (e) {
+    console.error('Webhook error', e);
+    res.status(400).json({ message: e.message || 'Webhook failed' });
+  }
+});
+
 app.use(express.json({ limit: '12mb' }));
 
 app.use('/api/uploads/payment-proofs', express.static(getUploadsDir(), { maxAge: isProd ? '7d' : 0 }));
@@ -62,6 +82,7 @@ app.get('/api/health', (_, res) => {
     ts: Date.now(),
     version: process.env.RENDER_GIT_COMMIT?.slice(0, 7) || APP_VERSION,
     db: getDbStatus(),
+    payments: getGatewayPublicConfig(),
   });
 });
 
@@ -142,6 +163,8 @@ async function startServer() {
           loadCareersData();
           seedSampleSlots();
           migrateLegacyPayments();
+          const pay = getGatewayPublicConfig();
+          console.log(`  Payments: ${pay.mode}${pay.gatewayEnabled ? ' (Razorpay live)' : ' (manual UPI + admin verify)'}`);
         } catch (err) {
           console.error('Background startup task failed:', err.message);
         }

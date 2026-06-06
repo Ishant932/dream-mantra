@@ -4,7 +4,7 @@ import db, { repo, getData, saveData } from '../lib/database.js';
 import { getProduct } from '../config/products.js';
 import { validateCoupon, applyCouponDiscount } from '../lib/couponService.js';
 import { authRequired } from '../middleware/auth.js';
-import { isGatewayEnabled, getPaymentMode } from '../lib/paymentGateway.js';
+import { isGatewayEnabled, getGatewayPublicConfig } from '../lib/paymentGateway.js';
 import { syncAssessmentSelection, COUNSELLING_ADDON_PRICE, getActiveModuleCatalog, assertSkillMappingBandSelected, buildModuleSelection } from '../lib/moduleCatalog.js';
 import { listPublicVouchers } from '../lib/catalogStore.js';
 import { setAssessmentSkillMappingBand } from '../lib/skillMappingBand.js';
@@ -14,8 +14,6 @@ import {
   getAllPaymentsForAssessment,
   isAssessmentFullyPaid,
   normalizePaymentRow,
-  handleRazorpayWebhook,
-  migrateLegacyPayments,
   createPendingPaymentForAssessment,
   submitManualPayment,
 } from '../lib/paymentService.js';
@@ -36,23 +34,7 @@ router.get('/promotions', (_, res) => {
 });
 
 router.get('/mode', (_, res) => {
-  res.json({ mode: getPaymentMode(), gatewayEnabled: isGatewayEnabled() });
-});
-
-/** Razorpay webhook — only when gateway enabled */
-router.post('/webhook/razorpay', (req, res) => {
-  try {
-    if (!isGatewayEnabled()) {
-      return res.status(503).json({ message: 'Payment gateway is disabled. Manual admin confirmation only.' });
-    }
-    const signature = req.headers['x-razorpay-signature'];
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
-    const result = handleRazorpayWebhook(req.body, signature, secret);
-    res.json(result);
-  } catch (e) {
-    console.error('Webhook error', e);
-    res.status(400).json({ message: e.message || 'Webhook failed' });
-  }
+  res.json(getGatewayPublicConfig());
 });
 
 router.get('/order/:assessmentId', authRequired, (req, res) => {
@@ -85,6 +67,7 @@ router.get('/order/:assessmentId', authRequired, (req, res) => {
     gatewayEnabled: isGatewayEnabled(),
     gatewayAvailable: isGatewayEnabled(),
     razorpayKey: isGatewayEnabled() ? process.env.RAZORPAY_KEY_ID : null,
+    paymentMode: getGatewayPublicConfig().mode,
   });
 });
 

@@ -457,12 +457,13 @@ export function listPaymentsForUser(userId) {
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 }
 
-export function handleRazorpayWebhook(body, signature, secret) {
+export function handleRazorpayWebhook(body, signature, secret, rawBody) {
   if (!isGatewayEnabled()) {
     return { handled: false, reason: 'Gateway disabled — manual confirmation only' };
   }
   if (secret && signature) {
-    const expected = crypto.createHmac('sha256', secret).update(JSON.stringify(body)).digest('hex');
+    const payload = typeof rawBody === 'string' ? rawBody : JSON.stringify(body);
+    const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
     if (expected !== signature) throw new Error('Invalid webhook signature');
   }
 
