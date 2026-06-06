@@ -311,6 +311,10 @@ export default function UserDashboard() {
     return <Navigate to="/admin" replace />;
   }
 
+  if (user?.role === 'counsellor') {
+    return <Navigate to="/counsellor" replace />;
+  }
+
   return (
     <DashboardShell variant="user">
       <ProfileOnboardingModal

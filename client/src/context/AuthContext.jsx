@@ -229,6 +229,8 @@ export function AuthProvider({ children }) {
         persist,
         logout,
         isAdmin: user?.role === 'admin',
+        isCounsellor: user?.role === 'counsellor',
+        isStaff: user?.role === 'admin' || user?.role === 'counsellor',
         isUser: user?.role === 'user',
       }}
     >

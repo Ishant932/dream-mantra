@@ -10896,6 +10896,19 @@ html.is-mobile-perf .nav {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
 }
+html.is-mobile-perf .nav-mega-panel--lite {
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  contain: layout paint;
+}
+html.is-mobile-perf .nav-mega-header--lite {
+  padding: 0.85rem 1rem;
+}
+html.is-mobile-perf .nav-mega-link-wrap {
+  contain: layout;
+}
+html.is-mobile-perf .testimonial-section .blur-3xl {
+  display: none;
+}
 html.is-mobile-perf .infigon-card,
 html.is-mobile-perf .dash-card,
 html.is-mobile-perf .dash-sidebar-inner,

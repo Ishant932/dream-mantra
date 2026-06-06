@@ -2112,7 +2112,7 @@ export const siteEn = {
     validFor: 'First assessment payment only',
     trendingNow: 'Trending Now',
     titleLine1: 'First Time Here?',
-    titleHighlight: 'Get 20% OFF',
+    titleHighlight: 'Get Off',
     titleLine2: 'Assessments',
     desc: 'Sign up and book your first Mind Mapping or Skill Mapping. Apply coupon at checkout —',
     claimOffer: 'Claim Offer',

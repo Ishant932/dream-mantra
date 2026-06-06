@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Users, Calendar, FlaskConical, Clock, Shield, AlertCircle, UserCircle,
-  CreditCard, FileText, MapPin, Link2, Phone, Mail, Save, ExternalLink, Settings,
+  CreditCard, FileText, ExternalLink, Settings,
   Search, Filter, X, Pencil, Send, Check, Trash2,
 } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
@@ -16,9 +16,9 @@ import AdminPaymentsPanel from '../components/AdminPaymentsPanel';
 import AdminLeadsPanel from '../components/AdminLeadsPanel';
 import AdminModulesPanel from '../components/AdminModulesPanel';
 import AdminVouchersPanel from '../components/AdminVouchersPanel';
+import AdminCounsellorsPanel from '../components/AdminCounsellorsPanel';
 import CopyableUserId from '../components/CopyableUserId';
-import SlotCalendar from '../components/SlotCalendar';
-import AdminOpenSlotCard from '../components/AdminOpenSlotCard';
+import StaffBookingsPanel from '../components/staff/StaffBookingsPanel';
 import DashboardSidebarLayout from '../components/DashboardSidebarLayout';
 import {
   DashboardShell,
@@ -32,6 +32,7 @@ const ADMIN_TABS = [
   { id: 'overview', label: 'Overview', desc: 'Stats & quick summary' },
   { id: 'analytics', label: 'Analytics', desc: 'Platform performance insights' },
   { id: 'bookings', label: 'Booking Management', desc: 'Slots, calendar & sessions' },
+  { id: 'counsellors', label: 'Counsellor Staff', desc: 'Counsellor logins & passwords' },
   { id: 'users', label: 'User Management', desc: 'Registered students & profiles' },
   { id: 'payments', label: 'Payment Management', desc: 'Paid assessments & orders' },
   { id: 'modules', label: 'Module Catalog', desc: 'Add & edit checkout modules' },
@@ -52,37 +53,6 @@ const JOINED_FILTER_OPTIONS = [
   { value: 'month', label: 'This month' },
 ];
 
-function ProfileSnapshot({ profile = {} }) {
-  const fields = [
-    ['Date of Birth', profile.dateOfBirth],
-    ['Gender', profile.gender],
-    ['Class', profile.classLevel],
-    ['Stream', profile.stream],
-    ['Board', profile.board],
-    ['City', profile.city],
-    ['State', profile.state],
-    ['School / College', profile.schoolOrCollege],
-    ['Career Goal', profile.careerGoal],
-    ['Hobbies', profile.hobbies],
-    ['Challenge', profile.biggestChallenge],
-    ['Parent', profile.parentName],
-    ['Parent Phone', profile.parentPhone],
-    ['Counselling Mode', profile.preferredMode],
-    ['How Found Us', profile.howHeard],
-  ].filter(([, v]) => v);
-  if (!fields.length) return <p className="text-xs opacity-60 mt-2">No profile details captured at booking</p>;
-  return (
-    <div className="mt-3 pt-3 border-t border-sand-200/50 dark:border-sand-700/40">
-      <p className="text-[10px] font-bold uppercase tracking-wide opacity-50 mb-2">Student profile (at booking)</p>
-      <div className="grid sm:grid-cols-2 gap-1.5">
-        {fields.map(([label, val]) => (
-          <p key={label} className="text-xs"><span className="font-semibold opacity-70">{label}:</span> {val}</p>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 export default function AdminDashboard() {
   const { t } = useLang();
   const { token, user } = useAuth();
@@ -92,17 +62,14 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState(null);
   const [users, setUsers] = useState([]);
   const [consultations, setConsultations] = useState([]);
-  const [slots, setSlots] = useState([]);
   const [payments, setPayments] = useState([]);
   const [reports, setReports] = useState([]);
-  const [slotsLoading, setSlotsLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [profileUser, setProfileUser] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [meetingLinks, setMeetingLinks] = useState({});
   const [reportForm, setReportForm] = useState({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report' });
   const [reportUserSearch, setReportUserSearch] = useState('');
   const [editingReportId, setEditingReportId] = useState(null);
@@ -128,24 +95,6 @@ export default function AdminDashboard() {
   const handleCatalogChange = useCallback((list) => {
     setCatalogModules(Array.isArray(list) ? list : []);
   }, []);
-
-  const loadSlots = useCallback(async () => {
-    if (!token) return;
-    setSlotsLoading(true);
-    try {
-      const data = await adminApi.slots(token);
-      setSlots(data.slots || []);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSlotsLoading(false);
-    }
-  }, [token]);
-
-  const openSlots = useMemo(
-    () => slots.filter((s) => s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1)),
-    [slots]
-  );
 
   const selectedReportUser = useMemo(
     () => users.find((u) => u.user_uid === reportForm.userUid),
@@ -217,66 +166,10 @@ export default function AdminDashboard() {
       setLoadErrors(errors);
       setError(`Some sections failed to load — ${errors.join(' · ')}`);
     }
-    loadSlots();
     setLoading(false);
   };
 
   useEffect(() => { load(); }, [token]);
-
-  const updateStatus = async (id, status) => {
-    try {
-      await adminApi.updateConsultation(token, id, { status });
-      const d = await adminApi.consultations(token);
-      setConsultations(d.consultations || []);
-    } catch (err) { setError(err.message); }
-  };
-
-  const saveMeetingLink = async (id) => {
-    try {
-      await adminApi.updateConsultation(token, id, { meeting_link: meetingLinks[id] || '' });
-      const d = await adminApi.consultations(token);
-      setConsultations(d.consultations || []);
-    } catch (err) { setError(err.message); }
-  };
-
-  const handleCreateSlot = async (form) => {
-    try {
-      setError('');
-      await adminApi.createSlot(token, form);
-      await loadSlots();
-      setNotice('Slot created successfully.');
-    } catch (err) {
-      setNotice('');
-      setError(err.message);
-      throw err;
-    }
-  };
-
-  const handleUpdateSlot = async (id, form) => {
-    try {
-      setError('');
-      await adminApi.updateSlot(token, id, form);
-      await loadSlots();
-      setNotice('Slot updated successfully.');
-    } catch (err) {
-      setNotice('');
-      setError(err.message);
-      throw err;
-    }
-  };
-
-  const handleDeleteSlot = async (id) => {
-    try {
-      setError('');
-      await adminApi.deleteSlot(token, id);
-      await loadSlots();
-      setNotice('Slot deleted.');
-    } catch (err) {
-      setNotice('');
-      setError(err.message);
-      throw err;
-    }
-  };
 
   const saveUserProfile = async (userId, form) => {
     setProfileSaving(true);
@@ -561,88 +454,13 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'bookings' && (
-                <div className="space-y-8">
-                  <DashCard className="!p-5 sm:!p-6">
-                    <h2 className="text-lg font-bold flex items-center gap-2 mb-2"><Calendar className="w-5 h-5 text-amber-500" /> Consultation Slots — Live Calendar</h2>
-                    <p className="text-sm opacity-70 mb-2">Create slots below, or click any slot on the calendar to edit time, capacity, counsellor, and meeting link. Delete empty slots with the trash icon.</p>
-                    <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 mb-6">{openSlots.length} open slots across all dates · {slots.length} total</p>
-                    <SlotCalendar mode="admin" size="large" slots={slots} loading={slotsLoading} onCreateSlot={handleCreateSlot} onUpdateSlot={handleUpdateSlot} onDeleteSlot={handleDeleteSlot} />
-                  </DashCard>
-
-                  {openSlots.length > 0 && (
-                    <DashCard className="!p-5 sm:!p-6">
-                      <h3 className="font-bold mb-2 flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" /> All open slots ({openSlots.length})</h3>
-                      <p className="text-xs opacity-70 mb-4">Click the pencil icon on any card to edit date, time, capacity, counsellor, and meeting link.</p>
-                      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[28rem] overflow-y-auto pr-1">
-                        {openSlots.map((s) => (
-                          <AdminOpenSlotCard
-                            key={s.id}
-                            slot={s}
-                            onUpdate={handleUpdateSlot}
-                            onDelete={handleDeleteSlot}
-                          />
-                        ))}
-                      </div>
-                    </DashCard>
-                  )}
-
-                  <DashCard className="!p-5 sm:!p-6">
-                    <h2 className="text-lg font-bold mb-4">{t('admin.manageConsultations')}</h2>
-                    <div className="space-y-4 max-h-[32rem] overflow-y-auto pr-1">
-                      {consultations.length === 0 ? (
-                        <p className="text-sm opacity-70">No consultations yet.</p>
-                      ) : consultations.map((c) => (
-                        <motion.div key={c.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="dash-admin-consult-card admin-booking-card">
-                          <div className="flex flex-wrap justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                              <p className="font-bold text-base">{c.user_name} — {c.program}</p>
-                              <p className="text-sm font-medium text-amber-700 dark:text-amber-400 mt-0.5">{c.slot_title || 'Counselling Session'}</p>
-                              <div className="flex flex-wrap gap-3 mt-2 text-xs opacity-80">
-                                {c.email && <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{c.email}</span>}
-                                {c.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{c.phone}</span>}
-                              </div>
-                              {c.scheduled_at && (
-                                <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
-                                  <Clock className="w-3 h-3" />
-                                  {new Date(c.scheduled_at).toLocaleString('en-IN', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}
-                                  {c.end_at && ` – ${new Date(c.end_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}`}
-                                </p>
-                              )}
-                              {c.location && (
-                                <p className="text-xs mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" />{c.location} · {c.mode}</p>
-                              )}
-                              {c.notes && <p className="text-xs mt-2 p-2 rounded-lg bg-sand-100 dark:bg-sand-800/60 italic">"{c.notes}"</p>}
-                              <ProfileSnapshot profile={c.user_profile || c.user_snapshot?.profile} />
-                            </div>
-                            <button type="button" onClick={() => viewProfile(c.user_id)} className="dash-admin-view-btn shrink-0 h-9 w-9 rounded-xl inline-flex items-center justify-center" title="Full profile">
-                              <UserCircle className="w-5 h-5" />
-                            </button>
-                          </div>
-
-                          <div className="mt-4 pt-3 border-t border-sand-200/60 dark:border-sand-700/40">
-                            <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5"><Link2 className="w-3 h-3" /> Meeting link (share with user)</label>
-                            <div className="flex gap-2 flex-wrap">
-                              <input
-                                type="url"
-                                className="input-field flex-1 min-w-[12rem] !py-2 !text-sm"
-                                placeholder="https://meet.google.com/..."
-                                value={meetingLinks[c.id] ?? c.meeting_link ?? ''}
-                                onChange={(e) => setMeetingLinks({ ...meetingLinks, [c.id]: e.target.value })}
-                              />
-                              <button type="button" onClick={() => saveMeetingLink(c.id)} className="btn-primary !py-2 !px-4 text-sm flex items-center gap-1"><Save className="w-3.5 h-3.5" /> Save</button>
-                            </div>
-                          </div>
-
-                          <div className="flex gap-2 mt-3 flex-wrap">
-                            {['pending', 'confirmed', 'completed'].map((st) => (
-                              <button key={st} type="button" onClick={() => updateStatus(c.id, st)} className={`text-xs px-3 py-1.5 rounded-lg capitalize transition ${c.status === st ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-amber-50 shadow-md' : 'dash-admin-status-idle'}`}>{st}</button>
-                            ))}
-                          </div>
-                        </motion.div>
-                      ))}
-                    </div>
-                  </DashCard>
-                </div>
+                <StaffBookingsPanel
+                  api={adminApi}
+                  token={token}
+                  onViewProfile={viewProfile}
+                  onError={setError}
+                  onNotice={setNotice}
+                />
               )}
 
               {tab === 'users' && (
@@ -802,6 +620,10 @@ export default function AdminDashboard() {
                     </div>
                   )}
                 </DashCard>
+              )}
+
+              {tab === 'counsellors' && (
+                <AdminCounsellorsPanel token={token} onNotice={setNotice} onError={setError} />
               )}
 
               {tab === 'payments' && (

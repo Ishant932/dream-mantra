@@ -33,6 +33,7 @@ const CRPPage = lazy(() => import('./pages/CRPPage'));
 const CareerDetailPage = lazy(() => import('./pages/CareerDetailPage'));
 const UserDashboard = lazy(() => import('./pages/UserDashboard'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+const CounsellorDashboard = lazy(() => import('./pages/CounsellorDashboard'));
 const PaymentPage = lazy(() => import('./pages/PaymentPage'));
 const TestPage = lazy(() => import('./pages/TestPage'));
 const MarketplaceHub = lazy(() => import('./pages/MarketplaceHub'));
@@ -115,6 +116,14 @@ export default function App() {
                 element={
                   <ProtectedRoute adminOnly>
                     <AdminDashboard />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="counsellor"
+                element={
+                  <ProtectedRoute counsellorOnly>
+                    <CounsellorDashboard />
                   </ProtectedRoute>
                 }
               />

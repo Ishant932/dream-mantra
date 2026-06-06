@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowUpRight, Zap } from 'lucide-react';
 import { parseNavTarget, handleHashNavClick } from '../utils/scrollHash';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 const VARIANT_META = {
   counselling: { label: 'For Counselling', accent: '#013220', glow: 'rgba(1,50,32,0.15)' },
@@ -18,15 +19,36 @@ const particles = Array.from({ length: 16 }, (_, i) => ({
   delay: i * 0.28,
 }));
 
-export function NavDropdownPanel({ variant = 'default', children, className = '' }) {
+function PanelShell({ lite, variant, className, children }) {
   const meta = VARIANT_META[variant] || VARIANT_META.default;
+  const panelClass = `nav-mega-panel nav-mega-panel-${variant} ${lite ? 'nav-mega-panel--lite' : ''} ${className}`.trim();
+
+  if (lite) {
+    return (
+      <div className={panelClass}>
+        <div className="nav-mega-header nav-mega-header--lite">
+          <span className="nav-mega-header-icon">
+            <Sparkles className="w-4 h-4" />
+          </span>
+          <div>
+            <p className="nav-mega-header-title">{meta.label}</p>
+            <p className="nav-mega-header-sub">
+              <Zap className="inline w-3 h-3 mr-1 text-[var(--orange)]" />
+              Tap any option below
+            </p>
+          </div>
+        </div>
+        <div className="relative z-[2] nav-mega-body">{children}</div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20, scale: 0.94, rotateX: -8 }}
       animate={{ opacity: 1, y: 0, scale: 1, rotateX: 0 }}
       transition={{ type: 'spring', stiffness: 360, damping: 28 }}
-      className={`nav-mega-panel nav-mega-panel-${variant} ${className}`}
+      className={panelClass}
       style={{ perspective: 1200 }}
     >
       <div className="nav-mega-border-glow" aria-hidden />
@@ -113,17 +135,40 @@ export function NavDropdownPanel({ variant = 'default', children, className = ''
   );
 }
 
+export function NavDropdownPanel({ variant = 'default', children, className = '' }) {
+  const lite = isMobilePerf();
+  return (
+    <PanelShell lite={lite} variant={variant} className={className}>
+      {children}
+    </PanelShell>
+  );
+}
+
 export function NavDropdownColumns({ children, className = '' }) {
+  const lite = isMobilePerf();
   return (
     <div className={`nav-mega-columns ${className}`}>
-      <div className="nav-mega-bridge" aria-hidden />
+      {!lite && <div className="nav-mega-bridge" aria-hidden />}
       {children}
     </div>
   );
 }
 
 export function NavDropdownColumn({ title, children, index = 0 }) {
+  const lite = isMobilePerf();
   const fromLeft = index % 2 === 0;
+
+  if (lite) {
+    return (
+      <div className={`nav-mega-col ${index > 0 ? 'nav-mega-col-divided' : ''}`}>
+        <div className="nav-mega-col-title-wrap">
+          <span className="nav-mega-dot" />
+          <span className="nav-mega-col-title">{title}</span>
+        </div>
+        <div className="nav-mega-col-links">{children}</div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -165,13 +210,19 @@ export function NavDropdownColumn({ title, children, index = 0 }) {
 }
 
 export function NavDropdownLinkGroup({ icon, label, desc, links, index = 0 }) {
+  const lite = isMobilePerf();
+  const Wrapper = lite ? 'div' : motion.div;
+  const wrapperProps = lite
+    ? { className: 'nav-mega-group' }
+    : {
+        initial: { opacity: 0, y: 12 },
+        animate: { opacity: 1, y: 0 },
+        transition: { delay: 0.1 + index * 0.08, type: 'spring', stiffness: 380, damping: 26 },
+        className: 'nav-mega-group',
+      };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.1 + index * 0.08, type: 'spring', stiffness: 380, damping: 26 }}
-      className="nav-mega-group"
-    >
+    <Wrapper {...wrapperProps}>
       <div className="nav-mega-group-header">
         <span className="nav-mega-link-icon-box nav-mega-group-icon-box">
           <span className="nav-mega-link-icon">{icon}</span>
@@ -194,18 +245,52 @@ export function NavDropdownLinkGroup({ icon, label, desc, links, index = 0 }) {
           />
         ))}
       </div>
-    </motion.div>
+    </Wrapper>
   );
 }
 
 export function NavDropdownLink({ to, label, desc, icon, index = 0, onClick, compact = false }) {
   const location = useLocation();
+  const lite = isMobilePerf();
   const target = parseNavTarget(to);
 
   const handleClick = (e) => {
     const handled = handleHashNavClick(e, to, location.pathname, onClick);
     if (!handled) onClick?.(e);
   };
+
+  const linkContent = (
+    <Link to={target} onClick={handleClick} className={`nav-mega-link group ${compact ? 'nav-mega-link-compact' : ''}`}>
+      {!lite && <span className="nav-mega-link-accent" aria-hidden />}
+      {!lite && <span className="nav-mega-link-ring" aria-hidden />}
+      {!lite && (
+        <motion.span
+          className="nav-mega-link-shine"
+          animate={{ x: ['-150%', '250%'] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 3 + index * 0.2 }}
+          aria-hidden
+        />
+      )}
+      <span className="flex items-center gap-3 relative z-[1]">
+        {icon && (
+          <span className="nav-mega-link-icon-box">
+            <span className="nav-mega-link-icon">{icon}</span>
+          </span>
+        )}
+        <span className="flex-1 min-w-0">
+          <span className="nav-mega-link-label">{label}</span>
+          {desc && <span className="nav-mega-link-desc">{desc}</span>}
+        </span>
+        <span className="nav-mega-link-arrow">
+          <ArrowUpRight className="w-4 h-4" />
+        </span>
+      </span>
+    </Link>
+  );
+
+  if (lite) {
+    return <div className="nav-mega-link-wrap">{linkContent}</div>;
+  }
 
   return (
     <motion.div
@@ -214,34 +299,7 @@ export function NavDropdownLink({ to, label, desc, icon, index = 0, onClick, com
       transition={{ delay: 0.1 + index * 0.05, type: 'spring', stiffness: 420, damping: 24 }}
       whileHover={{ y: compact ? -2 : -4, scale: 1.01 }}
     >
-      <Link to={target} onClick={handleClick} className={`nav-mega-link group ${compact ? 'nav-mega-link-compact' : ''}`}>
-        <span className="nav-mega-link-accent" aria-hidden />
-        <span className="nav-mega-link-ring" aria-hidden />
-        <motion.span
-          className="nav-mega-link-shine"
-          animate={{ x: ['-150%', '250%'] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'linear', repeatDelay: 3 + index * 0.2 }}
-          aria-hidden
-        />
-        <span className="flex items-center gap-3 relative z-[1]">
-          {icon && (
-            <motion.span
-              className="nav-mega-link-icon-box"
-              whileHover={{ rotate: [0, -8, 8, 0], scale: 1.12 }}
-              transition={{ duration: 0.45 }}
-            >
-              <span className="nav-mega-link-icon">{icon}</span>
-            </motion.span>
-          )}
-          <span className="flex-1 min-w-0">
-            <span className="nav-mega-link-label">{label}</span>
-            {desc && <span className="nav-mega-link-desc">{desc}</span>}
-          </span>
-          <motion.span className="nav-mega-link-arrow">
-            <ArrowUpRight className="w-4 h-4" />
-          </motion.span>
-        </span>
-      </Link>
+      {linkContent}
     </motion.div>
   );
 }

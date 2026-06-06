@@ -16,6 +16,7 @@ export default function Login() {
   const prefilledEmail = location.state?.email || '';
   const postAuthPath = (role) => {
     if (role === 'admin') return '/admin';
+    if (role === 'counsellor') return '/counsellor';
     return slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard';
   };
 

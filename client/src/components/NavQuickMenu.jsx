@@ -6,7 +6,13 @@ import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLin
 import { useLang } from '../context/LanguageContext';
 import { isMobilePerf } from '../utils/mobilePerf';
 
-const panelVariants = {
+const panelVariantsLite = {
+  hidden: { opacity: 0, y: -6 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.18, ease: 'easeOut' } },
+  exit: { opacity: 0, y: -4, transition: { duration: 0.12 } },
+};
+
+const panelVariantsFull = {
   hidden: { opacity: 0, y: -16, scale: 0.92, filter: 'blur(8px)' },
   visible: {
     opacity: 1,
@@ -22,6 +28,7 @@ export default function NavQuickMenu() {
   const { d } = useLang();
   const navQuickMenu = d('navQuickMenu');
   const lite = isMobilePerf();
+  const panelVariants = lite ? panelVariantsLite : panelVariantsFull;
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const location = useLocation();
@@ -58,8 +65,8 @@ export default function NavQuickMenu() {
         aria-label="Quick menu"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        whileHover={{ scale: 1.06 }}
-        whileTap={{ scale: 0.94 }}
+        whileHover={lite ? undefined : { scale: 1.06 }}
+        whileTap={lite ? undefined : { scale: 0.94 }}
         className="relative group"
       >
         {!open && !lite && (
@@ -97,7 +104,7 @@ export default function NavQuickMenu() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[55] bg-sand-900/20 dark:bg-brand-950/40 backdrop-blur-[2px] xl:hidden"
+              className={`fixed inset-0 z-[55] bg-sand-900/25 dark:bg-brand-950/50 xl:hidden ${lite ? '' : 'backdrop-blur-[2px]'}`}
               onClick={() => setOpen(false)}
             />
             <motion.div
@@ -125,14 +132,9 @@ export default function NavQuickMenu() {
                     </NavDropdownColumn>
                   ))}
                 </NavDropdownColumns>
-                <motion.p
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="nav-mega-footer"
-                >
+                <p className="nav-mega-footer">
                   {navQuickMenu.footer}
-                </motion.p>
+                </p>
               </NavDropdownPanel>
             </motion.div>
           </>

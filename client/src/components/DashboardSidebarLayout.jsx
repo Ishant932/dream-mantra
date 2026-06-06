@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Settings,
   BarChart3,
+  UserCog,
 } from 'lucide-react';
 import CopyableUserId from './CopyableUserId';
 import { scrollToElement } from '../utils/scrollToTop';
@@ -29,6 +30,7 @@ const TAB_ICONS = {
   reports: FileText,
   bookings: Calendar,
   users: Shield,
+  counsellors: UserCog,
   payments: Layers,
   'process-guides': BookOpen,
   settings: Settings,

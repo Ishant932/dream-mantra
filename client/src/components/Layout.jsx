@@ -32,7 +32,9 @@ export default function Layout() {
   const location = useLocation();
   const mobilePerf = isMobilePerf();
   const isDashboard =
-    location.pathname.startsWith('/dashboard') || location.pathname.startsWith('/admin');
+    location.pathname.startsWith('/dashboard')
+    || location.pathname.startsWith('/admin')
+    || location.pathname.startsWith('/counsellor');
   const [loadChatbot, setLoadChatbot] = useState(!mobilePerf);
   const [enableScrollReveal, setEnableScrollReveal] = useState(false);
 

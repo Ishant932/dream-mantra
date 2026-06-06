@@ -6,13 +6,14 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getUploadsDir } from './lib/paymentProof.js';
-import { seedAdmin, initDatabase, flushDatabase, getDbStatus } from './db.js';
+import { seedAdmin, seedCounsellors, initDatabase, flushDatabase, getDbStatus } from './db.js';
 import { disconnectMongo } from './lib/mongo.js';
 import { seedSampleSlots, getAvailableSlots } from './lib/slots.js';
 import { migrateLegacyPayments } from './lib/paymentService.js';
 import { loadCareersData } from './lib/careersData.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
+import counsellorRoutes from './routes/counsellor.js';
 import userRoutes from './routes/user.js';
 import chatbotRoutes from './routes/chatbot.js';
 import careersRoutes from './routes/careers.js';
@@ -78,6 +79,7 @@ app.get('/api/slots/available', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/counsellor', counsellorRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/careers', careersRoutes);
@@ -114,6 +116,7 @@ async function startServer() {
   try {
     const dbInfo = await initDatabase();
     seedAdmin();
+    seedCounsellors();
 
     app.listen(PORT, '0.0.0.0', () => {
       console.log('');

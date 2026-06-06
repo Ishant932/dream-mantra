@@ -1,7 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export function ProtectedRoute({ children, adminOnly = false, userOnly = false }) {
+function staffHome(role) {
+  if (role === 'admin') return '/admin';
+  if (role === 'counsellor') return '/counsellor';
+  return '/dashboard';
+}
+
+export function ProtectedRoute({ children, adminOnly = false, counsellorOnly = false, userOnly = false }) {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -15,11 +21,15 @@ export function ProtectedRoute({ children, adminOnly = false, userOnly = false }
   if (!user) return <Navigate to="/login" replace />;
 
   if (adminOnly && user.role !== 'admin') {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={staffHome(user.role)} replace />;
   }
 
-  if (userOnly && user.role === 'admin') {
-    return <Navigate to="/admin" replace />;
+  if (counsellorOnly && user.role !== 'counsellor') {
+    return <Navigate to={staffHome(user.role)} replace />;
+  }
+
+  if (userOnly && user.role !== 'user') {
+    return <Navigate to={staffHome(user.role)} replace />;
   }
 
   return children;

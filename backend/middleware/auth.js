@@ -21,3 +21,10 @@ export function adminRequired(req, res, next) {
   }
   next();
 }
+
+export function counsellorRequired(req, res, next) {
+  if (req.user?.role !== 'counsellor') {
+    return res.status(403).json({ message: 'Counsellor access required' });
+  }
+  next();
+}

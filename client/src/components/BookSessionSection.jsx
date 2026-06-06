@@ -38,7 +38,13 @@ export default function BookSessionSection({ title, hours, createAccountLabel, b
   if (user && token) {
     return (
       <Navigate
-        to={user.role === 'admin' ? '/admin?tab=bookings' : '/dashboard?tab=book'}
+        to={
+          user.role === 'admin'
+            ? '/admin?tab=bookings'
+            : user.role === 'counsellor'
+              ? '/counsellor?tab=bookings'
+              : '/dashboard?tab=book'
+        }
         replace
       />
     );

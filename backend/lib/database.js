@@ -121,7 +121,20 @@ export async function initDatabase() {
     return { mode: dbMode };
   }
 
-  await connectMongo();
+  try {
+    await connectMongo();
+  } catch (err) {
+    const isProd = process.env.NODE_ENV === 'production';
+    if (isProd) {
+      throw err;
+    }
+    console.warn(`MongoDB unavailable (${err.message}) — falling back to local data.json`);
+    data = loadFromFile();
+    mongoEnabled = false;
+    dbMode = 'file';
+    return { mode: dbMode, mongoFallback: true };
+  }
+
   mongoEnabled = true;
   dbMode = 'mongodb';
 

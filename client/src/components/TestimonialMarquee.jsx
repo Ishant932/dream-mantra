@@ -8,22 +8,33 @@ import PersonPhoto from './PersonPhoto';
 export default function TestimonialMarquee() {
   const { t } = useLang();
   const { testimonials } = useHomeContent();
+  const lite = typeof document !== 'undefined' && document.documentElement.classList.contains('is-mobile-perf');
 
   return (
     <section className="no-reveal py-16 lg:py-20 overflow-hidden relative testimonial-section">
       <div className="absolute inset-0 opacity-70 testimonial-section-bg" />
-      <div className="absolute top-1/2 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ background: 'var(--gold-dim)' }} />
-      <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full blur-3xl opacity-15 pointer-events-none" style={{ background: 'var(--gold-dim)' }} />
+      {!lite && (
+        <>
+          <div className="absolute top-1/2 left-1/4 w-72 h-72 rounded-full blur-3xl opacity-20 pointer-events-none" style={{ background: 'var(--gold-dim)' }} />
+          <div className="absolute bottom-0 right-1/4 w-64 h-64 rounded-full blur-3xl opacity-15 pointer-events-none" style={{ background: 'var(--gold-dim)' }} />
+        </>
+      )}
 
       <div className="relative">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-display text-2xl md:text-3xl font-bold text-center mb-10 px-4"
-        >
-          {t('home.testimonialsTitle')} <span className="gradient-text">{t('home.testimonialsHighlight')}</span>
-        </motion.h2>
+        {lite ? (
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-center mb-10 px-4">
+            {t('home.testimonialsTitle')} <span className="gradient-text">{t('home.testimonialsHighlight')}</span>
+          </h2>
+        ) : (
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="font-display text-2xl md:text-3xl font-bold text-center mb-10 px-4"
+          >
+            {t('home.testimonialsTitle')} <span className="gradient-text">{t('home.testimonialsHighlight')}</span>
+          </motion.h2>
+        )}
 
         <MarqueeStrip speed="45s" gap="gap-6">
           {testimonials.map((item, i) => (

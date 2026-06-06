@@ -230,6 +230,47 @@ export const adminApi = {
     request(`/admin/vouchers/${encodeURIComponent(code)}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   deleteVoucher: (token, code) =>
     request(`/admin/vouchers/${encodeURIComponent(code)}`, { method: 'DELETE', headers: headers(token) }),
+  counsellors: (token) => request('/admin/counsellors', { headers: headers(token) }),
+  createCounsellor: (token, body) =>
+    request('/admin/counsellors', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  updateCounsellor: (token, id, body) =>
+    request(`/admin/counsellors/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteCounsellor: (token, id) =>
+    request(`/admin/counsellors/${id}`, { method: 'DELETE', headers: headers(token) }),
+};
+
+export const counsellorApi = {
+  stats: (token) => request('/counsellor/stats', { headers: headers(token) }),
+  users: (token) => request('/counsellor/users', { headers: headers(token) }),
+  getUser: (token, userId) => request(`/counsellor/users/${userId}`, { headers: headers(token) }),
+  updateUser: (token, userId, body) =>
+    request(`/counsellor/users/${userId}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  consultations: (token) => request('/counsellor/consultations', { headers: headers(token) }),
+  updateConsultation: (token, id, body) =>
+    request(`/counsellor/consultations/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  slots: (token, params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request(`/counsellor/slots${q ? `?${q}` : ''}`, { headers: headers(token) });
+  },
+  createSlot: (token, body) =>
+    request('/counsellor/slots', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  updateSlot: (token, id, body) =>
+    request(`/counsellor/slots/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteSlot: (token, id) =>
+    request(`/counsellor/slots/${id}`, { method: 'DELETE', headers: headers(token) }),
+  slotBookings: (token, slotId) =>
+    request(`/counsellor/slots/${slotId}/bookings`, { headers: headers(token) }),
+  payments: (token, params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request(`/counsellor/payments${q ? `?${q}` : ''}`, { headers: headers(token) });
+  },
+  reports: (token) => request('/counsellor/reports', { headers: headers(token) }),
+  createReport: (token, body) =>
+    request('/counsellor/reports', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  updateReport: (token, id, body) =>
+    request(`/counsellor/reports/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteReport: (token, id) =>
+    request(`/counsellor/reports/${id}`, { method: 'DELETE', headers: headers(token) }),
 };
 
 export const chatApi = {

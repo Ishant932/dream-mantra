@@ -94,7 +94,9 @@ function MegaMenu({ item }) {
 
 export default function Navbar({ scrolled = false }) {
   const { t, lang, toggle } = useLang();
-  const { user, logout, isAdmin } = useAuth();
+  const { user, logout, isAdmin, isCounsellor } = useAuth();
+  const dashboardPath = isAdmin ? '/admin' : isCounsellor ? '/counsellor' : '/dashboard';
+  const dashboardLabel = isAdmin ? t('nav.admin') : isCounsellor ? 'Counsellor' : t('nav.dashboard');
   const navigate = useNavigate();
   const location = useLocation();
   const [mobile, setMobile] = useState(false);
@@ -168,10 +170,10 @@ export default function Navbar({ scrolled = false }) {
               {user ? (
                 <>
                   <Link
-                    to={isAdmin ? '/admin' : '/dashboard'}
+                    to={dashboardPath}
                     className="btn-primary nav-header-auth-btn whitespace-nowrap"
                   >
-                    {isAdmin ? t('nav.admin') : t('nav.dashboard')}
+                    {dashboardLabel}
                   </Link>
                   <motion.button
                     whileHover={{ scale: 1.03 }}
@@ -213,11 +215,11 @@ export default function Navbar({ scrolled = false }) {
                 {user ? (
                   <div className="flex flex-col gap-2">
                     <Link
-                      to={isAdmin ? '/admin' : '/dashboard'}
+                      to={dashboardPath}
                       onClick={() => setMobile(false)}
                       className="btn-primary w-full text-center !py-3"
                     >
-                      {isAdmin ? t('nav.admin') : t('nav.dashboard')}
+                      {dashboardLabel}
                     </Link>
                     <button
                       type="button"
