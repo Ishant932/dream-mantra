@@ -95,13 +95,16 @@ export default function AdminDashboard() {
 
     const tasks = [
       { key: 'stats', fn: () => adminApi.stats(token), set: (v) => setStats(v) },
-      { key: 'users', fn: () => adminApi.users(token), set: (v) => setUsers(v.users || []) },
       { key: 'consultations', fn: () => adminApi.consultations(token), set: (v) => setConsultations(v.consultations || []) },
       { key: 'payments', fn: () => adminApi.payments(token, { limit: 100 }), set: (v) => setPayments(v.payments || []) },
       { key: 'settings', fn: () => adminApi.settings(token), set: (v) => setCommunityLink(v.settings?.community_links?.['crp-test'] || '') },
       { key: 'analytics', fn: () => adminApi.analytics(token), set: (v) => setAnalytics(v.analytics || null) },
       { key: 'modules', fn: () => adminApi.modules(token), set: (v) => setCatalogModules(v.modules || []) },
     ];
+
+    adminApi.users(token)
+      .then((v) => setUsers(v.users || []))
+      .catch((err) => console.warn('Overview users preload failed:', err.message));
 
     await Promise.all(
       tasks.map(async (t) => {
@@ -221,7 +224,7 @@ export default function AdminDashboard() {
                   <div className="grid lg:grid-cols-2 gap-6">
                     <DashCard className="!p-5" glow>
                       <h3 className="font-bold mb-3 flex items-center gap-2">
-                        <Users className="w-4 h-4 text-amber-500" /> Registered Users ({users.length})
+                        <Users className="w-4 h-4 text-amber-500" /> Registered Users ({stats?.users ?? users.length})
                       </h3>
                       <div className="space-y-2 max-h-64 overflow-y-auto">
                         {users.slice(0, 8).map((u, i) => (
@@ -290,7 +293,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'users' && (
-                <StaffUsersPanel api={adminApi} token={token} onError={setError} />
+                <StaffUsersPanel api={adminApi} token={token} onError={setError} allowCounsellorAssign />
               )}
 
               {tab === 'counsellors' && (

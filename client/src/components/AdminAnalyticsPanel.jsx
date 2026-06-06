@@ -56,7 +56,7 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
     );
   }
 
-  const { summary, conversion, careerInterests, classDistribution, streamDistribution, revenueBreakdown, productOrders, signupsTrend, revenueTrend, consultationStatuses, recentConfirmedPayments, marketing } = analytics;
+  const { summary, conversion, careerInterests, classDistribution, streamDistribution, revenueBreakdown, productOrders, signupsTrend, revenueTrend, consultationStatuses, recentConfirmedPayments, modulePurchases, marketing } = analytics;
 
   const statCards = [
     { label: 'Total Registered Users', value: summary.totalUsers, icon: Users },
@@ -91,6 +91,59 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
         </h2>
         <p className="text-sm opacity-70">Users, assessments, conversion, revenue, confirmed payments & marketing insights.</p>
       </div>
+
+      {modulePurchases?.length > 0 && (
+        <DashCard className="!p-5 sm:!p-6" glow>
+          <h3 className="font-bold mb-2 flex items-center gap-2">
+            <FlaskConical className="w-4 h-4 text-amber-500" /> Module Purchases — Users &amp; Data
+          </h3>
+          <p className="text-sm opacity-70 mb-5">Paid module purchases grouped by product with student details.</p>
+          <div className="space-y-6">
+            {modulePurchases.map((mod) => (
+              <div key={mod.slug} className="rounded-2xl border border-sand-200/70 dark:border-sand-700/50 overflow-hidden">
+                <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-sand-50 dark:bg-sand-800/40">
+                  <div>
+                    <p className="font-bold">{mod.title}</p>
+                    <p className="text-xs opacity-60 font-mono">{mod.slug}</p>
+                  </div>
+                  <span className="text-sm font-bold px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300">
+                    {mod.count} purchase{mod.count !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm admin-data-table min-w-[640px]">
+                    <thead>
+                      <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
+                        <th className="py-2 px-3 text-xs uppercase opacity-60">Dreams ID</th>
+                        <th className="py-2 px-3 text-xs uppercase opacity-60">Student</th>
+                        <th className="py-2 px-3 text-xs uppercase opacity-60">Contact</th>
+                        <th className="py-2 px-3 text-xs uppercase opacity-60">Amount</th>
+                        <th className="py-2 px-3 text-xs uppercase opacity-60">Paid on</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {mod.users.map((u) => (
+                        <tr key={`${mod.slug}-${u.id}-${u.assessment_id}`} className="border-b border-sand-100 dark:border-sand-800/60">
+                          <td className="py-2.5 px-3 font-mono text-xs">{u.user_uid || '—'}</td>
+                          <td className="py-2.5 px-3 font-semibold">{u.name}</td>
+                          <td className="py-2.5 px-3 text-xs opacity-80">
+                            {u.email && <p>{u.email}</p>}
+                            {u.phone && <p>{u.phone}</p>}
+                          </td>
+                          <td className="py-2.5 px-3 font-bold text-emerald-700 dark:text-emerald-400">{formatInr(u.amount)}</td>
+                          <td className="py-2.5 px-3 text-xs opacity-70 whitespace-nowrap">
+                            {u.paid_at && new Date(u.paid_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            ))}
+          </div>
+        </DashCard>
+      )}
 
       {recentConfirmedPayments?.length > 0 && (
         <DashCard className="!p-5 sm:!p-6" glow>

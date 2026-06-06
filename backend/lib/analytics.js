@@ -28,6 +28,45 @@ function pct(num, den) {
   return Math.round((num / den) * 1000) / 10;
 }
 
+function numId(value) {
+  if (value == null || value === '') return null;
+  return typeof value === 'number' ? value : Number(value);
+}
+
+function buildModulePurchases(users, assessments, allPayments) {
+  const paidAssessments = assessments.filter(isAssessmentFullyPaid);
+  const byProduct = {};
+
+  for (const a of paidAssessments) {
+    const slug = a.product_slug || (a.type || 'unknown').toLowerCase().replace(/\s+/g, '-');
+    const title = a.type || a.product_slug || 'Unknown Module';
+    if (!byProduct[slug]) {
+      byProduct[slug] = { slug, title, count: 0, users: [] };
+    }
+    const user = users.find((u) => numId(u.id) === numId(a.user_id));
+    const pay = allPayments.find((p) => numId(p.assessment_id) === numId(a.id) && isPaymentConfirmed(p));
+    byProduct[slug].count += 1;
+    byProduct[slug].users.push({
+      id: user?.id,
+      user_uid: user?.user_uid,
+      name: user?.name || 'Unknown',
+      email: user?.email,
+      phone: user?.phone,
+      amount: pay?.amount ?? a.amount,
+      paid_at: pay?.paid_at || pay?.confirmed_at || a.paid_at || a.created_at,
+      assessment_id: a.id,
+      status: a.status,
+    });
+  }
+
+  return Object.values(byProduct)
+    .map((m) => ({
+      ...m,
+      users: m.users.sort((a, b) => new Date(b.paid_at || 0) - new Date(a.paid_at || 0)),
+    }))
+    .sort((a, b) => b.count - a.count);
+}
+
 export function getPlatformAnalytics() {
   const data = getData();
   const users = (data.users || []).filter((u) => u.role === 'user');
@@ -98,9 +137,9 @@ export function getPlatformAnalytics() {
   let profileCompletionSum = 0;
   let pendingUsers = 0;
   for (const u of users) {
-    const userAssessments = assessments.filter((a) => a.user_id === u.id);
+    const userAssessments = assessments.filter((a) => numId(a.user_id) === numId(u.id));
     const summary = summarizeUserAssessments(userAssessments);
-    const userConsultations = consultations.filter((c) => c.user_id === u.id).length;
+    const userConsultations = consultations.filter((c) => numId(c.user_id) === numId(u.id)).length;
     const completion = calcProfileCompletion(u, {
       paidTests: summary.paidTests,
       consultations: userConsultations,
@@ -126,8 +165,8 @@ export function getPlatformAnalytics() {
     .sort((a, b) => new Date(b.paid_at || b.confirmed_at || 0) - new Date(a.paid_at || a.confirmed_at || 0))
     .slice(0, 8)
     .map((p) => {
-      const user = users.find((u) => u.id === p.user_id);
-      const assessment = assessments.find((a) => a.id === p.assessment_id);
+      const user = users.find((u) => numId(u.id) === numId(p.user_id));
+      const assessment = assessments.find((a) => numId(a.id) === numId(p.assessment_id));
       return {
         id: p.id,
         order_id: p.order_id,
@@ -142,6 +181,7 @@ export function getPlatformAnalytics() {
 
   const consultationStatuses = countByField(consultations, (c) => c.status || 'unknown');
   const openSlots = getAvailableSlots({ from: new Date().toISOString() }).length;
+  const modulePurchases = buildModulePurchases(users, assessments, allPayments);
 
   return {
     summary: {
@@ -179,6 +219,7 @@ export function getPlatformAnalytics() {
     revenueTrend,
     consultationStatuses,
     recentConfirmedPayments,
+    modulePurchases,
     marketing: {
       howHeard: howHeardDistribution.slice(0, 10),
       preferredMode: preferredModeDistribution,

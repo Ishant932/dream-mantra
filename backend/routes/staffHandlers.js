@@ -14,12 +14,55 @@ import { listAllReports, upsertReport, deleteReport } from '../lib/reports.js';
 import { summarizeUserAssessments, isPendingUser } from '../lib/adminUsers.js';
 import { getData, saveData } from '../lib/database.js';
 
+function numId(value) {
+  if (value == null || value === '') return null;
+  return typeof value === 'number' ? value : Number(value);
+}
+
 function istIso(date, time) {
   return new Date(`${date}T${time}:00+05:30`).toISOString();
 }
 
-function sanitizeUser(user, { paidTests = 0, consultations = 0 } = {}) {
+function counsellorMap(data) {
+  const map = {};
+  for (const u of data.users || []) {
+    if (u.role === 'counsellor') map[numId(u.id)] = u.name;
+  }
+  return map;
+}
+
+function studentUsers(data) {
+  return (data.users || []).filter((u) => u.role === 'user');
+}
+
+function assignedStudentIds(data, counsellorId) {
+  return new Set(
+    studentUsers(data)
+      .filter((u) => numId(u.assigned_counsellor_id) === numId(counsellorId))
+      .map((u) => numId(u.id))
+  );
+}
+
+function studentsForRequest(req, data) {
+  let rows = studentUsers(data);
+  if (req.user?.role === 'counsellor') {
+    rows = rows.filter((u) => numId(u.assigned_counsellor_id) === numId(req.user.id));
+  }
+  return rows.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+}
+
+function canAccessStudent(req, user) {
+  if (!user || user.role !== 'user') return false;
+  if (req.user?.role === 'admin') return true;
+  if (req.user?.role === 'counsellor') {
+    return numId(user.assigned_counsellor_id) === numId(req.user.id);
+  }
+  return false;
+}
+
+function sanitizeUser(user, { paidTests = 0, consultations = 0, counsellors = {} } = {}) {
   if (!user) return null;
+  const cid = numId(user.assigned_counsellor_id);
   return {
     id: user.id,
     user_uid: user.user_uid,
@@ -28,6 +71,8 @@ function sanitizeUser(user, { paidTests = 0, consultations = 0 } = {}) {
     phone: user.phone,
     role: user.role,
     created_at: user.created_at,
+    assigned_counsellor_id: cid,
+    assigned_counsellor_name: cid ? counsellors[cid] || null : null,
     twoFactorEnabled: !!user.twoFactorEnabled,
     profile: normalizeProfile(user.profile),
     profileCompletion: calcProfileCompletion(user, { paidTests, consultations }),
@@ -36,8 +81,10 @@ function sanitizeUser(user, { paidTests = 0, consultations = 0 } = {}) {
 }
 
 function userActivity(userId) {
-  const consultations = db.prepare('SELECT * FROM consultations WHERE user_id = ?').all(userId) || [];
-  const assessments = db.prepare('SELECT * FROM assessments WHERE user_id = ?').all(userId) || [];
+  const data = getData();
+  const uid = numId(userId);
+  const consultations = (data.consultations || []).filter((c) => numId(c.user_id) === uid);
+  const assessments = (data.assessments || []).filter((a) => numId(a.user_id) === uid);
   const paidTests = assessments.filter((a) => a.status === 'paid').length;
   const assessmentSummary = summarizeUserAssessments(assessments);
   return {
@@ -49,41 +96,110 @@ function userActivity(userId) {
   };
 }
 
+function buildUserRow(full, counsellors) {
+  const activity = userActivity(full.id);
+  const base = sanitizeUser(full, { ...activity, counsellors });
+  return {
+    ...base,
+    stats: {
+      consultations: activity.consultations,
+      assessmentsBooked: activity.assessmentSummary.assessmentsBooked,
+      paidTests: activity.assessmentSummary.paidTests,
+      completedTests: activity.assessmentSummary.completedTests,
+      pendingPayment: activity.assessmentSummary.pendingPayment,
+      hasCompletedTest: activity.assessmentSummary.hasCompletedTest,
+      isPending: isPendingUser(full, activity.assessmentSummary, activity.consultations),
+    },
+  };
+}
+
+function fallbackUserRow(full, counsellors) {
+  const cid = numId(full?.assigned_counsellor_id);
+  return {
+    id: full.id,
+    user_uid: full.user_uid,
+    name: full.name || 'Unknown',
+    email: full.email,
+    phone: full.phone,
+    role: full.role,
+    created_at: full.created_at,
+    assigned_counsellor_id: cid,
+    assigned_counsellor_name: cid ? counsellors[cid] || null : null,
+    profile: normalizeProfile(full.profile),
+    profileCompletion: 0,
+    profileChecklist: [],
+    stats: {
+      consultations: 0,
+      assessmentsBooked: 0,
+      paidTests: 0,
+      completedTests: 0,
+      pendingPayment: false,
+      hasCompletedTest: false,
+      isPending: true,
+    },
+  };
+}
+
+function filterConsultationsForRequest(req, consultations) {
+  if (req.user?.role !== 'counsellor') return consultations;
+  const ids = assignedStudentIds(getData(), req.user.id);
+  return consultations.filter((c) => ids.has(numId(c.user_id)));
+}
+
+function filterReportsForRequest(req, reports) {
+  if (req.user?.role !== 'counsellor') return reports;
+  const ids = assignedStudentIds(getData(), req.user.id);
+  return reports.filter((r) => ids.has(numId(r.user_id)));
+}
+
 export function registerStaffRoutes(router, { includeStats = true } = {}) {
   if (includeStats) {
     router.get('/stats', (req, res) => {
-      const users = db.prepare('SELECT COUNT(*) as c FROM users WHERE role = ?').get('user').c;
-      const consultations = db.prepare('SELECT COUNT(*) as c FROM consultations').get().c;
-      const assessments = db.prepare('SELECT COUNT(*) as c FROM assessments').get().c;
-      const pending = db.prepare("SELECT COUNT(*) as c FROM consultations WHERE status = 'pending'").get().c;
-      const openSlots = getAvailableSlots({ from: new Date().toISOString() }).length;
-      res.json({ users, consultations, assessments, pending, openSlots });
+      try {
+        const data = getData();
+        const isCounsellor = req.user?.role === 'counsellor';
+        const assignedIds = isCounsellor ? assignedStudentIds(data, req.user.id) : null;
+
+        const users = isCounsellor
+          ? assignedIds.size
+          : studentUsers(data).length;
+
+        const consultations = (data.consultations || []).filter((c) =>
+          !isCounsellor || assignedIds.has(numId(c.user_id))
+        );
+        const assessments = (data.assessments || []).filter((a) =>
+          !isCounsellor || assignedIds.has(numId(a.user_id))
+        );
+
+        res.json({
+          users,
+          consultations: consultations.length,
+          assessments: assessments.length,
+          pending: consultations.filter((c) => c.status === 'pending').length,
+          openSlots: getAvailableSlots({ from: new Date().toISOString() }).length,
+        });
+      } catch (e) {
+        console.error('GET /stats failed:', e);
+        res.status(500).json({ message: e.message || 'Failed to load stats' });
+      }
     });
   }
 
   router.get('/users', (req, res) => {
     try {
       const data = getData();
-      const rows = (data.users || [])
-        .filter((u) => u.role === 'user')
-        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+      const counsellors = counsellorMap(data);
+      const rows = studentsForRequest(req, data);
 
-      const users = rows.map((full) => {
-        const activity = userActivity(full.id);
-        const base = sanitizeUser(full, activity);
-        return {
-          ...base,
-          stats: {
-            consultations: activity.consultations,
-            assessmentsBooked: activity.assessmentSummary.assessmentsBooked,
-            paidTests: activity.assessmentSummary.paidTests,
-            completedTests: activity.assessmentSummary.completedTests,
-            pendingPayment: activity.assessmentSummary.pendingPayment,
-            hasCompletedTest: activity.assessmentSummary.hasCompletedTest,
-            isPending: isPendingUser(full, activity.assessmentSummary, activity.consultations),
-          },
-        };
-      });
+      const users = [];
+      for (const full of rows) {
+        try {
+          users.push(buildUserRow(full, counsellors));
+        } catch (userErr) {
+          console.error(`GET /users skipped user ${full?.id}:`, userErr);
+          users.push(fallbackUserRow(full, counsellors));
+        }
+      }
       res.json({ users, total: users.length });
     } catch (e) {
       console.error('GET /users failed:', e);
@@ -92,47 +208,88 @@ export function registerStaffRoutes(router, { includeStats = true } = {}) {
   });
 
   router.get('/users/:id', (req, res) => {
-    const user = getData().users.find((u) => u.id === Number(req.params.id));
-    if (!user || user.role !== 'user') {
-      return res.status(404).json({ message: 'User not found' });
+    try {
+      const data = getData();
+      const counsellors = counsellorMap(data);
+      const user = data.users.find((u) => numId(u.id) === numId(req.params.id));
+      if (!canAccessStudent(req, user)) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const activity = userActivity(user.id);
+      res.json({
+        user: sanitizeUser(user, { ...activity, counsellors }),
+        stats: {
+          consultations: activity.consultations,
+          assessments: activity.assessmentsList.length,
+          paidTests: activity.paidTests,
+          assessmentsList: activity.assessmentsList,
+        },
+      });
+    } catch (e) {
+      console.error('GET /users/:id failed:', e);
+      res.status(500).json({ message: e.message || 'Failed to load user' });
     }
-    const activity = userActivity(user.id);
-    res.json({
-      user: sanitizeUser(user, activity),
-      stats: {
-        consultations: activity.consultations,
-        assessments: activity.assessmentsList.length,
-        paidTests: activity.paidTests,
-        assessmentsList: activity.assessmentsList,
-      },
-    });
   });
 
   router.patch('/users/:id', async (req, res) => {
-    const data = getData();
-    const user = data.users.find((u) => u.id === Number(req.params.id) && u.role === 'user');
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    try {
+      const data = getData();
+      const counsellors = counsellorMap(data);
+      const user = data.users.find((u) => numId(u.id) === numId(req.params.id) && u.role === 'user');
+      if (!canAccessStudent(req, user)) {
+        return res.status(404).json({ message: 'User not found' });
+      }
 
-    const { name, email, phone, profile: profilePatch } = req.body;
-    if (name?.trim()) user.name = name.trim();
-    if (email !== undefined) user.email = email?.trim() || null;
-    if (phone !== undefined) user.phone = phone?.trim() || null;
-    if (profilePatch && typeof profilePatch === 'object') {
-      user.profile = normalizeProfile({ ...defaultProfile(), ...user.profile, ...profilePatch });
+      const { name, email, phone, profile: profilePatch, assignedCounsellorId } = req.body;
+      if (name?.trim()) user.name = name.trim();
+      if (email !== undefined) user.email = email?.trim() || null;
+      if (phone !== undefined) user.phone = phone?.trim() || null;
+      if (profilePatch && typeof profilePatch === 'object') {
+        user.profile = normalizeProfile({ ...defaultProfile(), ...user.profile, ...profilePatch });
+      }
+
+      if (assignedCounsellorId !== undefined) {
+        if (req.user?.role !== 'admin') {
+          return res.status(403).json({ message: 'Only admin can assign counsellors' });
+        }
+        if (assignedCounsellorId == null || assignedCounsellorId === '' || assignedCounsellorId === 0) {
+          user.assigned_counsellor_id = null;
+        } else {
+          const counsellor = data.users.find(
+            (u) => u.role === 'counsellor' && numId(u.id) === numId(assignedCounsellorId)
+          );
+          if (!counsellor) return res.status(400).json({ message: 'Counsellor not found' });
+          user.assigned_counsellor_id = counsellor.id;
+        }
+      }
+
+      saveData();
+      await flushDatabase();
+
+      const activity = userActivity(user.id);
+      res.json({ user: sanitizeUser(user, { ...activity, counsellors }) });
+    } catch (e) {
+      console.error('PATCH /users/:id failed:', e);
+      res.status(500).json({ message: e.message || 'Failed to update user' });
     }
-    saveData();
-    await flushDatabase();
-
-    const activity = userActivity(user.id);
-    res.json({ user: sanitizeUser(user, activity) });
   });
 
   router.get('/consultations', (req, res) => {
-    res.json({ consultations: listConsultationsEnriched() });
+    try {
+      const consultations = filterConsultationsForRequest(req, listConsultationsEnriched());
+      res.json({ consultations });
+    } catch (e) {
+      console.error('GET /consultations failed:', e);
+      res.status(500).json({ message: e.message || 'Failed to load consultations' });
+    }
   });
 
   router.patch('/consultations/:id', async (req, res) => {
     const { status, notes, meeting_link, admin_notes, location, slot_title } = req.body;
+    const existing = listConsultationsEnriched().find((c) => numId(c.id) === numId(req.params.id));
+    if (!existing || !filterConsultationsForRequest(req, [existing]).length) {
+      return res.status(404).json({ message: 'Consultation not found' });
+    }
     const consultation = updateConsultation(req.params.id, {
       status,
       notes,
@@ -153,7 +310,12 @@ export function registerStaffRoutes(router, { includeStats = true } = {}) {
   });
 
   router.get('/slots/:id/bookings', (req, res) => {
-    res.json({ bookings: getSlotBookings(req.params.id) });
+    let bookings = getSlotBookings(req.params.id);
+    if (req.user?.role === 'counsellor') {
+      const ids = assignedStudentIds(getData(), req.user.id);
+      bookings = bookings.filter((b) => ids.has(numId(b.user_id)));
+    }
+    res.json({ bookings });
   });
 
   router.post('/slots', async (req, res) => {
@@ -203,11 +365,24 @@ export function registerStaffRoutes(router, { includeStats = true } = {}) {
   });
 
   router.get('/reports', (req, res) => {
-    res.json({ reports: listAllReports() });
+    try {
+      const reports = filterReportsForRequest(req, listAllReports());
+      res.json({ reports });
+    } catch (e) {
+      console.error('GET /reports failed:', e);
+      res.status(500).json({ message: e.message || 'Failed to load reports' });
+    }
   });
 
   router.post('/reports', async (req, res) => {
     try {
+      if (req.user?.role === 'counsellor') {
+        const data = getData();
+        const user = findReportTargetUser(data, req.body);
+        if (!user || !canAccessStudent(req, user)) {
+          return res.status(403).json({ message: 'You can only publish reports for your assigned students' });
+        }
+      }
       const report = upsertReport(req.body);
       await flushDatabase();
       res.status(201).json({ report });
@@ -218,6 +393,10 @@ export function registerStaffRoutes(router, { includeStats = true } = {}) {
 
   router.patch('/reports/:id', async (req, res) => {
     try {
+      const existing = listAllReports().find((r) => numId(r.id) === numId(req.params.id));
+      if (!existing || !filterReportsForRequest(req, [existing]).length) {
+        return res.status(404).json({ message: 'Report not found' });
+      }
       const report = upsertReport({ id: Number(req.params.id), ...req.body });
       await flushDatabase();
       res.json({ report });
@@ -228,11 +407,25 @@ export function registerStaffRoutes(router, { includeStats = true } = {}) {
 
   router.delete('/reports/:id', async (req, res) => {
     try {
+      const existing = listAllReports().find((r) => numId(r.id) === numId(req.params.id));
+      if (!existing || !filterReportsForRequest(req, [existing]).length) {
+        return res.status(404).json({ message: 'Report not found' });
+      }
       const result = deleteReport(Number(req.params.id));
       await flushDatabase();
-      res.json({ ...result, reports: listAllReports() });
+      res.json({ ...result, reports: filterReportsForRequest(req, listAllReports()) });
     } catch (e) {
       res.status(400).json({ message: e.message });
     }
   });
+}
+
+function findReportTargetUser(data, body) {
+  if (body.userId) {
+    return data.users.find((u) => numId(u.id) === numId(body.userId));
+  }
+  if (body.userUid) {
+    return data.users.find((u) => u.user_uid === body.userUid);
+  }
+  return null;
 }

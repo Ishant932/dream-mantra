@@ -40,6 +40,13 @@ const defaultData = {
 };
 
 function normalizePayload(parsed) {
+  if (!parsed || typeof parsed !== 'object') {
+    return structuredClone(defaultData);
+  }
+
+  parsed.users = parsed.users || [];
+  parsed.consultations = parsed.consultations || [];
+  parsed.assessments = parsed.assessments || [];
   parsed.otpStore = parsed.otpStore || [];
   parsed.contact_leads = parsed.contact_leads || [];
   parsed.user_notifications = parsed.user_notifications || [];
@@ -55,7 +62,7 @@ function normalizePayload(parsed) {
     },
   };
   parsed.nextId = { ...defaultData.nextId, ...parsed.nextId };
-  parsed.users = (parsed.users || []).map((u) => ({
+  parsed.users = parsed.users.map((u) => ({
     ...u,
     profile: normalizeProfile(u.profile),
   }));
@@ -142,7 +149,9 @@ export async function initDatabase() {
   if (doc?.payload) {
     data = normalizePayload(structuredClone(doc.payload));
     const changed = ensureAllUserUids(data);
-    if (changed) await persistToMongo(data);
+    if (changed || !Array.isArray(doc.payload.consultations) || !Array.isArray(doc.payload.assessments)) {
+      await persistToMongo(data);
+    }
     console.log('Database: MongoDB Atlas (loaded existing data)');
     return { mode: dbMode };
   }
@@ -182,6 +191,14 @@ export function getDbStatus() {
 }
 
 export function getData() {
+  if (
+    !data
+    || !Array.isArray(data.users)
+    || !Array.isArray(data.consultations)
+    || !Array.isArray(data.assessments)
+  ) {
+    data = normalizePayload(data || {});
+  }
   return data;
 }
 
@@ -229,28 +246,28 @@ function runQuery(sql, params, mode) {
   }
 
   if (sql.includes('SELECT * FROM users WHERE id')) {
-    const row = data.users.find((u) => u.id === Number(p[0]));
+    const row = usersOf(data).find((u) => u.id === Number(p[0]));
     return mode === 'all' ? (row ? [row] : []) : row;
   }
   if (sql.includes('SELECT * FROM users WHERE email')) {
     const q = String(p[0] || '').trim().toLowerCase();
-    return data.users.find((u) => u.email?.toLowerCase() === q);
+    return usersOf(data).find((u) => u.email?.toLowerCase() === q);
   }
   if (sql.includes('SELECT * FROM users WHERE phone')) {
     const q = String(p[0] || '').trim();
     const qNorm = normalizePhone(q);
-    return data.users.find((u) => {
+    return usersOf(data).find((u) => {
       if (!u.phone) return false;
       if (u.phone === q) return true;
       return qNorm.length >= 10 && normalizePhone(u.phone) === qNorm;
     });
   }
-  if (sql.includes('SELECT id FROM users WHERE role')) return data.users.find((u) => u.role === p[0]);
+  if (sql.includes('SELECT id FROM users WHERE role')) return usersOf(data).find((u) => u.role === p[0]);
   if (sql.includes('COUNT(*)') && sql.includes('users') && sql.includes('role')) {
-    return { c: data.users.filter((u) => u.role === p[0]).length };
+    return { c: usersOf(data).filter((u) => u.role === p[0]).length };
   }
   if (sql.includes('FROM users WHERE role') && sql.includes('ORDER BY')) {
-    return data.users.filter((u) => u.role === p[0]).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    return usersOf(data).filter((u) => u.role === p[0]).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }
 
   if (sql.includes('INSERT INTO consultations')) {
@@ -293,39 +310,41 @@ function runQuery(sql, params, mode) {
   }
 
   if (sql.includes('consultations WHERE user_id')) {
-    return data.consultations
-      .filter((c) => c.user_id === num(p[0]))
+    const userId = num(p[0]);
+    return consultationsOf(data)
+      .filter((c) => num(c.user_id) === userId)
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }
   if (sql.includes('assessments WHERE user_id')) {
-    return data.assessments
-      .filter((a) => a.user_id === num(p[0]))
+    const userId = num(p[0]);
+    return assessmentsOf(data)
+      .filter((a) => num(a.user_id) === userId)
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }
   if (sql.includes('SELECT * FROM assessments WHERE id')) {
-    return data.assessments.find((a) => Number(a.id) === Number(p[0]));
+    return assessmentsOf(data).find((a) => Number(a.id) === Number(p[0]));
   }
 
   if (sql.includes('SELECT COUNT(*) as c FROM consultations')) {
     if (sql.includes("status = 'pending'")) {
-      return { c: data.consultations.filter((c) => c.status === 'pending').length };
+      return { c: consultationsOf(data).filter((c) => c.status === 'pending').length };
     }
-    return { c: data.consultations.length };
+    return { c: consultationsOf(data).length };
   }
   if (sql.includes('SELECT COUNT(*) as c FROM assessments')) {
     if (sql.includes("status = 'paid'") && sql.includes('user_id')) {
       const userId = num(p[0]);
       return {
-        c: data.assessments.filter((a) => a.user_id === userId && a.status === 'paid').length,
+        c: assessmentsOf(data).filter((a) => num(a.user_id) === userId && a.status === 'paid').length,
       };
     }
-    return { c: data.assessments.length };
+    return { c: assessmentsOf(data).length };
   }
 
   if (sql.includes('JOIN users u ON')) {
-    return data.consultations
+    return consultationsOf(data)
       .map((c) => {
-        const u = data.users.find((x) => x.id === c.user_id);
+        const u = usersOf(data).find((x) => num(x.id) === num(c.user_id));
         return {
           ...c,
           user_name: c.user_snapshot?.name || u?.name,
@@ -337,7 +356,7 @@ function runQuery(sql, params, mode) {
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
   }
   if (sql.includes('UPDATE consultations SET')) {
-    const c = data.consultations.find((x) => x.id === Number(p[2]));
+    const c = consultationsOf(data).find((x) => x.id === Number(p[2]));
     if (c) {
       c.status = p[0];
       c.notes = p[1];
@@ -346,7 +365,7 @@ function runQuery(sql, params, mode) {
     return {};
   }
   if (sql.includes('SELECT * FROM consultations WHERE id')) {
-    return data.consultations.find((c) => c.id === Number(p[0]));
+    return consultationsOf(data).find((c) => c.id === Number(p[0]));
   }
 
   if (sql.includes('INSERT INTO otpStore')) {
@@ -383,6 +402,18 @@ function runQuery(sql, params, mode) {
 
 function num(v) {
   return typeof v === 'number' ? v : Number(v);
+}
+
+function usersOf(data) {
+  return data.users || [];
+}
+
+function consultationsOf(data) {
+  return data.consultations || [];
+}
+
+function assessmentsOf(data) {
+  return data.assessments || [];
 }
 
 // Modern API helpers

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, X, Mail, Phone, UserCircle } from 'lucide-react';
+import { Search, Filter, X, Mail, Phone, UserCircle, UserCog } from 'lucide-react';
 import { useLang } from '../../context/LanguageContext';
 import { programs } from '../../data/content';
 import AdminUserProfileModal from '../AdminUserProfileModal';
@@ -16,11 +16,13 @@ const JOINED_FILTER_OPTIONS = [
   { value: 'month', label: 'This month' },
 ];
 
-export default function StaffUsersPanel({ api, token, onError }) {
+export default function StaffUsersPanel({ api, token, onError, allowCounsellorAssign = false }) {
   const { t } = useLang();
   const [users, setUsers] = useState([]);
+  const [counsellors, setCounsellors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [assigningId, setAssigningId] = useState(null);
   const [profileUser, setProfileUser] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -32,14 +34,22 @@ export default function StaffUsersPanel({ api, token, onError }) {
   const [streamFilter, setStreamFilter] = useState('All streams');
   const [joinedFilter, setJoinedFilter] = useState('all');
   const [contactSearch, setContactSearch] = useState('');
+  const [counsellorFilter, setCounsellorFilter] = useState('all');
 
   const loadUsers = useCallback(async () => {
     if (!token) return;
     setLoading(true);
     setLoadError('');
     try {
-      const data = await api.users(token);
-      setUsers(data.users || []);
+      const requests = [api.users(token)];
+      if (allowCounsellorAssign && api.counsellors) {
+        requests.push(api.counsellors(token));
+      }
+      const results = await Promise.all(requests);
+      setUsers(results[0].users || []);
+      if (allowCounsellorAssign && results[1]) {
+        setCounsellors(results[1].counsellors || []);
+      }
     } catch (err) {
       const message = err.message || 'Failed to load users';
       setLoadError(message);
@@ -47,7 +57,7 @@ export default function StaffUsersPanel({ api, token, onError }) {
     } finally {
       setLoading(false);
     }
-  }, [api, token, onError]);
+  }, [api, token, onError, allowCounsellorAssign]);
 
   useEffect(() => {
     loadUsers();
@@ -91,9 +101,17 @@ export default function StaffUsersPanel({ api, token, onError }) {
       if (testFilter === 'none' && (u.stats?.assessmentsBooked || 0) > 0) return false;
       if (userFilter === 'pending' && !u.stats?.isPending) return false;
       if (userFilter === 'complete' && u.stats?.isPending) return false;
+      if (counsellorFilter !== 'all') {
+        const assigned = u.assigned_counsellor_id ? String(u.assigned_counsellor_id) : '';
+        if (counsellorFilter === 'unassigned') {
+          if (assigned) return false;
+        } else if (assigned !== counsellorFilter) {
+          return false;
+        }
+      }
       return true;
     });
-  }, [users, uidSearch, contactSearch, classFilter, streamFilter, joinedFilter, testFilter, userFilter]);
+  }, [users, uidSearch, contactSearch, classFilter, streamFilter, joinedFilter, testFilter, userFilter, counsellorFilter]);
 
   const clearUserFilters = () => {
     setUidSearch('');
@@ -103,10 +121,26 @@ export default function StaffUsersPanel({ api, token, onError }) {
     setJoinedFilter('all');
     setTestFilter('all');
     setUserFilter('all');
+    setCounsellorFilter('all');
   };
 
   const hasActiveUserFilters = uidSearch || contactSearch || classFilter !== 'All classes'
-    || streamFilter !== 'All streams' || joinedFilter !== 'all' || testFilter !== 'all' || userFilter !== 'all';
+    || streamFilter !== 'All streams' || joinedFilter !== 'all' || testFilter !== 'all' || userFilter !== 'all'
+    || counsellorFilter !== 'all';
+
+  const assignCounsellor = async (userId, counsellorId) => {
+    setAssigningId(userId);
+    try {
+      const res = await api.updateUser(token, userId, {
+        assignedCounsellorId: counsellorId ? Number(counsellorId) : null,
+      });
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...res.user, stats: u.stats } : u)));
+    } catch (err) {
+      onError?.(err.message);
+    } finally {
+      setAssigningId(null);
+    }
+  };
 
   const viewProfile = async (userId) => {
     setProfileOpen(true);
@@ -240,6 +274,20 @@ export default function StaffUsersPanel({ api, token, onError }) {
               <option value="complete">Profile complete</option>
             </select>
           </div>
+          {allowCounsellorAssign && (
+            <div>
+              <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
+                <UserCog className="w-3 h-3" /> Counsellor
+              </label>
+              <select className="input-field w-full !py-2 !text-sm" value={counsellorFilter} onChange={(e) => setCounsellorFilter(e.target.value)}>
+                <option value="all">All counsellors</option>
+                <option value="unassigned">Unassigned</option>
+                {counsellors.map((c) => (
+                  <option key={c.id} value={String(c.id)}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
           {hasActiveUserFilters && (
             <div className="flex items-end sm:col-span-2 lg:col-span-1">
               <button type="button" onClick={clearUserFilters} className="btn-outline !py-2 !px-3 text-sm w-full inline-flex items-center justify-center gap-1">
@@ -255,12 +303,15 @@ export default function StaffUsersPanel({ api, token, onError }) {
           <p className="text-sm opacity-70 text-center py-8">No users match your filters.</p>
         ) : (
           <div className="overflow-x-auto -mx-1">
-            <table className="w-full text-sm admin-data-table min-w-[760px]">
+            <table className="w-full text-sm admin-data-table min-w-[860px]">
               <thead>
                 <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Dreams ID</th>
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Name</th>
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Contact</th>
+                  {allowCounsellorAssign && (
+                    <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Counsellor</th>
+                  )}
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Class / Stream</th>
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Profile</th>
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Tests</th>
@@ -283,6 +334,21 @@ export default function StaffUsersPanel({ api, token, onError }) {
                       {u.email && <p className="flex items-center gap-1"><Mail className="w-3 h-3 shrink-0" />{u.email}</p>}
                       {u.phone && <p className="flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3 shrink-0" />{u.phone}</p>}
                     </td>
+                    {allowCounsellorAssign && (
+                      <td className="py-3 px-3 min-w-[160px]">
+                        <select
+                          className="input-field w-full !py-1.5 !text-xs"
+                          value={u.assigned_counsellor_id ? String(u.assigned_counsellor_id) : ''}
+                          disabled={assigningId === u.id}
+                          onChange={(e) => assignCounsellor(u.id, e.target.value)}
+                        >
+                          <option value="">Unassigned</option>
+                          {counsellors.map((c) => (
+                            <option key={c.id} value={String(c.id)}>{c.name}</option>
+                          ))}
+                        </select>
+                      </td>
+                    )}
                     <td className="py-3 px-3 text-xs">
                       {[u.profile?.classLevel, u.profile?.stream].filter(Boolean).join(' · ') || '—'}
                     </td>
