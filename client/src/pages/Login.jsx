@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Shield, Sparkles, ArrowRight } from 'lucide-react';
+import { Mail, Lock, Shield, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
@@ -70,6 +70,14 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 via-[var(--bg-elevated)] to-amber-50">
+        <Loader2 className="w-10 h-10 animate-spin text-amber-600" aria-label="Loading" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-[calc(100dvh-var(--site-header-h)-var(--safe-top))] flex flex-col lg:flex-row">

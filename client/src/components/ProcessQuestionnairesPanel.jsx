@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   BookOpen, ClipboardList, MessageCircle, AlertCircle, Package, Users, ExternalLink,
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { userApi } from '../api';
 import { DashCard } from './DashboardUI';
@@ -84,9 +83,10 @@ function ProcessGuideView({ guide }) {
 
 export default function ProcessQuestionnairesPanel({ assessments = [], profile, user, communityLink, onRefresh }) {
   const { token } = useAuth();
-  const [searchParams] = useSearchParams();
-  const sectionParam = searchParams.get('section');
-  const openTestOnLoad = searchParams.get('open') === '1';
+  const location = useLocation();
+  const urlParams = new URLSearchParams(location.search);
+  const sectionParam = urlParams.get('section');
+  const openTestOnLoad = urlParams.get('open') === '1';
 
   const paidModules = useMemo(
     () => getConfirmedPaidAssessments(assessments),
@@ -311,7 +311,7 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
                   )}
                 </div>
               </div>
-            </motion.div>
+            </motion.div>                                       
           )}
         </DashCard>
       )}
@@ -347,3 +347,4 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
     </div>
   );
 }
+

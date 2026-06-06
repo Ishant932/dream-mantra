@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, Clock, Users } from 'lucide-react';
 import PageHero from '../components/PageHero';
@@ -20,8 +20,8 @@ export default function CRPLaunchPage() {
   const crpProgram = d('data.crpProgram');
   const crpAudienceTabs = d('data.crpAudienceTabs');
   const statItems = crp.statItems.map((s, i) => ({ ...s, icon: statIcons[i] }));
-  const [searchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'college-students';
+  const location = useLocation();
+  const activeTab = new URLSearchParams(location.search).get('tab') || 'college-students';
   const activeAudience = crpAudienceTabs.find((t) => t.id === activeTab) || crpAudienceTabs[0];
 
   return (

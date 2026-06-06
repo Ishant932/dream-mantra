@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Building2, GraduationCap, Mail, Phone, Sparkles } from 'lucide-react';
 import { useMemo } from 'react';
@@ -160,8 +160,9 @@ function InstitutionsPathways({ institutionsCopy, partners }) {
 
 export default function AgePathwaysSection() {
   const { d } = useLang();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const pathway = searchParams.get('pathway') === 'institutions' ? 'institutions' : 'students';
+  const location = useLocation();
+  const navigate = useNavigate();
+  const pathway = new URLSearchParams(location.search).get('pathway') === 'institutions' ? 'institutions' : 'students';
 
   const tabsCopy = d('pages.counselling.tabs.programs');
   const institutionsCopy = tabsCopy.institutions || {};
@@ -178,11 +179,12 @@ export default function AgePathwaysSection() {
   }, [d]);
 
   const setPathway = (next) => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(location.search);
     params.set('tab', 'programs');
     if (next === 'institutions') params.set('pathway', 'institutions');
     else params.delete('pathway');
-    setSearchParams(params, { replace: true });
+    const qs = params.toString();
+    navigate({ pathname: location.pathname, search: qs ? `?${qs}` : '' }, { replace: true });
   };
 
   return (

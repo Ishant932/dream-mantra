@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Briefcase, Filter, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
 import { careersApi } from '../api';
@@ -7,7 +7,9 @@ import { useLang } from '../context/LanguageContext';
 
 export default function CareersPage() {
   const { t } = useLang();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const searchParams = new URLSearchParams(location.search);
   const [data, setData] = useState({ careers: [], total: 0, pages: 1, categories: [] });
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(searchParams.get('q') || '');
@@ -31,12 +33,13 @@ export default function CareersPage() {
   }, [load]);
 
   const updateParams = (updates) => {
-    const p = new URLSearchParams(searchParams);
+    const p = new URLSearchParams(location.search);
     Object.entries(updates).forEach(([k, v]) => {
       if (v === '' || v === 'all' || v === null) p.delete(k);
       else p.set(k, String(v));
     });
-    setSearchParams(p);
+    const qs = p.toString();
+    navigate({ pathname: location.pathname, search: qs ? `?${qs}` : '' }, { replace: true });
   };
 
   const handleSearch = (e) => {

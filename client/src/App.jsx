@@ -60,6 +60,7 @@ export default function App() {
     <ThemeProvider>
     <LanguageProvider>
       <AuthProvider>
+        <ErrorBoundary>
         <BrowserRouter>
           <Routes>
             <Route element={<Layout />}>
@@ -132,6 +133,7 @@ export default function App() {
             <Route path="signup" element={<AuthPage><Signup /></AuthPage>} />
           </Routes>
         </BrowserRouter>
+        </ErrorBoundary>
       </AuthProvider>
     </LanguageProvider>
     </ThemeProvider>

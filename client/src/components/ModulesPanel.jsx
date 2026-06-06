@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   CreditCard, Play, ClipboardList, Package, ShoppingBag,
   CheckCircle2, AlertCircle, Sparkles, MessageCircle, Clock, XCircle, Trash2,
@@ -229,8 +229,8 @@ export default function ModulesPanel({
   onGoTakeTest,
 }) {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const shopSlug = searchParams.get('shop');
+  const location = useLocation();
+  const shopSlug = new URLSearchParams(location.search).get('shop');
   const [selectedSlug, setSelectedSlug] = useState(null);
   const [counsellingBySlug, setCounsellingBySlug] = useState({});
   const [booking, setBooking] = useState(false);

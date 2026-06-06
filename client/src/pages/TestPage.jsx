@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, CheckCircle2, ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -21,8 +21,8 @@ import {
 
 export default function TestPage() {
   const { slug } = useParams();
-  const [searchParams] = useSearchParams();
-  const assessmentId = searchParams.get('id');
+  const location = useLocation();
+  const assessmentId = new URLSearchParams(location.search).get('id');
   const { token } = useAuth();
   const { d } = useLang();
   const navigate = useNavigate();
