@@ -12,6 +12,7 @@ import {
 } from '../lib/slots.js';
 import { listAllReports, upsertReport, deleteReport } from '../lib/reports.js';
 import { summarizeUserAssessments, isPendingUser } from '../lib/adminUsers.js';
+import { getData, saveData } from '../lib/database.js';
 
 function istIso(date, time) {
   return new Date(`${date}T${time}:00+05:30`).toISOString();
@@ -61,28 +62,33 @@ export function registerStaffRoutes(router, { includeStats = true } = {}) {
   }
 
   router.get('/users', (req, res) => {
-    const data = getData();
-    const rows = (data.users || [])
-      .filter((u) => u.role === 'user')
-      .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    try {
+      const data = getData();
+      const rows = (data.users || [])
+        .filter((u) => u.role === 'user')
+        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
 
-    const users = rows.map((full) => {
-      const activity = userActivity(full.id);
-      const base = sanitizeUser(full, activity);
-      return {
-        ...base,
-        stats: {
-          consultations: activity.consultations,
-          assessmentsBooked: activity.assessmentSummary.assessmentsBooked,
-          paidTests: activity.assessmentSummary.paidTests,
-          completedTests: activity.assessmentSummary.completedTests,
-          pendingPayment: activity.assessmentSummary.pendingPayment,
-          hasCompletedTest: activity.assessmentSummary.hasCompletedTest,
-          isPending: isPendingUser(full, activity.assessmentSummary, activity.consultations),
-        },
-      };
-    });
-    res.json({ users, total: users.length });
+      const users = rows.map((full) => {
+        const activity = userActivity(full.id);
+        const base = sanitizeUser(full, activity);
+        return {
+          ...base,
+          stats: {
+            consultations: activity.consultations,
+            assessmentsBooked: activity.assessmentSummary.assessmentsBooked,
+            paidTests: activity.assessmentSummary.paidTests,
+            completedTests: activity.assessmentSummary.completedTests,
+            pendingPayment: activity.assessmentSummary.pendingPayment,
+            hasCompletedTest: activity.assessmentSummary.hasCompletedTest,
+            isPending: isPendingUser(full, activity.assessmentSummary, activity.consultations),
+          },
+        };
+      });
+      res.json({ users, total: users.length });
+    } catch (e) {
+      console.error('GET /users failed:', e);
+      res.status(500).json({ message: e.message || 'Failed to load users' });
+    }
   });
 
   router.get('/users/:id', (req, res) => {

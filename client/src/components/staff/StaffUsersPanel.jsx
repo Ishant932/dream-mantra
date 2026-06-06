@@ -20,6 +20,7 @@ export default function StaffUsersPanel({ api, token, onError }) {
   const { t } = useLang();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [profileUser, setProfileUser] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -35,11 +36,14 @@ export default function StaffUsersPanel({ api, token, onError }) {
   const loadUsers = useCallback(async () => {
     if (!token) return;
     setLoading(true);
+    setLoadError('');
     try {
       const data = await api.users(token);
       setUsers(data.users || []);
     } catch (err) {
-      onError?.(err.message);
+      const message = err.message || 'Failed to load users';
+      setLoadError(message);
+      onError?.(message);
     } finally {
       setLoading(false);
     }
@@ -154,11 +158,19 @@ export default function StaffUsersPanel({ api, token, onError }) {
       <DashCard className="!p-5 sm:!p-6">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
           <h2 className="text-lg font-bold">{t('admin.manageUsers')}</h2>
-          <p className="text-sm opacity-70">
-            {filteredUsers.length} of {users.length} students
-            {hasActiveUserFilters && ' (filtered)'}
-          </p>
+          <div className="flex flex-wrap items-center gap-3">
+            {loadError && (
+              <button type="button" onClick={loadUsers} className="btn-outline !py-2 !px-3 text-sm">Retry</button>
+            )}
+            <p className="text-sm opacity-70">
+              {filteredUsers.length} of {users.length} students
+              {hasActiveUserFilters && ' (filtered)'}
+            </p>
+          </div>
         </div>
+        {loadError && (
+          <p className="text-sm text-red-600 dark:text-red-400 mb-4">{loadError}</p>
+        )}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mb-5 p-4 rounded-2xl bg-sand-50 dark:bg-sand-800/40 border border-sand-200/60 dark:border-sand-700/40">
           <div className="sm:col-span-2">

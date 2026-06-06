@@ -8,6 +8,7 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
   const [payments, setPayments] = useState([]);
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
   const [reportForm, setReportForm] = useState({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report' });
   const [reportUserSearch, setReportUserSearch] = useState('');
   const [editingReportId, setEditingReportId] = useState(null);
@@ -18,6 +19,7 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
   const load = useCallback(async () => {
     if (!token) return;
     setLoading(true);
+    setLoadError('');
     try {
       const [usersRes, reportsRes, paymentsRes] = await Promise.all([
         api.users(token),
@@ -28,7 +30,9 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
       setReports(reportsRes.reports || []);
       setPayments(paymentsRes.payments || []);
     } catch (err) {
-      onError?.(err.message);
+      const message = err.message || 'Failed to load reports';
+      setLoadError(message);
+      onError?.(message);
     } finally {
       setLoading(false);
     }
@@ -141,6 +145,12 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
 
   return (
     <div className="space-y-6">
+      {loadError && (
+        <DashCard className="!p-4 border border-red-300/60 bg-red-50 dark:bg-red-950/30">
+          <p className="text-sm text-red-700 dark:text-red-300 font-medium">{loadError}</p>
+          <button type="button" onClick={load} className="btn-outline !py-2 !px-3 text-sm mt-3">Retry</button>
+        </DashCard>
+      )}
       <DashCard className="!p-5 sm:!p-6">
         <h2 className="text-lg font-bold mb-2 flex items-center gap-2">
           <FileText className="w-5 h-5 text-amber-500" /> Add / Update Report Link
