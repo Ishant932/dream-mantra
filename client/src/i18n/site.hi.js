@@ -716,7 +716,7 @@ export const siteHi = {
       { id: 'process-guides', label: 'Process & Take test', desc: 'Guides, steps और skill mapping forms' },
       { id: 'reports', label: 'My Reports', desc: 'Assessment reports और deliverables' },
       { id: 'book', label: 'सत्र बुक करें', desc: 'Expert counselling schedule करें' },
-      { id: 'security', label: 'Security', desc: 'Password और account settings' },
+      { id: 'security', label: 'Security', desc: 'Two-factor authentication' },
     ],
 
     managementTeam: [

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, ShieldCheck, ShieldOff, QrCode, Loader2, KeyRound } from 'lucide-react';
+import { Shield, ShieldCheck, ShieldOff, QrCode, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { authApi } from '../api';
 
@@ -10,9 +10,6 @@ export default function SecuritySettings() {
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
   const [disableCode, setDisableCode] = useState('');
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(false);
@@ -58,28 +55,6 @@ export default function SecuritySettings() {
       setPassword('');
       setDisableCode('');
       await refreshUser();
-    } catch (e) {
-      setErr(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const changePassword = async (e) => {
-    e.preventDefault();
-    setErr('');
-    setMsg('');
-    if (newPassword !== confirmPassword) {
-      setErr('New passwords do not match');
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await authApi.changePassword(token, { currentPassword, newPassword });
-      setMsg(res.message || 'Password updated successfully.');
-      setCurrentPassword('');
-      setNewPassword('');
-      setConfirmPassword('');
     } catch (e) {
       setErr(e.message);
     } finally {
@@ -182,44 +157,6 @@ export default function SecuritySettings() {
         </form>
       )}
 
-      <form onSubmit={changePassword} className="space-y-4 mt-8 pt-6 border-t">
-        <div className="flex items-center gap-2 mb-1">
-          <KeyRound className="w-5 h-5 text-amber-600" />
-          <p className="text-sm font-semibold text-sand-700">Change password</p>
-        </div>
-        <input
-          type="password"
-          className="input-field"
-          value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
-          placeholder="Current password"
-          required
-          autoComplete="current-password"
-        />
-        <input
-          type="password"
-          className="input-field"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="New password (min 6 characters)"
-          required
-          minLength={6}
-          autoComplete="new-password"
-        />
-        <input
-          type="password"
-          className="input-field"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          placeholder="Confirm new password"
-          required
-          minLength={6}
-          autoComplete="new-password"
-        />
-        <button type="submit" disabled={loading} className="btn-primary">
-          Update password
-        </button>
-      </form>
     </div>
   );
 }

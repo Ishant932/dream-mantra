@@ -81,7 +81,7 @@ const DREAMZ_ID_REPLY_EN = `YOUR DREAM MANTRA ID
 • Assigned at registration (e.g. 606010001) — shown on Dashboard Overview
 • Used for login, test verification, and support
 • Tests pre-fill with this ID — always use the ID linked to your paid account
-• Forgot password? Dashboard → Security tab → reset, or call 9680102276
+• Lost login access? Contact support at 9680102276
 
 Do not use a personal Gmail as your test ID — only your Dream Mantra registration ID.`;
 
@@ -158,13 +158,13 @@ TABS
 • Careers — 950+ career library
 • AI Corner — personalised insights
 • Roadmap — journey progress
-• Security — password change
+• Security — two-factor authentication
 
 Quick links: Modules /dashboard?tab=assess | Book /dashboard?tab=book`,
     hi: 'Dashboard: Overview, Modules, Book, Take test, Careers, AI, Roadmap, Security। /dashboard',
   },
   {
-    patterns: ['register', 'sign up', 'create account', 'how to login', 'login', 'forgot password'],
+    patterns: ['register', 'sign up', 'create account', 'how to login', 'login'],
     en: `REGISTER & LOGIN
 
 1. Visit dreammantra.in → Sign up
@@ -173,8 +173,8 @@ Quick links: Modules /dashboard?tab=assess | Book /dashboard?tab=book`,
 4. Complete profile in Dashboard → Profile tab
 5. Purchase modules from Modules tab
 
-Forgot password: Dashboard → Security, or contact 9680102276`,
-    hi: 'Sign up → Dream Mantra ID मिलेगा → login → Modules से purchase। Password: Security tab।',
+Login help: contact 9680102276`,
+    hi: 'Sign up → Dream Mantra ID मिलेगा → login → Modules से purchase। सहायता: 9680102276',
   },
   {
     patterns: ['tell me about pcm stream', 'pcm stream', 'about pcm', 'what is pcm'],
@@ -293,8 +293,8 @@ Forgot password: Dashboard → Security, or contact 9680102276`,
   },
   {
     patterns: ['forgot password', 'reset password', 'change password login', 'lost password'],
-    en: 'FORGOT PASSWORD\n\n1. Go to dreammantra.in/login → Forgot password?\n2. Enter your registered email address only\n3. Set new password + confirm\n4. Sign in at /login with email, phone, or Dreams ID\n\nIf you signed up with mobile only, use phone login. Support: 9680102276',
-    hi: 'Password reset: Login → Forgot password → email + mobile → naya password → login। 9680102276',
+    en: 'Password reset is not available online. If you cannot sign in, contact support at 9680102276 with your registered email or phone and Dream Mantra ID.',
+    hi: 'Online password reset उपलब्ध नहीं। Login समस्या हो तो 9680102276 पर registered email/phone और Dream Mantra ID के साथ संपर्क करें।',
   },
   {
     patterns: ['my reports', 'report link', 'where is my report', 'assessment report'],

@@ -12,7 +12,6 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const slotId = new URLSearchParams(location.search).get('slot_id');
-  const resetNotice = location.state?.passwordReset ? 'Password updated successfully. Sign in with your new password.' : '';
   const prefilledEmail = location.state?.email || '';
   const postAuthPath = (role) => {
     if (role === 'admin') return '/admin';
@@ -35,19 +34,11 @@ export default function Login() {
   const [code, setCode] = useState('');
   const [tempToken, setTempToken] = useState('');
   const [error, setError] = useState('');
-  const [notice, setNotice] = useState(resetNotice);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (resetNotice) {
-      window.history.replaceState({}, document.title);
-    }
-  }, [resetNotice]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-    setNotice('');
     setLoading(true);
     try {
       const trimmed = identifier.trim();
@@ -163,14 +154,9 @@ export default function Login() {
                     />
                   </div>
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2">
-                        <Lock className="w-4 h-4 text-amber-600" /> {t('auth.password')}
-                      </label>
-                      <Link to="/forgot-password" className="text-xs font-semibold text-amber-600 hover:underline">
-                        Forgot password?
-                      </Link>
-                    </div>
+                    <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
+                      <Lock className="w-4 h-4 text-amber-600" /> {t('auth.password')}
+                    </label>
                     <input
                       type="password"
                       className="input-field"

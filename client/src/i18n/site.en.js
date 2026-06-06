@@ -780,7 +780,7 @@ export const siteEn = {
       { id: 'process-guides', label: 'Process & Take test', desc: 'Step guides & skill mapping forms' },
       { id: 'reports', label: 'My Reports', desc: 'Assessment reports & deliverables' },
       { id: 'book', label: 'Book Session', desc: 'Schedule expert counselling' },
-      { id: 'security', label: 'Security', desc: 'Password & account settings' },
+      { id: 'security', label: 'Security', desc: 'Two-factor authentication' },
     ],
 
     managementTeam: [
