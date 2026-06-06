@@ -22,9 +22,12 @@ import {
   removeCounsellorStaff,
 } from '../lib/counsellorStaff.js';
 import { registerStaffRoutes } from './staffHandlers.js';
+import { handleListStaffUsers } from '../lib/listStaffUsers.js';
 
 const router = Router();
 router.use(authRequired, adminRequired);
+
+router.get('/users', handleListStaffUsers);
 
 router.get('/stats', (req, res) => {
   try {
@@ -41,7 +44,7 @@ router.get('/stats', (req, res) => {
   }
 });
 
-registerStaffRoutes(router, { includeStats: false });
+registerStaffRoutes(router, { includeStats: false, skipUsers: true });
 
 router.get('/counsellors', (req, res) => {
   res.json({ counsellors: listCounsellorStaff() });

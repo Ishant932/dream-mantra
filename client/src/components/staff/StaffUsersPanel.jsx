@@ -41,14 +41,16 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
     setLoading(true);
     setLoadError('');
     try {
-      const requests = [api.users(token)];
+      const usersRes = await api.users(token);
+      setUsers(usersRes.users || []);
       if (allowCounsellorAssign && api.counsellors) {
-        requests.push(api.counsellors(token));
-      }
-      const results = await Promise.all(requests);
-      setUsers(results[0].users || []);
-      if (allowCounsellorAssign && results[1]) {
-        setCounsellors(results[1].counsellors || []);
+        try {
+          const cRes = await api.counsellors(token);
+          setCounsellors(cRes.counsellors || []);
+        } catch (counsellorErr) {
+          console.warn('Counsellor list unavailable:', counsellorErr.message);
+          setCounsellors([]);
+        }
       }
     } catch (err) {
       const message = err.message || 'Failed to load users';

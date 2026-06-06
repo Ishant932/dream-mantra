@@ -13,6 +13,7 @@ import {
 import { listAllReports, upsertReport, deleteReport } from '../lib/reports.js';
 import { summarizeUserAssessments, isPendingUser } from '../lib/adminUsers.js';
 import { getData, saveData } from '../lib/database.js';
+import { handleListStaffUsers } from '../lib/listStaffUsers.js';
 
 function numId(value) {
   if (value == null || value === '') return null;
@@ -152,7 +153,7 @@ function filterReportsForRequest(req, reports) {
   return reports.filter((r) => ids.has(numId(r.user_id)));
 }
 
-export function registerStaffRoutes(router, { includeStats = true } = {}) {
+export function registerStaffRoutes(router, { includeStats = true, skipUsers = false } = {}) {
   if (includeStats) {
     router.get('/stats', (req, res) => {
       try {
@@ -185,27 +186,9 @@ export function registerStaffRoutes(router, { includeStats = true } = {}) {
     });
   }
 
-  router.get('/users', (req, res) => {
-    try {
-      const data = getData();
-      const counsellors = counsellorMap(data);
-      const rows = studentsForRequest(req, data);
-
-      const users = [];
-      for (const full of rows) {
-        try {
-          users.push(buildUserRow(full, counsellors));
-        } catch (userErr) {
-          console.error(`GET /users skipped user ${full?.id}:`, userErr);
-          users.push(fallbackUserRow(full, counsellors));
-        }
-      }
-      res.json({ users, total: users.length });
-    } catch (e) {
-      console.error('GET /users failed:', e);
-      res.status(200).json({ users: [], total: 0, warning: e.message || 'Failed to load users' });
-    }
-  });
+  if (!skipUsers) {
+    router.get('/users', handleListStaffUsers);
+  }
 
   router.get('/users/:id', (req, res) => {
     try {

@@ -8,7 +8,7 @@ services:
     plan: free
     region: singapore
     branch: main
-    buildCommand: npm install && npm install --prefix backend && npm install --include=dev --prefix client
+    buildCommand: bash scripts/render-build.sh
     startCommand: node backend/index.js
     healthCheckPath: /api/health
     autoDeploy: true

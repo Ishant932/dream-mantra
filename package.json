@@ -11,8 +11,8 @@
     "dev:frontend": "cd client && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../client && npm install",
     "build": "cd client && npm run build",
-    "start": "npm run build && cd backend && node index.js",
-    "serve": "cd backend && node index.js",
+    "start": "node backend/index.js",
+    "serve": "node backend/index.js",
     "open": "npm run build && cd backend && node index.js",
     "generate:careers": "node scripts/generateCareers.js",
     "generate:certs": "node scripts/download-all-certs.js"
