@@ -9,7 +9,7 @@ services:
     region: singapore
     branch: main
     buildCommand: npm install && npm install --prefix backend && npm install --include=dev --prefix client
-    startCommand: NODE_OPTIONS=--max-old-space-size=768 npm run build --prefix client && node backend/index.js
+    startCommand: node backend/index.js
     healthCheckPath: /api/health
     autoDeploy: true
     envVars:

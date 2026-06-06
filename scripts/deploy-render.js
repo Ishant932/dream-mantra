@@ -73,7 +73,7 @@ async function createService(ownerId) {
       healthCheckPath: '/api/health',
       envSpecificDetails: {
         buildCommand:
-          'npm install && npm install --prefix backend && npm install --include=dev --prefix client && npm run build --prefix client',
+          'npm install && npm install --prefix backend && npm install --include=dev --prefix client',
         startCommand: 'node backend/index.js',
       },
       envVars: [

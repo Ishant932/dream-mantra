@@ -17,9 +17,9 @@ jobs:
           HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
         run: |
           if [ -z "$HOOK" ]; then
-            echo "RENDER_DEPLOY_HOOK secret is not set."
-            echo "Add it from Render → dream-mantra → Settings → Deploy Hook"
-            echo "Or use Manual Deploy in the Render dashboard for this push."
+            echo "::warning::RENDER_DEPLOY_HOOK secret is not set — Render will NOT auto-deploy."
+            echo "Fix: Render Dashboard → dream-mantra → Settings → Deploy Hook → add URL as GitHub secret RENDER_DEPLOY_HOOK"
+            echo "Or: Manual Deploy → Deploy latest commit → Clear build cache"
             exit 0
           fi
           curl -fsS -X POST "$HOOK"

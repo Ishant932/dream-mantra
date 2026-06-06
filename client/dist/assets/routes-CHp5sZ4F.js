@@ -1,0 +1,1 @@
+const e={dmit:"/assessments/dmit",psychometric:"/assessments/psychometric","dmit-psychometric":"/assessments/dmit-psychometric","why-dreams-mantra":"/assessments/why-dreams-mantra"};function t(s){return s?e[s]||`/assessments/${s}`:"/assessments"}export{t as a};

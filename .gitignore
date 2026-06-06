@@ -14,10 +14,9 @@ backend/data/store.json
 server/data.json
 backend/uploads/
 
-# Build output
-dist/
-client/dist/
-build/
+# Build output (root only — client/dist is committed for Render deploys)
+/dist/
+/build/
 
 # Logs & OS
 *.log

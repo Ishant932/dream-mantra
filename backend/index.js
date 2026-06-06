@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import { getUploadsDir } from './lib/paymentProof.js';
 import { seedAdmin, seedCounsellors, initDatabase, flushDatabase, getDbStatus } from './db.js';
 import { disconnectMongo } from './lib/mongo.js';
+import { APP_VERSION } from './version.js';
 import { seedSampleSlots, getAvailableSlots } from './lib/slots.js';
 import { migrateLegacyPayments } from './lib/paymentService.js';
 import { loadCareersData } from './lib/careersData.js';
@@ -59,7 +60,7 @@ app.get('/api/health', (_, res) => {
   res.json({
     ok: true,
     ts: Date.now(),
-    version: process.env.RENDER_GIT_COMMIT?.slice(0, 7) || process.env.APP_VERSION || 'local',
+    version: process.env.RENDER_GIT_COMMIT?.slice(0, 7) || APP_VERSION,
     db: getDbStatus(),
   });
 });
