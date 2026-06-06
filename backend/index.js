@@ -56,7 +56,12 @@ app.use('/api/uploads/payment-proofs', express.static(getUploadsDir(), { maxAge:
 
 app.get('/api/health', (_, res) => {
   res.set('Cache-Control', 'no-store');
-  res.json({ ok: true, ts: Date.now(), db: getDbStatus() });
+  res.json({
+    ok: true,
+    ts: Date.now(),
+    version: process.env.RENDER_GIT_COMMIT?.slice(0, 7) || process.env.APP_VERSION || 'local',
+    db: getDbStatus(),
+  });
 });
 
 app.get('/api/warmup', (_, res) => {

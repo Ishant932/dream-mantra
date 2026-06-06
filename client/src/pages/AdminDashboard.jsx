@@ -293,7 +293,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'users' && (
-                <StaffUsersPanel api={adminApi} token={token} onError={setError} allowCounsellorAssign />
+                <StaffUsersPanel api={adminApi} token={token} allowCounsellorAssign />
               )}
 
               {tab === 'counsellors' && (
@@ -318,7 +318,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'reports' && (
-                <StaffReportsPanel api={adminApi} token={token} onError={setError} onNotice={setNotice} />
+                <StaffReportsPanel api={adminApi} token={token} onNotice={setNotice} />
               )}
 
               {tab === 'leads' && (

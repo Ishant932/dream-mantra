@@ -173,10 +173,11 @@ export function deleteReport(id) {
 
 export function getPaidAssessmentsWithUsers() {
   const data = getData();
+  const users = data.users || [];
   return (data.assessments || [])
-    .filter((a) => a.status === 'paid')
+    .filter((a) => a && a.status === 'paid')
     .map((a) => {
-      const user = data.users.find((u) => u.id === a.user_id);
+      const user = users.find((u) => Number(u.id) === Number(a.user_id));
       const report = (data.user_reports || []).find((r) => Number(r.assessment_id) === Number(a.id));
       return {
         id: a.id,

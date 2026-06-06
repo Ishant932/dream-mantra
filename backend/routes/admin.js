@@ -27,13 +27,18 @@ const router = Router();
 router.use(authRequired, adminRequired);
 
 router.get('/stats', (req, res) => {
-  const users = db.prepare('SELECT COUNT(*) as c FROM users WHERE role = ?').get('user').c;
-  const consultations = db.prepare('SELECT COUNT(*) as c FROM consultations').get().c;
-  const assessments = db.prepare('SELECT COUNT(*) as c FROM assessments').get().c;
-  const pending = db.prepare("SELECT COUNT(*) as c FROM consultations WHERE status = 'pending'").get().c;
-  const openSlots = getAvailableSlots({ from: new Date().toISOString() }).length;
-  const paidCount = getPaidAssessmentsWithUsers().length;
-  res.json({ users, consultations, assessments, pending, openSlots, paidCount });
+  try {
+    const users = db.prepare('SELECT COUNT(*) as c FROM users WHERE role = ?').get('user')?.c ?? 0;
+    const consultations = db.prepare('SELECT COUNT(*) as c FROM consultations').get()?.c ?? 0;
+    const assessments = db.prepare('SELECT COUNT(*) as c FROM assessments').get()?.c ?? 0;
+    const pending = db.prepare("SELECT COUNT(*) as c FROM consultations WHERE status = 'pending'").get()?.c ?? 0;
+    const openSlots = getAvailableSlots({ from: new Date().toISOString() }).length;
+    const paidCount = getPaidAssessmentsWithUsers().length;
+    res.json({ users, consultations, assessments, pending, openSlots, paidCount });
+  } catch (e) {
+    console.error('GET /admin/stats failed:', e);
+    res.status(500).json({ message: e.message || 'Failed to load stats' });
+  }
 });
 
 registerStaffRoutes(router, { includeStats: false });
@@ -73,7 +78,12 @@ router.delete('/counsellors/:id', async (req, res) => {
 });
 
 router.get('/analytics', (req, res) => {
-  res.json({ analytics: getPlatformAnalytics() });
+  try {
+    res.json({ analytics: getPlatformAnalytics() });
+  } catch (e) {
+    console.error('GET /admin/analytics failed:', e);
+    res.status(500).json({ message: e.message || 'Failed to load analytics' });
+  }
 });
 
 router.get('/payments', (req, res) => {

@@ -39,33 +39,44 @@ const defaultData = {
   },
 };
 
+function asArray(value) {
+  if (Array.isArray(value)) return value;
+  if (value && typeof value === 'object') return Object.values(value);
+  return [];
+}
+
 function normalizePayload(parsed) {
   if (!parsed || typeof parsed !== 'object') {
     return structuredClone(defaultData);
   }
 
-  parsed.users = parsed.users || [];
-  parsed.consultations = parsed.consultations || [];
-  parsed.assessments = parsed.assessments || [];
-  parsed.otpStore = parsed.otpStore || [];
-  parsed.contact_leads = parsed.contact_leads || [];
-  parsed.user_notifications = parsed.user_notifications || [];
-  parsed.payments = parsed.payments || [];
-  parsed.availability_slots = parsed.availability_slots || [];
-  parsed.user_reports = parsed.user_reports || [];
+  parsed.users = asArray(parsed.users);
+  parsed.consultations = asArray(parsed.consultations);
+  parsed.assessments = asArray(parsed.assessments);
+  parsed.otpStore = asArray(parsed.otpStore);
+  parsed.contact_leads = asArray(parsed.contact_leads);
+  parsed.user_notifications = asArray(parsed.user_notifications);
+  parsed.payments = asArray(parsed.payments);
+  parsed.availability_slots = asArray(parsed.availability_slots);
+  parsed.user_reports = asArray(parsed.user_reports);
   parsed.site_settings = {
     ...defaultData.site_settings,
-    ...parsed.site_settings,
+    ...(parsed.site_settings && typeof parsed.site_settings === 'object' ? parsed.site_settings : {}),
     community_links: {
       ...defaultData.site_settings.community_links,
       ...(parsed.site_settings?.community_links || {}),
     },
   };
-  parsed.nextId = { ...defaultData.nextId, ...parsed.nextId };
-  parsed.users = parsed.users.map((u) => ({
-    ...u,
-    profile: normalizeProfile(u.profile),
-  }));
+  parsed.nextId = { ...defaultData.nextId, ...(parsed.nextId && typeof parsed.nextId === 'object' ? parsed.nextId : {}) };
+  parsed.users = parsed.users
+    .filter((u) => u && typeof u === 'object')
+    .map((u) => {
+      try {
+        return { ...u, profile: normalizeProfile(u.profile) };
+      } catch {
+        return { ...u, profile: defaultProfile() };
+      }
+    });
   return parsed;
 }
 
@@ -196,6 +207,7 @@ export function getData() {
     || !Array.isArray(data.users)
     || !Array.isArray(data.consultations)
     || !Array.isArray(data.assessments)
+    || !Array.isArray(data.payments)
   ) {
     data = normalizePayload(data || {});
   }

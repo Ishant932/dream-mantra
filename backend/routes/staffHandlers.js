@@ -203,7 +203,7 @@ export function registerStaffRoutes(router, { includeStats = true } = {}) {
       res.json({ users, total: users.length });
     } catch (e) {
       console.error('GET /users failed:', e);
-      res.status(500).json({ message: e.message || 'Failed to load users' });
+      res.status(200).json({ users: [], total: 0, warning: e.message || 'Failed to load users' });
     }
   });
 
