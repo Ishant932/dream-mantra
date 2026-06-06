@@ -129,12 +129,6 @@ export default function Login() {
                   <p className="text-[var(--text-secondary)] text-sm mt-2">{t('auth.loginSubtitle')}</p>
                 </div>
 
-                {notice && (
-                  <div className="mb-4 p-3 rounded-xl bg-emerald-50 text-emerald-800 text-sm border border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-200 dark:border-emerald-800/50">
-                    {notice}
-                  </div>
-                )}
-
                 {error && (
                   <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200 dark:bg-red-950/30 dark:text-red-200 dark:border-red-800/50">{error}</div>
                 )}
