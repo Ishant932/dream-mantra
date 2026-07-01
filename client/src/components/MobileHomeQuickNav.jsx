@@ -23,10 +23,11 @@ export default function MobileHomeQuickNav() {
     <div className="mobile-home-quick" aria-label="Jump to section">
       <p className="mobile-home-quick__label">{t('mobileNav.jumpLabel')}</p>
       <div className="mobile-home-quick__track">
-        {chips.map((chip) => {
+        {chips.map((chip, i) => {
+          const chipStyle = { '--chip-i': i };
           if (chip.type === 'link') {
             return (
-              <Link key={chip.to} to={chip.to} className="mobile-home-quick__chip">
+              <Link key={chip.to} to={chip.to} className="mobile-home-quick__chip" style={chipStyle}>
                 {chip.label}
               </Link>
             );
@@ -36,6 +37,7 @@ export default function MobileHomeQuickNav() {
               key={chip.id}
               type="button"
               className="mobile-home-quick__chip"
+              style={chipStyle}
               onClick={() => scrollToId(chip.id)}
             >
               {chip.label}

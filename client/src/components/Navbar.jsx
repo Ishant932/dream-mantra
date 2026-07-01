@@ -40,7 +40,7 @@ function MegaMenu({ item }) {
               ? 'text-white shadow-lg animate-[gradientShift_5s_ease_infinite] bg-[length:200%_auto]'
               : 'nav-link'
           }`}
-          style={isCrp ? { background: 'linear-gradient(135deg, #FF6B4A, #E8512E)', boxShadow: '0 8px 24px rgba(255,107,74,0.35)' } : undefined}
+          style={isCrp ? { background: 'linear-gradient(135deg, #FF6B4A, #E8512E)', boxShadow: '0 8px 24px rgba(255, 107, 74, 0.35)' } : undefined}
         >
           {isCrp && (
             <motion.span
@@ -92,17 +92,75 @@ function MegaMenu({ item }) {
   );
 }
 
+function MobileNavLinks({ item, onClose, linkIndexStart = 0 }) {
+  let idx = linkIndexStart;
+  return (
+    <div className="nav-mobile-section">
+      <Link
+        to={item.to}
+        onClick={onClose}
+        className={`nav-mobile-link nav-mobile-link--title ${item.highlight ? 'text-gold' : 'text-brand-700'}`}
+        style={{ '--i': idx++ }}
+      >
+        {item.label}
+      </Link>
+      {item.mega?.map((col) => (
+        <div key={col.title} className="mb-2">
+          <p className="text-xs font-semibold text-royalOrange pl-1 mb-1">{col.title}</p>
+          {col.groups
+            ? col.groups.map((g) => (
+                <div key={g.label} className="mb-2 pl-1">
+                  <p className="text-xs font-bold text-sand-700 pl-2 mb-1">{g.icon} {g.label}</p>
+                  {g.links.map((l) => {
+                    const i = idx++;
+                    return (
+                      <Link
+                        key={l.to + l.label}
+                        to={l.to}
+                        onClick={onClose}
+                        className="nav-mobile-link"
+                        style={{ '--i': i }}
+                      >
+                        {l.icon ? `${l.icon} ` : ''}{l.label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              ))
+            : col.links.map((l) => {
+                const i = idx++;
+                return (
+                  <Link
+                    key={l.to + l.label}
+                    to={l.to}
+                    onClick={onClose}
+                    className="nav-mobile-link"
+                    style={{ '--i': i }}
+                  >
+                    {l.icon ? `${l.icon} ` : ''}{l.label}
+                  </Link>
+                );
+              })}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function Navbar({ scrolled = false }) {
-  const { t, lang, toggle } = useLang();
+  const { t, lang, toggle, d } = useLang();
   const { user, logout, isAdmin, isCounsellor } = useAuth();
   const dashboardPath = isAdmin ? '/admin' : isCounsellor ? '/counsellor' : '/dashboard';
   const dashboardLabel = isAdmin ? t('nav.admin') : isCounsellor ? 'Counsellor' : t('nav.dashboard');
   const navigate = useNavigate();
   const location = useLocation();
   const [mobile, setMobile] = useState(false);
-  const { counsellingMega, crpMega } = useSiteNav();
+  const { counsellingMega, crpMega, quickLinks } = useSiteNav();
+  const navQuickMenu = d('navQuickMenu');
   const mainNav = buildMainNav(t, counsellingMega, crpMega);
   const navLite = isMobilePerf();
+
+  const closeMobile = () => setMobile(false);
 
   const handleLogout = () => {
     logout();
@@ -131,6 +189,18 @@ export default function Navbar({ scrolled = false }) {
     setMobile(false);
   }, [location.pathname]);
 
+  const drawerVariants = navLite
+    ? {
+        hidden: { x: '100%' },
+        visible: { x: 0, transition: { type: 'tween', duration: 0.28, ease: [0.22, 1, 0.36, 1] } },
+        exit: { x: '100%', transition: { duration: 0.22 } },
+      }
+    : {
+        hidden: { x: '100%', opacity: 0.6 },
+        visible: { x: 0, opacity: 1, transition: { type: 'spring', stiffness: 340, damping: 32 } },
+        exit: { x: '100%', opacity: 0, transition: { duration: 0.2 } },
+      };
+
   return (
     <header
       className={`nav relative border-b transition-all duration-300 ${scrolled ? 'scrolled nav--scrolled-anim' : ''}`}
@@ -148,7 +218,9 @@ export default function Navbar({ scrolled = false }) {
 
           <div className="nav-header-actions flex items-center gap-1 sm:gap-2 ml-auto min-w-0">
             <div className="nav-header-actions__tools flex items-center gap-1 shrink-0">
-              <NavQuickMenu />
+              <div className="hidden xl:block nav-quick-menu-wrap">
+                <NavQuickMenu />
+              </div>
               <ThemeToggle compact />
               {!navLite && (
                 <motion.button
@@ -166,7 +238,7 @@ export default function Navbar({ scrolled = false }) {
                 </button>
               )}
             </div>
-            <div className="nav-header-actions__auth flex items-center gap-1 shrink-0">
+            <div className="nav-header-actions__auth hidden xl:flex items-center gap-1 shrink-0">
               {user ? (
                 <>
                   <Link
@@ -197,95 +269,116 @@ export default function Navbar({ scrolled = false }) {
             </div>
             <button
               type="button"
-              className="xl:hidden p-2 min-w-[44px] min-h-[44px] flex items-center justify-center shrink-0"
+              className="nav-mobile-toggle xl:hidden"
               onClick={() => setMobile(!mobile)}
-              aria-label="Menu"
+              aria-label={mobile ? 'Close menu' : 'Open menu'}
               aria-expanded={mobile}
             >
-              {mobile ? <X /> : <Menu />}
+              {mobile ? <X className="w-6 h-6" strokeWidth={2.25} /> : <Menu className="w-6 h-6" strokeWidth={2.25} />}
             </button>
           </div>
         </div>
       </div>
 
-      {mobile && (
-          <div className="xl:hidden border-t overflow-hidden bg-[var(--bg-elevated)] dark:bg-brand-900 max-h-[calc(100dvh-var(--site-header-h)-var(--safe-top)-1rem)] nav-mobile-drawer">
-            <div className="nav-mobile-menu p-4 overflow-y-auto overscroll-contain space-y-4 pb-safe">
-              <div className="nav-mobile-auth">
-                {user ? (
-                  <div className="flex flex-col gap-2">
-                    <Link
-                      to={dashboardPath}
-                      onClick={() => setMobile(false)}
-                      className="btn-primary w-full text-center !py-3"
-                    >
-                      {dashboardLabel}
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="w-full py-3 text-sm font-semibold text-sand-500 hover:text-royalOrange rounded-xl border border-[var(--border-subtle)]"
-                    >
-                      {t('nav.logout')}
-                    </button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-2">
-                    <Link to="/login" onClick={() => setMobile(false)} className="btn-outline text-center !py-3">
-                      {t('nav.login')}
-                    </Link>
-                    <Link to="/signup" onClick={() => setMobile(false)} className="btn-primary text-center !py-3">
-                      {t('nav.signup')}
-                    </Link>
-                  </div>
-                )}
-              </div>
+      <AnimatePresence>
+        {mobile && (
+          <>
+            <motion.button
+              type="button"
+              className="nav-mobile-backdrop xl:hidden"
+              aria-label="Close menu"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={closeMobile}
+            />
+            <motion.aside
+              className="nav-mobile-drawer-panel xl:hidden"
+              variants={drawerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              aria-label="Mobile navigation"
+            >
+              <div className="nav-mobile-menu overflow-y-auto overscroll-contain">
+                <div className="nav-mobile-auth">
+                  {user ? (
+                    <div className="flex flex-col gap-2">
+                      <Link
+                        to={dashboardPath}
+                        onClick={closeMobile}
+                        className="btn-primary w-full text-center !py-3"
+                      >
+                        {dashboardLabel}
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="w-full py-3 text-sm font-semibold text-sand-500 hover:text-royalOrange rounded-xl border border-[var(--border-subtle)]"
+                      >
+                        {t('nav.logout')}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-2">
+                      <Link to="/login" onClick={closeMobile} className="btn-outline text-center !py-3">
+                        {t('nav.login')}
+                      </Link>
+                      <Link to="/signup" onClick={closeMobile} className="btn-primary text-center !py-3">
+                        {t('nav.signup')}
+                      </Link>
+                    </div>
+                  )}
+                </div>
 
-              {mainNav.map((item) => (
-                <div key={item.label} className="nav-mobile-section">
-                  <Link
-                    to={item.to}
-                    onClick={() => setMobile(false)}
-                    className={`font-bold block mb-2 px-1 ${item.highlight ? 'text-gold' : 'text-brand-700'}`}
-                  >
-                    {item.label}
-                  </Link>
-                  {item.mega?.map((col) => (
+                {mainNav.map((item) => (
+                  <MobileNavLinks key={item.label} item={item} onClose={closeMobile} />
+                ))}
+
+                <div className="nav-mobile-section">
+                  <p className="nav-mobile-link nav-mobile-link--title text-brand-700" style={{ '--i': 20 }}>
+                    {t('nav.explore')}
+                  </p>
+                  {navQuickMenu.columns.map((col) => (
                     <div key={col.title} className="mb-2">
                       <p className="text-xs font-semibold text-royalOrange pl-1 mb-1">{col.title}</p>
-                      {col.groups
-                        ? col.groups.map((g) => (
-                            <div key={g.label} className="mb-2 pl-1">
-                              <p className="text-xs font-bold text-sand-700 pl-2 mb-1">{g.icon} {g.label}</p>
-                              {g.links.map((l) => (
-                                <Link
-                                  key={l.to + l.label}
-                                  to={l.to}
-                                  onClick={() => setMobile(false)}
-                                  className="block py-1.5 pl-4 text-sm text-sand-600 rounded-lg hover:bg-lime/10"
-                                >
-                                  {l.icon ? `${l.icon} ` : ''}{l.label}
-                                </Link>
-                              ))}
-                            </div>
-                          ))
-                        : col.links.map((l) => (
-                            <Link
-                              key={l.to + l.label}
-                              to={l.to}
-                              onClick={() => setMobile(false)}
-                              className="block py-1.5 pl-4 text-sm text-sand-600 rounded-lg hover:bg-lime/10"
-                            >
-                              {l.icon ? `${l.icon} ` : ''}{l.label}
-                            </Link>
-                          ))}
+                      {col.links.map((link, i) => (
+                        <Link
+                          key={link.to}
+                          to={link.to}
+                          onClick={closeMobile}
+                          className="nav-mobile-link"
+                          style={{ '--i': 22 + i }}
+                        >
+                          {link.icon ? `${link.icon} ` : ''}{link.label}
+                        </Link>
+                      ))}
                     </div>
                   ))}
                 </div>
-              ))}
-            </div>
-          </div>
-      )}
+
+                {quickLinks?.links?.length > 0 && (
+                  <div className="nav-mobile-section nav-mobile-section--quick">
+                    <p className="text-xs font-semibold text-royalOrange pl-1 mb-1">{quickLinks.title}</p>
+                    {quickLinks.links.map((link, i) => (
+                      <Link
+                        key={link.to}
+                        to={link.to}
+                        onClick={closeMobile}
+                        className="nav-mobile-link"
+                        style={{ '--i': 30 + i }}
+                      >
+                        {link.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

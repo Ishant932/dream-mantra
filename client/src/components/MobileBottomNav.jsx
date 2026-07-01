@@ -28,25 +28,26 @@ export default function MobileBottomNav() {
   }
 
   return (
-    <nav className="mobile-bottom-nav" aria-label="Quick navigation">
-      {ITEMS.map((item) => {
+    <nav className="mobile-bottom-nav mobile-bottom-nav--animated" aria-label="Quick navigation">
+      {ITEMS.map((item, i) => {
         const Icon = item.icon;
         const active = !item.external && item.match(path);
         const cls = `mobile-bottom-nav__item${active ? ' mobile-bottom-nav__item--active' : ''}`;
         const label = t(item.labelKey);
+        const style = { '--nav-i': i };
 
         if (item.external) {
           return (
-            <a key={item.href} href={item.href} className={cls}>
-              <Icon className="w-5 h-5 shrink-0" aria-hidden />
+            <a key={item.href} href={item.href} className={cls} style={style}>
+              <Icon className="w-5 h-5 shrink-0 mobile-bottom-nav__icon" aria-hidden />
               <span>{label}</span>
             </a>
           );
         }
 
         return (
-          <Link key={item.to} to={item.to} className={cls}>
-            <Icon className="w-5 h-5 shrink-0" aria-hidden />
+          <Link key={item.to} to={item.to} className={cls} style={style}>
+            <Icon className="w-5 h-5 shrink-0 mobile-bottom-nav__icon" aria-hidden />
             <span>{label}</span>
           </Link>
         );

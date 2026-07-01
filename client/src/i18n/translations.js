@@ -19,6 +19,7 @@ export const translations = {
       dashboard: 'Dashboard',
       logout: 'Logout',
       admin: 'Admin',
+      explore: 'Explore',
     },
     promo: {
       crp: 'AI Career Launchpad',
@@ -172,6 +173,7 @@ export const translations = {
       dashboard: 'डैशबोर्ड',
       logout: 'लॉगआउट',
       admin: 'एडमिन',
+      explore: 'एक्सप्लोर',
     },
     promo: {
       crp: 'AI Career Launchpad',

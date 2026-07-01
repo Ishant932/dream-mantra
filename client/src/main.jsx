@@ -9,7 +9,7 @@ import './index.css';
 function applyPerformanceHints() {
   const root = document.documentElement;
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-  const narrow = window.matchMedia('(max-width: 1024px)').matches;
+  const narrow = window.matchMedia('(max-width: 767px)').matches;
   if (coarse || narrow) root.classList.add('is-mobile-perf');
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     root.classList.add('is-mobile-perf');
