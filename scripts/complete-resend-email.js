@@ -171,7 +171,12 @@ async function main() {
   const hasGodaddy = process.env.GODADDY_API_KEY?.trim() && process.env.GODADDY_API_SECRET?.trim();
   if (hasGodaddy) {
     console.log('Adding DNS via GoDaddy API…\n');
-    await runDnsSetup();
+    try {
+      await runDnsSetup();
+    } catch (err) {
+      console.warn('GoDaddy API failed:', err.message);
+      console.warn('Continue with Resend → Domains → Auto Configure, or add records from RESEND_DNS.md\n');
+    }
   } else {
     console.log('No GoDaddy API keys — add DNS manually or use Resend dashboard:');
     console.log('  https://resend.com/domains → dreammantra.in → Auto Configure (GoDaddy)\n');
