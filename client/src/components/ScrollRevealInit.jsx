@@ -18,12 +18,14 @@ function shouldSkip(el) {
   if (!el) return true;
   if (el.classList.contains('no-reveal')) return true;
   if (el.classList.contains('page-hero')) return true;
+  if (el.classList.contains('hero-section')) return true;
+  if (el.classList.contains('home-trust-strip')) return true;
   if (el.classList.contains('home-section')) return true;
   if (el.classList.contains('stats-banner')) return true;
   if (el.classList.contains('testimonial-section')) return true;
   if (el.classList.contains('cert-showcase-section')) return true;
   if (el.classList.contains('marquee-strip-root')) return true;
-  if (el.closest('.no-reveal, .subtab-root, .page-hero, .dash-root, .home-section, .marquee-strip-root, .testimonial-section, .cert-showcase-section')) return true;
+  if (el.closest('.no-reveal, .subtab-root, .page-hero, .hero-section, .home-trust-strip, .dash-root, .home-section, .marquee-strip-root, .testimonial-section, .cert-showcase-section')) return true;
   if (el.querySelector('.subtab-root')) return true;
   return false;
 }

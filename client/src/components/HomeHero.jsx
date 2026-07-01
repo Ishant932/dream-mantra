@@ -24,7 +24,7 @@ export default function HomeHero() {
 
   return (
     <>
-      <section className={`relative min-h-0 sm:min-h-[88vh] flex items-center overflow-hidden pt-4 sm:pt-10 pb-6 sm:pb-16 hero-section${mobile ? ' hero-section--mobile' : ''}`}>
+      <section className={`no-reveal relative min-h-0 sm:min-h-[88vh] flex items-center overflow-hidden pt-4 sm:pt-10 pb-6 sm:pb-16 hero-section${mobile ? ' hero-section--mobile hero-section--mobile-animated' : ''}`}>
         <div className="relative max-w-7xl mx-auto px-4 py-4 sm:py-16 w-full">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             <div>
@@ -109,10 +109,11 @@ export default function HomeHero() {
               </div>
 
               <div className="hero-trust flex flex-wrap gap-2 sm:gap-4 mt-6 sm:mt-10">
-                {badges.map(({ icon: Icon, label }) => (
+                {badges.map(({ icon: Icon, label }, i) => (
                   <span
                     key={label}
                     className="card flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-2 rounded-full"
+                    style={mobile ? { '--badge-i': i } : undefined}
                   >
                     <span className="card-icon-wrap w-7 h-7 rounded-lg flex items-center justify-center">
                       <Icon className="w-3.5 h-3.5" />

@@ -13417,8 +13417,6 @@ html.is-mobile-perf .home-lazy-placeholder {
 @media (max-width: 767px) {
   .home-section {
     padding: 1.65rem 0;
-    content-visibility: auto;
-    contain-intrinsic-size: 420px;
   }
   .home-section--after-trust {
     padding-top: 1.25rem !important;
@@ -14248,11 +14246,65 @@ html.aurora .nav-mobile-drawer-panel {
   will-change: opacity, transform;
 }
 
-html.is-mobile-perf main > section,
-html.is-mobile-perf .home-section,
-html.is-mobile-perf .footer-pro {
+/* Hero + trust strip must always paint on mobile (never hidden by reveal/c-v) */
+html.is-mobile-perf .hero-section,
+html.is-mobile-perf .home-trust-strip {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  content-visibility: visible !important;
+  contain-intrinsic-size: auto !important;
+}
+html.is-mobile-perf .hero-section.reveal,
+html.is-mobile-perf .home-trust-strip.reveal {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.hero-section--mobile-animated .hero-h1 {
+  animation: mobileHeroIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+.hero-section--mobile-animated .hero-visual {
+  animation: mobileHeroImgIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0s both;
+}
+.hero-section--mobile-animated .hero-sub {
+  animation: mobileHeroIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.15s both;
+}
+.hero-section--mobile-animated .hero-btns {
+  animation: mobileHeroIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
+}
+.hero-section--mobile-animated .hero-trust .card {
+  animation: mobileHeroIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.28s + var(--badge-i, 0) * 0.06s);
+}
+.home-trust-strip--animated .home-trust-strip__tagline {
+  animation: mobileHeroIn 0.45s ease 0.05s both;
+}
+.home-trust-strip--animated .home-trust-chip {
+  animation: mobileHeroIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.1s + var(--trust-i, 0) * 0.05s);
+}
+@keyframes mobileHeroIn {
+  from { opacity: 0; transform: translate3d(0, 16px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes mobileHeroImgIn {
+  from { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Below-fold sections only — avoid blank hero */
+html.is-mobile-perf .home-section {
   content-visibility: auto;
-  contain-intrinsic-size: auto 360px;
+  contain-intrinsic-size: auto 320px;
+}
+html.is-mobile-perf .home-module-card.visible,
+html.is-mobile-perf .reveal-card.home-module-card.visible {
+  animation: mobileCardPop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes mobileCardPop {
+  from { opacity: 0; transform: translate3d(0, 12px, 0) scale(0.98); }
+  to { opacity: 1; transform: none; }
 }
 
 @media (max-width: 767px) {

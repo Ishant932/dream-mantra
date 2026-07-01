@@ -52,6 +52,7 @@ function TrustItem({ item, index }) {
     <Box
       {...motionProps}
       className={`home-trust-chip ${isNumber ? 'home-trust-chip--number' : 'home-trust-chip--badge'}`}
+      style={mobile ? { '--trust-i': index } : undefined}
     >
       {item.icon && <span className="home-trust-chip__icon" aria-hidden>{item.icon}</span>}
       {isNumber ? (
@@ -78,7 +79,7 @@ export default function HomeTrustBar() {
   };
 
   return (
-    <section className="home-trust-strip" aria-label="Trust indicators">
+    <section className="no-reveal home-trust-strip home-trust-strip--animated" aria-label="Trust indicators">
       <div className="max-w-7xl mx-auto px-4">
         <Header
           {...headerMotion}

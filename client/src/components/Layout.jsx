@@ -9,7 +9,7 @@ import ScrollRevealInit from './ScrollRevealInit';
 import ScrollToTop from './ScrollToTop';
 import HashScrollHandler from './HashScrollHandler';
 import ErrorBoundary from './ErrorBoundary';
-import { isMobilePerf, isPhoneViewport, runWhenIdle } from '../utils/mobilePerf';
+import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
 import MobileBottomNav from './MobileBottomNav';
 
 const Chatbot = lazy(() => import('./Chatbot'));
@@ -39,11 +39,7 @@ export default function Layout() {
   const [enableScrollReveal, setEnableScrollReveal] = useState(false);
 
   useEffect(() => {
-    if (isMobilePerf()) {
-      runWhenIdle(() => setEnableScrollReveal(true), 1200);
-    } else {
-      setEnableScrollReveal(true);
-    }
+    setEnableScrollReveal(true);
   }, []);
 
   useEffect(() => {
