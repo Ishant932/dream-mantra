@@ -12,33 +12,39 @@ const VARIANTS = {
   orange: 'home-section home-section--orange',
 };
 
+const enterLite = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-40px' },
+  transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+};
+
+const enterFull = {
+  initial: { opacity: 0, y: 32, scale: 0.99 },
+  whileInView: { opacity: 1, y: 0, scale: 1 },
+  viewport: { once: true, margin: '-60px' },
+  transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1] },
+};
+
 export default function HomeSection({ variant = 'base', className = '', children, id }) {
   const cls = `${VARIANTS[variant] || VARIANTS.base} ${className}`.trim();
   const lite = isMobilePerf();
-
-  if (lite) {
-    return (
-      <section id={id} className={cls}>
-        <div className="home-section__inner">{children}</div>
-      </section>
-    );
-  }
+  const motionProps = lite ? enterLite : enterFull;
 
   return (
     <motion.section
       id={id}
-      initial={{ opacity: 0, y: 36, scale: 0.985 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className={cls}
+      {...motionProps}
+      className={`${cls}${lite ? ' home-section--mobile-enter' : ''}`}
     >
-      <div className="home-section__ambient" aria-hidden="true">
-        <span className="home-section__orb home-section__orb--1" />
-        <span className="home-section__orb home-section__orb--2" />
-        <span className="home-section__spark home-section__spark--1" />
-        <span className="home-section__spark home-section__spark--2" />
-      </div>
+      {!lite && (
+        <div className="home-section__ambient" aria-hidden="true">
+          <span className="home-section__orb home-section__orb--1" />
+          <span className="home-section__orb home-section__orb--2" />
+          <span className="home-section__spark home-section__spark--1" />
+          <span className="home-section__spark home-section__spark--2" />
+        </div>
+      )}
       <div className="home-section__inner">{children}</div>
     </motion.section>
   );

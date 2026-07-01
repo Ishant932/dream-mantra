@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 /** Renders children only when near the viewport — faster initial paint on mobile. */
-export default function LazyMount({ children, rootMargin = '280px 0px', minHeight = 80, fallback = null }) {
+export default function LazyMount({ children, rootMargin = '420px 0px', minHeight = 80, fallback = null }) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 

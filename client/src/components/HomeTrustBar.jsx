@@ -39,17 +39,23 @@ function AnimatedNum({ value, suffix = '' }) {
 function TrustItem({ item, index }) {
   const isNumber = item.type === 'number';
   const mobile = isMobilePerf();
-  const Box = mobile ? 'div' : motion.div;
-  const motionProps = mobile ? {} : {
-    initial: { opacity: 0, y: 20, scale: 0.94 },
-    whileInView: { opacity: 1, y: 0, scale: 1 },
-    viewport: { once: true },
-    transition: { delay: index * 0.04, duration: 0.45, type: 'spring', stiffness: 280 },
-    whileHover: { y: -4 },
-  };
+  const motionProps = mobile
+    ? {
+        initial: { opacity: 0, y: 14, scale: 0.97 },
+        whileInView: { opacity: 1, y: 0, scale: 1 },
+        viewport: { once: true },
+        transition: { delay: index * 0.05, duration: 0.38, ease: [0.22, 1, 0.36, 1] },
+      }
+    : {
+        initial: { opacity: 0, y: 20, scale: 0.94 },
+        whileInView: { opacity: 1, y: 0, scale: 1 },
+        viewport: { once: true },
+        transition: { delay: index * 0.04, duration: 0.45, type: 'spring', stiffness: 280 },
+        whileHover: { y: -4 },
+      };
 
   return (
-    <Box
+    <motion.div
       {...motionProps}
       className={`home-trust-chip ${isNumber ? 'home-trust-chip--number' : 'home-trust-chip--badge'}`}
       style={mobile ? { '--trust-i': index } : undefined}
@@ -63,7 +69,7 @@ function TrustItem({ item, index }) {
       ) : (
         <p className="home-trust-chip__badge-text">{item.label}</p>
       )}
-    </Box>
+    </motion.div>
   );
 }
 
@@ -71,23 +77,20 @@ export default function HomeTrustBar() {
   const { d } = useLang();
   const copy = d('home.trustBar');
   const mobile = isMobilePerf();
-  const Header = mobile ? 'div' : motion.div;
-  const headerMotion = mobile ? {} : {
-    initial: { opacity: 0, y: 16 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-  };
+  const headerMotion = mobile
+    ? { initial: { opacity: 0, y: 12 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true }, transition: { duration: 0.38 } }
+    : { initial: { opacity: 0, y: 16 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true } };
 
   return (
     <section className="no-reveal home-trust-strip home-trust-strip--animated" aria-label="Trust indicators">
       <div className="max-w-7xl mx-auto px-4">
-        <Header
+        <motion.div
           {...headerMotion}
           className="flex flex-wrap items-center justify-center gap-2 mb-4 sm:mb-6"
         >
           <Shield className="w-5 h-5 text-amber-600 shrink-0" />
           <p className="home-trust-strip__tagline text-sm sm:text-base">{copy.tagline}</p>
-        </Header>
+        </motion.div>
 
         <div className="home-trust-strip__grid">
           {copy.items.map((item, i) => (

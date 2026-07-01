@@ -25,7 +25,7 @@ function shouldSkip(el) {
   if (el.classList.contains('testimonial-section')) return true;
   if (el.classList.contains('cert-showcase-section')) return true;
   if (el.classList.contains('marquee-strip-root')) return true;
-  if (el.closest('.no-reveal, .subtab-root, .page-hero, .hero-section, .home-trust-strip, .dash-root, .home-section, .marquee-strip-root, .testimonial-section, .cert-showcase-section')) return true;
+  if (el.closest('.no-reveal, .subtab-root, .page-hero, .hero-section, .home-trust-strip, .dash-root, .marquee-strip-root, .testimonial-section, .cert-showcase-section')) return true;
   if (el.querySelector('.subtab-root')) return true;
   return false;
 }
@@ -146,11 +146,12 @@ export default function ScrollRevealInit() {
     run();
     const t1 = setTimeout(run, 120);
 
+    const fallbackMs = document.documentElement.classList.contains('is-mobile-perf') ? 900 : 1400;
     const fallback = setTimeout(() => {
       REVEAL_CLASSES.forEach((cls) => {
         document.querySelectorAll(`.${cls}:not(.visible)`).forEach((el) => el.classList.add('visible'));
       });
-    }, 1800);
+    }, fallbackMs);
 
     return () => {
       cancelled = true;

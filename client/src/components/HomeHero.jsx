@@ -7,6 +7,12 @@ import { isMobilePerf } from '../utils/mobilePerf';
 
 const badgeIcons = [Brain, Award, Shield];
 
+const fadeLite = {
+  initial: { opacity: 0, y: 18 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+};
+
 export default function HomeHero() {
   const { t, d } = useLang();
   const mobile = isMobilePerf();
@@ -15,12 +21,13 @@ export default function HomeHero() {
     label,
   }));
 
-  const TextWrap = mobile ? 'div' : motion.div;
-  const textMotion = mobile ? {} : {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.55, delay: 0.16 },
-  };
+  const textMotion = mobile
+    ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.14 } }
+    : {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.55, delay: 0.16 },
+      };
 
   return (
     <>
@@ -28,7 +35,16 @@ export default function HomeHero() {
         <div className="relative max-w-7xl mx-auto px-4 py-4 sm:py-16 w-full">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             <div>
-              {!mobile && (
+              {mobile ? (
+                <motion.span
+                  {...fadeLite}
+                  className="hero-tag inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold mb-4 border section-alt mx-auto sm:mx-0"
+                  style={{ borderColor: 'var(--gold-border)', color: 'var(--text-primary)' }}
+                >
+                  <span className="live-dot" aria-hidden />
+                  {t('hero.tag')}
+                </motion.span>
+              ) : (
                 <motion.span
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -42,10 +58,14 @@ export default function HomeHero() {
               )}
 
               {mobile ? (
-                <h1 className="hero-h1 hero-title font-accent mb-3">
+                <motion.h1
+                  {...fadeLite}
+                  transition={{ ...fadeLite.transition, delay: 0.06 }}
+                  className="hero-h1 hero-title font-accent mb-3"
+                >
                   <span className="block hero-brand-name">{t('hero.titleLine1')}</span>
                   <span className="block hero-service-line mt-1">{t('hero.titleHighlight')}</span>
-                </h1>
+                </motion.h1>
               ) : (
                 <motion.h1
                   initial={{ opacity: 0, y: 24 }}
@@ -81,13 +101,13 @@ export default function HomeHero() {
                 </>
               )}
 
-              <TextWrap
+              <motion.p
                 {...textMotion}
                 className="hero-sub text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 max-w-xl leading-relaxed"
                 style={{ color: 'var(--text-secondary)' }}
               >
                 {mobile ? t('hero.problemHook') : t('hero.subtitle')}
-              </TextWrap>
+              </motion.p>
 
               {!mobile && (
                 <motion.p
@@ -101,14 +121,20 @@ export default function HomeHero() {
                 </motion.p>
               )}
 
-              <div className="hero-btns flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+              <motion.div
+                {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.2 } } : {})}
+                className="hero-btns flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4"
+              >
                 <Link to="/signup" className="btn-primary px-6 sm:px-8 py-3.5 sm:py-4 w-full sm:w-auto justify-center">
                   {t('hero.cta1')} <ArrowRight className="w-5 h-5" />
                 </Link>
                 <Link to="/counselling?tab=book" className="btn-outline w-full sm:w-auto justify-center">{t('mobileNav.book')}</Link>
-              </div>
+              </motion.div>
 
-              <div className="hero-trust flex flex-wrap gap-2 sm:gap-4 mt-6 sm:mt-10">
+              <motion.div
+                {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.26 } } : {})}
+                className="hero-trust flex flex-wrap gap-2 sm:gap-4 mt-6 sm:mt-10"
+              >
                 {badges.map(({ icon: Icon, label }, i) => (
                   <span
                     key={label}
@@ -121,10 +147,13 @@ export default function HomeHero() {
                     {label}
                   </span>
                 ))}
-              </div>
+              </motion.div>
             </div>
 
-            <div className="hero-visual relative">
+            <motion.div
+              {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.02 } } : {})}
+              className="hero-visual relative"
+            >
               <img
                 src={IMAGES.hero}
                 alt="Career counselling"
@@ -132,12 +161,12 @@ export default function HomeHero() {
                 style={{ borderColor: 'var(--gold-border)' }}
                 loading={mobile ? 'lazy' : 'eager'}
                 decoding="async"
+                fetchPriority={mobile ? 'auto' : 'high'}
               />
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
     </>
   );
 }
-

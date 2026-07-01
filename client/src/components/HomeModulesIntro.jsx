@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { paymentsApi } from '../api';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 36 },
@@ -11,6 +12,15 @@ const cardVariants = {
     opacity: 1,
     y: 0,
     transition: { delay: i * 0.12, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
+
+const cardVariantsLite = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.07, duration: 0.38, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
@@ -28,6 +38,11 @@ export default function HomeModulesIntro() {
   const { d } = useLang();
   const copy = d('home.modulesIntro');
   const [catalog, setCatalog] = useState([]);
+  const mobile = isMobilePerf();
+  const variants = mobile ? cardVariantsLite : cardVariants;
+  const headerMotion = mobile
+    ? { initial: { opacity: 0, y: 18 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-40px' }, transition: { duration: 0.4 } }
+    : { initial: { opacity: 0, y: 28 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-60px' }, transition: { duration: 0.65 } };
 
   useEffect(() => {
     paymentsApi.products()
@@ -67,10 +82,7 @@ export default function HomeModulesIntro() {
     <div className="home-modules-intro relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 relative">
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.65 }}
+          {...headerMotion}
           className="text-center max-w-3xl mx-auto mb-14"
         >
           <h2 className="home-headline mb-4">
@@ -84,22 +96,26 @@ export default function HomeModulesIntro() {
             <motion.div
               key={mod.slug}
               custom={i}
-              variants={cardVariants}
+              variants={variants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: '-40px' }}
-              whileHover={{ y: -10, scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={mobile ? undefined : { y: -10, scale: 1.02 }}
+              whileTap={mobile ? { scale: 0.98 } : { scale: 0.98 }}
               className="home-module-card group"
             >
               <div className="home-module-card__glow" aria-hidden />
-              <motion.div
-                className="home-module-card__icon"
-                whileHover={{ rotate: [0, -8, 8, 0], scale: 1.12 }}
-                transition={{ duration: 0.5 }}
-              >
-                {mod.icon}
-              </motion.div>
+              {mobile ? (
+                <div className="home-module-card__icon">{mod.icon}</div>
+              ) : (
+                <motion.div
+                  className="home-module-card__icon"
+                  whileHover={{ rotate: [0, -8, 8, 0], scale: 1.12 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {mod.icon}
+                </motion.div>
+              )}
               <h3 className="home-module-card__title">{mod.title}</h3>
               {mod.price != null && (
                 <p className="text-sm font-bold text-amber-700 dark:text-amber-300 mb-1">{formatPrice(mod.price)}</p>

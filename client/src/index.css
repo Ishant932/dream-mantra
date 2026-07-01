@@ -11069,12 +11069,10 @@ html.light .career-detail-meta {
   display: none;
 }
 
-/* Mobile performance — lighter animations & paint */
-html.is-mobile-perf body,
+/* Mobile performance — lighter paint; keep scroll & hero animations */
 html.is-mobile-perf html.light body,
 html.is-mobile-perf html.dark body,
 html.is-mobile-perf html.aurora body {
-  animation: none !important;
   background-size: 100% 100% !important;
 }
 html.is-mobile-perf .reveal,
@@ -11089,10 +11087,7 @@ html.is-mobile-perf .reveal-rise,
 html.is-mobile-perf .reveal-glow,
 html.is-mobile-perf .reveal-flip,
 html.is-mobile-perf .reveal-stagger > * {
-  opacity: 1;
-  transform: none;
   filter: none;
-  animation: none;
 }
 html.is-mobile-perf .reveal:not(.visible),
 html.is-mobile-perf .reveal-title:not(.visible),
@@ -11137,9 +11132,11 @@ html.is-mobile-perf .reveal-stagger > *.visible {
   transform: none;
   filter: none;
 }
-html.is-mobile-perf .home-headline,
-html.is-mobile-perf .section-title {
-  animation: none !important;
+html.is-mobile-perf .home-headline .gradient-text.text-pop {
+  animation: headlineGlowPulse 5.5s ease-in-out infinite !important;
+}
+html.is-mobile-perf .gradient-text {
+  animation-duration: 7s, 5.5s !important;
 }
 html.is-mobile-perf .glow-card:hover,
 html.is-mobile-perf .infigon-card:hover {
@@ -11149,7 +11146,7 @@ html.is-mobile-perf .infigon-card:hover {
 html.is-mobile-perf .marquee-strip-root,
 html.is-mobile-perf .marquee-track,
 html.is-mobile-perf .marquee-track-reverse {
-  animation-duration: 55s !important;
+  animation-duration: 42s !important;
 }
 html.is-mobile-perf .testimonial-marquee-card,
 html.is-mobile-perf .cert-marquee-card {
@@ -11169,13 +11166,14 @@ html.is-mobile-perf .modules-tests-shimmer {
   display: none !important;
 }
 html.is-mobile-perf .logo-mantra,
-html.is-mobile-perf .logo-dreams-shimmer,
-html.is-mobile-perf .gold-shimmer-text,
+html.is-mobile-perf .gold-shimmer-text {
+  animation-duration: 6s !important;
+}
 html.is-mobile-perf .live-dot {
-  animation: none !important;
+  animation: livePulse 2s ease-in-out infinite !important;
 }
 html.is-mobile-perf .reveal-card.visible {
-  animation: none !important;
+  animation: mobileCardPop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 html.is-mobile-perf .glass-card,
 html.is-mobile-perf .glow-card {
@@ -13496,7 +13494,7 @@ html.is-mobile-perf .lazy-mount {
   contain-intrinsic-size: 320px;
 }
 html.is-mobile-perf .marquee-strip-root {
-  animation-duration: 70s !important;
+  animation-duration: 42s !important;
 }
 html.is-mobile-perf .home-partners-marquee {
   content-visibility: auto;
@@ -14293,13 +14291,14 @@ html.is-mobile-perf .home-trust-strip.reveal {
   to { opacity: 1; transform: none; }
 }
 
-/* Below-fold sections only — avoid blank hero */
-html.is-mobile-perf .home-section {
+/* Below-fold sections — paint only, not hero */
+html.is-mobile-perf .home-section:not(.home-section--after-trust) {
   content-visibility: auto;
-  contain-intrinsic-size: auto 320px;
+  contain-intrinsic-size: auto 280px;
 }
 html.is-mobile-perf .home-module-card.visible,
-html.is-mobile-perf .reveal-card.home-module-card.visible {
+html.is-mobile-perf .reveal-card.home-module-card.visible,
+html.is-mobile-perf .reveal-card.visible:not(.home-module-card) {
   animation: mobileCardPop 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 @keyframes mobileCardPop {

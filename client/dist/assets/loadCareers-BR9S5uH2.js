@@ -1,0 +1,1 @@
+import{e as r}from"./index-ki-tuoc6.js";function t(){return r.list({page:1,limit:1}).catch(()=>null)}async function n(e={}){return r.list(e)}async function c(e){return r.get(e)}export{c as g,n as l,t as p};

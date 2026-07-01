@@ -20,7 +20,7 @@ import { useLang } from '../context/LanguageContext';
 import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
 
 const AIFeatures = lazy(() => import('../components/AIFeatures'));
-const WelcomeOfferBanner = lazy(() => import('../components/WelcomeOfferBanner'));
+import WelcomeOfferBanner from '../components/WelcomeOfferBanner';
 const TestimonialMarquee = lazy(() => import('../components/TestimonialMarquee'));
 const CertificationsShowcase = lazy(() => import('../components/CertificationsShowcase'));
 
@@ -29,6 +29,13 @@ const fade = {
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: '-80px' },
   transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+};
+
+const fadeLite = {
+  initial: { opacity: 0, y: 22 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: '-48px' },
+  transition: { duration: 0.42, ease: [0.22, 1, 0.36, 1] },
 };
 
 function HomeDivider() {
@@ -66,7 +73,8 @@ export default function Home() {
 
   const visibleFaqs = phone && !faqExpanded ? faqs.slice(0, 3) : faqs;
   const teamToShow = phone ? managementTeam.slice(0, 1) : managementTeam;
-  const MotionBox = mobile ? 'div' : motion.div;
+  const MotionBox = motion.div;
+  const sectionFade = mobile ? fadeLite : fade;
 
   return (
     <>
@@ -117,7 +125,7 @@ export default function Home() {
 
           <HomeSection variant="cream" id="pillars" className="scroll-mt-28">
             <div className="max-w-7xl mx-auto px-4 relative">
-              <MotionBox {...(mobile ? {} : fade)} className="text-center mb-8 sm:mb-12">
+              <MotionBox {...sectionFade} className="text-center mb-8 sm:mb-12">
                 <h2 className="home-headline">
                   {home.pillars.title} <span className="gradient-text text-pop">{home.pillars.titleHighlight}</span> {home.pillars.titleSuffix}
                 </h2>
@@ -202,7 +210,7 @@ export default function Home() {
 
           <HomeSection variant="orange">
             <div className="max-w-7xl mx-auto px-4 home-partner-section">
-              <MotionBox {...(mobile ? {} : fade)} className="text-center mb-6 sm:mb-8">
+              <MotionBox {...sectionFade} className="text-center mb-6 sm:mb-8">
                 <h2 className="home-headline home-headline--on-orange text-xl sm:text-3xl">
                   {home.partnerJoin.title} <span className="text-white/95">{home.partnerJoin.titleHighlight}</span>
                 </h2>
@@ -239,9 +247,9 @@ export default function Home() {
 
           <HomeDivider />
 
-          <LazyBlock minHeight={100}>
+          <Suspense fallback={<SectionPlaceholder />}>
             <WelcomeOfferBanner />
-          </LazyBlock>
+          </Suspense>
 
           <HomeDivider />
 
@@ -278,7 +286,7 @@ export default function Home() {
 
           <HomeSection variant="warm">
             <div className="max-w-5xl mx-auto px-4 relative">
-              <MotionBox {...(mobile ? {} : fade)} className="text-center mb-6 sm:mb-10">
+              <MotionBox {...sectionFade} className="text-center mb-6 sm:mb-10">
                 <h2 className="home-headline">{home.managementTeam.title}</h2>
                 {!mobile && (
                   <p className="mt-3 max-w-xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
@@ -309,7 +317,7 @@ export default function Home() {
 
           <HomeSection variant="base" id="home-faq" className="scroll-mt-24">
             <div className="max-w-3xl mx-auto px-4">
-              <MotionBox {...(mobile ? {} : fade)} className="text-center mb-6 sm:mb-10">
+              <MotionBox {...sectionFade} className="text-center mb-6 sm:mb-10">
                 <h2 className="home-headline">{home.faq.title} <span className="gradient-text text-pop">{home.faq.titleHighlight}</span></h2>
                 <p className="text-sand-600 mt-2 sm:mt-3 text-sm sm:text-base">{home.faq.subtitle}</p>
               </MotionBox>

@@ -10,9 +10,11 @@ function applyPerformanceHints() {
   const root = document.documentElement;
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const narrow = window.matchMedia('(max-width: 767px)').matches;
-  if (coarse || narrow) root.classList.add('is-mobile-perf');
+  const tablet = window.matchMedia('(max-width: 1024px)').matches;
+  if (narrow || (coarse && tablet)) root.classList.add('is-phone');
+  if (narrow || coarse) root.classList.add('is-mobile-perf');
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    root.classList.add('is-mobile-perf');
+    root.classList.add('is-mobile-perf', 'is-reduced-motion');
   }
   return root.classList.contains('is-mobile-perf');
 }
@@ -23,7 +25,7 @@ if ('scrollRestoration' in window.history) {
 
 const mobilePerf = applyPerformanceHints();
 if (mobilePerf) {
-  runWhenIdle(() => warmupServer(), 6000);
+  runWhenIdle(() => warmupServer(), 2500);
 } else {
   warmupServer();
 }
