@@ -36,6 +36,7 @@ const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const CounsellorDashboard = lazy(() => import('./pages/CounsellorDashboard'));
 const PaymentPage = lazy(() => import('./pages/PaymentPage'));
 const TestPage = lazy(() => import('./pages/TestPage'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 const MarketplaceHub = lazy(() => import('./pages/MarketplaceHub'));
 const StudyAbroadHub = lazy(() => import('./pages/StudyAbroadHub'));
 const NotFound = lazy(() => import('./pages/NotFound'));
@@ -133,6 +134,7 @@ export default function App() {
             </Route>
             <Route path="login" element={<AuthPage><Login /></AuthPage>} />
             <Route path="signup" element={<AuthPage><Signup /></AuthPage>} />
+            <Route path="forgot-password" element={<AuthPage><ForgotPassword /></AuthPage>} />
           </Routes>
         </BrowserRouter>
         </ErrorBoundary>

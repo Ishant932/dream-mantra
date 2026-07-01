@@ -1,2 +1,2 @@
 /** Updated each release — visible at GET /api/health */
-export const APP_VERSION = '2026-05-21-users-v2';
+export const APP_VERSION = '2026-07-01-forgot-password-v3';

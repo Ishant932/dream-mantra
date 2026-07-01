@@ -293,8 +293,8 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['forgot password', 'reset password', 'change password login', 'lost password'],
-    en: 'Password reset is not available online. If you cannot sign in, contact support at 9680102276 with your registered email or phone and Dream Mantra ID.',
-    hi: 'Online password reset उपलब्ध नहीं। Login समस्या हो तो 9680102276 पर registered email/phone और Dream Mantra ID के साथ संपर्क करें।',
+    en: 'Forgot your password? Go to Login → Forgot password? and enter your registered email. We email a 6-digit OTP to reset it. Need help? Call 9680102276.',
+    hi: 'पासवर्ड भूल गए? Login → Forgot password पर registered email दर्ज करें। OTP ईमेल पर आएगा। सहायता: 9680102276',
   },
   {
     patterns: ['my reports', 'report link', 'where is my report', 'assessment report'],

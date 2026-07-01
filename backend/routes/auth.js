@@ -11,9 +11,17 @@ import {
   safeComparePassword,
 } from '../lib/authHelpers.js';
 import { isUserSuspended, suspensionMessage } from '../lib/userAccount.js';
+import {
+  requestPasswordResetOtp,
+  resetPasswordWithOtp,
+  validateResetIdentifier,
+} from '../lib/passwordResetService.js';
+import { flushDatabase } from '../db.js';
 
 const router = Router();
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 12, keyPrefix: 'login' });
+const forgotPasswordLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 5, keyPrefix: 'forgot-pw' });
+const resetPasswordLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, keyPrefix: 'reset-pw' });
 const JWT_SECRET = () => process.env.JWT_SECRET || 'dreams-mantra-secret-key';
 const JWT_EXPIRES = () => process.env.JWT_EXPIRES_IN || '7d';
 
@@ -130,6 +138,43 @@ router.post('/login', loginLimiter, (req, res) => {
 
   const token = signToken(user);
   res.json({ token, user: sanitize(user), message: 'Login successful' });
+});
+
+// ─── Forgot password (OTP via registered email) ────────────────────────────
+router.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
+  const { identifier, email } = req.body || {};
+  const targetEmail = email || identifier;
+  const idErr = validateResetIdentifier(targetEmail);
+  if (idErr) return res.status(400).json({ message: idErr });
+
+  try {
+    const result = await requestPasswordResetOtp(targetEmail);
+    if (!result.ok) {
+      return res.status(result.status || 400).json({ message: result.message });
+    }
+    await flushDatabase();
+    res.json({
+      message: result.message,
+      sent: result.sent,
+      channel: result.channel,
+      maskedDestination: result.maskedDestination,
+    });
+  } catch (e) {
+    console.error('Forgot password OTP error:', e.message);
+    res.status(503).json({
+      message: 'Could not send OTP email. Try again shortly or contact support at 9680102276.',
+    });
+  }
+});
+
+router.post('/reset-password', resetPasswordLimiter, async (req, res) => {
+  const { identifier, email, otp, password } = req.body || {};
+  const result = resetPasswordWithOtp({ email: email || identifier, otp, password });
+  if (!result.ok) {
+    return res.status(result.status || 400).json({ message: result.message });
+  }
+  await flushDatabase();
+  res.json({ message: result.message });
 });
 
 // ─── Verify 2FA after login ────────────────────────────────────────────────

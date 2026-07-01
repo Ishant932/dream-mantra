@@ -29,3 +29,9 @@ export function validatePhone(phone) {
 export function phonesMatch(stored, input) {
   return normalizePhone(stored) === normalizePhone(input);
 }
+
+export function maskPhone(phone) {
+  const d = normalizePhone(phone);
+  if (d.length < 4) return '***';
+  return `${d.slice(0, 2)}****${d.slice(-2)}`;
+}

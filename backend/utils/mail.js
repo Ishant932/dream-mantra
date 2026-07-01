@@ -84,6 +84,12 @@ function otpEmailBody({ name, otp, purpose }) {
 }
 
 export async function sendOtpEmail({ to, name, otp, purpose = 'register' }) {
+  if (!isEmailConfigured()) {
+    throw new Error(
+      'Email service is not configured. Set RESEND_API_KEY or SMTP_USER + SMTP_PASS in environment.'
+    );
+  }
+
   const { html, text, subject } = otpEmailBody({ name, otp, purpose });
 
   if (process.env.RESEND_API_KEY?.trim()) {
@@ -94,12 +100,7 @@ export async function sendOtpEmail({ to, name, otp, purpose = 'register' }) {
   const sent = await sendViaSmtp({ to, subject, html, text });
   if (sent) return { channel: 'smtp' };
 
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(`\n📧 [OTP — dev] ${to} → ${otp} (${purpose})\n`);
-    return { channel: 'console', devOtp: otp };
-  }
-
-  throw new Error('Email service is not configured');
+  throw new Error('Email delivery failed. Check RESEND_API_KEY or SMTP credentials.');
 }
 
 export function maskEmail(email) {

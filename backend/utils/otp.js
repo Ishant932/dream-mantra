@@ -31,7 +31,7 @@ export function verifyOtp(type, identifier, code) {
   }
 
   if (String(entry.otp) !== String(code || '').trim()) {
-    return { ok: false, message: 'Invalid OTP. Check the 6-digit code from your email.' };
+    return { ok: false, message: 'Invalid OTP. Check the 6-digit code and try again.' };
   }
 
   db.prepare('DELETE FROM otpStore WHERE identifier = ?').run(key);

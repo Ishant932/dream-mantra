@@ -13,6 +13,7 @@ import { APP_VERSION } from './version.js';
 import { seedSampleSlots, getAvailableSlots } from './lib/slots.js';
 import { migrateLegacyPayments, handleRazorpayWebhook } from './lib/paymentService.js';
 import { isGatewayEnabled, getGatewayPublicConfig } from './lib/paymentGateway.js';
+import { isEmailConfigured } from './utils/mail.js';
 import { loadCareersData } from './lib/careersData.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
@@ -85,6 +86,7 @@ app.get('/api/health', (_, res) => {
     version: process.env.RENDER_GIT_COMMIT?.slice(0, 7) || APP_VERSION,
     db: getDbStatus(),
     payments: getGatewayPublicConfig(),
+    email: { configured: isEmailConfigured() },
   });
 });
 
