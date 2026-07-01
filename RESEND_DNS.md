@@ -1,28 +1,64 @@
 # Resend email DNS for dreammantra.in (password reset OTP)
 
-Add these records in **GoDaddy → dreammantra.in → DNS** so Resend can send OTP to **any** registered user email.
+Until these records exist, Resend can **only** deliver to the Resend account owner (`eshalohiya45@gmail.com`). All other users get *"Could not send OTP email"* on forgot-password.
 
-| Type | Name | Value | Priority |
-|------|------|-------|----------|
-| **TXT** | `resend._domainkey` | *(copy from Resend dashboard → Domains → dreammantra.in)* | — |
-| **TXT** | `send` | `v=spf1 include:amazonses.com ~all` | — |
-| **MX** | `send` | `feedback-smtp.us-east-1.amazonses.com` | **10** |
+## Fastest fix (recommended) — 2 minutes
 
-After saving, wait 5–15 minutes, then in [Resend → Domains](https://resend.com/domains) click **Verify** on `dreammantra.in`.
+1. Open [Resend → Domains → dreammantra.in](https://resend.com/domains)
+2. Click **Auto Configure**
+3. Sign in to **GoDaddy** and approve DNS access
+4. Wait ~5 minutes, then run:
 
-Then set on Render:
+```powershell
+$env:RESEND_API_KEY = "re_..."
+$env:RENDER_API_KEY = "rnd_..."
+node scripts/complete-resend-email.js
+```
+
+That script sets `RESEND_FROM`, redeploys Render, and tests forgot-password.
+
+## Manual DNS (GoDaddy)
+
+GoDaddy → **dreammantra.in** → **DNS** → **Add** these **3 records**:
+
+| Type | Name | Value | Priority | TTL |
+|------|------|-------|----------|-----|
+| **TXT** | `resend._domainkey` | `p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCp8krA6lzRnqD9RcyKSOvgWihXMuH5FoNtLSfavfhcM18x8b2h2CbyS5qZxG42m8+PiAbpzaKsLib2ZNPLqslHAdJBw9UU12cxW50Nt0D3tofLNtXCdREOsVBYYa0RI1MHwmHrTcY8gNc6ggd05xfaS5evF+j/DlkSe4TxTyxeSwIDAQAB` | — | 600 |
+| **TXT** | `send` | `v=spf1 include:amazonses.com ~all` | — | 600 |
+| **MX** | `send` | `feedback-smtp.us-east-1.amazonses.com` | **10** | 600 |
+
+**GoDaddy tips:** use Name `send` only (not `send.dreammantra.in`). If MX priority 10 is taken, use 20.
+
+Then in Resend → Domains → **Verify DNS Records**.
+
+## After verification
+
+On Render:
 
 ```
 RESEND_FROM=Dream Mantra <noreply@dreammantra.in>
 ```
 
+Or run `node scripts/complete-resend-email.js` (does this automatically).
+
 ## Automated (GoDaddy API)
+
+Create fresh keys at [developer.godaddy.com/keys](https://developer.godaddy.com/keys) (Production):
 
 ```powershell
 $env:GODADDY_API_KEY = "..."
 $env:GODADDY_API_SECRET = "..."
 $env:RESEND_API_KEY = "re_..."
-node scripts/setup-resend-dns.js
+$env:RENDER_API_KEY = "rnd_..."
+node scripts/complete-resend-email.js
 ```
 
-Until domain is verified, Resend can only deliver to the Resend account owner email (`eshalohiya45@gmail.com`) for testing.
+## Verify DNS propagated
+
+```powershell
+nslookup -type=TXT resend._domainkey.dreammantra.in
+nslookup -type=TXT send.dreammantra.in
+nslookup -type=MX send.dreammantra.in
+```
+
+Or use [dns.email](https://dns.email).

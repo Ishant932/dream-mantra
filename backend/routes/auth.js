@@ -161,8 +161,13 @@ router.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
     });
   } catch (e) {
     console.error('Forgot password OTP error:', e.message);
+    const domainPending = /RESEND_DOMAIN_REQUIRED|verify a domain|testing emails/i.test(
+      e.message || ''
+    );
     res.status(503).json({
-      message: 'Could not send OTP email. Try again shortly or contact support at 9680102276.',
+      message: domainPending
+        ? 'Password reset email is being set up for all users. Please try again in a few hours or contact support at 9680102276.'
+        : 'Could not send OTP email. Try again shortly or contact support at 9680102276.',
     });
   }
 });

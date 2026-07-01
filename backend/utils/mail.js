@@ -37,6 +37,13 @@ async function sendViaResend({ to, subject, html, text }) {
 
   if (!res.ok) {
     const err = await res.text();
+    const needsDomain =
+      res.status === 403 && /verify a domain|testing emails/i.test(err);
+    if (needsDomain) {
+      throw new Error(
+        'RESEND_DOMAIN_REQUIRED: Verify dreammantra.in on Resend (GoDaddy DNS). See RESEND_DNS.md'
+      );
+    }
     throw new Error(`Resend error (${res.status}): ${err}`);
   }
   return true;
