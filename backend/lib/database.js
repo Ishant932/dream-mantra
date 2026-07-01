@@ -26,6 +26,8 @@ const defaultData = {
   site_settings: { community_links: { 'crp-test': '' } },
   contact_leads: [],
   user_notifications: [],
+  message_threads: [],
+  messages: [],
   otpStore: [],
   nextId: {
     users: 1,
@@ -36,6 +38,8 @@ const defaultData = {
     user_reports: 1,
     contact_leads: 1,
     user_notifications: 1,
+    message_threads: 1,
+    messages: 1,
   },
 };
 
@@ -56,6 +60,8 @@ function normalizePayload(parsed) {
   parsed.otpStore = asArray(parsed.otpStore);
   parsed.contact_leads = asArray(parsed.contact_leads);
   parsed.user_notifications = asArray(parsed.user_notifications);
+  parsed.message_threads = asArray(parsed.message_threads);
+  parsed.messages = asArray(parsed.messages);
   parsed.payments = asArray(parsed.payments);
   parsed.availability_slots = asArray(parsed.availability_slots);
   parsed.user_reports = asArray(parsed.user_reports);
@@ -509,6 +515,20 @@ export const repo = {
     Object.assign(u, patch);
     saveData();
     return u;
+  },
+  deleteUser(id) {
+    const numId = Number(id);
+    const idx = data.users.findIndex((u) => Number(u.id) === numId);
+    if (idx === -1) return false;
+    data.users.splice(idx, 1);
+    data.assessments = (data.assessments || []).filter((a) => Number(a.user_id) !== numId);
+    data.payments = (data.payments || []).filter((p) => Number(p.user_id) !== numId);
+    data.consultations = (data.consultations || []).filter((c) => Number(c.user_id) !== numId);
+    if (Array.isArray(data.notifications)) {
+      data.notifications = data.notifications.filter((n) => Number(n.user_id) !== numId);
+    }
+    saveData();
+    return true;
   },
 };
 

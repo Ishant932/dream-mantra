@@ -3,15 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { MessageCircle } from 'lucide-react';
 import SiteHeader from './SiteHeader';
 import Footer from './Footer';
-import FloatingInfo from './FloatingInfo';
 import AnimatedBackground from './AnimatedBackground';
 import PageTransition from './PageTransition';
 import ScrollRevealInit from './ScrollRevealInit';
 import ScrollToTop from './ScrollToTop';
-import ScrollToTopOnNavigate from './ScrollToTopOnNavigate';
 import HashScrollHandler from './HashScrollHandler';
 import ErrorBoundary from './ErrorBoundary';
-import { isMobilePerf } from '../utils/mobilePerf';
+import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
+import MobileBottomNav from './MobileBottomNav';
 
 const Chatbot = lazy(() => import('./Chatbot'));
 
@@ -31,6 +30,7 @@ function PageLoader() {
 export default function Layout() {
   const location = useLocation();
   const mobilePerf = isMobilePerf();
+  const phoneNav = isPhoneViewport();
   const isDashboard =
     location.pathname.startsWith('/dashboard')
     || location.pathname.startsWith('/admin')
@@ -50,7 +50,7 @@ export default function Layout() {
 
   return (
     <div
-      className={`layout-shell min-h-screen flex flex-col relative${isDashboard ? ' layout-shell--dashboard' : ''}`}
+      className={`layout-shell min-h-screen flex flex-col relative${isDashboard ? ' layout-shell--dashboard' : ''}${phoneNav && !isDashboard ? ' layout-shell--mobile-nav' : ''}`}
     >
       <AnimatedBackground />
       {enableScrollReveal && <ScrollRevealInit />}
@@ -65,9 +65,8 @@ export default function Layout() {
       </main>
       <Footer />
       <ScrollToTop />
-      <ScrollToTopOnNavigate />
       <HashScrollHandler />
-      {!mobilePerf && <FloatingInfo />}
+      {!mobilePerf && null}
       {mobilePerf && !loadChatbot && (
         <button
           type="button"
@@ -83,6 +82,7 @@ export default function Layout() {
           <Chatbot />
         </Suspense>
       )}
+      <MobileBottomNav />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { Mail, Phone, MessageSquare, CheckCircle2, Clock } from 'lucide-react';
 import { adminApi } from '../api';
 import { DashCard } from './DashboardUI';
+import AdminPanelHeader from './AdminPanelHeader';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All' },
@@ -45,18 +46,30 @@ export default function AdminLeadsPanel({ token, onNotice, onError }) {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 className="text-xl font-bold">Contact & Leads</h2>
-          <p className="text-sm opacity-70">Messages from the website contact form</p>
-        </div>
+    <div className="space-y-4">
+      <AdminPanelHeader
+        title="Contact & Leads"
+        subtitle="Messages from the website contact form"
+        exportProps={{
+          title: 'Leads',
+          filename: 'contact-leads',
+          rows: leads,
+          columns: [
+            { label: 'Name', get: (l) => l.name },
+            { label: 'Email', get: (l) => l.email },
+            { label: 'Phone', get: (l) => l.phone },
+            { label: 'Message', get: (l) => l.message },
+            { label: 'Status', get: (l) => l.status },
+            { label: 'Created', get: (l) => l.created_at },
+          ],
+        }}
+      >
         {newCount > 0 && (
           <span className="text-xs font-bold px-3 py-1 rounded-full bg-amber-100 text-amber-800">
             {newCount} new
           </span>
         )}
-      </div>
+      </AdminPanelHeader>
 
       <div className="flex flex-wrap gap-2">
         {STATUS_OPTIONS.map((opt) => (

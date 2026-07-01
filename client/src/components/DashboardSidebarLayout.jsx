@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -14,10 +14,12 @@ import {
   Settings,
   BarChart3,
   UserCog,
+  MessageSquare,
 } from 'lucide-react';
 import CopyableUserId from './CopyableUserId';
-import { scrollToElement } from '../utils/scrollToTop';
-import { isMobilePerf } from '../utils/mobilePerf';
+import DashboardMobileDeck from './DashboardMobileDeck';
+import NotificationBell from './NotificationBell';
+import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
 
 const TAB_ICONS = {
   overview: LayoutGrid,
@@ -35,6 +37,7 @@ const TAB_ICONS = {
   'process-guides': BookOpen,
   settings: Settings,
   analytics: BarChart3,
+  messages: MessageSquare,
 };
 
 const panelVariants = {
@@ -52,7 +55,10 @@ export default function DashboardSidebarLayout({
   profileCompletion = 0,
   showProfileCompletion = true,
   sectionTitle,
-  anchorRef,
+  deckVariant = 'user',
+  notifToken,
+  notifUnread = 0,
+  onNotifRefresh,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -64,36 +70,57 @@ export default function DashboardSidebarLayout({
   const activeTab = tabs.find((t) => t.id === active) || tabs[0];
   const panelTab = tabs.some((t) => t.id === active) ? active : (activeTab?.id || 'overview');
   const lite = isMobilePerf();
-
-  const scrollToTabStart = useCallback(() => {
-    const el = anchorRef?.current || headerRef.current || mainRef.current;
-    scrollToElement(el, { offset: 8, behavior: 'instant' });
-  }, [anchorRef]);
+  const phone = isPhoneViewport();
 
   const setTab = (tabId) => {
     if (tabId === active) return;
     navigate({ pathname: location.pathname, search: `?tab=${tabId}` }, { replace: true });
-    requestAnimationFrame(() => requestAnimationFrame(scrollToTabStart));
   };
 
-  useEffect(() => {
-    scrollToTabStart();
-    const timers = [50, 150, 400].map((ms) => window.setTimeout(scrollToTabStart, ms));
-    return () => timers.forEach((id) => window.clearTimeout(id));
-  }, [panelTab, scrollToTabStart]);
-
   return (
-    <div className="dash-sidebar-layout no-reveal">
+    <div className="dash-sidebar-layout dash-b2b-layout no-reveal">
       <div className="dash-sidebar-grid">
-        {/* Left sidebar */}
         <aside className="dash-sidebar" aria-label="Dashboard navigation">
-          <div className="dash-sidebar-inner">
-            {sectionTitle && (
+          <motion.div
+            className="dash-sidebar-inner"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {sectionTitle && !phone && (
               <p className="dash-sidebar-heading">{sectionTitle}</p>
             )}
 
+            {phone ? (
+              <DashboardMobileDeck
+                tabs={tabs}
+                activeTab={activeTab}
+                panelTab={panelTab}
+                onSelectTab={setTab}
+                user={user}
+                profileCompletion={profileCompletion}
+                showProfileCompletion={showProfileCompletion}
+                sectionTitle={sectionTitle}
+                variant={deckVariant}
+                headerAction={notifToken ? (
+                  <NotificationBell
+                    token={notifToken}
+                    initialUnread={notifUnread}
+                    onRefresh={onNotifRefresh}
+                    onDark
+                    compact
+                  />
+                ) : null}
+              />
+            ) : (
+              <>
             {user && (
-              <div className="dash-sidebar-profile">
+              <motion.div
+                className="dash-sidebar-profile dash-b2b-profile-card"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08, duration: 0.4 }}
+              >
                 <div className="dash-sidebar-avatar-wrap">
                   {showProfileCompletion ? (
                     <svg className="dash-sidebar-ring" viewBox="0 0 44 44" aria-hidden="true">
@@ -121,10 +148,10 @@ export default function DashboardSidebarLayout({
                   )}
                   <span className="dash-sidebar-avatar">{user.name?.[0]?.toUpperCase() || '?'}</span>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="dash-sidebar-name truncate">{user.name}</p>
+                <div className="min-w-0 flex-1 dash-b2b-profile-info">
+                  <p className="dash-sidebar-name">{user.name}</p>
                   {showProfileCompletion && user.user_uid ? (
-                    <div className="dash-sidebar-uid-block mt-1.5">
+                    <div className="dash-sidebar-uid-block mt-1">
                       <p className="dash-sidebar-uid-label">Dreams ID</p>
                       <CopyableUserId uid={user.user_uid} compact animate={false} className="dash-sidebar-uid" />
                     </div>
@@ -133,11 +160,8 @@ export default function DashboardSidebarLayout({
                   ) : (
                     <p className="dash-sidebar-meta">Administrator</p>
                   )}
-                  {showProfileCompletion && user.user_uid && (
-                    <p className="dash-sidebar-meta mt-1">{profileCompletion}% profile complete</p>
-                  )}
                 </div>
-              </div>
+              </motion.div>
             )}
 
             <div className="dash-mobile-tab-picker">
@@ -164,16 +188,20 @@ export default function DashboardSidebarLayout({
               role="tablist"
               aria-label="Dashboard sections"
             >
-              {tabs.map((tab) => {
+              {tabs.map((tab, i) => {
                 const Icon = TAB_ICONS[tab.id] || LayoutGrid;
                 const isActive = active === tab.id;
                 return (
-                  <button
+                  <motion.button
                     key={tab.id}
                     type="button"
                     role="tab"
                     aria-selected={isActive}
                     onClick={() => setTab(tab.id)}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.12 + i * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                    whileTap={{ scale: 0.99 }}
                     className={`dash-sidebar-item ${isActive ? 'dash-sidebar-item-active' : ''}`}
                   >
                     {isActive && (
@@ -192,15 +220,18 @@ export default function DashboardSidebarLayout({
                       )}
                     </span>
                     <ChevronRight className={`dash-sidebar-chevron ${isActive ? 'opacity-100' : ''}`} />
-                  </button>
+                  </motion.button>
                 );
               })}
             </nav>
-          </div>
+              </>
+            )}
+          </motion.div>
         </aside>
 
         {/* Main content */}
         <div className="dash-sidebar-main scroll-mt-28" ref={mainRef}>
+          {!phone && (
           <div
             ref={headerRef}
             id={`${id}-tab-header`}
@@ -223,6 +254,7 @@ export default function DashboardSidebarLayout({
               </>
             )}
           </div>
+          )}
 
           <div className="dash-sidebar-panel" role="tabpanel" id={`${id}-panel`}>
             {lite ? (

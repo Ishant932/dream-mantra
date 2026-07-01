@@ -29,6 +29,57 @@ export function loadCareersData() {
   return cache;
 }
 
+function careerMixKey(c) {
+  const raw = `${c.category || ''}|${c.title || ''}|${c.id || ''}`;
+  let h = 2166136261;
+  for (let i = 0; i < raw.length; i += 1) {
+    h ^= raw.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+const ROLE_PREFIX = /^(senior|junior|lead|principal|chief|assistant|associate|specialist|head|executive|staff|entry[- ]level|mid[- ]level|trainee|intern)\s+/i;
+const ROLE_SUFFIX = /\s+(i|ii|iii|iv|v|1|2|3|4|5)$/i;
+
+/** Group key so "Senior Data Analyst" and "Data Analyst" are spread apart in default browse */
+function careerFamilyKey(title = '') {
+  return String(title)
+    .trim()
+    .replace(ROLE_PREFIX, '')
+    .replace(ROLE_SUFFIX, '')
+    .toLowerCase();
+}
+
+function mixedCareerSort(list) {
+  return [...list].sort((a, b) => careerMixKey(a) - careerMixKey(b));
+}
+
+/** Interleave careers that share the same family title — avoids Data Analyst / Senior Data Analyst clusters */
+function spreadSimilarCareers(list) {
+  if (list.length < 2) return list;
+
+  const buckets = new Map();
+  for (const career of list) {
+    const key = careerFamilyKey(career.title) || career.slug || String(career.id);
+    if (!buckets.has(key)) buckets.set(key, []);
+    buckets.get(key).push(career);
+  }
+
+  const groups = [...buckets.values()].map((group) => mixedCareerSort(group));
+  groups.sort((a, b) => careerMixKey(a[0]) - careerMixKey(b[0]));
+
+  const spread = [];
+  let depth = 0;
+  while (spread.length < list.length) {
+    for (const group of groups) {
+      if (depth < group.length) spread.push(group[depth]);
+    }
+    depth += 1;
+  }
+  return spread;
+}
+
 function filterCareersList(list, { q, category, stream, demand, sort } = {}) {
   let filtered = [...list];
 
@@ -63,6 +114,8 @@ function filterCareersList(list, { q, category, stream, demand, sort } = {}) {
   } else if (sort === 'demand') {
     const rank = { 'Very High': 4, High: 3, Growing: 2, Stable: 1 };
     filtered.sort((a, b) => (rank[b.demand] || 0) - (rank[a.demand] || 0));
+  } else {
+    filtered = spreadSimilarCareers(filtered);
   }
 
   return filtered;

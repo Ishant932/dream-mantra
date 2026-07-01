@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import db, { repo, getData, saveData } from '../lib/database.js';
 import { getProduct } from '../config/products.js';
 import { validateCoupon, applyCouponDiscount } from '../lib/couponService.js';
-import { authRequired } from '../middleware/auth.js';
+import { authRequired, optionalAuth } from '../middleware/auth.js';
 import { isGatewayEnabled, getGatewayPublicConfig } from '../lib/paymentGateway.js';
 import { syncAssessmentSelection, COUNSELLING_ADDON_PRICE, getActiveModuleCatalog, assertSkillMappingBandSelected, buildModuleSelection } from '../lib/moduleCatalog.js';
 import { listPublicVouchers } from '../lib/catalogStore.js';
@@ -25,11 +25,13 @@ router.get('/products', (_, res) => {
   res.json({ products: getActiveModuleCatalog() });
 });
 
-router.get('/promotions', (_, res) => {
+router.get('/promotions', optionalAuth, (req, res) => {
   res.set('Cache-Control', 'no-store');
+  const userId = req.user?.id != null ? Number(req.user.id) : null;
   res.json({
     products: getActiveModuleCatalog(),
-    vouchers: listPublicVouchers(),
+    /** Voucher codes only for signed-in users — filtered by admin visibility rules */
+    vouchers: userId != null ? listPublicVouchers(userId) : [],
   });
 });
 
@@ -135,6 +137,7 @@ router.post('/validate-coupon', authRequired, (req, res) => {
   const result = validateCoupon(req.body.code, {
     paidTestsCount: paidTests,
     moduleSlug: req.body.moduleSlug || null,
+    userId: req.user.id,
   });
   if (!result.valid) {
     return res.status(400).json({ message: result.message });
@@ -142,11 +145,17 @@ router.post('/validate-coupon', authRequired, (req, res) => {
   res.json(result);
 });
 
-/** Admin verification request — sends order to admin dashboard (no proof required) */
+/** Admin verification request — proof screenshot + payment reference ID required */
 router.post('/submit-manual', authRequired, (req, res) => {
   try {
-    const { assessmentId, proofDataUrl, proofFileName, userNote, skillMappingBand } = req.body;
+    const { assessmentId, proofDataUrl, proofFileName, userNote, paymentReferenceId, skillMappingBand } = req.body;
     if (!assessmentId) return res.status(400).json({ message: 'assessmentId is required' });
+    if (!proofDataUrl?.trim()) {
+      return res.status(400).json({ message: 'Payment screenshot is required' });
+    }
+    if (!paymentReferenceId?.trim()) {
+      return res.status(400).json({ message: 'Payment reference / transaction ID is required' });
+    }
 
     let assessment = getData().assessments.find(
       (a) => Number(a.id) === Number(assessmentId) && Number(a.user_id) === Number(req.user.id)
@@ -170,6 +179,7 @@ router.post('/submit-manual', authRequired, (req, res) => {
       proofDataUrl,
       proofFileName,
       userNote,
+      paymentReferenceId: paymentReferenceId.trim(),
     });
 
     if (result.alreadyConfirmed) {
@@ -233,6 +243,7 @@ router.post('/create-order', authRequired, async (req, res) => {
     const coupon = validateCoupon(couponCode, {
       paidTestsCount: paidTests,
       moduleSlug: selection?.moduleSlug || assessment.product_slug,
+      userId: req.user.id,
     });
     if (!coupon.valid) {
       return res.status(400).json({ message: coupon.message });

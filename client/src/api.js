@@ -1,7 +1,7 @@
 const API = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
-const REQUEST_TIMEOUT_MS = import.meta.env.PROD ? 45000 : 12000;
+const REQUEST_TIMEOUT_MS = import.meta.env.PROD ? 45000 : 30000;
 const RETRY_STATUS = new Set([408, 429, 502, 503, 504]);
-const RETRYABLE_PATHS = /^\/(auth\/me|health|warmup|careers|slots|payments\/(products|promotions|mode))/;
+const RETRYABLE_PATHS = /^\/(auth\/me|health|warmup|careers|slots|admin\/|user\/|counsellor\/|payments\/(products|promotions|mode))/;
 
 function headers(token) {
   const h = { 'Content-Type': 'application/json' };
@@ -16,6 +16,7 @@ function sleep(ms) {
 function shouldRetry(path, method, status) {
   if (method && method !== 'GET') return false;
   if (status && RETRY_STATUS.has(status)) return true;
+  if (!import.meta.env.PROD) return true;
   return RETRYABLE_PATHS.test(path);
 }
 
@@ -39,7 +40,9 @@ async function request(path, options = {}, attempt = 0) {
         await sleep(1200 * (attempt + 1));
         return request(path, options, attempt + 1);
       }
-      throw new Error(data.message || `Request failed (${res.status})`);
+      const err = new Error(data.message || `Request failed (${res.status})`);
+      err.status = res.status;
+      throw err;
     }
     return data;
   } catch (err) {
@@ -48,14 +51,22 @@ async function request(path, options = {}, attempt = 0) {
       return request(path, options, attempt + 1);
     }
     if (err.name === 'AbortError') {
-      throw new Error('Server is waking up — please wait a moment and try again.');
+      throw new Error(
+        import.meta.env.PROD
+          ? 'Server is waking up — please wait a moment and try again.'
+          : 'API request timed out. From the project folder run: npm run dev — then refresh this page.'
+      );
     }
     if (err.message === 'Failed to fetch') {
       if (attempt + 1 < maxAttempts && shouldRetry(path, method)) {
         await sleep(1500 * (attempt + 1));
         return request(path, options, attempt + 1);
       }
-      throw new Error('Unable to reach server. The site may be starting — please retry.');
+      throw new Error(
+        import.meta.env.PROD
+          ? 'Unable to reach server. The site may be starting — please retry.'
+          : 'Cannot reach the API (port 5000). Run npm run dev from the project root, then refresh.'
+      );
     }
     throw err;
   } finally {
@@ -106,6 +117,9 @@ export const userApi = {
     request(`/user/notifications/${id}/read`, { method: 'PATCH', headers: headers(token) }),
   markAllNotificationsRead: (token) =>
     request('/user/notifications/read-all', { method: 'POST', headers: headers(token) }),
+  messages: (token) => request('/user/messages', { headers: headers(token) }),
+  sendMessage: (token, body) =>
+    request('/user/messages', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   availableSlots: (token, params = {}) => {
     const q = new URLSearchParams(params).toString();
     return request(`/user/slots/available${q ? `?${q}` : ''}`, { headers: headers(token) });
@@ -137,7 +151,7 @@ export const userApi = {
 
 export const paymentsApi = {
   products: () => request('/payments/products'),
-  promotions: () => request('/payments/promotions'),
+  promotions: (token) => request('/payments/promotions', { headers: headers(token) }),
   getOrder: (token, assessmentId) => request(`/payments/order/${assessmentId}`, { headers: headers(token) }),
   updateOrderSelection: (token, assessmentId, body) =>
     request(`/payments/order/${assessmentId}/selection`, {
@@ -174,6 +188,8 @@ export const adminApi = {
   getUser: (token, userId) => request(`/admin/users/${userId}`, { headers: headers(token) }),
   updateUser: (token, userId, body) =>
     request(`/admin/users/${userId}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteUser: (token, userId) =>
+    request(`/admin/users/${userId}`, { method: 'DELETE', headers: headers(token) }),
   consultations: (token) => request('/admin/consultations', { headers: headers(token) }),
   updateConsultation: (token, id, body) =>
     request(`/admin/consultations/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
@@ -226,6 +242,11 @@ export const adminApi = {
     request(`/admin/vouchers/${encodeURIComponent(code)}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   deleteVoucher: (token, code) =>
     request(`/admin/vouchers/${encodeURIComponent(code)}`, { method: 'DELETE', headers: headers(token) }),
+  messageThreads: (token) => request('/admin/messages/threads', { headers: headers(token) }),
+  getUserMessages: (token, userId) =>
+    request(`/admin/messages/user/${userId}`, { headers: headers(token) }),
+  sendUserMessage: (token, userId, body) =>
+    request(`/admin/messages/user/${userId}`, { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   counsellors: (token) => request('/admin/counsellors', { headers: headers(token) }),
   createCounsellor: (token, body) =>
     request('/admin/counsellors', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),

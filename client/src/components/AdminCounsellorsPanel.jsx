@@ -3,6 +3,7 @@ import { UserCog, Plus, Pencil, Trash2, KeyRound, Mail, Phone } from 'lucide-rea
 import { adminApi } from '../api';
 import CopyableUserId from './CopyableUserId';
 import { DashCard } from './DashboardUI';
+import AdminPanelHeader from './AdminPanelHeader';
 
 const emptyForm = { name: '', email: '', phone: '', password: '' };
 
@@ -107,7 +108,22 @@ export default function AdminCounsellorsPanel({ token, onNotice, onError }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
+      <AdminPanelHeader
+        title="Counsellor Staff"
+        subtitle={`${counsellors.length} counsellor accounts`}
+        exportProps={{
+          title: 'Counsellors',
+          filename: 'counsellors',
+          rows: counsellors,
+          columns: [
+            { label: 'Dreams ID', get: (c) => c.user_uid },
+            { label: 'Name', get: (c) => c.name },
+            { label: 'Email', get: (c) => c.email },
+            { label: 'Phone', get: (c) => c.phone },
+          ],
+        }}
+      />
       {loadError && (
         <DashCard className="!p-4 border border-red-300/60 bg-red-50 dark:bg-red-950/30">
           <p className="text-sm text-red-700 dark:text-red-300 font-medium">{loadError}</p>

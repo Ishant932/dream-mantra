@@ -4,6 +4,9 @@ export const COUPONS = {
     discountPercent: 20,
     label: 'First assessment — 20% off',
     firstTimeOnly: true,
+    active: false,
+    visibility: 'selected_users',
+    allowedUserIds: [],
   },
 };
 

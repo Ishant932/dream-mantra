@@ -1,13 +1,12 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import {
-  Users, Calendar, FlaskConical, Clock, Shield, AlertCircle,
-  CreditCard, Settings,
+  Users, Calendar, FlaskConical, Clock, AlertCircle,
+  CreditCard, Settings, Save,
 } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
-import { adminApi } from '../api';
+import { adminApi, userApi } from '../api';
 import AdminUserProfileModal from '../components/AdminUserProfileModal';
 import AdminAnalyticsPanel from '../components/AdminAnalyticsPanel';
 import AdminPaymentsPanel from '../components/AdminPaymentsPanel';
@@ -27,6 +26,9 @@ import {
   DashAlert,
   DashCard,
 } from '../components/DashboardUI';
+import DashboardB2BBanner from '../components/DashboardB2BBanner';
+import NotificationBell from '../components/NotificationBell';
+import AdminMessagesPanel from '../components/MessagesPanel';
 
 const ADMIN_TABS = [
   { id: 'overview', label: 'Overview', desc: 'Stats & quick summary' },
@@ -37,6 +39,7 @@ const ADMIN_TABS = [
   { id: 'payments', label: 'Payment Management', desc: 'Paid assessments & orders' },
   { id: 'modules', label: 'Module Catalog', desc: 'Add & edit checkout modules' },
   { id: 'vouchers', label: 'Vouchers', desc: 'Discount codes by module' },
+  { id: 'messages', label: 'Messages', desc: 'Direct messages to students' },
   { id: 'reports', label: 'Report Management', desc: 'Deliver reports to users' },
   { id: 'leads', label: 'Contact Leads', desc: 'Website enquiries & messages' },
   { id: 'settings', label: 'Community & Links', desc: 'AI Launchpad community URL' },
@@ -66,6 +69,17 @@ export default function AdminDashboard() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [loadErrors, setLoadErrors] = useState([]);
   const [catalogModules, setCatalogModules] = useState([]);
+  const [notifUnread, setNotifUnread] = useState(0);
+
+  const refreshNotifs = useCallback(async () => {
+    if (!token) return;
+    try {
+      const data = await userApi.notifications(token);
+      setNotifUnread(data.unread ?? 0);
+    } catch {
+      /* silent */
+    }
+  }, [token]);
 
   const handleCatalogChange = useCallback((list) => {
     setCatalogModules(Array.isArray(list) ? list : []);
@@ -86,6 +100,20 @@ export default function AdminDashboard() {
     }
   }, [token]);
 
+  const runLoadTask = async (key, fn, apply) => {
+    try {
+      const data = await fn();
+      apply(data);
+      return null;
+    } catch (err) {
+      if (key === 'analytics') {
+        setAnalytics(null);
+        setAnalyticsError(err.message);
+      }
+      return `${key}: ${err.message}`;
+    }
+  };
+
   const load = async () => {
     if (!token) return;
     setLoading(true);
@@ -93,10 +121,13 @@ export default function AdminDashboard() {
     setLoadErrors([]);
     const errors = [];
 
-    const tasks = [
+    const critical = [
       { key: 'stats', fn: () => adminApi.stats(token), set: (v) => setStats(v) },
       { key: 'consultations', fn: () => adminApi.consultations(token), set: (v) => setConsultations(v.consultations || []) },
       { key: 'payments', fn: () => adminApi.payments(token, { limit: 100 }), set: (v) => setPayments(v.payments || []) },
+    ];
+
+    const secondary = [
       { key: 'settings', fn: () => adminApi.settings(token), set: (v) => setCommunityLink(v.settings?.community_links?.['crp-test'] || '') },
       { key: 'analytics', fn: () => adminApi.analytics(token), set: (v) => setAnalytics(v.analytics || null) },
       { key: 'modules', fn: () => adminApi.modules(token), set: (v) => setCatalogModules(v.modules || []) },
@@ -106,29 +137,26 @@ export default function AdminDashboard() {
       .then((v) => setUsers(v.users || []))
       .catch((err) => console.warn('Overview users preload failed:', err.message));
 
-    await Promise.all(
-      tasks.map(async (t) => {
-        try {
-          const data = await t.fn();
-          t.set(data);
-        } catch (err) {
-          errors.push(`${t.key}: ${err.message}`);
-          if (t.key === 'analytics') {
-            setAnalytics(null);
-            setAnalyticsError(err.message);
-          }
-        }
-      })
-    );
+    for (const task of critical) {
+      const errMsg = await runLoadTask(task.key, task.fn, task.set);
+      if (errMsg) errors.push(errMsg);
+    }
+
+    setLoading(false);
+
+    for (const task of secondary) {
+      const errMsg = await runLoadTask(task.key, task.fn, task.set);
+      if (errMsg) errors.push(errMsg);
+    }
 
     if (errors.length) {
       setLoadErrors(errors);
       setError(`Some sections failed to load — ${errors.join(' · ')}`);
     }
-    setLoading(false);
   };
 
   useEffect(() => { load(); }, [token]);
+  useEffect(() => { refreshNotifs(); }, [token, refreshNotifs]);
 
   const saveUserProfile = async (userId, form) => {
     setProfileSaving(true);
@@ -184,7 +212,7 @@ export default function AdminDashboard() {
   if (loading) return <DashboardLoading variant="admin" />;
 
   return (
-    <DashboardShell variant="admin" className="pt-24 pb-16">
+    <DashboardShell variant="admin" className="pt-16 pb-10">
       <AdminUserProfileModal
         open={profileOpen}
         user={profileUser}
@@ -192,14 +220,12 @@ export default function AdminDashboard() {
         saving={profileSaving}
         onSave={saveUserProfile}
         onClose={() => { setProfileOpen(false); setProfileUser(null); }}
+        api={adminApi}
+        token={token}
+        onError={setError}
       />
 
-      <div className="max-w-7xl mx-auto px-4">
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="dash-admin-header">
-          <Shield className="w-9 h-9 text-gold-400" />
-          {t('admin.title')}
-        </motion.h1>
-
+      <div className="dash-b2b-page max-w-[1440px] mx-auto px-4 sm:px-6">
         {notice && (
           <DashAlert type="success">
             <p className="text-sm">{notice}</p>
@@ -213,60 +239,93 @@ export default function AdminDashboard() {
           </DashAlert>
         )}
 
-        <DashboardSidebarLayout tabs={ADMIN_TABS} defaultTab="overview" id="admin-dashboard" user={user} showProfileCompletion={false} sectionTitle="Admin Panel">
+        <DashboardB2BBanner
+          tag="Admin Command Center"
+          title="Admin Dashboard"
+          subtitle="Users · bookings · payments · vouchers · reports"
+          variant="admin"
+          action={(
+            <NotificationBell
+              token={token}
+              initialUnread={notifUnread}
+              onRefresh={refreshNotifs}
+              onDark
+            />
+          )}
+        />
+
+        <DashboardSidebarLayout tabs={ADMIN_TABS} defaultTab="overview" id="admin-dashboard" user={user} showProfileCompletion={false} sectionTitle="Dream Mantra Admin" deckVariant="admin" notifToken={token} notifUnread={notifUnread} onNotifRefresh={refreshNotifs}>
           {(tab) => (
             <>
               {tab === 'overview' && (
-                <div className="space-y-8">
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                    {statCards.map((s, i) => <AdminStatCard key={s.label} stat={s} index={i} />)}
+                <div className="dash-b2b-stack">
+                  <div className="dash-b2b-stat-grid dash-b2b-stat-grid--6">
+                    {statCards.map((s, i) => (
+                      <AdminStatCard
+                        key={s.label}
+                        stat={s}
+                        index={i}
+                        hint={i === 3 && stats?.pending ? `${stats.pending} awaiting` : undefined}
+                      />
+                    ))}
                   </div>
-                  <div className="grid lg:grid-cols-2 gap-6">
-                    <DashCard className="!p-5" glow>
-                      <h3 className="font-bold mb-3 flex items-center gap-2">
-                        <Users className="w-4 h-4 text-amber-500" /> Registered Users ({stats?.users ?? users.length})
-                      </h3>
-                      <div className="space-y-2 max-h-64 overflow-y-auto">
-                        {users.slice(0, 8).map((u, i) => (
-                          <motion.div
-                            key={u.id}
-                            initial={{ opacity: 0, x: -8 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.04 }}
-                            className="p-3 rounded-xl bg-sand-50 dark:bg-sand-800/50 text-sm flex flex-wrap items-center justify-between gap-2"
-                          >
+                  <div className="dash-b2b-widget-grid">
+                    <DashCard className="dash-b2b-widget dash-b2b-widget--wide" hover={false}>
+                      <div className="dash-b2b-widget__head">
+                        <h3 className="dash-b2b-widget__title">
+                          <Users className="w-4 h-4 text-blue-600" />
+                          Registered Users
+                        </h3>
+                        <span className="dash-b2b-widget__meta">{stats?.users ?? users.length} total</span>
+                      </div>
+                      <div className="dash-b2b-list">
+                        {users.slice(0, 8).map((u) => (
+                          <div key={u.id} className="dash-b2b-list__row">
                             <div className="min-w-0">
                               <p className="font-semibold truncate">{u.name}</p>
                               {u.user_uid && <CopyableUserId uid={u.user_uid} compact animate={false} />}
                             </div>
-                            <button type="button" onClick={() => viewProfile(u.id)} className="text-xs font-semibold text-amber-600 hover:underline shrink-0">View</button>
-                          </motion.div>
-                        ))}
-                        {!users.length && <p className="text-sm opacity-60">No registered users yet.</p>}
-                      </div>
-                    </DashCard>
-                    <DashCard className="!p-5" glow delay={0.05}>
-                      <h3 className="font-bold mb-3 flex items-center gap-2"><Clock className="w-4 h-4 text-amber-500" /> Recent Bookings</h3>
-                      <div className="space-y-3 max-h-64 overflow-y-auto">
-                        {consultations.slice(0, 5).map((c) => (
-                          <div key={c.id} className="p-3 rounded-xl bg-sand-50 dark:bg-sand-800/50 text-sm">
-                            <p className="font-semibold">{c.user_name} — {c.program}</p>
-                            <p className="text-xs opacity-70 mt-0.5">{c.scheduled_at && new Date(c.scheduled_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}</p>
+                            <button type="button" onClick={() => viewProfile(u.id)} className="dash-b2b-link-btn">View</button>
                           </div>
                         ))}
-                        {!consultations.length && <p className="text-sm opacity-60">No bookings yet</p>}
+                        {!users.length && <p className="text-sm text-[var(--text-secondary)]">No registered users yet.</p>}
                       </div>
                     </DashCard>
-                    <DashCard className="!p-5">
-                      <h3 className="font-bold mb-3 flex items-center gap-2"><CreditCard className="w-4 h-4 text-amber-500" /> Recent Payments</h3>
-                      <div className="space-y-3 max-h-64 overflow-y-auto">
-                        {payments.filter((p) => p.payment_status === 'confirmed').slice(0, 5).map((p) => (
-                          <div key={p.id} className="p-3 rounded-xl bg-sand-50 dark:bg-sand-800/50 text-sm">
-                            <p className="font-semibold">{p.user_name} — {p.product_title || p.type}</p>
-                            <p className="text-xs opacity-70">₹{p.amount} · {p.paid_at && new Date(p.paid_at).toLocaleDateString()}</p>
+                    <DashCard className="dash-b2b-widget" hover={false}>
+                      <div className="dash-b2b-widget__head">
+                        <h3 className="dash-b2b-widget__title">
+                          <CreditCard className="w-4 h-4 text-emerald-600" />
+                          Recent Payments
+                        </h3>
+                      </div>
+                      <div className="dash-b2b-list">
+                        {payments.filter((p) => p.payment_status === 'confirmed').slice(0, 6).map((p) => (
+                          <div key={p.id} className="dash-b2b-list__row dash-b2b-list__row--stack">
+                            <p className="font-semibold text-sm">{p.user_name}</p>
+                            <p className="text-xs text-[var(--text-secondary)]">{p.product_title || p.type}</p>
+                            <p className="text-xs font-bold text-emerald-700">₹{p.amount?.toLocaleString('en-IN')}</p>
                           </div>
                         ))}
-                        {!payments.length && <p className="text-sm opacity-60">No paid orders yet</p>}
+                        {!payments.length && <p className="text-sm text-[var(--text-secondary)]">No paid orders yet</p>}
+                      </div>
+                    </DashCard>
+                    <DashCard className="dash-b2b-widget dash-b2b-widget--wide" hover={false}>
+                      <div className="dash-b2b-widget__head">
+                        <h3 className="dash-b2b-widget__title">
+                          <Clock className="w-4 h-4 text-violet-600" />
+                          Recent Bookings
+                        </h3>
+                      </div>
+                      <div className="dash-b2b-list">
+                        {consultations.slice(0, 6).map((c) => (
+                          <div key={c.id} className="dash-b2b-list__row dash-b2b-list__row--stack">
+                            <p className="font-semibold text-sm">{c.user_name} — {c.program}</p>
+                            <p className="text-xs text-[var(--text-secondary)]">
+                              {c.scheduled_at && new Date(c.scheduled_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}
+                            </p>
+                          </div>
+                        ))}
+                        {!consultations.length && <p className="text-sm text-[var(--text-secondary)]">No bookings yet</p>}
                       </div>
                     </DashCard>
                   </div>
@@ -293,7 +352,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'users' && (
-                <StaffUsersPanel api={adminApi} token={token} allowCounsellorAssign />
+                <StaffUsersPanel api={adminApi} token={token} allowCounsellorAssign allowAccountActions onError={setError} />
               )}
 
               {tab === 'counsellors' && (
@@ -314,7 +373,11 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'vouchers' && (
-                <AdminVouchersPanel token={token} modules={catalogModules} onNotice={setNotice} onError={setError} />
+                <AdminVouchersPanel token={token} modules={catalogModules} users={users} onNotice={setNotice} onError={setError} />
+              )}
+
+              {tab === 'messages' && (
+                <AdminMessagesPanel token={token} users={users} onError={setError} />
               )}
 
               {tab === 'reports' && (

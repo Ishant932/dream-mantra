@@ -6,6 +6,19 @@ function ensureNotifications() {
   if (!data.nextId.user_notifications) data.nextId.user_notifications = 1;
 }
 
+function adminUserIds() {
+  return (getData().users || [])
+    .filter((u) => u.role === 'admin')
+    .map((u) => Number(u.id));
+}
+
+/** Notify every admin account (e.g. pending payment review). */
+export function notifyAdmins({ type, title, body, link = null, meta = {} }) {
+  const ids = adminUserIds();
+  const rows = ids.map((id) => notifyUser(id, { type, title, body, link, meta }));
+  return rows;
+}
+
 export function notifyUser(userId, { type, title, body, link = null, meta = {} }) {
   ensureNotifications();
   const data = getData();

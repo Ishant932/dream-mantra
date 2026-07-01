@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, UserCircle, Save, Edit3 } from 'lucide-react';
 import CopyableUserId from './CopyableUserId';
+import UserDownloadMenu from './UserDownloadMenu';
 import { programs } from '../data/content';
 
 const PROFILE_FIELDS = [
@@ -17,7 +18,7 @@ const PROFILE_FIELDS = [
   { key: 'whatsappNumber', label: 'WhatsApp Number', type: 'text' },
 ];
 
-export default function AdminUserProfileModal({ user, open, onClose, loading, onSave, saving }) {
+export default function AdminUserProfileModal({ user, open, onClose, loading, onSave, saving, api, token, onError }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', profile: {} });
 
@@ -66,6 +67,9 @@ export default function AdminUserProfileModal({ user, open, onClose, loading, on
               </div>
             </div>
             <div className="flex items-center gap-2">
+              {user && !loading && api && token && (
+                <UserDownloadMenu api={api} token={token} user={user} onError={onError} compact />
+              )}
               {user && !loading && (
                 <button
                   type="button"

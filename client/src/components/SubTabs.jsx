@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { scrollPageToTop, scrollToRefTop } from '../utils/scrollToTop';
+import { scrollPageToTop } from '../utils/scrollToTop';
 
 /** Simple tab bar — scrolls to top when the active tab changes */
 export default function SubTabs({ tabs, defaultTab, children, id = 'tabs' }) {
@@ -15,16 +15,7 @@ export default function SubTabs({ tabs, defaultTab, children, id = 'tabs' }) {
   };
 
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
-      scrollPageToTop('instant');
-      const header = rootRef.current?.querySelector('.subtab-track');
-      if (header) {
-        scrollToRefTop({ current: header }, { offset: 8, behavior: 'instant' });
-      } else {
-        scrollToRefTop(rootRef, { offset: 8, behavior: 'instant' });
-      }
-    });
-    return () => cancelAnimationFrame(frame);
+    scrollPageToTop('instant');
   }, [active]);
 
   return (

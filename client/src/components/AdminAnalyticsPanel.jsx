@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { AdminStatCard, DashCard } from './DashboardUI';
 import { AdminBarChart, AdminLineChart, AdminDonutChart } from './admin/AdminCharts';
+import AdminPanelHeader from './AdminPanelHeader';
 
 function formatInr(n) {
   return `₹${Number(n || 0).toLocaleString('en-IN')}`;
@@ -83,14 +84,26 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
     ? careerInterests.slice(0, 8)
     : [{ label: 'No career goals yet', count: 0 }];
 
+  const exportRows = [
+    ...statCards.map((s) => ({ metric: s.label, value: String(s.value) })),
+    ...careerInterests.map((i) => ({ metric: `Career: ${i.label}`, value: String(i.count) })),
+    ...(recentConfirmedPayments || []).map((p) => ({
+      metric: 'Payment',
+      value: `${p.user_name || '—'} · ₹${p.amount} · ${p.product_title || ''}`,
+    })),
+  ];
+  const exportColumns = [
+    { label: 'Metric', key: 'metric' },
+    { label: 'Value', key: 'value' },
+  ];
+
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-8">
-      <div>
-        <h2 className="text-xl font-bold mb-1 flex items-center gap-2">
-          <BarChart3 className="w-5 h-5 text-amber-500" /> Platform Analytics
-        </h2>
-        <p className="text-sm opacity-70">Users, assessments, conversion, revenue, confirmed payments & marketing insights.</p>
-      </div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4">
+      <AdminPanelHeader
+        title="Platform Analytics"
+        subtitle="Users, assessments, conversion, revenue, confirmed payments & marketing insights."
+        exportProps={{ title: 'Analytics', filename: 'analytics', rows: exportRows, columns: exportColumns }}
+      />
 
       {modulePurchases?.length > 0 && (
         <DashCard className="!p-5 sm:!p-6" glow>
@@ -188,13 +201,13 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
         </DashCard>
       )}
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
         {statCards.map((s, i) => (
           <AdminStatCard key={s.label} stat={s} index={i} />
         ))}
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4">
         <DashCard className="!p-5 sm:!p-6" glow>
           <h3 className="font-bold mb-4">Registration Trend</h3>
           <AdminLineChart data={signupsTrend} valueKey="count" />
@@ -205,7 +218,7 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
         </DashCard>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4">
         <DashCard className="!p-5 sm:!p-6" glow>
           <h3 className="font-bold mb-4 flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-amber-500" /> Conversion Funnel
@@ -256,7 +269,7 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
         </DashCard>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-4">
         <DashCard className="!p-5 sm:!p-6" glow>
           <h3 className="font-bold mb-4 flex items-center gap-2">
             <Target className="w-4 h-4 text-amber-500" /> Top Career Interests
@@ -291,7 +304,7 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
         <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
           <Megaphone className="w-5 h-5 text-amber-500" /> Marketing & Acquisition
         </h3>
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-4">
           <DashCard className="!p-5 sm:!p-6" glow>
             <h4 className="font-bold mb-4 flex items-center gap-2">
               <Share2 className="w-4 h-4 text-amber-500" /> How Users Found Us
@@ -342,7 +355,7 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-3 gap-4">
         <DashCard className="!p-5 sm:!p-6" glow>
           <h3 className="font-bold mb-4">Most Purchased Modules</h3>
           <AdminDonutChart data={productOrders.length ? productOrders : [{ label: 'No orders', count: 0 }]} />

@@ -10,10 +10,12 @@ import SubTabs from '../components/SubTabs';
 import WelcomeOfferBanner from '../components/WelcomeOfferBanner';
 import { assessments, IMAGES } from '../data/content';
 import { PRODUCTS } from '../data/products';
-import { WELCOME_OFFER, applyVoucherPrice } from '../data/promotions';
+import { applyVoucherPrice } from '../data/promotions';
 import { useLang } from '../context/LanguageContext';
+import { useAuth } from '../context/AuthContext';
 import { assessmentPath } from '../utils/routes';
 import { paymentsApi } from '../api';
+import { useUserVouchers } from '../hooks/useUserVouchers';
 
 const fade = {
   initial: { opacity: 0, y: 20 },
@@ -23,8 +25,9 @@ const fade = {
 
 export default function MarketplaceHub() {
   const { t, d } = useLang();
+  const { token } = useAuth();
   const [liveProducts, setLiveProducts] = useState([]);
-  const [liveVouchers, setLiveVouchers] = useState([]);
+  const { vouchers: liveVouchers } = useUserVouchers(token);
   const marketplacePage = d('pages.marketplace');
   const marketplaceTabs = d('data.marketplaceTabs');
   const localizedAssessments = d('data.assessments').map((loc, i) => ({
@@ -33,10 +36,9 @@ export default function MarketplaceHub() {
   }));
 
   useEffect(() => {
-    paymentsApi.promotions()
+    paymentsApi.products()
       .then((res) => {
         if (Array.isArray(res.products)) setLiveProducts(res.products);
-        if (Array.isArray(res.vouchers)) setLiveVouchers(res.vouchers);
       })
       .catch(() => {});
   }, []);
@@ -66,8 +68,8 @@ export default function MarketplaceHub() {
     return [...base, ...extras];
   }, [d, liveProducts]);
 
-  const promoCode = liveVouchers[0]?.code || WELCOME_OFFER.code;
-  const promoCoupon = liveVouchers[0] || { discountPercent: WELCOME_OFFER.discountPercent };
+  const promoCode = liveVouchers[0]?.code || null;
+  const promoCoupon = liveVouchers[0] || null;
 
   return (
     <>
@@ -145,9 +147,11 @@ export default function MarketplaceHub() {
                           <p className="text-xs text-theme-muted mt-1">{p.description}</p>
                           <div className="mt-3 flex items-baseline gap-2">
                             <span className="text-lg font-bold text-amber-700">₹{p.price.toLocaleString('en-IN')}</span>
-                            <span className="text-xs text-amber-600 font-semibold">
-                              ₹{applyVoucherPrice(p.price, promoCoupon).final.toLocaleString('en-IN')} {marketplacePage.tests.withCode} {promoCode}
-                            </span>
+                            {promoCoupon && promoCode && (
+                              <span className="text-xs text-amber-600 font-semibold">
+                                ₹{applyVoucherPrice(p.price, promoCoupon).final.toLocaleString('en-IN')} {marketplacePage.tests.withCode} {promoCode}
+                              </span>
+                            )}
                           </div>
                           <Link to="/signup" className="text-sm text-amber-600 font-semibold mt-3 inline-block hover:underline">
                             {t('common.signUpToBook')}

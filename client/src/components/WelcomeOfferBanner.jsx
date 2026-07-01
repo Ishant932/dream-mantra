@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Tag, Copy, Check, Sparkles, TrendingUp, Gift, ArrowRight, Percent } from 'lucide-react';
 import { WELCOME_OFFER } from '../data/promotions';
 import { useLang } from '../context/LanguageContext';
-import { paymentsApi } from '../api';
+import { useAuth } from '../context/AuthContext';
+import { useUserVouchers } from '../hooks/useUserVouchers';
 
 function voucherDiscountLabel(v) {
   if (v.discountFixed != null) return `₹${Number(v.discountFixed).toLocaleString('en-IN')} off`;
@@ -35,27 +36,19 @@ function VoucherChip({ voucher, copiedCode, onCopy, variant = 'light' }) {
 
 export default function WelcomeOfferBanner({ variant = 'home', compact = false }) {
   const { d } = useLang();
+  const { token } = useAuth();
   const offer = d('welcomeOffer');
-  const [vouchers, setVouchers] = useState([]);
+  const { vouchers } = useUserVouchers(token);
   const [copiedCode, setCopiedCode] = useState('');
 
-  const loadVouchers = useCallback(() => {
-    paymentsApi.promotions()
-      .then((res) => setVouchers(Array.isArray(res.vouchers) ? res.vouchers : []))
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    loadVouchers();
-    const onFocus = () => loadVouchers();
-    window.addEventListener('focus', onFocus);
-    return () => window.removeEventListener('focus', onFocus);
-  }, [loadVouchers]);
-
   const featured = useMemo(() => {
-    if (!vouchers.length) return { code: WELCOME_OFFER.code, label: offer.discountLine || WELCOME_OFFER.headline };
+    if (!vouchers.length) {
+      return token
+        ? null
+        : { code: null, label: offer.discountLine || WELCOME_OFFER.headline };
+    }
     return vouchers.find((v) => v.code === WELCOME_OFFER.code) || vouchers[0];
-  }, [vouchers, offer.discountLine]);
+  }, [vouchers, offer.discountLine, token]);
 
   const copyCode = async (code) => {
     try {
@@ -85,12 +78,12 @@ export default function WelcomeOfferBanner({ variant = 'home', compact = false }
                 <TrendingUp className="w-3 h-3" /> {offer.badge}
               </p>
               <p className="font-accent font-bold text-sand-900 dark:text-amber-50">
-                {vouchers.length > 1 ? `${vouchers.length} active offers` : (featured.label || offer.headline)}
+                {vouchers.length > 1 ? `${vouchers.length} active offers` : (featured?.label || offer.headline)}
               </p>
               <p className="text-xs text-sand-600">{offer.validFor}</p>
             </div>
           </div>
-          {vouchers.length <= 1 && (
+          {vouchers.length <= 1 && featured?.code && (
             <div className="flex items-center gap-2">
               <code className="coupon-code-pill">{featured.code}</code>
               <motion.button
@@ -111,14 +104,13 @@ export default function WelcomeOfferBanner({ variant = 'home', compact = false }
               <VoucherChip key={v.code} voucher={v} copiedCode={copiedCode} onCopy={copyCode} />
             ))}
           </div>
+        ) : !token ? (
+          <p className="relative text-xs text-sand-600 mt-4 pt-4 border-t border-amber-200/50">
+            <Link to="/login" className="text-amber-700 font-bold hover:underline">Sign in</Link>
+            {' '}to see voucher codes assigned to your account.
+          </p>
         ) : (
-          <div className="relative flex flex-wrap gap-2 mt-4 pt-4 border-t border-amber-200/50">
-            <VoucherChip
-              voucher={{ code: WELCOME_OFFER.code, label: offer.discountLine, discountPercent: WELCOME_OFFER.discountPercent }}
-              copiedCode={copiedCode}
-              onCopy={copyCode}
-            />
-          </div>
+          <p className="relative text-xs text-sand-600 mt-4 pt-4 border-t border-amber-200/50">No active offers for your account right now.</p>
         )}
       </motion.div>
     );
@@ -164,16 +156,26 @@ export default function WelcomeOfferBanner({ variant = 'home', compact = false }
                   {offer.exploreAssessments}
                 </Link>
               </div>
-              <div className="mt-6">
-                <p className="text-xs font-bold uppercase tracking-wider text-white/70 mb-3">Active coupon codes</p>
-                <div className="flex flex-wrap gap-2">
-                  {(vouchers.length ? vouchers : [{ code: WELCOME_OFFER.code, label: offer.discountLine, discountPercent: WELCOME_OFFER.discountPercent }]).map((v) => (
-                    <VoucherChip key={v.code} voucher={v} copiedCode={copiedCode} onCopy={copyCode} variant="dark" />
-                  ))}
+              {vouchers.length > 0 ? (
+                <div className="mt-6">
+                  <p className="text-xs font-bold uppercase tracking-wider text-white/70 mb-3">Your active offers</p>
+                  <div className="flex flex-wrap gap-2">
+                    {vouchers.map((v) => (
+                      <VoucherChip key={v.code} voucher={v} copiedCode={copiedCode} onCopy={copyCode} variant="dark" />
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : token ? (
+                <p className="mt-6 text-sm text-white/80">No voucher codes are active for your account.</p>
+              ) : (
+                <p className="mt-6 text-sm text-white/80">
+                  <Link to="/login" className="text-amber-200 font-bold hover:underline">Sign in</Link>
+                  {' '}to view offers assigned to you.
+                </p>
+              )}
             </div>
 
+            {featured?.code ? (
             <motion.div
               initial={{ opacity: 0, scale: 0.92, rotate: -2 }}
               whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
@@ -207,6 +209,7 @@ export default function WelcomeOfferBanner({ variant = 'home', compact = false }
                 </motion.button>
               </div>
             </motion.div>
+            ) : null}
           </div>
         </motion.div>
       </div>

@@ -23,6 +23,13 @@ import {
 } from '../lib/counsellorStaff.js';
 import { registerStaffRoutes } from './staffHandlers.js';
 import { handleListStaffUsers } from '../lib/listStaffUsers.js';
+import {
+  listThreadsForAdmin,
+  getThreadByUserId,
+  sendMessage,
+  markThreadRead,
+  countUnreadForAdmin,
+} from '../lib/messages.js';
 
 const router = Router();
 router.use(authRequired, adminRequired);
@@ -109,6 +116,7 @@ router.patch('/payments/:id', (req, res) => {
       const result = updatePaymentStatus(req.params.id, status, {
         adminId: req.user.id,
         adminNote: adminNote || null,
+        userNote: userNote || null,
       });
       return res.json(result);
     }
@@ -202,6 +210,36 @@ router.delete('/vouchers/:code', async (req, res) => {
     removeVoucher(req.params.code);
     await flushDatabase();
     res.json({ vouchers: listVouchers() });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.get('/messages/threads', (req, res) => {
+  res.json({
+    threads: listThreadsForAdmin(),
+    unread: countUnreadForAdmin(),
+  });
+});
+
+router.get('/messages/user/:userId', (req, res) => {
+  const data = getThreadByUserId(req.params.userId);
+  if (data.thread) markThreadRead({ threadId: data.thread.id, role: 'admin' });
+  res.json(data);
+});
+
+router.post('/messages/user/:userId', async (req, res) => {
+  try {
+    const { body, attachments } = req.body || {};
+    const result = sendMessage({
+      userId: req.params.userId,
+      senderRole: 'admin',
+      senderId: req.user.id,
+      body,
+      attachments: Array.isArray(attachments) ? attachments : [],
+    });
+    await flushDatabase();
+    res.json(result);
   } catch (e) {
     res.status(400).json({ message: e.message });
   }

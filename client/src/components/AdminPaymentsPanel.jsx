@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   CheckCircle2, Clock, XCircle, RotateCcw, Search, ChevronLeft, ChevronRight,
-  Image as ImageIcon, Pencil, Check, X,
+  Image as ImageIcon, Pencil, Check, X, Download,
 } from 'lucide-react';
 import { adminApi } from '../api';
 import { DashCard } from './DashboardUI';
 import CopyableUserId from './CopyableUserId';
+import AdminSectionExport from './AdminSectionExport';
 
 const STATUS_OPTIONS = [
   { value: 'pending', label: 'Pending' },
@@ -62,6 +63,8 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
   const [reassignId, setReassignId] = useState(null);
   const [reassignUserId, setReassignUserId] = useState('');
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [failModal, setFailModal] = useState(null);
+  const [failNote, setFailNote] = useState('');
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -89,14 +92,17 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
     return () => clearTimeout(t);
   }, [load, search]);
 
-  const handleStatus = async (paymentId, status) => {
+  const handleStatus = async (paymentId, status, userNote = '') => {
     setActionId(paymentId);
     try {
       await adminApi.updatePayment(token, paymentId, {
         status,
         adminNote: adminNotes[paymentId] || '',
+        userNote: userNote || undefined,
       });
       onNotice?.(`Payment marked as ${status}`);
+      setFailModal(null);
+      setFailNote('');
       await load();
     } catch (e) {
       onError?.(e.message);
@@ -104,6 +110,31 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
       setActionId(null);
     }
   };
+
+  const openFailModal = (payment) => {
+    setFailModal(payment);
+    setFailNote('');
+  };
+
+  const confirmFail = () => {
+    if (!failNote.trim()) {
+      onError?.('Please enter a reason for the user');
+      return;
+    }
+    handleStatus(failModal.id, 'failed', failNote.trim());
+  };
+
+  const exportColumns = [
+    { label: 'Order ID', get: (p) => p.order_id },
+    { label: 'User', get: (p) => p.user_name },
+    { label: 'Dreams ID', get: (p) => p.user_uid },
+    { label: 'Email', get: (p) => p.email },
+    { label: 'Phone', get: (p) => p.phone },
+    { label: 'Amount', get: (p) => p.amount },
+    { label: 'Ref ID', get: (p) => p.payment_reference_id },
+    { label: 'Status', get: (p) => p.payment_status },
+    { label: 'Created', get: (p) => p.created_at },
+  ];
 
   const startEdit = (p) => {
     setEditingId(p.id);
@@ -159,14 +190,19 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
   );
 
   return (
-    <DashCard className="!p-5 sm:!p-6">
-      <h2 className="text-lg font-bold mb-1">Payment Verification</h2>
-      <p className="text-sm opacity-70 mb-5">
-        Review pending orders, edit amounts or notes before confirming, or wait for Razorpay auto-confirmation.
-        {pendingCount != null && pendingCount > 0 && (
-          <span className="ml-2 font-bold text-amber-700">{pendingCount} pending</span>
-        )}
-      </p>
+    <DashCard className="!p-4 sm:!p-5">
+      <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+        <div>
+          <h2 className="text-lg font-bold mb-1">Payment Verification</h2>
+          <p className="text-sm opacity-70">
+            Review pending orders, proof screenshots, and reference IDs.
+            {pendingCount != null && pendingCount > 0 && (
+              <span className="ml-2 font-bold text-amber-700">{pendingCount} pending</span>
+            )}
+          </p>
+        </div>
+        <AdminSectionExport title="Payments" filename="payments" rows={payments} columns={exportColumns} />
+      </div>
 
       <div className="flex flex-wrap gap-3 mb-5">
         <div className="relative flex-1 min-w-[200px]">
@@ -195,7 +231,50 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
       ) : payments.length === 0 ? (
         <p className="text-sm opacity-60 py-8 text-center">No payments match your filters.</p>
       ) : (
-        <div className="overflow-x-auto -mx-1">
+        <>
+        <div className="md:hidden space-y-3">
+          {payments.map((p) => (
+            <div key={p.id} className="rounded-xl border border-sand-200 dark:border-sand-700 p-4 space-y-3">
+              <div className="flex items-start justify-between gap-2">
+                <div className="min-w-0">
+                  <p className="font-mono text-xs font-bold break-all">{p.order_id}</p>
+                  <p className="font-semibold mt-1">{p.user_name}</p>
+                  <CopyableUserId uid={p.user_uid} compact />
+                </div>
+                <StatusBadge status={p.payment_status} />
+              </div>
+              <div className="text-xs space-y-1">
+                <p><span className="opacity-60">Amount:</span> <strong className="text-amber-700">₹{p.amount?.toLocaleString('en-IN')}</strong></p>
+                {p.payment_reference_id && (
+                  <p className="font-mono break-all"><span className="opacity-60">Ref ID:</span> {p.payment_reference_id}</p>
+                )}
+                <p className="opacity-70">{p.phone} · {p.email}</p>
+              </div>
+              {p.payment_proof_url && (
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" onClick={() => setPreviewUrl(p.payment_proof_url)} className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-brand-50 text-brand-700 inline-flex items-center gap-1">
+                    <ImageIcon className="w-3.5 h-3.5" /> View proof
+                  </button>
+                  <a href={p.payment_proof_url} download={p.payment_proof_name || 'payment-proof'} className="text-xs font-bold px-2.5 py-1.5 rounded-lg border inline-flex items-center gap-1">
+                    <Download className="w-3.5 h-3.5" /> Download
+                  </a>
+                  {p.payment_proof_url.startsWith('data:image') || /\.(png|jpe?g|webp|gif)$/i.test(p.payment_proof_url) ? (
+                    <img src={p.payment_proof_url} alt="Proof" className="w-full max-h-48 object-contain rounded-lg border mt-1" />
+                  ) : null}
+                </div>
+              )}
+              <div className="flex flex-wrap gap-2">
+                {p.payment_status !== 'confirmed' && (
+                  <button type="button" disabled={actionId === p.id} onClick={() => handleStatus(p.id, 'confirmed')} className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white">Confirm</button>
+                )}
+                {p.payment_status === 'pending' && (
+                  <button type="button" disabled={actionId === p.id} onClick={() => openFailModal(p)} className="text-xs font-bold px-2 py-1.5 rounded-lg bg-red-100 text-red-700">Mark Failed</button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="hidden md:block overflow-x-auto -mx-1">
           <table className="w-full text-sm admin-data-table min-w-[1100px]">
             <thead>
               <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
@@ -203,6 +282,8 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                 <th className="py-3 px-2 font-semibold text-xs uppercase tracking-wide opacity-60">User</th>
                 <th className="py-3 px-2 font-semibold text-xs uppercase tracking-wide opacity-60">Phone / Email</th>
                 <th className="py-3 px-2 font-semibold text-xs uppercase tracking-wide opacity-60">Amount</th>
+                <th className="py-3 px-2 font-semibold text-xs uppercase tracking-wide opacity-60">Ref ID</th>
+                <th className="py-3 px-2 font-semibold text-xs uppercase tracking-wide opacity-60">Proof</th>
                 <th className="py-3 px-2 font-semibold text-xs uppercase tracking-wide opacity-60">Method</th>
                 <th className="py-3 px-2 font-semibold text-xs uppercase tracking-wide opacity-60">Payment Status</th>
                 <th className="py-3 px-2 font-semibold text-xs uppercase tracking-wide opacity-60">Confirmation</th>
@@ -248,21 +329,25 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                       <>₹{p.amount?.toLocaleString('en-IN')}</>
                     )}
                   </td>
+                  <td className="py-3 px-2 font-mono text-xs break-all max-w-[120px]">
+                    {p.payment_reference_id || '—'}
+                  </td>
+                  <td className="py-3 px-2">
+                    {p.payment_proof_url ? (
+                      <div className="space-y-1">
+                        <button type="button" onClick={() => setPreviewUrl(p.payment_proof_url)} className="text-xs font-semibold text-brand-600 inline-flex items-center gap-1 hover:underline">
+                          <ImageIcon className="w-3.5 h-3.5" /> View
+                        </button>
+                        <a href={p.payment_proof_url} download={p.payment_proof_name || 'payment-proof'} className="text-xs font-semibold text-amber-700 block hover:underline">
+                          <Download className="w-3 h-3 inline" /> Download
+                        </a>
+                      </div>
+                    ) : '—'}
+                  </td>
                   <td className="py-3 px-2">
                     <span className="text-xs font-semibold capitalize">
                       {p.payment_method || p.provider || 'manual'}
                     </span>
-                    {p.payment_proof_url && (
-                      <div className="mt-1 space-y-1">
-                        <button
-                          type="button"
-                          onClick={() => setPreviewUrl(p.payment_proof_url)}
-                          className="text-xs font-semibold text-brand-600 inline-flex items-center gap-1 hover:underline"
-                        >
-                          <ImageIcon className="w-3.5 h-3.5" /> View proof
-                        </button>
-                      </div>
-                    )}
                   </td>
                   <td className="py-3 px-2"><StatusBadge status={p.payment_status} /></td>
                   <td className="py-3 px-2">
@@ -340,7 +425,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                         <button
                           type="button"
                           disabled={actionId === p.id}
-                          onClick={() => handleStatus(p.id, 'failed')}
+                          onClick={() => openFailModal(p)}
                           className="text-xs font-bold px-2 py-1 rounded-lg bg-red-100 text-red-700"
                         >
                           Mark Failed
@@ -392,6 +477,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
             </tbody>
           </table>
         </div>
+        </>
       )}
 
       {pagination.totalPages > 1 && (
@@ -401,6 +487,26 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
             <button type="button" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="p-2 rounded-lg border disabled:opacity-40"><ChevronLeft className="w-4 h-4" /></button>
             <span className="text-sm font-semibold">{page} / {pagination.totalPages}</span>
             <button type="button" disabled={page >= pagination.totalPages} onClick={() => setPage((p) => p + 1)} className="p-2 rounded-lg border disabled:opacity-40"><ChevronRight className="w-4 h-4" /></button>
+          </div>
+        </div>
+      )}
+
+      {failModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setFailModal(null)}>
+          <div className="bg-[var(--bg-elevated)] rounded-xl p-5 max-w-md w-full shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-bold text-lg mb-2">Mark payment as failed</h3>
+            <p className="text-sm opacity-70 mb-3">This message will be sent to <strong>{failModal.user_name}</strong>.</p>
+            <textarea
+              className="input-field w-full text-sm resize-none"
+              rows={4}
+              placeholder="Reason verification failed (e.g. screenshot unclear, wrong amount, invalid ref ID)…"
+              value={failNote}
+              onChange={(e) => setFailNote(e.target.value)}
+            />
+            <div className="flex gap-2 mt-4 justify-end">
+              <button type="button" onClick={() => setFailModal(null)} className="btn-outline text-sm">Cancel</button>
+              <button type="button" disabled={actionId === failModal.id} onClick={confirmFail} className="text-sm font-bold px-4 py-2 rounded-lg bg-red-600 text-white disabled:opacity-50">Send & mark failed</button>
+            </div>
           </div>
         </div>
       )}

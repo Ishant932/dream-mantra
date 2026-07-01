@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { FileText, ExternalLink, Pencil, Send, Check, Trash2 } from 'lucide-react';
 import CopyableUserId from '../CopyableUserId';
 import { DashCard } from '../DashboardUI';
+import AdminPanelHeader from '../AdminPanelHeader';
 
 export default function StaffReportsPanel({ api, token, onError, onNotice }) {
   const [users, setUsers] = useState([]);
@@ -144,14 +145,31 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {loadError && (
         <DashCard className="!p-4 border border-red-300/60 bg-red-50 dark:bg-red-950/30">
           <p className="text-sm text-red-700 dark:text-red-300 font-medium">{loadError}</p>
           <button type="button" onClick={load} className="btn-outline !py-2 !px-3 text-sm mt-3">Retry</button>
         </DashCard>
       )}
-      <DashCard className="!p-5 sm:!p-6">
+      <AdminPanelHeader
+        title="Report Management"
+        subtitle={`${reports.length} reports delivered to students`}
+        exportProps={{
+          title: 'Reports',
+          filename: 'reports',
+          rows: reports,
+          columns: [
+            { label: 'Student', get: (r) => r.user_name },
+            { label: 'Dreams ID', get: (r) => r.user_uid },
+            { label: 'Title', get: (r) => r.report_title },
+            { label: 'Link', get: (r) => r.report_link },
+            { label: 'Assessment ID', get: (r) => r.assessment_id },
+            { label: 'Updated', get: (r) => r.updated_at },
+          ],
+        }}
+      />
+      <DashCard className="!p-4 sm:!p-5">
         <h2 className="text-lg font-bold mb-2 flex items-center gap-2">
           <FileText className="w-5 h-5 text-amber-500" /> Add / Update Report Link
         </h2>

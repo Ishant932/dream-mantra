@@ -16,8 +16,10 @@ export async function connectMongo() {
   }
 
   mongoose.set('strictQuery', true);
+  const isProd = process.env.NODE_ENV === 'production';
   await mongoose.connect(uri, {
-    serverSelectionTimeoutMS: 15000,
+    serverSelectionTimeoutMS: isProd ? 15000 : 4000,
+    connectTimeoutMS: isProd ? 15000 : 4000,
     maxPoolSize: 10,
   });
   connected = true;

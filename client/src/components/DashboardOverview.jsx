@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import {
   User, FlaskConical, Calendar, Briefcase, Play,
-  BookOpen, Brain, Lock, Sparkles, ArrowRight, CheckCircle2, Clock,
+  BookOpen, Lock, Sparkles, ArrowRight, CheckCircle2, Clock,
 } from 'lucide-react';
 import { DashCard } from './DashboardUI';
 import CopyableUserId from './CopyableUserId';
@@ -13,12 +13,14 @@ import { getConfirmedPaidAssessments, isAssessmentUnlocked } from '../utils/modu
 
 function QuickStat({ icon: Icon, label, value, accent }) {
   return (
-    <div className={`dash-overview-stat dash-overview-stat--${accent}`}>
-      <Icon className="w-5 h-5 shrink-0 opacity-90" />
-      <div>
-        <p className="dash-overview-stat__value">{value}</p>
-        <p className="dash-overview-stat__label">{label}</p>
+    <div className="dash-b2b-stat dash-b2b-stat--compact">
+      <div className="dash-b2b-stat__top">
+        <div className={`dash-b2b-stat__icon dash-b2b-stat__icon--${accent}`}>
+          <Icon className="w-5 h-5" />
+        </div>
       </div>
+      <p className="dash-b2b-stat__value">{value}</p>
+      <p className="dash-b2b-stat__label">{label}</p>
     </div>
   );
 }
@@ -83,7 +85,7 @@ export default function DashboardOverview({
   }
 
   return (
-    <div className="space-y-5 sm:space-y-6">
+    <div className="dash-b2b-stack">
       {welcomeUid && (
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
@@ -96,14 +98,14 @@ export default function DashboardOverview({
         </motion.div>
       )}
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="dash-b2b-stat-grid">
         <QuickStat icon={User} label="Profile" value={`${profileCompletion}%`} accent="gold" />
         <QuickStat icon={FlaskConical} label="Active modules" value={activeModules.length} accent="orange" />
         <QuickStat
           icon={Calendar}
           label="Counselling"
           value={counsellingAccess ? (upcomingBookings.length ? 'Booked' : 'Unlocked') : 'Locked'}
-          accent={counsellingAccess ? 'green' : 'muted'}
+          accent={counsellingAccess ? 'emerald' : 'muted'}
         />
         <QuickStat icon={Briefcase} label="Careers" value="950+" accent="blue" />
       </div>
@@ -121,18 +123,18 @@ export default function DashboardOverview({
         </div>
       </motion.div>
 
-      <div className="grid lg:grid-cols-3 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <button type="button" onClick={() => onGoTab('careers')} className="dash-overview-quick">
           <BookOpen className="w-6 h-6 text-amber-600" />
           <span className="font-bold text-sm">Career Library</span>
         </button>
-        <button type="button" onClick={() => onGoTab('ai')} className="dash-overview-quick">
-          <Brain className="w-6 h-6 text-amber-600" />
-          <span className="font-bold text-sm">AI Corner</span>
-        </button>
         <button type="button" onClick={() => onGoTab('assess')} className="dash-overview-quick">
           <FlaskConical className="w-6 h-6 text-amber-600" />
           <span className="font-bold text-sm">Modules & Orders</span>
+        </button>
+        <button type="button" onClick={() => onGoTab('book')} className="dash-overview-quick">
+          <Calendar className="w-6 h-6 text-amber-600" />
+          <span className="font-bold text-sm">Book Session</span>
         </button>
       </div>
 
@@ -150,7 +152,7 @@ export default function DashboardOverview({
 
       {!counsellingAccess && (
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-          <DashCard className="!p-5 border-amber-200/60" glow={false} hover={false}>
+          <DashCard className="border-amber-200/60" glow={false} hover={false}>
           <div className="flex gap-3">
             <div className="w-11 h-11 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
               <Lock className="w-5 h-5 text-amber-700" />
@@ -196,7 +198,7 @@ export default function DashboardOverview({
       />
 
       <div className="grid md:grid-cols-2 gap-4">
-        <DashCard glow={false} hover={false} className="!p-5">
+        <DashCard glow={false} hover={false}>
           <h3 className="font-bold mb-3 flex items-center gap-2 dash-card-title">
             <FlaskConical className="w-5 h-5 text-amber-600" /> Your modules
           </h3>
@@ -219,7 +221,7 @@ export default function DashboardOverview({
           </button>
         </DashCard>
 
-        <DashCard glow={false} hover={false} className="!p-5">
+        <DashCard glow={false} hover={false}>
           <h3 className="font-bold mb-3 flex items-center gap-2 dash-card-title">
             <Clock className="w-5 h-5 text-amber-600" /> Recent activity
           </h3>

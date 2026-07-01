@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getUploadsDir } from './lib/paymentProof.js';
+import { getMessageUploadsDir } from './lib/messageAttachments.js';
 import { seedAdmin, seedCounsellors, initDatabase, flushDatabase, getDbStatus } from './db.js';
 import { disconnectMongo } from './lib/mongo.js';
 import { APP_VERSION } from './version.js';
@@ -74,6 +75,7 @@ app.post('/api/payments/webhook/razorpay', express.raw({ type: 'application/json
 app.use(express.json({ limit: '12mb' }));
 
 app.use('/api/uploads/payment-proofs', express.static(getUploadsDir(), { maxAge: isProd ? '7d' : 0 }));
+app.use('/api/uploads/message-files', express.static(getMessageUploadsDir(), { maxAge: isProd ? '7d' : 0 }));
 
 app.get('/api/health', (_, res) => {
   res.set('Cache-Control', 'no-store');

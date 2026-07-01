@@ -75,6 +75,23 @@ export const siteEn = {
     ],
   },
 
+  mobileNav: {
+    home: 'Home',
+    counselling: 'Counsel',
+    tests: 'Tests',
+    careers: 'Careers',
+    call: 'Call',
+    modules: 'Modules',
+    pillars: '7 Pillars',
+    book: 'Book Free',
+    faq: 'FAQ',
+    signup: 'Sign up',
+    jumpLabel: 'Quick jump',
+    showMore: 'Show more on this page',
+    showLess: 'Show less',
+    moreFaqs: 'Show all FAQs',
+  },
+
   footer: {
     followUs: 'Follow Us',
     whatsapp: 'WhatsApp Chat',
@@ -493,12 +510,8 @@ export const siteEn = {
         desc: 'Explore 950+ careers with skills, salaries, education paths, and growth.',
       },
       {
-        title: 'AI Corner',
-        desc: 'AI-powered skill plans and career roadmaps within seconds.',
-      },
-      {
-        title: 'Skill Mapping',
-        desc: '5-dimensional AI-driven assessment for personality and career fit.',
+        title: 'Modules',
+        desc: 'Mind Mapping, Skill Mapping, and combo modules — purchase and track progress.',
       },
       {
         title: 'Book Session',
@@ -775,10 +788,10 @@ export const siteEn = {
     dashboardTabs: [
       { id: 'overview', label: 'Overview', desc: 'Profile, stats & activity' },
       { id: 'careers', label: 'Career Library', desc: 'Explore 950+ career paths' },
-      { id: 'ai', label: 'AI Corner', desc: 'Personalised AI guidance' },
       { id: 'assess', label: 'Modules', desc: 'Mind Mapping & Skill Mapping modules' },
       { id: 'process-guides', label: 'Process & Take test', desc: 'Step guides & skill mapping forms' },
       { id: 'reports', label: 'My Reports', desc: 'Assessment reports & deliverables' },
+      { id: 'messages', label: 'Messages', desc: 'Direct messages from admin' },
       { id: 'book', label: 'Book Session', desc: 'Schedule expert counselling' },
       { id: 'security', label: 'Security', desc: 'Two-factor authentication' },
     ],
@@ -1344,10 +1357,58 @@ export const siteEn = {
       cta: 'Book Session',
       tabs: {
         overview: {
-          title: 'Personalised career guidance',
-          desc: 'From confusion to clarity with certified counsellors, scientific assessments, and end-to-end admission support.',
-          startJourney: 'Start Your Journey',
-          exploreDmit: 'Explore Mind Mapping',
+          sectionTitle: 'Two ways we guide you',
+          sectionDesc: 'Certified Dream Mantra counsellors combine scientific assessments with human insight — choose the path that matches where you are today.',
+          types: [
+            {
+              id: 'academic',
+              title: 'Academic & Stream Counselling',
+              icon: '🎓',
+              desc: 'For students and parents deciding boards, streams, subjects, and early career direction — before pressure and guesswork set in.',
+              points: [
+                'Class-wise pathway guidance (Class 6–12)',
+                'Stream selection: Science, Commerce, Arts & vocational options',
+                'Subject combinations aligned to aptitude and goals',
+                'Parent–student sessions with clear, visual reports',
+              ],
+            },
+            {
+              id: 'career',
+              title: 'Career & Admission Counselling',
+              icon: '🧭',
+              desc: 'For students and families ready to shortlist careers, courses, colleges, and admission steps — with a personalised roadmap.',
+              points: [
+                'Career shortlisting from 950+ options in our library',
+                'Course, college & entrance exam planning',
+                'Admission support and documentation guidance',
+                'Working professionals: switch, growth & role alignment',
+              ],
+            },
+          ],
+          mindMapping: {
+            badge: 'Nature · Inborn potential',
+            title: 'Mind Mapping',
+            desc: 'Fingerprint-based scientific assessment that maps inborn intelligence, learning style, and brain lobe strengths — validated in 30+ countries.',
+            points: [
+              'No exams, pressure, or labels',
+              'Reveals natural talents parents often miss',
+              'Foundation for stream and career decisions',
+            ],
+            cta: 'Explore Mind Mapping',
+            link: '/assessments/dmit',
+          },
+          skillMapping: {
+            badge: 'Nurture · Current profile',
+            title: 'Skill Mapping',
+            desc: 'Seven proven frameworks — MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung — map personality, interests, and behaviour today.',
+            points: [
+              'Shows who you are becoming, not just born potential',
+              'Pairs with Mind Mapping for a complete picture',
+              'Feeds directly into your counselling session',
+            ],
+            cta: 'Explore Skill Mapping',
+            link: '/assessments/psychometric',
+          },
         },
         dmit: {
           title: '🔬 Mind Mapping',

@@ -100,11 +100,19 @@ function normalizeModuleSlugs(slugs) {
 
 function normalizeVoucherRecord(voucher) {
   if (!voucher) return voucher;
+  let visibility = 'everyone';
+  if (voucher.visibility === 'selected_users') visibility = 'selected_users';
+  else if (voucher.visibility === 'hidden') visibility = 'hidden';
   return {
     ...voucher,
     code: String(voucher.code || '').trim().toUpperCase(),
     moduleSlugs: normalizeModuleSlugs(voucher.moduleSlugs),
     active: voucher.active !== false,
+    visibility,
+    allowedUserIds: Array.isArray(voucher.allowedUserIds)
+      ? voucher.allowedUserIds.map((x) => Number(x)).filter((n) => !Number.isNaN(n))
+      : [],
+    startsAt: voucher.startsAt || null,
   };
 }
 
@@ -113,12 +121,39 @@ function staticVouchersFromConfig() {
     ...coupon,
     moduleSlugs: coupon.moduleSlugs || ['all'],
     active: coupon.active !== false,
+    visibility: coupon.visibility || 'everyone',
+    allowedUserIds: coupon.allowedUserIds || [],
     source: 'system',
   }));
 }
 
+function parseVoucherStart(startsAt, now = new Date()) {
+  if (!startsAt) return true;
+  const raw = String(startsAt).trim();
+  const start = /^\d{4}-\d{2}-\d{2}$/.test(raw)
+    ? new Date(`${raw}T00:00:00.000`)
+    : new Date(raw);
+  if (Number.isNaN(start.getTime())) return true;
+  return start <= now;
+}
+
+function isVoucherVisibleToUser(voucher, userId, now = new Date()) {
+  const mode = voucher.visibility || 'everyone';
+  if (mode === 'hidden') return false;
+  if (mode === 'selected_users') {
+    const uid = userId != null ? Number(userId) : null;
+    const ids = Array.isArray(voucher.allowedUserIds) ? voucher.allowedUserIds.map(Number) : [];
+    if (uid == null || !ids.includes(uid)) return false;
+  }
+  return true;
+}
+
 function isVoucherLive(voucher, now = new Date()) {
-  return voucher.active !== false && !isVoucherExpired(voucher.expiresAt, now);
+  return (
+    voucher.active !== false
+    && !isVoucherExpired(voucher.expiresAt, now)
+    && parseVoucherStart(voucher.startsAt, now)
+  );
 }
 
 function mergeVoucherLists(dbVouchers = [], systemVouchers = []) {
@@ -257,17 +292,18 @@ export function listVouchers() {
   }));
 }
 
-export function listPublicVouchers() {
+export function listPublicVouchers(userId = null) {
   const now = new Date();
   return listVouchers()
-    .filter((v) => isVoucherLive(v, now))
-    .map(({ code, label, discountPercent, discountFixed, firstTimeOnly, moduleSlugs, expiresAt }) => ({
+    .filter((v) => isVoucherLive(v, now) && isVoucherVisibleToUser(v, userId, now))
+    .map(({ code, label, discountPercent, discountFixed, firstTimeOnly, moduleSlugs, startsAt, expiresAt }) => ({
       code,
       label,
       discountPercent,
       discountFixed,
       firstTimeOnly: !!firstTimeOnly,
       moduleSlugs,
+      startsAt,
       expiresAt,
     }));
 }
@@ -301,7 +337,12 @@ export function upsertVoucher(input) {
     moduleSlugs: normalizeModuleSlugs(input.moduleSlugs),
     active: input.active !== false,
     firstTimeOnly: !!input.firstTimeOnly,
+    startsAt: input.startsAt || null,
     expiresAt: input.expiresAt || null,
+    visibility: ['selected_users', 'hidden'].includes(input.visibility) ? input.visibility : 'everyone',
+    allowedUserIds: Array.isArray(input.allowedUserIds)
+      ? input.allowedUserIds.map((x) => Number(x)).filter((n) => !Number.isNaN(n))
+      : [],
     source: isSystemVoucherCode(code) ? 'override' : 'custom',
   };
   if (!deactivating && !voucher.discountPercent && !voucher.discountFixed) {

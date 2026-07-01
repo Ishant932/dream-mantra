@@ -1,13 +1,14 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Shield, AlertCircle } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { counsellorApi } from '../api';
+import { counsellorApi, userApi } from '../api';
 import DashboardSidebarLayout from '../components/DashboardSidebarLayout';
 import StaffBookingsPanel from '../components/staff/StaffBookingsPanel';
 import StaffUsersPanel from '../components/staff/StaffUsersPanel';
 import StaffReportsPanel from '../components/staff/StaffReportsPanel';
 import AdminUserProfileModal from '../components/AdminUserProfileModal';
+import DashboardB2BBanner from '../components/DashboardB2BBanner';
+import NotificationBell from '../components/NotificationBell';
 import {
   DashboardShell,
   DashboardLoading,
@@ -29,6 +30,17 @@ export default function CounsellorDashboard() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
+  const [notifUnread, setNotifUnread] = useState(0);
+
+  const refreshNotifs = useCallback(async () => {
+    if (!token) return;
+    try {
+      const data = await userApi.notifications(token);
+      setNotifUnread(data.unread ?? 0);
+    } catch {
+      /* silent */
+    }
+  }, [token]);
 
   useEffect(() => {
     if (!token) return;
@@ -36,7 +48,8 @@ export default function CounsellorDashboard() {
     counsellorApi.stats(token)
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, [token]);
+    refreshNotifs();
+  }, [token, refreshNotifs]);
 
   const viewProfile = async (userId) => {
     setProfileOpen(true);
@@ -68,7 +81,7 @@ export default function CounsellorDashboard() {
   if (loading) return <DashboardLoading variant="admin" />;
 
   return (
-    <DashboardShell variant="admin" className="pt-24 pb-16">
+    <DashboardShell variant="admin" className="pt-16 pb-10">
       <AdminUserProfileModal
         open={profileOpen}
         user={profileUser}
@@ -78,20 +91,29 @@ export default function CounsellorDashboard() {
         onClose={() => { setProfileOpen(false); setProfileUser(null); }}
       />
 
-      <div className="max-w-7xl mx-auto px-4">
-        <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="dash-admin-header">
-          <Shield className="w-9 h-9 text-gold-400" />
-          Counsellor Dashboard
-          <span className="text-base font-normal opacity-70 ml-2">— {user?.name}</span>
-        </motion.h1>
+      <div className="dash-b2b-page max-w-[1440px] mx-auto px-4 sm:px-6">
+        <DashboardB2BBanner
+          tag="Counsellor Panel"
+          title="Counsellor Dashboard"
+          subtitle={`Bookings · users · reports — ${user?.name || 'Counsellor'}`}
+          variant="admin"
+          action={(
+            <NotificationBell
+              token={token}
+              initialUnread={notifUnread}
+              onRefresh={refreshNotifs}
+              onDark
+            />
+          )}
+        />
 
         {error && (
-          <DashAlert type="error" className="mb-4">
+          <DashAlert type="error">
             <AlertCircle className="w-4 h-4 shrink-0" /> {error}
           </DashAlert>
         )}
         {notice && (
-          <DashAlert type="success" className="mb-4">
+          <DashAlert type="success">
             {notice}
           </DashAlert>
         )}
@@ -103,6 +125,10 @@ export default function CounsellorDashboard() {
           user={user}
           showProfileCompletion={false}
           sectionTitle="Counsellor Panel"
+          deckVariant="admin"
+          notifToken={token}
+          notifUnread={notifUnread}
+          onNotifRefresh={refreshNotifs}
         >
           {(tab) => (
             <>

@@ -167,7 +167,7 @@ export function AuthProvider({ children }) {
         if (cancelled || session !== authSessionRef.current) return;
         if (err?.name === 'AbortError') return;
         if (activeToken !== tokenRef.current) return;
-        if (bootstrapUser) return;
+        if (err?.status !== 401) return;
         logout();
       })
       .finally(() => {

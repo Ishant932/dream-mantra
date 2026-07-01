@@ -5,6 +5,7 @@ import { Mail, Lock, Shield, Sparkles, ArrowRight, Loader2 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Login() {
   const { login, verify2FA, user, loading: authLoading } = useAuth();
@@ -159,9 +160,7 @@ export default function Login() {
                     <label className="text-sm font-semibold text-sand-700 dark:text-sand-300 flex items-center gap-2 mb-1.5">
                       <Lock className="w-4 h-4 text-amber-600" /> {t('auth.password')}
                     </label>
-                    <input
-                      type="password"
-                      className="input-field"
+                    <PasswordInput
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       autoComplete="current-password"

@@ -6,8 +6,7 @@ import { containerVariants, itemVariants } from '../utils/animations';
 
 export function DashboardShell({ variant = 'user', children, className = '' }) {
   return (
-    <div className={`dash-root ${variant === 'admin' ? 'dash-root-admin' : 'dash-root-user'} ${className}`}>
-      <DashboardBackground variant={variant} />
+    <div className={`dash-root dash-b2b ${variant === 'admin' ? 'dash-root-admin' : 'dash-root-user'} ${className}`}>
       <div className="dash-content relative z-[1]">{children}</div>
     </div>
   );
@@ -35,7 +34,7 @@ export function DashboardLoading({ variant = 'user' }) {
 
 export function DashboardHero({ user, title, subtitle, badge, cta, stats = [] }) {
   return (
-    <section className="dash-hero relative pt-20 sm:pt-24 lg:pt-28 pb-10 sm:pb-14 overflow-hidden">
+    <section className="dash-hero relative pt-16 sm:pt-20 lg:pt-24 pb-6 sm:pb-8 overflow-hidden">
       <div className="dash-hero-glow" />
       <motion.div
         initial={{ opacity: 0, y: 28 }}
@@ -91,7 +90,7 @@ export function DashboardHero({ user, title, subtitle, badge, cta, stats = [] })
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mt-8 sm:mt-10"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 mt-6 sm:mt-8"
           >
             {stats.map((s) => (
               <motion.div key={s.label} variants={itemVariants} className="dash-stat-card group">
@@ -195,25 +194,26 @@ export function DashAlert({ type = 'success', children, onRetry }) {
   );
 }
 
-export function AdminStatCard({ stat, index }) {
+export function AdminStatCard({ stat, index, hint }) {
+  const tones = ['emerald', 'blue', 'violet', 'orange', 'cyan', 'rose'];
+  const tone = tones[index % tones.length];
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 24, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ delay: index * 0.1, duration: 0.5 }}
-      whileHover={{ y: -8, scale: 1.02 }}
-      className="dash-admin-stat"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -4, transition: { duration: 0.25 } }}
+      className="dash-b2b-stat"
     >
-      <motion.div
-        className="dash-admin-stat-icon"
-        animate={{ y: [0, -4, 0] }}
-        transition={{ duration: 3, repeat: Infinity, delay: index * 0.3 }}
-      >
-        <stat.icon className="w-8 h-8" />
-      </motion.div>
-      <p className="text-3xl font-display font-bold">{stat.value}</p>
-      <p className="text-sm mt-1 opacity-70">{stat.label}</p>
-      <div className="dash-admin-stat-glow" />
+      <div className="dash-b2b-stat__top">
+        <div className={`dash-b2b-stat__icon dash-b2b-stat__icon--${tone}`}>
+          <stat.icon className="w-5 h-5" />
+        </div>
+        {hint && <span className="dash-b2b-stat__hint">{hint}</span>}
+      </div>
+      <p className="dash-b2b-stat__value">{stat.value}</p>
+      <p className="dash-b2b-stat__label">{stat.label}</p>
     </motion.div>
   );
 }

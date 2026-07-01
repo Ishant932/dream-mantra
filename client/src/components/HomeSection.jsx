@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 /** Alternating home section backgrounds — theme tokens only */
 const VARIANTS = {
@@ -12,6 +13,17 @@ const VARIANTS = {
 };
 
 export default function HomeSection({ variant = 'base', className = '', children, id }) {
+  const cls = `${VARIANTS[variant] || VARIANTS.base} ${className}`.trim();
+  const lite = isMobilePerf();
+
+  if (lite) {
+    return (
+      <section id={id} className={cls}>
+        <div className="home-section__inner">{children}</div>
+      </section>
+    );
+  }
+
   return (
     <motion.section
       id={id}
@@ -19,7 +31,7 @@ export default function HomeSection({ variant = 'base', className = '', children
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: '-60px' }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-      className={`${VARIANTS[variant] || VARIANTS.base} ${className}`.trim()}
+      className={cls}
     >
       <div className="home-section__ambient" aria-hidden="true">
         <span className="home-section__orb home-section__orb--1" />

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { paymentsApi, userApi } from '../api';
-import { WELCOME_OFFER, applyVoucherPrice } from '../data/promotions';
+import { applyVoucherPrice } from '../data/promotions';
 import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests, MODULE_CATALOG, resolveCounsellingAddon } from '../data/moduleCatalog';
 import { purchaseIncludesCounselling } from '../utils/moduleAccess';
 import SkillMappingBandPicker from '../components/SkillMappingBandPicker';
@@ -48,6 +48,7 @@ export default function PaymentPage() {
   const [paymentMethod, setPaymentMethod] = useState(null);
   const [proofPreview, setProofPreview] = useState(null);
   const [proofFileName, setProofFileName] = useState('');
+  const [paymentReferenceId, setPaymentReferenceId] = useState('');
   const [userNote, setUserNote] = useState('');
   const [skillMappingBand, setSkillMappingBand] = useState('');
   const [catalog, setCatalog] = useState(MODULE_CATALOG);
@@ -60,12 +61,12 @@ export default function PaymentPage() {
         if (Array.isArray(res.products) && res.products.length) setCatalog(res.products);
       })
       .catch(() => {});
-    paymentsApi.promotions()
+    paymentsApi.promotions(token)
       .then((res) => {
         if (Array.isArray(res.vouchers)) setLiveVouchers(res.vouchers);
       })
       .catch(() => {});
-  }, []);
+  }, [token]);
 
   const loadOrder = useCallback(async () => {
     if (!token) return;
@@ -257,14 +258,23 @@ export default function PaymentPage() {
     setPaying(true);
     setError('');
     try {
+      if (!proofPreview) {
+        setError('Please upload your payment screenshot');
+        return;
+      }
+      if (!paymentReferenceId.trim()) {
+        setError('Please enter your payment reference / transaction ID');
+        return;
+      }
       const ok = await ensureSkillBandBeforePay();
       if (!ok) return;
 
       const res = await paymentsApi.submitManual(token, {
         assessmentId: Number(assessmentId),
         skillMappingBand: needsSkillBand ? skillMappingBand : undefined,
-        proofDataUrl: proofPreview || undefined,
+        proofDataUrl: proofPreview,
         proofFileName: proofFileName || undefined,
+        paymentReferenceId: paymentReferenceId.trim(),
         userNote: userNote.trim() || undefined,
       });
 
@@ -443,8 +453,13 @@ export default function PaymentPage() {
               Your order for <strong>{displayTitle}</strong> ({formatPrice(finalPrice)}) has been sent to admin for verification.
             </p>
             {payment?.order_id && (
-              <p className="text-xs font-mono bg-sand-100 dark:bg-sand-800 rounded-lg px-3 py-2 mb-4">
+              <p className="text-xs font-mono bg-sand-100 dark:bg-sand-800 rounded-lg px-3 py-2 mb-2">
                 Order ID: {payment.order_id}
+              </p>
+            )}
+            {payment?.payment_reference_id && (
+              <p className="text-xs font-mono bg-emerald-50 dark:bg-emerald-950/30 text-emerald-800 dark:text-emerald-200 rounded-lg px-3 py-2 mb-4">
+                Payment Ref: {payment.payment_reference_id}
               </p>
             )}
             <div className="flex items-center justify-center gap-2 text-sm text-amber-700 mb-6">
@@ -560,7 +575,7 @@ export default function PaymentPage() {
               <input
                 value={coupon}
                 onChange={(e) => { setCoupon(e.target.value.toUpperCase()); setCouponApplied(null); }}
-                placeholder={liveVouchers[0]?.code || WELCOME_OFFER.code}
+                placeholder={liveVouchers[0]?.code || 'Enter your code'}
                 className="input-field flex-1 !py-2.5 font-mono uppercase"
               />
               <button type="button" onClick={applyCoupon} disabled={validating || !coupon.trim()} className="btn-outline !py-2.5">
@@ -629,17 +644,33 @@ export default function PaymentPage() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-semibold block mb-2">Payment screenshot (optional but recommended)</label>
-                <input type="file" accept="image/*,.pdf" onChange={handleProofChange} className="input-field !py-2 text-sm" />
+                <label className="text-sm font-semibold block mb-2">Payment screenshot <span className="text-red-600">*</span></label>
+                <input type="file" accept="image/*,.pdf" onChange={handleProofChange} className="input-field !py-2 text-sm" required />
                 {proofPreview && (
-                  <p className="text-xs text-emerald-700 mt-1">Attached: {proofFileName}</p>
+                  <div className="mt-2">
+                    <p className="text-xs text-emerald-700">Attached: {proofFileName}</p>
+                    {proofPreview.startsWith('data:image') && (
+                      <img src={proofPreview} alt="Payment proof preview" className="mt-2 max-h-40 rounded-lg border border-sand-200" />
+                    )}
+                  </div>
                 )}
+              </div>
+              <div>
+                <label className="text-sm font-semibold block mb-2">Payment reference / transaction ID <span className="text-red-600">*</span></label>
+                <input
+                  className="input-field !py-2.5"
+                  placeholder="UPI ref no., transaction ID, etc."
+                  value={paymentReferenceId}
+                  onChange={(e) => setPaymentReferenceId(e.target.value)}
+                  maxLength={120}
+                  required
+                />
               </div>
               <div>
                 <label className="text-sm font-semibold block mb-2">Note for admin (optional)</label>
                 <input
                   className="input-field !py-2.5"
-                  placeholder="UPI reference, transaction ID, etc."
+                  placeholder="Any extra details for verification"
                   value={userNote}
                   onChange={(e) => setUserNote(e.target.value)}
                   maxLength={500}

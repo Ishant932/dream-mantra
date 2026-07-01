@@ -75,6 +75,23 @@ export const siteHi = {
     ],
   },
 
+  mobileNav: {
+    home: 'होम',
+    counselling: 'परामर्श',
+    tests: 'टेस्ट',
+    careers: 'करियर',
+    call: 'कॉल',
+    modules: 'मॉड्यूल',
+    pillars: '7 स्तंभ',
+    book: 'मुफ्त बुक',
+    faq: 'FAQ',
+    signup: 'साइन अप',
+    jumpLabel: 'जल्दी जाएँ',
+    showMore: 'और देखें',
+    showLess: 'कम देखें',
+    moreFaqs: 'सभी FAQ',
+  },
+
   footer: {
     followUs: 'हमें फॉलो करें',
     whatsapp: 'WhatsApp चैट',
@@ -489,12 +506,8 @@ export const siteHi = {
         desc: '950+ careers — skills, salaries, education paths और growth के साथ explore करें।',
       },
       {
-        title: 'AI Corner',
-        desc: 'AI-संचालित skill plans और career roadmaps — सेकंडों में।',
-      },
-      {
-        title: 'Skill Mapping',
-        desc: '5-आयामी AI-driven assessment — personality और career fit के लिए।',
+        title: 'Modules',
+        desc: 'Mind Mapping, Skill Mapping और combo modules — खरीदें और progress track करें।',
       },
       {
         title: 'Book Session',
@@ -711,10 +724,10 @@ export const siteHi = {
     dashboardTabs: [
       { id: 'overview', label: 'अवलोकन', desc: 'Profile, stats और activity' },
       { id: 'careers', label: 'Career Library', desc: '950+ career paths explore करें' },
-      { id: 'ai', label: 'AI Corner', desc: 'Personalised AI guidance' },
       { id: 'assess', label: 'Modules', desc: 'Mind Mapping और Skill Mapping modules' },
       { id: 'process-guides', label: 'Process & Take test', desc: 'Guides, steps और skill mapping forms' },
       { id: 'reports', label: 'My Reports', desc: 'Assessment reports और deliverables' },
+      { id: 'messages', label: 'Messages', desc: 'Admin से direct messages' },
       { id: 'book', label: 'सत्र बुक करें', desc: 'Expert counselling schedule करें' },
       { id: 'security', label: 'Security', desc: 'Two-factor authentication' },
     ],
@@ -1274,10 +1287,58 @@ export const siteHi = {
       cta: 'सत्र बुक करें',
       tabs: {
         overview: {
-          title: 'Personalised career guidance',
-          desc: 'Certified counsellors, scientific assessments और end-to-end admission support के साथ confusion से clarity तक।',
-          startJourney: 'अपनी Journey शुरू करें',
-          exploreDmit: 'Mind Mapping Explore करें',
+          sectionTitle: 'हम आपको दो तरीकों से guide करते हैं',
+          sectionDesc: 'Certified Dream Mantra counsellors scientific assessments को human insight के साथ जोड़ते हैं — वह path चुनें जो आज आपकी stage से मेल खाता हो।',
+          types: [
+            {
+              id: 'academic',
+              title: 'Academic & Stream Counselling',
+              icon: '🎓',
+              desc: 'Boards, streams, subjects और early career direction तय करने वाले students और parents के लिए — pressure और guesswork से पहले।',
+              points: [
+                'Class-wise pathway guidance (Class 6–12)',
+                'Stream selection: Science, Commerce, Arts और vocational options',
+                'Aptitude और goals के अनुसार subject combinations',
+                'Clear visual reports के साथ parent–student sessions',
+              ],
+            },
+            {
+              id: 'career',
+              title: 'Career & Admission Counselling',
+              icon: '🧭',
+              desc: 'Careers, courses, colleges और admission steps shortlist करने के लिए — personalised roadmap के साथ।',
+              points: [
+                '950+ options में से career shortlisting',
+                'Course, college और entrance exam planning',
+                'Admission support और documentation guidance',
+                'Working professionals: switch, growth और role alignment',
+              ],
+            },
+          ],
+          mindMapping: {
+            badge: 'Nature · Inborn potential',
+            title: 'Mind Mapping',
+            desc: 'Fingerprint-based scientific assessment जो inborn intelligence, learning style और brain lobe strengths map करती है — 30+ countries में validated।',
+            points: [
+              'No exams, pressure, या labels',
+              'Natural talents reveal करती है जो parents अक्सर miss करते हैं',
+                'Stream और career decisions की foundation',
+            ],
+            cta: 'Mind Mapping Explore करें',
+            link: '/assessments/dmit',
+          },
+          skillMapping: {
+            badge: 'Nurture · Current profile',
+            title: 'Skill Mapping',
+            desc: 'सात proven frameworks — MBTI, DISC, RIASEC, Big 5, VAK, MIT और Jung — personality, interests और behaviour map करते हैं।',
+            points: [
+              'दिखाता है आप कौन बन रहे हैं, सिर्फ born potential नहीं',
+              'Complete picture के लिए Mind Mapping के साथ pair होता है',
+              'आपकी counselling session में directly feed होता है',
+            ],
+            cta: 'Skill Mapping Explore करें',
+            link: '/assessments/psychometric',
+          },
         },
         dmit: {
           title: '🔬 Mind Mapping',

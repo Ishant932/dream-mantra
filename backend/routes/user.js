@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import db, { repo } from '../lib/database.js';
+import db, { repo, flushDatabase } from '../lib/database.js';
 import { buildModuleSelection, getActiveModuleCatalog } from '../lib/moduleCatalog.js';
 import { getProduct } from '../config/products.js';
 import { createPendingPaymentForAssessment } from '../lib/paymentService.js';
@@ -31,6 +31,12 @@ import {
   markAllNotificationsRead,
   notifyUser,
 } from '../lib/notifications.js';
+import {
+  getThreadForUser,
+  sendMessage,
+  markThreadRead,
+  countUnreadForUser,
+} from '../lib/messages.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const careersPath = path.join(__dirname, '../../client/public/data/careers.json');
@@ -302,6 +308,31 @@ router.patch('/notifications/:id/read', (req, res) => {
 router.post('/notifications/read-all', (req, res) => {
   const count = markAllNotificationsRead(req.user.id);
   res.json({ ok: true, marked: count, unread: 0 });
+});
+
+router.get('/messages', (req, res) => {
+  const data = getThreadForUser(req.user.id);
+  if (data.thread) markThreadRead({ threadId: data.thread.id, role: 'user' });
+  res.json({ ...data, unread: countUnreadForUser(req.user.id) });
+});
+
+router.post('/messages', async (req, res) => {
+  try {
+    const { body, attachments } = req.body || {};
+    const threadData = getThreadForUser(req.user.id);
+    const result = sendMessage({
+      threadId: threadData.thread?.id,
+      userId: req.user.id,
+      senderRole: 'user',
+      senderId: req.user.id,
+      body,
+      attachments: Array.isArray(attachments) ? attachments : [],
+    });
+    await flushDatabase();
+    res.json(result);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
 });
 
 router.get('/slots/available', (req, res) => {

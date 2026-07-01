@@ -7,7 +7,8 @@ import { useLang } from '../../context/LanguageContext';
 import SlotCalendar from '../SlotCalendar';
 import AdminOpenSlotCard from '../AdminOpenSlotCard';
 import ProfileSnapshot from './ProfileSnapshot';
-import { DashCard } from '../DashboardUI';
+import AdminPanelHeader from '../AdminPanelHeader';
+import AdminSectionExport from '../AdminSectionExport';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All statuses' },
@@ -152,9 +153,39 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
     }
   };
 
+  const consultationExportColumns = [
+    { label: 'Student', get: (c) => c.user_name },
+    { label: 'Dreams ID', get: (c) => c.user_uid },
+    { label: 'Email', get: (c) => c.email },
+    { label: 'Phone', get: (c) => c.phone },
+    { label: 'Program', get: (c) => c.program },
+    { label: 'Status', get: (c) => c.status },
+    { label: 'Scheduled', get: (c) => c.scheduled_at },
+    { label: 'Slot', get: (c) => c.slot_title },
+  ];
+
+  const slotExportColumns = [
+    { label: 'Title', get: (s) => s.title },
+    { label: 'Date', get: (s) => s.date },
+    { label: 'Time', get: (s) => s.time },
+    { label: 'Status', get: (s) => s.status },
+    { label: 'Capacity', get: (s) => s.capacity },
+    { label: 'Booked', get: (s) => s.booked_count },
+  ];
+
   return (
-    <div className="space-y-8">
-      <DashCard className="!p-5 sm:!p-6">
+    <div className="space-y-4">
+      <AdminPanelHeader
+        title="Booking Management"
+        subtitle={`${filteredConsultations.length} consultations · ${slots.length} slots`}
+        exportProps={{
+          title: 'Bookings',
+          filename: 'bookings-consultations',
+          rows: filteredConsultations,
+          columns: consultationExportColumns,
+        }}
+      />
+      <section className="staff-booking-block">
         <h2 className="text-lg font-bold flex items-center gap-2 mb-2">
           <Calendar className="w-5 h-5 text-amber-500" /> Consultation Slots — Live Calendar
         </h2>
@@ -173,18 +204,21 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
           onUpdateSlot={handleUpdateSlot}
           onDeleteSlot={handleDeleteSlot}
         />
-      </DashCard>
+      </section>
 
-      <DashCard className="!p-5 sm:!p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <h2 className="text-lg font-bold">{t('admin.manageConsultations')}</h2>
-          <p className="text-sm opacity-70">
-            {filteredConsultations.length} of {consultations.length} consultations
-            {hasConsultationFilters && ' (filtered)'}
-          </p>
+      <section className="staff-booking-block">
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <div>
+            <h2 className="text-lg font-bold">{t('admin.manageConsultations')}</h2>
+            <p className="text-sm opacity-70">
+              {filteredConsultations.length} of {consultations.length}
+              {hasConsultationFilters && ' (filtered)'}
+            </p>
+          </div>
+          <AdminSectionExport title="Slots" filename="booking-slots" rows={slots} columns={slotExportColumns} />
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5 p-4 rounded-2xl bg-sand-50 dark:bg-sand-800/40 border border-sand-200/60 dark:border-sand-700/40">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5 staff-booking-filters">
           <div className="sm:col-span-2">
             <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
               <Search className="w-3 h-3" /> Search
@@ -320,10 +354,10 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
             </motion.div>
           ))}
         </div>
-      </DashCard>
+      </section>
 
       {openSlots.length > 0 && (
-        <DashCard className="!p-5 sm:!p-6">
+        <section className="staff-booking-block">
           <h3 className="font-bold mb-2 flex items-center gap-2">
             <Clock className="w-4 h-4 text-amber-500" /> All open slots ({openSlots.length})
           </h3>
@@ -340,7 +374,7 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
               />
             ))}
           </div>
-        </DashCard>
+        </section>
       )}
     </div>
   );

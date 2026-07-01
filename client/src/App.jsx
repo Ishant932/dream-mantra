@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import ScrollToTopOnNavigate from './components/ScrollToTopOnNavigate';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
@@ -62,6 +63,7 @@ export default function App() {
       <AuthProvider>
         <ErrorBoundary>
         <BrowserRouter>
+          <ScrollToTopOnNavigate />
           <Routes>
             <Route element={<Layout />}>
               <Route index element={<Home />} />

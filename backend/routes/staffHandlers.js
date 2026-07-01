@@ -1,4 +1,4 @@
-import db, { flushDatabase } from '../db.js';
+import db, { flushDatabase, repo } from '../db.js';
 import { calcProfileCompletion, normalizeProfile, profileChecklist, defaultProfile } from '../lib/profile.js';
 import {
   listSlots,
@@ -75,6 +75,8 @@ function sanitizeUser(user, { paidTests = 0, consultations = 0, counsellors = {}
     assigned_counsellor_id: cid,
     assigned_counsellor_name: cid ? counsellors[cid] || null : null,
     twoFactorEnabled: !!user.twoFactorEnabled,
+    account_status: user.account_status || 'active',
+    suspended_until: user.suspended_until || null,
     profile: normalizeProfile(user.profile),
     profileCompletion: calcProfileCompletion(user, { paidTests, consultations }),
     profileChecklist: profileChecklist(user),
@@ -223,7 +225,7 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
         return res.status(404).json({ message: 'User not found' });
       }
 
-      const { name, email, phone, profile: profilePatch, assignedCounsellorId } = req.body;
+      const { name, email, phone, profile: profilePatch, assignedCounsellorId, accountStatus, suspendedUntil } = req.body;
       if (name?.trim()) user.name = name.trim();
       if (email !== undefined) user.email = email?.trim() || null;
       if (phone !== undefined) user.phone = phone?.trim() || null;
@@ -246,6 +248,18 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
         }
       }
 
+      if (req.user?.role === 'admin') {
+        if (accountStatus !== undefined) {
+          user.account_status = accountStatus === 'suspended' ? 'suspended' : 'active';
+        }
+        if (suspendedUntil !== undefined) {
+          user.suspended_until = suspendedUntil || null;
+          if (!user.suspended_until && user.account_status === 'suspended') {
+            user.account_status = 'active';
+          }
+        }
+      }
+
       saveData();
       await flushDatabase();
 
@@ -254,6 +268,26 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
     } catch (e) {
       console.error('PATCH /users/:id failed:', e);
       res.status(500).json({ message: e.message || 'Failed to update user' });
+    }
+  });
+
+  router.delete('/users/:id', async (req, res) => {
+    try {
+      if (req.user?.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admin can delete users' });
+      }
+      const data = getData();
+      const user = data.users.find((u) => numId(u.id) === numId(req.params.id) && u.role === 'user');
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      const ok = repo.deleteUser(user.id);
+      if (!ok) return res.status(404).json({ message: 'User not found' });
+      await flushDatabase();
+      res.json({ success: true, message: 'User deleted' });
+    } catch (e) {
+      console.error('DELETE /users/:id failed:', e);
+      res.status(500).json({ message: e.message || 'Failed to delete user' });
     }
   });
 

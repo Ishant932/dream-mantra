@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useMemo, useRef, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import {
   Calendar, FlaskConical, User, CheckCircle, Award, Briefcase,
-  Sparkles, AlertCircle, ExternalLink, BookOpen, Brain,
+  Sparkles, AlertCircle, ExternalLink, BookOpen,
   FileText, Download,
 } from 'lucide-react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
@@ -30,10 +30,8 @@ import {
 import { canCancelAssessment } from '../utils/assessmentHelpers';
 import { hasSkillMappingTests } from '../data/moduleCatalog';
 import { prefetchCareers } from '../utils/loadCareers';
-import { scrollToElement } from '../utils/scrollToTop';
 
 const CareerLibraryExplorer = lazy(() => import('../components/CareerLibraryExplorer'));
-const AICornerPanel = lazy(() => import('../components/AICornerPanel'));
 
 function TabLoader() {
   return (
@@ -45,15 +43,16 @@ function TabLoader() {
 import {
   DashboardShell,
   DashboardLoading,
-  DashboardHero,
   DashSection,
   DashCard,
   DashAlert,
 } from '../components/DashboardUI';
+import DashboardB2BBanner from '../components/DashboardB2BBanner';
+import { UserMessagesPanel } from '../components/MessagesPanel';
 
-const toolkitIcons = [BookOpen, Brain, FlaskConical, Calendar];
-const toolkitTabs = ['careers', 'ai', 'assess', 'book'];
-const toolkitLinks = ['/careers', null, null, null];
+const toolkitIcons = [BookOpen, FlaskConical, Calendar];
+const toolkitTabs = ['careers', 'assess', 'book'];
+const toolkitLinks = ['/careers', null, null];
 
 export default function UserDashboard() {
   const { user, token, refreshUser } = useAuth();
@@ -61,6 +60,12 @@ export default function UserDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
   const tabParam = new URLSearchParams(location.search).get('tab') || 'overview';
+
+  useEffect(() => {
+    if (tabParam === 'ai') {
+      navigate({ pathname: location.pathname, search: '?tab=overview' }, { replace: true });
+    }
+  }, [tabParam, navigate, location.pathname]);
   const welcomeUid = location.state?.welcomeUid;
   const [data, setData] = useState({ consultations: [], assessments: [], stats: {} });
   const [program, setProgram] = useState('Class 9-10');
@@ -73,7 +78,6 @@ export default function UserDashboard() {
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
-  const dashAnchorRef = useRef(null);
 
   const counsellingAccess = useMemo(
     () => data.counsellingAccess === true || hasCounsellingAccess(data.assessments || []),
@@ -193,18 +197,6 @@ export default function UserDashboard() {
   }, [token, tabParam]);
 
   useEffect(() => {
-    if (loading) return undefined;
-    const run = () => {
-      if (dashAnchorRef.current) {
-        scrollToElement(dashAnchorRef.current, { offset: 8, behavior: 'instant' });
-      }
-    };
-    run();
-    const timer = window.setTimeout(run, 120);
-    return () => window.clearTimeout(timer);
-  }, [loading, tabParam]);
-
-  useEffect(() => {
     const slotId = new URLSearchParams(location.search).get('slot_id');
     if (!slotId || loading) return;
     if (!counsellingAccess) {
@@ -316,7 +308,7 @@ export default function UserDashboard() {
   }
 
   return (
-    <DashboardShell variant="user">
+    <DashboardShell variant="user" className="pt-16 pb-10">
       <ProfileOnboardingModal
         open={showProfileModal}
         initialProfile={{
@@ -328,16 +320,21 @@ export default function UserDashboard() {
         saving={profileSaving}
       />
 
-      <DashboardHero
-        user={displayUser}
-        badge="✨ Your Career Toolkit"
-        title={`${t('dashboard.welcome')}, ${displayUser?.name}!`}
-        subtitle={displayUser?.email || displayUser?.phone}
-        cta={{ href: '/careers', label: 'Explore 950+ Careers' }}
-        stats={stats}
-      />
+      <div className="dash-b2b-page max-w-[1440px] mx-auto px-4 sm:px-6">
+        <DashboardB2BBanner
+          tag="Your Career Toolkit"
+          title={`Welcome, ${displayUser?.name?.split(' ')[0] || 'Student'}`}
+          subtitle={displayUser?.email || displayUser?.phone || 'Dream Mantra student dashboard'}
+          variant="user"
+          action={(
+            <NotificationBell
+              token={token}
+              initialUnread={data.unreadNotifications || 0}
+              onRefresh={refreshDashboard}
+            />
+          )}
+        />
 
-      <div className="max-w-7xl mx-auto px-4 py-10">
         {msg && (
           <DashAlert type="success">
             <CheckCircle className="w-5 h-5 shrink-0" /> {msg}
@@ -349,23 +346,17 @@ export default function UserDashboard() {
           </DashAlert>
         )}
 
-        <div className="flex justify-end mb-2">
-          <NotificationBell
-            token={token}
-            initialUnread={data.unreadNotifications || 0}
-            onRefresh={refreshDashboard}
-          />
-        </div>
-
-        <div ref={dashAnchorRef} id="user-dashboard-anchor" className="scroll-mt-28">
-        <DashSection title={t('dashboard.myDashboard')} icon={User} staticLayout>
-          <DashboardSidebarLayout
+        <div id="user-dashboard-anchor" className="scroll-mt-24">
+        <DashboardSidebarLayout
             tabs={dashboardTabs}
             defaultTab={tabParam}
             id="user-dashboard"
-            anchorRef={dashAnchorRef}
             user={displayUser}
             profileCompletion={profileCompletion}
+            sectionTitle="My Dashboard"
+            notifToken={token}
+            notifUnread={data.unreadNotifications || 0}
+            onNotifRefresh={refreshDashboard}
           >
             {(tab) => (
                 <>
@@ -396,14 +387,6 @@ export default function UserDashboard() {
                     showHeader={false}
                     initialStream={careerLibraryStream}
                   />
-                </Suspense>
-              )}
-
-              {tab === 'ai' && (
-                <Suspense fallback={<TabLoader />}>
-                  <div className="space-y-6">
-                    <AICornerPanel profile={data.profile || {}} userName={user?.name?.split(' ')[0] || 'there'} />
-                  </div>
                 </Suspense>
               )}
 
@@ -484,8 +467,12 @@ export default function UserDashboard() {
                 )
               )}
               
+              {tab === 'messages' && (
+                <UserMessagesPanel token={token} />
+              )}
+
               {tab === 'reports' && (
-                <div className="space-y-6 max-w-4xl">
+                <div className="space-y-4 w-full max-w-none">
                   <DashCard className="!p-6 sm:!p-8" glow={false} hover={false}>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                       <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/20">
@@ -518,7 +505,7 @@ export default function UserDashboard() {
                       </div>
                     </DashCard>
                   ) : (
-                    <div className="grid gap-4">
+                    <div className="grid gap-3">
                       {(data.reports || []).map((r, i) => (
                         <DashCard key={r.id} glow delay={i * 0.06} className="!p-0 overflow-hidden">
                           <div className="flex flex-col sm:flex-row">
@@ -581,11 +568,10 @@ export default function UserDashboard() {
             </>
             )}
           </DashboardSidebarLayout>
-        </DashSection>
         </div>
 
-        <DashSection title={t('dashboard.navigation')} icon={Sparkles} className="mt-10">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <DashSection title={t('dashboard.navigation')} icon={Sparkles} className="mt-6 dash-b2b-toolkit">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {toolkit.map((item, i) => (
               <motion.button
                 key={item.title}

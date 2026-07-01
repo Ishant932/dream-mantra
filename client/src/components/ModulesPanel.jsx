@@ -246,12 +246,13 @@ export default function ModulesPanel({
         if (Array.isArray(res.products) && res.products.length) setCatalog(res.products);
       })
       .catch(() => {});
-    paymentsApi.promotions()
+    paymentsApi.promotions(token)
       .then((res) => {
         if (Array.isArray(res.vouchers)) setLiveVouchers(res.vouchers);
+        else setLiveVouchers([]);
       })
-      .catch(() => {});
-  }, []);
+      .catch(() => setLiveVouchers([]));
+  }, [token]);
 
   useEffect(() => { reloadCatalog(); }, [reloadCatalog]);
 
@@ -425,7 +426,7 @@ export default function ModulesPanel({
   };
 
   return (
-    <div className="modules-hub space-y-6 max-w-4xl mx-auto">
+    <div className="modules-hub w-full max-w-none space-y-7 sm:space-y-8">
       <div className="modules-hub-header">
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2 dash-card-title">
@@ -445,9 +446,9 @@ export default function ModulesPanel({
 
       {/* ── Active (paid) modules ── */}
       {hasConfirmed && (
-        <DashCard className="modules-hub-card !p-5 sm:!p-6" glow={false} hover={false}>
-          <div className="flex items-center justify-between gap-3 mb-4">
-          <h3 className="font-bold text-lg flex items-center gap-2">
+        <DashCard className="modules-hub-card" glow={false} hover={false}>
+          <div className="flex items-center justify-between gap-3 mb-5">
+          <h3 className="font-bold text-lg sm:text-xl flex items-center gap-2">
               <CheckCircle2 className="w-5 h-5 text-emerald-600" />
               Active modules {confirmedAssessments.length > 1 ? `(${confirmedAssessments.length})` : ''}
             </h3>
@@ -455,7 +456,7 @@ export default function ModulesPanel({
               Process & Take test <ArrowRight className="w-4 h-4" />
             </button>
           </div>
-          <div className="space-y-2 mb-4">
+          <div className="modules-active-list">
             {confirmedAssessments.map((a) => {
               const slug = resolveAssessmentSlug(a);
               const mod = getMod(slug) || { icon: '📋' };
@@ -468,7 +469,7 @@ export default function ModulesPanel({
                   <button type="button" className="modules-active-row__main" onClick={() => setActivePaidId(a.id)}>
                     <span className="text-2xl">{mod.icon}</span>
                     <div className="text-left min-w-0">
-                      <p className="font-bold text-sm truncate">{getAssessmentDisplayTitle(a)}</p>
+                      <p className="font-bold text-sm sm:text-base break-words">{getAssessmentDisplayTitle(a)}</p>
                       <p className="text-xs text-emerald-800 dark:text-emerald-200 font-semibold">Paid · Access unlocked</p>
                     </div>
                   </button>
@@ -508,8 +509,8 @@ export default function ModulesPanel({
 
       {/* ── Pending orders (checkout) ── */}
       {pendingOrders.length > 0 && (
-        <DashCard className="modules-hub-card modules-hub-card--pending !p-5 sm:!p-6" glow={false} hover={false}>
-          <h3 className="font-bold text-lg flex items-center gap-2 mb-1">
+        <DashCard className="modules-hub-card modules-hub-card--pending" glow={false} hover={false}>
+          <h3 className="font-bold text-lg sm:text-xl flex items-center gap-2 mb-1">
             <Clock className="w-5 h-5 text-amber-600" />
             Pending checkout
           </h3>
@@ -527,7 +528,7 @@ export default function ModulesPanel({
               return (
                 <article key={a.id} className="modules-order-row modules-order-row--pending">
                   <div className="modules-order-row__info">
-                    <p className="font-bold text-sm">{getAssessmentDisplayTitle(a)}</p>
+                    <p className="font-bold text-sm sm:text-base break-words">{getAssessmentDisplayTitle(a)}</p>
                     <p className="text-xs dash-card-meta mt-0.5">
                       Order #{a.id} · {formatPrice(total)}
                       {pay?.submitted_at ? ' · Submitted for verification' : ' · Payment not completed'}
@@ -554,7 +555,7 @@ export default function ModulesPanel({
 
       {/* ── Payment history (all payments; remove when order is still cancellable) ── */}
       {paymentHistory.length > 0 && (
-        <DashCard className="modules-hub-card !p-5 sm:!p-6" glow={false} hover={false}>
+        <DashCard className="modules-hub-card" glow={false} hover={false}>
           <h3 className="font-bold text-lg flex items-center gap-2 mb-1">
             <Receipt className="w-5 h-5 text-amber-600" />
             Payment history
@@ -608,7 +609,7 @@ export default function ModulesPanel({
 
       {/* ── Shop ── */}
       {catalogModules.length > 0 ? (
-        <DashCard className="modules-hub-card !p-5 sm:!p-8" glow={false} hover={false}>
+        <DashCard className="modules-hub-card modules-hub-card--browse" glow={false} hover={false}>
           <h3 className="text-xl font-bold flex items-center gap-2 mb-1">
             <ShoppingBag className="w-6 h-6 text-amber-600" />
             {hasConfirmed ? 'Add another module' : 'Browse modules'}
@@ -629,9 +630,9 @@ export default function ModulesPanel({
               </div>
             </div>
           )}
-          {!hasConfirmed && liveVouchers.length === 0 && (
-            <p className="text-sm text-amber-800 bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 rounded-xl px-4 py-2 mb-5">
-              Use code <strong className="font-mono">DREAMS20</strong> at checkout for 20% off your first module.
+          {!hasConfirmed && liveVouchers.length === 0 && token && (
+            <p className="text-sm text-sand-600 bg-sand-50 dark:bg-stone-900/40 border border-sand-200/60 rounded-xl px-4 py-2 mb-5">
+              No voucher codes are assigned to your account yet. Admin can share offers directly with you.
             </p>
           )}
           <div className="space-y-3 mb-5">
@@ -672,7 +673,7 @@ export default function ModulesPanel({
           </button>
         </DashCard>
       ) : hasConfirmed ? (
-        <DashCard className="!p-6 text-center" glow={false} hover={false}>
+        <DashCard className="modules-hub-card text-center" glow={false} hover={false}>
           <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
           <p className="font-bold">You own all available modules</p>
           <p className="text-sm dash-card-meta mt-1">Need help? Contact us on WhatsApp.</p>

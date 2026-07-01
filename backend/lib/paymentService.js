@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { getData, saveData, repo } from './database.js';
-import { notifyUser } from './notifications.js';
+import { notifyUser, notifyAdmins } from './notifications.js';
 import { getProduct } from '../config/products.js';
 import { isGatewayEnabled } from './paymentGateway.js';
 import { savePaymentProof } from './paymentProof.js';
@@ -192,11 +192,25 @@ export function createPendingPaymentForAssessment({ userId, assessmentId, amount
 }
 
 /** User requests admin verification — order stays pending until admin confirms */
-export function submitManualPayment({ assessmentId, userId, proofDataUrl, proofFileName, userNote }) {
+export function submitManualPayment({
+  assessmentId,
+  userId,
+  proofDataUrl,
+  proofFileName,
+  userNote,
+  paymentReferenceId,
+}) {
   const data = getData();
   const assessment = data.assessments.find((a) => a.id === Number(assessmentId));
   if (!assessment || assessment.user_id !== Number(userId)) {
     throw new Error('Order not found');
+  }
+
+  if (!proofDataUrl?.trim()) {
+    throw new Error('Payment screenshot is required');
+  }
+  if (!paymentReferenceId?.trim()) {
+    throw new Error('Payment reference / transaction ID is required');
   }
 
   let pay = getPaymentForAssessment(assessmentId);
@@ -217,17 +231,16 @@ export function submitManualPayment({ assessmentId, userId, proofDataUrl, proofF
   }
 
   const now = new Date().toISOString();
-  if (proofDataUrl) {
-    try {
-      const saved = savePaymentProof(pay.id, proofDataUrl, proofFileName);
-      pay.payment_proof_url = saved.url;
-      pay.payment_proof_name = saved.originalName;
-      pay.payment_proof_mime = saved.mime;
-    } catch (proofErr) {
-      throw new Error(proofErr.message || 'Could not save payment proof');
-    }
+  try {
+    const saved = savePaymentProof(pay.id, proofDataUrl, proofFileName);
+    pay.payment_proof_url = saved.url;
+    pay.payment_proof_name = saved.originalName;
+    pay.payment_proof_mime = saved.mime;
+  } catch (proofErr) {
+    throw new Error(proofErr.message || 'Could not save payment proof');
   }
 
+  pay.payment_reference_id = String(paymentReferenceId).trim().slice(0, 120);
   pay.payment_status = 'pending';
   pay.status = 'pending_review';
   pay.provider = 'manual';
@@ -237,6 +250,16 @@ export function submitManualPayment({ assessmentId, userId, proofDataUrl, proofF
   if (userNote) pay.user_note = String(userNote).slice(0, 500);
 
   saveData();
+
+  const user = data.users.find((u) => Number(u.id) === Number(userId));
+  notifyAdmins({
+    type: 'payment_review',
+    title: 'Payment needs review',
+    body: `${user?.name || 'A student'} submitted manual payment proof for ${assessment.type || 'a module'}.`,
+    link: '/admin?tab=payments',
+    meta: { paymentId: pay.id, assessmentId: assessment.id, userId },
+  });
+
   return { alreadyConfirmed: false, payment: enrichPaymentRow(pay), assessment };
 }
 
@@ -304,7 +327,7 @@ export function confirmPayment({
   return { alreadyConfirmed: false, payment: enrichPaymentRow(pay), assessment };
 }
 
-export function updatePaymentStatus(paymentId, status, { adminId, adminNote } = {}) {
+export function updatePaymentStatus(paymentId, status, { adminId, adminNote, userNote } = {}) {
   if (!PAYMENT_STATUSES.includes(status)) throw new Error('Invalid payment status');
 
   const data = getData();
@@ -342,7 +365,23 @@ export function updatePaymentStatus(paymentId, status, { adminId, adminNote } = 
   if (status === 'failed') {
     pay.status = 'failed';
     if (adminNote) pay.admin_note = adminNote;
+    if (userNote) pay.user_note = userNote;
     if (adminId) pay.confirmed_by_admin_id = adminId;
+
+    saveData();
+
+    if (assessment?.user_id) {
+      const reason = userNote || adminNote || 'Please check your payment details and try again.';
+      notifyUser(assessment.user_id, {
+        type: 'payment',
+        title: 'Payment verification failed',
+        body: reason,
+        link: `/payment/${assessment.id}`,
+        meta: { assessmentId: assessment.id, paymentId: pay.id },
+      });
+    }
+
+    return { payment: enrichPaymentRow(pay), assessment };
   }
 
   if (status === 'refunded') {

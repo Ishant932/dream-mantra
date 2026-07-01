@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, X, Mail, Phone, UserCircle, UserCog } from 'lucide-react';
+import { Search, Filter, X, Mail, Phone, UserCircle, UserCog, Ban, Trash2 } from 'lucide-react';
 import { useLang } from '../../context/LanguageContext';
 import { programs } from '../../data/content';
 import AdminUserProfileModal from '../AdminUserProfileModal';
 import CopyableUserId from '../CopyableUserId';
 import { DashCard } from '../DashboardUI';
+import AdminSectionExport from '../AdminSectionExport';
+import UserDownloadMenu from '../UserDownloadMenu';
 
 const CLASS_FILTER_OPTIONS = ['All classes', ...programs.map((p) => p.title)];
 const STREAM_FILTER_OPTIONS = ['All streams', 'Science', 'Commerce', 'Arts', 'Humanities', 'Undecided'];
@@ -16,7 +18,7 @@ const JOINED_FILTER_OPTIONS = [
   { value: 'month', label: 'This month' },
 ];
 
-export default function StaffUsersPanel({ api, token, onError, allowCounsellorAssign = false }) {
+export default function StaffUsersPanel({ api, token, onError, allowCounsellorAssign = false, allowAccountActions = false }) {
   const { t } = useLang();
   const [users, setUsers] = useState([]);
   const [counsellors, setCounsellors] = useState([]);
@@ -35,6 +37,9 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
   const [joinedFilter, setJoinedFilter] = useState('all');
   const [contactSearch, setContactSearch] = useState('');
   const [counsellorFilter, setCounsellorFilter] = useState('all');
+  const [suspendUser, setSuspendUser] = useState(null);
+  const [suspendUntil, setSuspendUntil] = useState('');
+  const [actionUserId, setActionUserId] = useState(null);
 
   const loadUsers = useCallback(async () => {
     if (!token) return;
@@ -172,6 +177,60 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
     }
   };
 
+  const suspendAccount = async () => {
+    if (!suspendUser) return;
+    setActionUserId(suspendUser.id);
+    try {
+      const res = await api.updateUser(token, suspendUser.id, {
+        accountStatus: 'suspended',
+        suspendedUntil: suspendUntil || null,
+      });
+      setUsers((prev) => prev.map((u) => (u.id === suspendUser.id ? { ...u, ...res.user, stats: u.stats } : u)));
+      setSuspendUser(null);
+      setSuspendUntil('');
+    } catch (err) {
+      onError?.(err.message);
+    } finally {
+      setActionUserId(null);
+    }
+  };
+
+  const unsuspendAccount = async (userId) => {
+    setActionUserId(userId);
+    try {
+      const res = await api.updateUser(token, userId, { accountStatus: 'active', suspendedUntil: null });
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...res.user, stats: u.stats } : u)));
+    } catch (err) {
+      onError?.(err.message);
+    } finally {
+      setActionUserId(null);
+    }
+  };
+
+  const deleteAccount = async (user) => {
+    if (!window.confirm(`Delete user ${user.name} (${user.user_uid})? This cannot be undone.`)) return;
+    setActionUserId(user.id);
+    try {
+      await api.deleteUser(token, user.id);
+      setUsers((prev) => prev.filter((u) => u.id !== user.id));
+    } catch (err) {
+      onError?.(err.message);
+    } finally {
+      setActionUserId(null);
+    }
+  };
+
+  const userExportColumns = [
+    { label: 'Dreams ID', get: (u) => u.user_uid },
+    { label: 'Name', get: (u) => u.name },
+    { label: 'Email', get: (u) => u.email },
+    { label: 'Phone', get: (u) => u.phone },
+    { label: 'Class', get: (u) => u.profile?.classLevel },
+    { label: 'Stream', get: (u) => u.profile?.stream },
+    { label: 'Status', get: (u) => u.account_status || 'active' },
+    { label: 'Joined', get: (u) => u.created_at },
+  ];
+
   if (loading) {
     return (
       <DashCard className="!p-5 sm:!p-6">
@@ -189,12 +248,16 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
         saving={profileSaving}
         onSave={saveUserProfile}
         onClose={() => { setProfileOpen(false); setProfileUser(null); }}
+        api={api}
+        token={token}
+        onError={onError}
       />
 
-      <DashCard className="!p-5 sm:!p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-5">
+      <DashCard className="!p-4 sm:!p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <h2 className="text-lg font-bold">{t('admin.manageUsers')}</h2>
-          <div className="flex flex-wrap items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
+            <AdminSectionExport title="Users" filename="users" rows={filteredUsers} columns={userExportColumns} />
             {loadError && (
               <button type="button" onClick={loadUsers} className="btn-outline !py-2 !px-3 text-sm">Retry</button>
             )}
@@ -304,7 +367,49 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
         ) : filteredUsers.length === 0 ? (
           <p className="text-sm opacity-70 text-center py-8">No users match your filters.</p>
         ) : (
-          <div className="overflow-x-auto -mx-1">
+          <>
+          <div className="md:hidden space-y-3">
+            {filteredUsers.map((u) => (
+              <div key={u.id} className="rounded-xl border border-sand-200 dark:border-sand-700 p-4 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="font-bold">{u.name}</p>
+                    <CopyableUserId uid={u.user_uid} compact />
+                    {u.account_status === 'suspended' && (
+                      <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700">Suspended</span>
+                    )}
+                  </div>
+                  <div className="flex items-start gap-1 shrink-0">
+                    <UserDownloadMenu api={api} token={token} user={u} onError={onError} compact />
+                    <button type="button" onClick={() => viewProfile(u.id)} className="dash-admin-view-btn h-10 w-10 rounded-xl inline-flex items-center justify-center shrink-0">
+                      <UserCircle className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+                <p className="text-xs opacity-80">{u.email} · {u.phone || '—'}</p>
+                <div className="pt-2 border-t border-sand-200 dark:border-sand-700">
+                  <UserDownloadMenu api={api} token={token} user={u} onError={onError} />
+                </div>
+                {allowAccountActions && (
+                  <div className="flex flex-col gap-2 pt-2 border-t border-sand-200 dark:border-sand-700">
+                    {u.account_status === 'suspended' ? (
+                      <button type="button" disabled={actionUserId === u.id} onClick={() => unsuspendAccount(u.id)} className="w-full text-sm font-bold px-4 py-2.5 rounded-xl bg-emerald-600 text-white disabled:opacity-50">
+                        Unsuspend account
+                      </button>
+                    ) : (
+                      <button type="button" disabled={actionUserId === u.id} onClick={() => { setSuspendUser(u); setSuspendUntil(''); }} className="w-full text-sm font-bold px-4 py-2.5 rounded-xl border-2 border-amber-500 text-amber-800 bg-amber-50 inline-flex items-center justify-center gap-2 disabled:opacity-50">
+                        <Ban className="w-4 h-4" /> Suspend user
+                      </button>
+                    )}
+                    <button type="button" disabled={actionUserId === u.id} onClick={() => deleteAccount(u)} className="w-full text-sm font-bold px-4 py-2.5 rounded-xl border-2 border-red-400 text-red-700 bg-red-50 inline-flex items-center justify-center gap-2 disabled:opacity-50">
+                      <Trash2 className="w-4 h-4" /> Delete user
+                    </button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+          <div className="hidden md:block overflow-x-auto -mx-1">
             <table className="w-full text-sm admin-data-table min-w-[860px]">
               <thead>
                 <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
@@ -318,7 +423,7 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Profile</th>
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Tests</th>
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Joined</th>
-                  <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60 text-right">View</th>
+                  <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -376,17 +481,55 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                       {u.created_at && new Date(u.created_at).toLocaleDateString('en-IN')}
                     </td>
                     <td className="py-3 px-3 text-right">
-                      <button type="button" onClick={() => viewProfile(u.id)} className="dash-admin-view-btn shrink-0 h-9 w-9 rounded-xl inline-flex items-center justify-center" title="View full profile">
-                        <UserCircle className="w-5 h-5" />
-                      </button>
+                      <div className="flex flex-wrap justify-end gap-1">
+                        {u.account_status === 'suspended' && (
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700 mr-1">Suspended</span>
+                        )}
+                        <UserDownloadMenu api={api} token={token} user={u} onError={onError} compact />
+                        <button type="button" onClick={() => viewProfile(u.id)} className="dash-admin-view-btn shrink-0 h-9 w-9 rounded-xl inline-flex items-center justify-center" title="View full profile">
+                          <UserCircle className="w-5 h-5" />
+                        </button>
+                        {allowAccountActions && (
+                          <>
+                            {u.account_status === 'suspended' ? (
+                              <button type="button" disabled={actionUserId === u.id} onClick={() => unsuspendAccount(u.id)} className="text-sm font-bold px-3 py-2 rounded-lg bg-emerald-600 text-white disabled:opacity-50">
+                                Unsuspend
+                              </button>
+                            ) : (
+                              <button type="button" disabled={actionUserId === u.id} onClick={() => { setSuspendUser(u); setSuspendUntil(''); }} className="text-sm font-bold px-3 py-2 rounded-lg border-2 border-amber-500 text-amber-800 bg-amber-50 inline-flex items-center gap-1.5 disabled:opacity-50" title="Suspend user">
+                                <Ban className="w-4 h-4" /> Suspend
+                              </button>
+                            )}
+                            <button type="button" disabled={actionUserId === u.id} onClick={() => deleteAccount(u)} className="text-sm font-bold px-3 py-2 rounded-lg border-2 border-red-400 text-red-700 bg-red-50 inline-flex items-center gap-1.5 disabled:opacity-50" title="Delete user">
+                              <Trash2 className="w-4 h-4" /> Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </td>
                   </motion.tr>
                 ))}
               </tbody>
             </table>
           </div>
+          </>
         )}
       </DashCard>
+
+      {suspendUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setSuspendUser(null)}>
+          <div className="bg-[var(--bg-elevated)] rounded-xl p-5 max-w-md w-full shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-bold text-lg mb-2">Suspend {suspendUser.name}</h3>
+            <p className="text-sm opacity-70 mb-3">User cannot sign in until suspension ends (or you unsuspend manually).</p>
+            <label className="text-xs font-bold uppercase opacity-60 block mb-1">Suspend until (optional)</label>
+            <input type="datetime-local" className="input-field w-full text-sm mb-4" value={suspendUntil} onChange={(e) => setSuspendUntil(e.target.value)} />
+            <div className="flex gap-2 justify-end">
+              <button type="button" onClick={() => setSuspendUser(null)} className="btn-outline text-sm">Cancel</button>
+              <button type="button" disabled={actionUserId === suspendUser.id} onClick={suspendAccount} className="text-sm font-bold px-4 py-2 rounded-lg bg-amber-600 text-white">Suspend</button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -10,6 +10,7 @@ import {
   findUserByLoginIdentifier,
   safeComparePassword,
 } from '../lib/authHelpers.js';
+import { isUserSuspended, suspensionMessage } from '../lib/userAccount.js';
 
 const router = Router();
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 12, keyPrefix: 'login' });
@@ -115,6 +116,9 @@ router.post('/login', loginLimiter, (req, res) => {
   if (!user || !safeComparePassword(password, user.password)) {
     return res.status(401).json({ message: 'Invalid email, phone, Dreams ID, or password' });
   }
+  if (isUserSuspended(user)) {
+    return res.status(403).json({ message: suspensionMessage(user) });
+  }
 
   if (user.twoFactorEnabled && user.twoFactorSecret) {
     return res.json({
@@ -153,6 +157,9 @@ router.post('/verify-2fa', (req, res) => {
 
   if (!verifyTotp(user.twoFactorSecret, code)) {
     return res.status(401).json({ message: 'Invalid authenticator code' });
+  }
+  if (isUserSuspended(user)) {
+    return res.status(403).json({ message: suspensionMessage(user) });
   }
 
   const token = signToken(user);

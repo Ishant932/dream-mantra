@@ -53,7 +53,7 @@ export default function CounsellingBookingPanel({
 
   if (!counsellingAccess) {
     return (
-      <div className="space-y-6 max-w-3xl mx-auto">
+      <div className="space-y-6 w-full max-w-none">
         {topUpBanner}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease }}>
           <DashCard className="!p-6 sm:!p-8" glow={false} hover={false}>

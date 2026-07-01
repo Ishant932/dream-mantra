@@ -17,6 +17,10 @@ function applyPerformanceHints() {
   return root.classList.contains('is-mobile-perf');
 }
 
+if ('scrollRestoration' in window.history) {
+  window.history.scrollRestoration = 'manual';
+}
+
 const mobilePerf = applyPerformanceHints();
 if (mobilePerf) {
   runWhenIdle(() => warmupServer(), 6000);

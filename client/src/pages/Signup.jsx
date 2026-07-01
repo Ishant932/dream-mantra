@@ -5,6 +5,7 @@ import { User, Mail, Lock, Phone, Sparkles, ArrowRight, CheckCircle2, Loader2 } 
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Signup() {
   const { register, user, loading: authLoading } = useAuth();
@@ -162,22 +163,20 @@ export default function Signup() {
                 <label className="text-sm font-semibold text-sand-700 flex items-center gap-2 mb-1.5">
                   <Lock className="w-4 h-4 text-amber-600" /> {t('auth.password')}
                 </label>
-                <input
-                  type="password"
-                  className="input-field"
+                <PasswordInput
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
                   minLength={6}
                   required
                 />
               </div>
               <div>
                 <label className="text-sm font-semibold text-sand-700 mb-1.5 block">Confirm Password</label>
-                <input
-                  type="password"
-                  className="input-field"
+                <PasswordInput
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
+                  autoComplete="new-password"
                   required
                 />
               </div>

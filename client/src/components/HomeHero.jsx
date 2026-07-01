@@ -3,158 +3,140 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Brain, Award, Shield, Sparkles } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { IMAGES } from '../data/content';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 const badgeIcons = [Brain, Award, Shield];
 
 export default function HomeHero() {
   const { t, d } = useLang();
+  const mobile = isMobilePerf();
   const badges = d('hero.badges').map((label, i) => ({
     icon: badgeIcons[i] || Sparkles,
     label,
   }));
 
+  const TextWrap = mobile ? 'div' : motion.div;
+  const textMotion = mobile ? {} : {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.55, delay: 0.16 },
+  };
+
   return (
     <>
-      <section className="relative min-h-0 sm:min-h-[88vh] flex items-center overflow-hidden pt-6 sm:pt-10 pb-10 sm:pb-16">
-        <div className="relative max-w-7xl mx-auto px-4 py-8 sm:py-16 w-full">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+      <section className={`relative min-h-0 sm:min-h-[88vh] flex items-center overflow-hidden pt-4 sm:pt-10 pb-6 sm:pb-16 hero-section${mobile ? ' hero-section--mobile' : ''}`}>
+        <div className="relative max-w-7xl mx-auto px-4 py-4 sm:py-16 w-full">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             <div>
-              <motion.span
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="hero-tag inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-semibold mb-6 border section-alt shine-hover"
-                style={{ borderColor: 'var(--gold-border)', color: 'var(--text-primary)' }}
-              >
-                <span className="live-dot" aria-hidden />
-                {t('hero.tag')}
-              </motion.span>
+              {!mobile && (
+                <motion.span
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="hero-tag inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full text-sm font-semibold mb-6 border section-alt shine-hover"
+                  style={{ borderColor: 'var(--gold-border)', color: 'var(--text-primary)' }}
+                >
+                  <span className="live-dot" aria-hidden />
+                  {t('hero.tag')}
+                </motion.span>
+              )}
 
-              <motion.h1
-                initial={{ opacity: 0, y: 24 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.08 }}
-                className="hero-h1 hero-title font-accent mb-4"
-              >
-                <span className="block hero-brand-name">{t('hero.titleLine1')}</span>
-                <span className="block hero-service-line mt-2">{t('hero.titleHighlight')}</span>
-              </motion.h1>
+              {mobile ? (
+                <h1 className="hero-h1 hero-title font-accent mb-3">
+                  <span className="block hero-brand-name">{t('hero.titleLine1')}</span>
+                  <span className="block hero-service-line mt-1">{t('hero.titleHighlight')}</span>
+                </h1>
+              ) : (
+                <motion.h1
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.08 }}
+                  className="hero-h1 hero-title font-accent mb-4"
+                >
+                  <span className="block hero-brand-name">{t('hero.titleLine1')}</span>
+                  <span className="block hero-service-line mt-2">{t('hero.titleHighlight')}</span>
+                </motion.h1>
+              )}
 
-              <motion.p
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.55, delay: 0.12 }}
-                className="hero-quote text-base sm:text-lg italic font-semibold mb-4 max-w-xl leading-relaxed"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {t('hero.quote')}
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.55, delay: 0.14 }}
-                className="hero-problem-hook"
-              >
-                {t('hero.problemHook')}
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.16 }}
-                className="hero-sub text-base sm:text-lg md:text-xl font-semibold mb-4 max-w-xl leading-relaxed"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {t('hero.subtitle')}
-              </motion.p>
-
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.22 }}
-                className="hero-sub text-base sm:text-lg mb-8 max-w-xl leading-relaxed"
-                style={{ color: 'var(--text-body)' }}
-              >
-                {t('hero.desc')}
-              </motion.p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, delay: 0.28 }}
-                className="hero-btns flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4"
-              >
-                <motion.div whileHover={{ scale: 1.04, y: -3 }} whileTap={{ scale: 0.97 }} className="w-full sm:w-auto">
-                  <Link to="/signup" className="btn-primary px-6 sm:px-8 py-3.5 sm:py-4 w-full sm:w-auto justify-center">
-                    {t('hero.cta1')} <ArrowRight className="w-5 h-5" />
-                  </Link>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.03, y: -2 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
-                  <Link to="/assessments" className="btn-outline w-full sm:w-auto justify-center">{t('hero.cta2')}</Link>
-                </motion.div>
-              </motion.div>
-
-              <div className="hero-trust flex flex-wrap gap-3 sm:gap-4 mt-10">
-                {badges.map(({ icon: Icon, label }, i) => (
-                  <motion.span
-                    key={label}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + i * 0.1, type: 'spring', stiffness: 300 }}
-                    whileHover={{ y: -6, scale: 1.04 }}
-                    className="card flex items-center gap-3 text-sm font-semibold px-4 py-2.5 rounded-full"
+              {!mobile && (
+                <>
+                  <motion.p
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.55, delay: 0.12 }}
+                    className="hero-quote text-base sm:text-lg italic font-semibold mb-4 max-w-xl leading-relaxed"
+                    style={{ color: 'var(--text-secondary)' }}
                   >
-                    <span className="card-icon-wrap w-8 h-8 rounded-lg flex items-center justify-center">
-                      <Icon className="w-4 h-4" />
+                    {t('hero.quote')}
+                  </motion.p>
+
+                  <motion.p
+                    initial={{ opacity: 0, x: -16 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.55, delay: 0.14 }}
+                    className="hero-problem-hook"
+                  >
+                    {t('hero.problemHook')}
+                  </motion.p>
+                </>
+              )}
+
+              <TextWrap
+                {...textMotion}
+                className="hero-sub text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 max-w-xl leading-relaxed"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                {mobile ? t('hero.problemHook') : t('hero.subtitle')}
+              </TextWrap>
+
+              {!mobile && (
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.55, delay: 0.22 }}
+                  className="hero-sub text-base sm:text-lg mb-8 max-w-xl leading-relaxed"
+                  style={{ color: 'var(--text-body)' }}
+                >
+                  {t('hero.desc')}
+                </motion.p>
+              )}
+
+              <div className="hero-btns flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
+                <Link to="/signup" className="btn-primary px-6 sm:px-8 py-3.5 sm:py-4 w-full sm:w-auto justify-center">
+                  {t('hero.cta1')} <ArrowRight className="w-5 h-5" />
+                </Link>
+                <Link to="/counselling?tab=book" className="btn-outline w-full sm:w-auto justify-center">{t('mobileNav.book')}</Link>
+              </div>
+
+              <div className="hero-trust flex flex-wrap gap-2 sm:gap-4 mt-6 sm:mt-10">
+                {badges.map(({ icon: Icon, label }) => (
+                  <span
+                    key={label}
+                    className="card flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-2 rounded-full"
+                  >
+                    <span className="card-icon-wrap w-7 h-7 rounded-lg flex items-center justify-center">
+                      <Icon className="w-3.5 h-3.5" />
                     </span>
                     {label}
-                  </motion.span>
+                  </span>
                 ))}
               </div>
             </div>
 
-            <motion.div
-              initial={{ opacity: 0, scale: 0.96, x: 24 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              transition={{ duration: 0.75, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
-              className="hero-visual relative multi-float"
-            >
-              <motion.div
-                className="absolute -inset-4 rounded-3xl blur-2xl animate-glow-pulse opacity-50 multi-glow"
-                style={{ background: 'var(--gold-gradient)' }}
-              />
+            <div className="hero-visual relative">
               <img
                 src={IMAGES.hero}
                 alt="Career counselling"
-                className="relative rounded-3xl shadow-2xl w-full aspect-[4/3] object-cover float-1 border img-zoom-wrap"
+                className="relative rounded-2xl sm:rounded-3xl shadow-xl w-full aspect-[4/3] object-cover border img-zoom-wrap"
                 style={{ borderColor: 'var(--gold-border)' }}
+                loading={mobile ? 'lazy' : 'eager'}
+                decoding="async"
               />
-              <motion.div
-                className="hero-float-card absolute -bottom-4 -left-4 card p-5 float-2 max-w-[220px] glow-card hidden sm:block"
-                whileHover={{ scale: 1.05, rotate: 2 }}
-                animate={{ y: [0, -8, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <div className="flex items-center gap-3 relative z-10">
-                  <div className="card-icon-wrap w-12 h-12 rounded-xl flex items-center justify-center text-xl">🧬</div>
-                  <div>
-                    <p className="text-sm font-bold gradient-text leading-tight">Mind Mapping</p>
-                    <p className="text-xs font-semibold card-meta">Inborn talent science</p>
-                  </div>
-                </div>
-              </motion.div>
-              <motion.div
-                className="hero-float-card absolute -top-3 -right-3 card px-4 py-2 float-3 badge-new text-xs font-bold hidden sm:block hero-badge-gold"
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-              >
-                {t('hero.aiPowered')}
-              </motion.div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
     </>
   );
 }
+

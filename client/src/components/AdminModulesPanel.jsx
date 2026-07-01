@@ -3,6 +3,7 @@ import { Layers, Plus, Pencil, Trash2, Save, X, ChevronDown, ChevronUp } from 'l
 import { adminApi } from '../api';
 import { DEFAULT_COUNSELLING_ADDON } from '../data/moduleCatalog';
 import { DashCard } from './DashboardUI';
+import AdminPanelHeader from './AdminPanelHeader';
 
 const defaultAddonForm = {
   title: DEFAULT_COUNSELLING_ADDON.title,
@@ -152,15 +153,24 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
   };
 
   return (
-    <div className="space-y-6">
-      <DashCard className="!p-5 sm:!p-6" glow={false} hover={false}>
-        <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
-          <div>
-            <h2 className="text-lg font-bold flex items-center gap-2">
-              <Layers className="w-5 h-5 text-amber-500" /> Module Catalog
-            </h2>
-            <p className="text-sm opacity-70 mt-1">Changes save instantly and appear in the user dashboard &amp; website.</p>
-          </div>
+    <div className="space-y-4">
+      <AdminPanelHeader
+        title="Module Catalog"
+        subtitle="Changes save instantly and appear in the user dashboard & website."
+        exportProps={{
+          title: 'Modules',
+          filename: 'module-catalog',
+          rows: modules,
+          columns: [
+            { label: 'Title', get: (m) => m.title },
+            { label: 'Slug', get: (m) => m.slug },
+            { label: 'Price', get: (m) => m.price },
+            { label: 'Hidden', get: (m) => (m.hidden ? 'yes' : 'no') },
+          ],
+        }}
+      />
+      <DashCard className="!p-4 sm:!p-5" glow={false} hover={false}>
+        <div className="flex flex-wrap items-start justify-end gap-2 mb-4">
           {!editing && (
             <button type="button" onClick={startNew} className="btn-primary !py-2 !px-4 text-sm inline-flex items-center gap-2">
               <Plus className="w-4 h-4" /> Add module
