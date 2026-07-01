@@ -91,13 +91,21 @@ export async function sendOtpEmail({ to, name, otp, purpose = 'register' }) {
   }
 
   const { html, text, subject } = otpEmailBody({ name, otp, purpose });
+  const payload = { to, subject, html, text };
 
   if (process.env.RESEND_API_KEY?.trim()) {
-    await sendViaResend({ to, subject, html, text });
-    return { channel: 'resend' };
+    try {
+      await sendViaResend(payload);
+      return { channel: 'resend' };
+    } catch (err) {
+      console.error('Resend failed, trying SMTP fallback:', err.message);
+      const sent = await sendViaSmtp(payload);
+      if (sent) return { channel: 'smtp' };
+      throw err;
+    }
   }
 
-  const sent = await sendViaSmtp({ to, subject, html, text });
+  const sent = await sendViaSmtp(payload);
   if (sent) return { channel: 'smtp' };
 
   throw new Error('Email delivery failed. Check RESEND_API_KEY or SMTP credentials.');
