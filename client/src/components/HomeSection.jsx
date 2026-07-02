@@ -13,10 +13,10 @@ const VARIANTS = {
 };
 
 const enterLite = {
-  initial: { opacity: 0, y: 24 },
+  initial: { opacity: 1, y: 18 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-40px' },
-  transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+  viewport: { once: true, margin: '-24px' },
+  transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
 };
 
 const enterFull = {

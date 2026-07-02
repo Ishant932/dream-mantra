@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Brain, Award, Shield, Sparkles } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { IMAGES } from '../data/content';
 import { isMobilePerf } from '../utils/mobilePerf';
-
-const badgeIcons = [Brain, Award, Shield];
 
 const fadeLite = {
   initial: { opacity: 0, y: 18 },
@@ -16,10 +14,6 @@ const fadeLite = {
 export default function HomeHero() {
   const { t, d } = useLang();
   const mobile = isMobilePerf();
-  const badges = d('hero.badges').map((label, i) => ({
-    icon: badgeIcons[i] || Sparkles,
-    label,
-  }));
 
   const textMotion = mobile
     ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.14 } }
@@ -131,23 +125,6 @@ export default function HomeHero() {
                 <Link to="/counselling?tab=book" className="btn-outline w-full sm:w-auto justify-center">{t('mobileNav.book')}</Link>
               </motion.div>
 
-              <motion.div
-                {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.26 } } : {})}
-                className="hero-trust flex flex-wrap gap-2 sm:gap-4 mt-6 sm:mt-10"
-              >
-                {badges.map(({ icon: Icon, label }, i) => (
-                  <span
-                    key={label}
-                    className="card flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-2 rounded-full"
-                    style={mobile ? { '--badge-i': i } : undefined}
-                  >
-                    <span className="card-icon-wrap w-7 h-7 rounded-lg flex items-center justify-center">
-                      <Icon className="w-3.5 h-3.5" />
-                    </span>
-                    {label}
-                  </span>
-                ))}
-              </motion.div>
             </div>
 
             <motion.div

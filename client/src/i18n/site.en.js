@@ -301,7 +301,6 @@ export const siteEn = {
         { type: 'badge', label: 'Internationally Certified', icon: '🌍' },
         { type: 'badge', label: 'Government Certified', icon: '🏛️' },
         { type: 'badge', label: 'IIT Madras Certified', icon: '🎓' },
-        { type: 'badge', label: 'Neuroscience Based', icon: '🧠' },
         { type: 'number', value: 30, suffix: '+', label: 'Countries Validated', icon: '🌐' },
         { type: 'number', value: 50, suffix: '+', label: 'School Partners', icon: '🏫' },
         { type: 'number', value: 120, suffix: '+', label: 'Coaching Partners', icon: '📚' },

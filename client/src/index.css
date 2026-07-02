@@ -9082,7 +9082,10 @@ html.aurora .purchase-journey__step {
   background: var(--bg-elevated);
   padding: 1.5rem;
   box-shadow: 0 12px 40px rgba(245, 158, 11, 0.08);
-  min-height: 22rem;
+  min-height: auto;
+}
+@media (min-width: 768px) {
+  .home-how-dreamz__panel { min-height: 20rem; }
 }
 @media (min-width: 1024px) {
   .home-how-dreamz__panel { padding: 2rem; min-height: 26rem; }
@@ -14271,10 +14274,6 @@ html.is-mobile-perf .home-trust-strip.reveal {
 .hero-section--mobile-animated .hero-btns {
   animation: mobileHeroIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.22s both;
 }
-.hero-section--mobile-animated .hero-trust .card {
-  animation: mobileHeroIn 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(0.28s + var(--badge-i, 0) * 0.06s);
-}
 .home-trust-strip--animated .home-trust-strip__tagline {
   animation: mobileHeroIn 0.45s ease 0.05s both;
 }
@@ -14293,8 +14292,14 @@ html.is-mobile-perf .home-trust-strip.reveal {
 
 /* Below-fold sections — paint only, not hero */
 html.is-mobile-perf .home-section:not(.home-section--after-trust) {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 280px;
+  content-visibility: visible;
+  contain-intrinsic-size: auto;
+}
+html.is-mobile-perf .home-how-dreamz__panel,
+html.is-mobile-perf .home-solution-panel,
+html.is-mobile-perf .home-module-card {
+  opacity: 1 !important;
+  transform: none !important;
 }
 html.is-mobile-perf .home-module-card.visible,
 html.is-mobile-perf .reveal-card.home-module-card.visible,

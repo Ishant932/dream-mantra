@@ -16,11 +16,11 @@ const cardVariants = {
 };
 
 const cardVariantsLite = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 1, y: 0 },
   visible: (i) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.07, duration: 0.38, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.04, duration: 0.3, ease: [0.22, 1, 0.36, 1] },
   }),
 };
 
@@ -41,7 +41,7 @@ export default function HomeModulesIntro() {
   const mobile = isMobilePerf();
   const variants = mobile ? cardVariantsLite : cardVariants;
   const headerMotion = mobile
-    ? { initial: { opacity: 0, y: 18 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-40px' }, transition: { duration: 0.4 } }
+    ? { initial: { opacity: 1, y: 0 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true } }
     : { initial: { opacity: 0, y: 28 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-60px' }, transition: { duration: 0.65 } };
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function HomeModulesIntro() {
   }, [copy.modules, catalog]);
 
   return (
-    <div className="home-modules-intro relative overflow-hidden">
+    <div className="home-modules-intro relative overflow-hidden no-reveal">
       <div className="max-w-7xl mx-auto px-4 relative">
         <motion.div
           {...headerMotion}

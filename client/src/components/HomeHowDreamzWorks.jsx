@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 const panelVariants = {
   initial: { opacity: 0, x: 20 },
@@ -10,9 +11,16 @@ const panelVariants = {
   exit: { opacity: 0, x: -16, transition: { duration: 0.3 } },
 };
 
+const panelVariantsLite = {
+  initial: { opacity: 1, x: 0 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.3 } },
+  exit: { opacity: 1, x: 0, transition: { duration: 0.2 } },
+};
+
 export default function HomeHowDreamzWorks() {
   const { d } = useLang();
   const copy = d('home.howDreamzWorks');
+  const mobile = isMobilePerf();
   const [activeStep, setActiveStep] = useState(0);
   const [activeModule, setActiveModule] = useState(0);
 
@@ -24,15 +32,24 @@ export default function HomeHowDreamzWorks() {
   }, [copy.steps.length]);
 
   const progress = ((activeStep + 1) / copy.steps.length) * 100;
+  const headerMotion = mobile
+    ? { initial: { opacity: 1, y: 0 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true } }
+    : { initial: { opacity: 0, y: 28 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-60px' }, transition: { duration: 0.6 } };
+  const panelMotion = mobile
+    ? { initial: { opacity: 1, x: 0 }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true } }
+    : { initial: { opacity: 0, x: -32 }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true, margin: '-40px' }, transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] } };
+  const panelMotionRight = mobile
+    ? { initial: { opacity: 1, x: 0 }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true } }
+    : { initial: { opacity: 0, x: 32 }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true, margin: '-40px' }, transition: { duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] } };
+  const stepMotion = mobile
+    ? { initial: { opacity: 1, x: 0 }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true } }
+    : { initial: { opacity: 0, x: -20 }, whileInView: { opacity: 1, x: 0 }, viewport: { once: true }, transition: { delay: 0, duration: 0.5 } };
 
   return (
-    <div className="home-how-dreamz relative overflow-hidden">
+    <div className="home-how-dreamz relative overflow-hidden no-reveal">
       <div className="max-w-7xl mx-auto px-4 relative">
         <motion.div
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.6 }}
+          {...headerMotion}
           className="text-center max-w-2xl mx-auto mb-12 lg:mb-14"
         >
           <h2 className="home-headline mb-3">
@@ -44,10 +61,7 @@ export default function HomeHowDreamzWorks() {
         <div className="home-how-dreamz__grid grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Left — Counselling Process */}
           <motion.div
-            initial={{ opacity: 0, x: -32 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+            {...panelMotion}
             className="home-how-dreamz__panel home-how-dreamz__panel--counselling"
           >
             <div className="home-how-dreamz__panel-head">
@@ -70,10 +84,8 @@ export default function HomeHowDreamzWorks() {
                     key={step.step}
                     type="button"
                     onClick={() => setActiveStep(i)}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1, duration: 0.5 }}
+                    {...stepMotion}
+                    transition={mobile ? undefined : { delay: i * 0.1, duration: 0.5 }}
                     whileHover={{ x: 6 }}
                     className={`home-how-dreamz__step ${isActive ? 'home-how-dreamz__step--active' : ''} ${isPast ? 'home-how-dreamz__step--past' : ''}`}
                   >
@@ -121,10 +133,7 @@ export default function HomeHowDreamzWorks() {
 
           {/* Right — Module Processes */}
           <motion.div
-            initial={{ opacity: 0, x: 32 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: '-40px' }}
-            transition={{ duration: 0.65, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+            {...panelMotionRight}
             className="home-how-dreamz__panel home-how-dreamz__panel--modules"
           >
             <div className="home-how-dreamz__panel-head">
@@ -148,7 +157,7 @@ export default function HomeHowDreamzWorks() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={copy.moduleProcesses[activeModule].id}
-                variants={panelVariants}
+                variants={mobile ? panelVariantsLite : panelVariants}
                 initial="initial"
                 animate="animate"
                 exit="exit"

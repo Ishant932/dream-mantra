@@ -32,10 +32,10 @@ const fade = {
 };
 
 const fadeLite = {
-  initial: { opacity: 0, y: 22 },
+  initial: { opacity: 1, y: 16 },
   whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-48px' },
-  transition: { duration: 0.42, ease: [0.22, 1, 0.36, 1] },
+  viewport: { once: true, margin: '-32px' },
+  transition: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
 };
 
 function HomeDivider() {
@@ -175,9 +175,24 @@ export default function Home() {
                 </div>
               </div>
               {phone ? (
-                <p className="text-center mt-5">
-                  <Link to="/pillars" className="btn-outline text-sm">{home.pillars.viewFullPage}</Link>
-                </p>
+                <>
+                  <motion.div
+                    {...sectionFade}
+                    className="mt-6 rounded-2xl overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 p-5 text-amber-50 shadow-lg shadow-orange-500/20"
+                  >
+                    <span className="inline-flex items-center gap-2 text-xs font-bold bg-white/20 px-3 py-1 rounded-full mb-2">
+                      <Layers className="w-4 h-4" /> {home.pillars.seventhPillarLabel}
+                    </span>
+                    <h3 className="font-display font-bold text-lg">{seventhPillar.title}</h3>
+                    <p className="text-amber-50/95 text-sm mt-1 mb-4">{seventhPillar.tagline}</p>
+                    <Link to={seventhPillar.link} className="btn-gold text-sm inline-flex items-center gap-2">
+                      {home.pillars.viewCrp} <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </motion.div>
+                  <p className="text-center mt-5">
+                    <Link to="/pillars" className="btn-outline text-sm">{home.pillars.viewFullPage}</Link>
+                  </p>
+                </>
               ) : (
                 <>
                   <motion.div
