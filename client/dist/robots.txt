@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /items/
+Disallow: /item/
+Disallow: /product/
+Disallow: /products/
+Disallow: /shop/
+Disallow: /store/
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /payment/
+Disallow: /counsellor
+Disallow: /api/
+
+Sitemap: https://dreammantra.in/sitemap.xml

@@ -117,6 +117,33 @@ app.use('/api/careers', careersRoutes);
 app.use('/api/payments', paymentsRoutes);
 app.use('/api/contact', contactRoutes);
 
+/** Legacy junk URLs (old store listings indexed by Google) → homepage */
+const LEGACY_HOME_REDIRECTS = [
+  /^\/items(?:\/|$)/i,
+  /^\/item(?:\/|$)/i,
+  /^\/product(?:\/|$)/i,
+  /^\/products(?:\/|$)/i,
+  /^\/shop(?:\/|$)/i,
+  /^\/store(?:\/|$)/i,
+];
+
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+
+  const pathOnly = (req.path || '/').replace(/\/{2,}/g, '/');
+  const qs = req.url.includes('?') ? req.url.slice(req.url.indexOf('?')) : '';
+
+  if (LEGACY_HOME_REDIRECTS.some((re) => re.test(pathOnly))) {
+    return res.redirect(301, `/${qs}`);
+  }
+
+  if (pathOnly !== req.path) {
+    return res.redirect(301, `${pathOnly}${qs}`);
+  }
+
+  return next();
+});
+
 if (hasBuiltClient) {
   app.use(
     express.static(clientDist, {

@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ScrollToTopOnNavigate from './components/ScrollToTopOnNavigate';
 import { AuthProvider } from './context/AuthContext';
 import { LanguageProvider } from './context/LanguageContext';
@@ -130,6 +130,12 @@ export default function App() {
                   </ProtectedRoute>
                 }
               />
+              <Route path="items/*" element={<Navigate to="/" replace />} />
+              <Route path="item/*" element={<Navigate to="/" replace />} />
+              <Route path="product/*" element={<Navigate to="/" replace />} />
+              <Route path="products/*" element={<Navigate to="/" replace />} />
+              <Route path="shop/*" element={<Navigate to="/" replace />} />
+              <Route path="store/*" element={<Navigate to="/" replace />} />
               <Route path="*" element={<NotFound />} />
             </Route>
             <Route path="login" element={<AuthPage><Login /></AuthPage>} />
