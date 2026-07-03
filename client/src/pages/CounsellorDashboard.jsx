@@ -91,7 +91,7 @@ export default function CounsellorDashboard() {
         onClose={() => { setProfileOpen(false); setProfileUser(null); }}
       />
 
-      <div className="dash-b2b-page max-w-[1440px] mx-auto px-4 sm:px-6">
+      <div className="dash-b2b-page w-full max-w-none mx-0 px-0">
         <DashboardB2BBanner
           tag="Counsellor Panel"
           title="Counsellor Dashboard"

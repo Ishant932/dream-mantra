@@ -24,5 +24,8 @@ export function formatBotReply(text) {
   // Collapse excessive blank lines; keep section breaks after ALL-CAPS headers
   s = s.replace(/\n{3,}/g, '\n\n').trim();
 
+  // Plain text only — no slashes, exclamation marks, backslashes, or pipes
+  s = s.replace(/[\/!\\|]/g, '');
+
   return s;
 }

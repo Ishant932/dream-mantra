@@ -1,1 +1,0 @@
-import{j as a}from"./motion-uKCejy7t.js";import{u as s,N as e}from"./vendor-Dcd-6rxe.js";function n(){const{hash:r}=s(),t=r==="#programs"?"/crp/launch":"/crp/explore",o=r&&r!=="#programs"?r:"";return a.jsx(e,{to:`${t}${o}`,replace:!0})}export{n as default};

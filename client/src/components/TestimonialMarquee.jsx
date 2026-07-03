@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { useLang } from '../context/LanguageContext';
 import { useHomeContent } from '../i18n/useSiteContent';
 import MarqueeStrip from './MarqueeStrip';
-import PersonPhoto from './PersonPhoto';
 
 export default function TestimonialMarquee() {
   const { t } = useLang();
@@ -44,7 +43,6 @@ export default function TestimonialMarquee() {
             >
               <div className="testimonial-card-accent" aria-hidden="true" />
               <div className="flex items-center gap-3 mb-4">
-                <PersonPhoto src={item.image} name={item.name} size="md" animate={false} />
                 <div className="min-w-0">
                   <p className="font-bold truncate" style={{ color: 'var(--text-primary)' }}>{item.name}</p>
                   <p className="text-xs font-semibold truncate testimonial-role">{item.role}</p>

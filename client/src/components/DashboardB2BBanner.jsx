@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { Sparkles, Radio } from 'lucide-react';
 import { isPhoneViewport } from '../utils/mobilePerf';
+import DashboardNextStepButton from './DashboardNextStepButton';
 
 export default function DashboardB2BBanner({
   tag,
@@ -9,6 +10,7 @@ export default function DashboardB2BBanner({
   dateLabel,
   variant = 'admin',
   action,
+  nextStep,
 }) {
   const phone = isPhoneViewport();
   const today = dateLabel || new Date().toLocaleDateString('en-IN', {
@@ -39,7 +41,10 @@ export default function DashboardB2BBanner({
             )}
           </div>
           <div className="dash-b2b-hero__cockpit-right">
-            {action && !phone && action}
+            {nextStep && variant === 'user' && (
+              <DashboardNextStepButton nextStep={nextStep} variant="cockpit" />
+            )}
+            {action}
             <span className="dash-b2b-hero__date dash-b2b-hero__date--cockpit">{today}</span>
           </div>
         </div>
@@ -85,6 +90,9 @@ export default function DashboardB2BBanner({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.4 }}
         >
+          {nextStep && variant === 'user' && (
+            <DashboardNextStepButton nextStep={nextStep} variant="hero" />
+          )}
           {action}
           <span className="dash-b2b-hero__date">{today}</span>
         </motion.div>

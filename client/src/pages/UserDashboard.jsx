@@ -28,6 +28,7 @@ import {
   resolveAssessmentSlug,
 } from '../utils/moduleAccess';
 import { canCancelAssessment } from '../utils/assessmentHelpers';
+import { getDashboardNextStep, NEXT_STEP_ACTIONS } from '../utils/dashboardNextStep';
 import { hasSkillMappingTests } from '../data/moduleCatalog';
 import { prefetchCareers } from '../utils/loadCareers';
 
@@ -290,6 +291,36 @@ export default function UserDashboard() {
 
   const goToCounsellingTopUp = () => goTab('assess', '&shop=counselling-topup');
 
+  const mobileNextStep = useMemo(() => {
+    const step = getDashboardNextStep({
+      profileCompletion,
+      pendingPayment,
+      assessments: data.assessments,
+      paidAssessment,
+      counsellingAccess,
+      consultations: data.consultations,
+    });
+    const handlers = {
+      [NEXT_STEP_ACTIONS.PROFILE]: openProfileModal,
+      [NEXT_STEP_ACTIONS.PAYMENT]: () => pendingPayment && navigate(`/payment/${pendingPayment.id}`),
+      [NEXT_STEP_ACTIONS.MODULES]: () => goTab('assess'),
+      [NEXT_STEP_ACTIONS.PROCESS]: goToProductAction,
+      [NEXT_STEP_ACTIONS.BOOK]: () => goTab('book'),
+    };
+    return {
+      ...step,
+      onClick: handlers[step.action] || openProfileModal,
+    };
+  }, [
+    profileCompletion,
+    pendingPayment,
+    data.assessments,
+    data.consultations,
+    paidAssessment,
+    counsellingAccess,
+    navigate,
+  ]);
+
   const stats = [
     { label: 'Profile', value: `${profileCompletion}%`, icon: User },
     { label: t('dashboard.modules'), value: data.stats?.assessments ?? 0, icon: FlaskConical },
@@ -320,7 +351,7 @@ export default function UserDashboard() {
         saving={profileSaving}
       />
 
-      <div className="dash-b2b-page max-w-[1440px] mx-auto px-4 sm:px-6">
+      <div className="dash-b2b-page w-full max-w-none mx-0 px-0">
         <DashboardB2BBanner
           tag="Your Career Toolkit"
           title={`Welcome, ${displayUser?.name?.split(' ')[0] || 'Student'}`}
@@ -333,6 +364,7 @@ export default function UserDashboard() {
               onRefresh={refreshDashboard}
             />
           )}
+          nextStep={mobileNextStep}
         />
 
         {msg && (
@@ -357,6 +389,7 @@ export default function UserDashboard() {
             notifToken={token}
             notifUnread={data.unreadNotifications || 0}
             onNotifRefresh={refreshDashboard}
+            nextStep={mobileNextStep}
           >
             {(tab) => (
                 <>
@@ -482,6 +515,9 @@ export default function UserDashboard() {
                         <h2 className="text-2xl font-bold dash-card-title">My Reports</h2>
                         <p className="dash-card-meta mt-1 text-sm max-w-xl">
                           Personalised Mind Mapping, Skill Mapping and assessment reports — published here after counsellor review.
+                        </p>
+                        <p className="mt-2 text-sm font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 rounded-lg px-3 py-2 max-w-xl">
+                          Note: Kindly download your report within 10 days of upload. Reports may be removed from the dashboard after this period.
                         </p>
                       </div>
                       <button type="button" onClick={refreshDashboard} className="btn-outline !py-2 !px-4 text-sm shrink-0">

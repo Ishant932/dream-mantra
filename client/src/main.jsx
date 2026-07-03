@@ -11,8 +11,10 @@ function applyPerformanceHints() {
   const coarse = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   const narrow = window.matchMedia('(max-width: 767px)').matches;
   const tablet = window.matchMedia('(max-width: 1024px)').matches;
-  if (narrow || (coarse && tablet)) root.classList.add('is-phone');
-  if (narrow || coarse) root.classList.add('is-mobile-perf');
+  const laptop = window.matchMedia('(max-width: 1280px)').matches;
+  if (narrow || coarse) root.classList.add('is-phone');
+  if (narrow || coarse || laptop) root.classList.add('is-mobile-perf');
+  if (!import.meta.env.DEV) root.classList.add('is-mobile-perf');
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     root.classList.add('is-mobile-perf', 'is-reduced-motion');
   }
@@ -23,11 +25,9 @@ if ('scrollRestoration' in window.history) {
   window.history.scrollRestoration = 'manual';
 }
 
-const mobilePerf = applyPerformanceHints();
-if (mobilePerf) {
-  runWhenIdle(() => warmupServer(), 2500);
-} else {
-  warmupServer();
+applyPerformanceHints();
+if (!import.meta.env.DEV) {
+  runWhenIdle(() => warmupServer(), 1800);
 }
 
 const root = document.getElementById('root');

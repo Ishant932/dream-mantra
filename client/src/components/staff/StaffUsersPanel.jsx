@@ -1,13 +1,13 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, X, Mail, Phone, UserCircle, UserCog, Ban, Trash2 } from 'lucide-react';
+import { Search, Filter, X, Mail, Phone, UserCog } from 'lucide-react';
 import { useLang } from '../../context/LanguageContext';
 import { programs } from '../../data/content';
 import AdminUserProfileModal from '../AdminUserProfileModal';
 import CopyableUserId from '../CopyableUserId';
 import { DashCard } from '../DashboardUI';
 import AdminSectionExport from '../AdminSectionExport';
-import UserDownloadMenu from '../UserDownloadMenu';
+import UserActionsMenu from '../UserActionsMenu';
 
 const CLASS_FILTER_OPTIONS = ['All classes', ...programs.map((p) => p.title)];
 const STREAM_FILTER_OPTIONS = ['All streams', 'Science', 'Commerce', 'Arts', 'Humanities', 'Undecided'];
@@ -26,6 +26,7 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
   const [loadError, setLoadError] = useState('');
   const [assigningId, setAssigningId] = useState(null);
   const [profileUser, setProfileUser] = useState(null);
+  const [profileStats, setProfileStats] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
@@ -153,9 +154,11 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
     setProfileOpen(true);
     setProfileLoading(true);
     setProfileUser(null);
+    setProfileStats(null);
     try {
       const data = await api.getUser(token, userId);
       setProfileUser(data.user);
+      setProfileStats(data.stats || null);
     } catch (err) {
       onError?.(err.message);
       setProfileOpen(false);
@@ -244,10 +247,11 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
       <AdminUserProfileModal
         open={profileOpen}
         user={profileUser}
+        stats={profileStats}
         loading={profileLoading}
         saving={profileSaving}
         onSave={saveUserProfile}
-        onClose={() => { setProfileOpen(false); setProfileUser(null); }}
+        onClose={() => { setProfileOpen(false); setProfileUser(null); setProfileStats(null); }}
         api={api}
         token={token}
         onError={onError}
@@ -380,32 +384,22 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                     )}
                   </div>
                   <div className="flex items-start gap-1 shrink-0">
-                    <UserDownloadMenu api={api} token={token} user={u} onError={onError} compact />
-                    <button type="button" onClick={() => viewProfile(u.id)} className="dash-admin-view-btn h-10 w-10 rounded-xl inline-flex items-center justify-center shrink-0">
-                      <UserCircle className="w-5 h-5" />
-                    </button>
+                    <UserActionsMenu
+                      user={u}
+                      api={api}
+                      token={token}
+                      onView={viewProfile}
+                      onSuspend={(user) => { setSuspendUser(user); setSuspendUntil(''); }}
+                      onUnsuspend={unsuspendAccount}
+                      onDelete={deleteAccount}
+                      onError={onError}
+                      allowAccountActions={allowAccountActions}
+                      actionBusy={actionUserId === u.id}
+                      suspended={u.account_status === 'suspended'}
+                    />
                   </div>
                 </div>
                 <p className="text-xs opacity-80">{u.email} · {u.phone || '—'}</p>
-                <div className="pt-2 border-t border-sand-200 dark:border-sand-700">
-                  <UserDownloadMenu api={api} token={token} user={u} onError={onError} />
-                </div>
-                {allowAccountActions && (
-                  <div className="flex flex-col gap-2 pt-2 border-t border-sand-200 dark:border-sand-700">
-                    {u.account_status === 'suspended' ? (
-                      <button type="button" disabled={actionUserId === u.id} onClick={() => unsuspendAccount(u.id)} className="w-full text-sm font-bold px-4 py-2.5 rounded-xl bg-emerald-600 text-white disabled:opacity-50">
-                        Unsuspend account
-                      </button>
-                    ) : (
-                      <button type="button" disabled={actionUserId === u.id} onClick={() => { setSuspendUser(u); setSuspendUntil(''); }} className="w-full text-sm font-bold px-4 py-2.5 rounded-xl border-2 border-amber-500 text-amber-800 bg-amber-50 inline-flex items-center justify-center gap-2 disabled:opacity-50">
-                        <Ban className="w-4 h-4" /> Suspend user
-                      </button>
-                    )}
-                    <button type="button" disabled={actionUserId === u.id} onClick={() => deleteAccount(u)} className="w-full text-sm font-bold px-4 py-2.5 rounded-xl border-2 border-red-400 text-red-700 bg-red-50 inline-flex items-center justify-center gap-2 disabled:opacity-50">
-                      <Trash2 className="w-4 h-4" /> Delete user
-                    </button>
-                  </div>
-                )}
               </div>
             ))}
           </div>
@@ -481,30 +475,23 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                       {u.created_at && new Date(u.created_at).toLocaleDateString('en-IN')}
                     </td>
                     <td className="py-3 px-3 text-right">
-                      <div className="flex flex-wrap justify-end gap-1">
+                      <div className="flex flex-wrap justify-end gap-1 items-center">
                         {u.account_status === 'suspended' && (
                           <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700 mr-1">Suspended</span>
                         )}
-                        <UserDownloadMenu api={api} token={token} user={u} onError={onError} compact />
-                        <button type="button" onClick={() => viewProfile(u.id)} className="dash-admin-view-btn shrink-0 h-9 w-9 rounded-xl inline-flex items-center justify-center" title="View full profile">
-                          <UserCircle className="w-5 h-5" />
-                        </button>
-                        {allowAccountActions && (
-                          <>
-                            {u.account_status === 'suspended' ? (
-                              <button type="button" disabled={actionUserId === u.id} onClick={() => unsuspendAccount(u.id)} className="text-sm font-bold px-3 py-2 rounded-lg bg-emerald-600 text-white disabled:opacity-50">
-                                Unsuspend
-                              </button>
-                            ) : (
-                              <button type="button" disabled={actionUserId === u.id} onClick={() => { setSuspendUser(u); setSuspendUntil(''); }} className="text-sm font-bold px-3 py-2 rounded-lg border-2 border-amber-500 text-amber-800 bg-amber-50 inline-flex items-center gap-1.5 disabled:opacity-50" title="Suspend user">
-                                <Ban className="w-4 h-4" /> Suspend
-                              </button>
-                            )}
-                            <button type="button" disabled={actionUserId === u.id} onClick={() => deleteAccount(u)} className="text-sm font-bold px-3 py-2 rounded-lg border-2 border-red-400 text-red-700 bg-red-50 inline-flex items-center gap-1.5 disabled:opacity-50" title="Delete user">
-                              <Trash2 className="w-4 h-4" /> Delete
-                            </button>
-                          </>
-                        )}
+                        <UserActionsMenu
+                          user={u}
+                          api={api}
+                          token={token}
+                          onView={viewProfile}
+                          onSuspend={(user) => { setSuspendUser(user); setSuspendUntil(''); }}
+                          onUnsuspend={unsuspendAccount}
+                          onDelete={deleteAccount}
+                          onError={onError}
+                          allowAccountActions={allowAccountActions}
+                          actionBusy={actionUserId === u.id}
+                          suspended={u.account_status === 'suspended'}
+                        />
                       </div>
                     </td>
                   </motion.tr>

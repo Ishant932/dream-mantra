@@ -49,6 +49,7 @@ export const siteEn = {
       { to: '/#certifications', label: 'Certifications' },
       { to: '/counselling?tab=book', label: 'Book Session' },
       { to: '/about', label: 'About Us' },
+      { to: '/blog', label: 'Blog' },
       { to: '/terms', label: 'Terms & Conditions' },
     ],
   },
@@ -69,6 +70,7 @@ export const siteEn = {
         links: [
           { to: '/counselling?tab=book', label: 'Book Session', desc: 'Free consultation', icon: '📅' },
           { to: '/about', label: 'About Us', desc: 'Our story & founder', icon: '✨' },
+          { to: '/blog', label: 'Blog', desc: 'Career tips & insights', icon: '📝' },
           { to: '/terms', label: 'Terms & Conditions', desc: 'Policies & guidelines', icon: '📄' },
         ],
       },
@@ -79,6 +81,8 @@ export const siteEn = {
     home: 'Home',
     counselling: 'Counsel',
     tests: 'Tests',
+    dashboard: 'Dashboard',
+    contact: 'Contact',
     careers: 'Careers',
     call: 'Call',
     modules: 'Modules',
@@ -107,6 +111,7 @@ export const siteEn = {
     footerQuickLinks: [
       { to: '/', label: 'Home' },
       { to: '/about', label: 'About Us' },
+      { to: '/blog', label: 'Blog' },
       { to: '/contact', label: 'Contact' },
       { to: '/terms', label: 'Terms & Conditions' },
     ],
@@ -140,6 +145,7 @@ export const siteEn = {
         title: 'Connect',
         links: [
           { to: '/about', label: 'About Us' },
+      { to: '/blog', label: 'Blog' },
       { to: '/contact', label: 'Contact' },
       { to: '/terms', label: 'Terms & Conditions' },
         ],
@@ -297,15 +303,14 @@ export const siteEn = {
     trustBar: {
       tagline: 'Science-backed career guidance trusted across India',
       items: [
-        { type: 'number', value: 7000, suffix: '+', label: 'Counsellings Done', icon: '🎯' },
+        { type: 'badge', label: '360° Analysis', icon: '🔬' },
         { type: 'badge', label: 'Internationally Certified', icon: '🌍' },
         { type: 'badge', label: 'Government Certified', icon: '🏛️' },
         { type: 'badge', label: 'IIT Madras Certified', icon: '🎓' },
         { type: 'number', value: 30, suffix: '+', label: 'Countries Validated', icon: '🌐' },
         { type: 'number', value: 50, suffix: '+', label: 'School Partners', icon: '🏫' },
         { type: 'number', value: 120, suffix: '+', label: 'Coaching Partners', icon: '📚' },
-        { type: 'number', value: 950, suffix: '+', label: 'Career Maps In-App', icon: '🗺️' },
-        { type: 'badge', label: '360° Analysis', sub: 'Complete profile view', icon: '🔬' },
+        { type: 'number', value: 7000, suffix: '+', label: 'Counsellings Done', icon: '🎯' },
       ],
     },
     whoWeGuide: {

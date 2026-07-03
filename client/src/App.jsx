@@ -31,6 +31,8 @@ const CRPExplorePage = lazy(() => import('./pages/CRPExplorePage'));
 const CRPLaunchPage = lazy(() => import('./pages/CRPLaunchPage'));
 const CRPPage = lazy(() => import('./pages/CRPPage'));
 const CareerDetailPage = lazy(() => import('./pages/CareerDetailPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
 const UserDashboard = lazy(() => import('./pages/UserDashboard'));
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 const CounsellorDashboard = lazy(() => import('./pages/CounsellorDashboard'));
@@ -76,6 +78,8 @@ export default function App() {
               <Route path="crp/launch" element={<CRPLaunchPage />} />
               <Route path="careers" element={<CareersPage />} />
               <Route path="careers/:slug" element={<CareerDetailPage />} />
+              <Route path="blog" element={<BlogPage />} />
+              <Route path="blog/:slug" element={<BlogPostPage />} />
               <Route path="marketplace" element={<MarketplaceHub />} />
               <Route path="study-abroad" element={<StudyAbroadHub />} />
               <Route path="about" element={<About />} />

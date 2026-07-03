@@ -25,6 +25,7 @@ const defaultData = {
   user_reports: [],
   site_settings: { community_links: { 'crp-test': '' } },
   contact_leads: [],
+  blog_posts: [],
   user_notifications: [],
   message_threads: [],
   messages: [],
@@ -37,6 +38,7 @@ const defaultData = {
     availability_slots: 1,
     user_reports: 1,
     contact_leads: 1,
+    blog_posts: 1,
     user_notifications: 1,
     message_threads: 1,
     messages: 1,
@@ -59,6 +61,7 @@ function normalizePayload(parsed) {
   parsed.assessments = asArray(parsed.assessments);
   parsed.otpStore = asArray(parsed.otpStore);
   parsed.contact_leads = asArray(parsed.contact_leads);
+  parsed.blog_posts = asArray(parsed.blog_posts);
   parsed.user_notifications = asArray(parsed.user_notifications);
   parsed.message_threads = asArray(parsed.message_threads);
   parsed.messages = asArray(parsed.messages);

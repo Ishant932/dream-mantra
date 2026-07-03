@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -18,8 +18,10 @@ import {
 } from 'lucide-react';
 import CopyableUserId from './CopyableUserId';
 import DashboardMobileDeck from './DashboardMobileDeck';
+import DashboardNextStepButton from './DashboardNextStepButton';
 import NotificationBell from './NotificationBell';
 import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
+import { scrollPageToTop } from '../utils/scrollToTop';
 
 const TAB_ICONS = {
   overview: LayoutGrid,
@@ -38,6 +40,8 @@ const TAB_ICONS = {
   settings: Settings,
   analytics: BarChart3,
   messages: MessageSquare,
+  blogs: BookOpen,
+  leads: MessageSquare,
 };
 
 const panelVariants = {
@@ -59,6 +63,7 @@ export default function DashboardSidebarLayout({
   notifToken,
   notifUnread = 0,
   onNotifRefresh,
+  nextStep,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -77,8 +82,12 @@ export default function DashboardSidebarLayout({
     navigate({ pathname: location.pathname, search: `?tab=${tabId}` }, { replace: true });
   };
 
+  useEffect(() => {
+    scrollPageToTop('instant');
+  }, [panelTab]);
+
   return (
-    <div className="dash-sidebar-layout dash-b2b-layout no-reveal">
+    <div className={`dash-sidebar-layout dash-b2b-layout no-reveal${phone ? ' dash-b2b-layout--mobile-deck' : ''}`}>
       <div className="dash-sidebar-grid">
         <aside className="dash-sidebar" aria-label="Dashboard navigation">
           <motion.div
@@ -111,6 +120,7 @@ export default function DashboardSidebarLayout({
                     compact
                   />
                 ) : null}
+                nextStep={nextStep}
               />
             ) : (
               <>
@@ -161,6 +171,9 @@ export default function DashboardSidebarLayout({
                     <p className="dash-sidebar-meta">Administrator</p>
                   )}
                 </div>
+                {nextStep && showProfileCompletion && deckVariant === 'user' && (
+                  <DashboardNextStepButton nextStep={nextStep} variant="sidebar" className="shrink-0" />
+                )}
               </motion.div>
             )}
 

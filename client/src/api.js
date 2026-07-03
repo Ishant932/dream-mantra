@@ -1,7 +1,7 @@
 const API = (import.meta.env.VITE_API_URL || '/api').replace(/\/$/, '');
-const REQUEST_TIMEOUT_MS = import.meta.env.PROD ? 45000 : 30000;
+const REQUEST_TIMEOUT_MS = import.meta.env.PROD ? 45000 : 10000;
 const RETRY_STATUS = new Set([408, 429, 502, 503, 504]);
-const RETRYABLE_PATHS = /^\/(auth\/me|health|warmup|careers|slots|admin\/|user\/|counsellor\/|payments\/(products|promotions|mode))/;
+const RETRYABLE_PATHS = /^\/(auth\/me|health|warmup|careers|blog|slots|admin\/|user\/|counsellor\/|payments\/(products|promotions|mode))/;
 
 function headers(token) {
   const h = { 'Content-Type': 'application/json' };
@@ -16,7 +16,6 @@ function sleep(ms) {
 function shouldRetry(path, method, status) {
   if (method && method !== 'GET') return false;
   if (status && RETRY_STATUS.has(status)) return true;
-  if (!import.meta.env.PROD) return true;
   return RETRYABLE_PATHS.test(path);
 }
 
@@ -207,6 +206,10 @@ export const adminApi = {
     request(`/admin/slots/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   deleteSlot: (token, id) =>
     request(`/admin/slots/${id}`, { method: 'DELETE', headers: headers(token) }),
+  createBulkSlots: (token, body) =>
+    request('/admin/slots/bulk', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  deleteBulkSlots: (token, body) =>
+    request('/admin/slots/bulk', { method: 'DELETE', headers: headers(token), body: JSON.stringify(body) }),
   slotBookings: (token, slotId) =>
     request(`/admin/slots/${slotId}/bookings`, { headers: headers(token) }),
   payments: (token, params = {}) => {
@@ -258,6 +261,17 @@ export const adminApi = {
     request(`/admin/counsellors/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   deleteCounsellor: (token, id) =>
     request(`/admin/counsellors/${id}`, { method: 'DELETE', headers: headers(token) }),
+  blogs: (token, params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request(`/admin/blogs${q ? `?${q}` : ''}`, { headers: headers(token) });
+  },
+  getBlog: (token, id) => request(`/admin/blogs/${id}`, { headers: headers(token) }),
+  createBlog: (token, body) =>
+    request('/admin/blogs', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  updateBlog: (token, id, body) =>
+    request(`/admin/blogs/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteBlog: (token, id) =>
+    request(`/admin/blogs/${id}`, { method: 'DELETE', headers: headers(token) }),
 };
 
 export const counsellorApi = {
@@ -279,6 +293,10 @@ export const counsellorApi = {
     request(`/counsellor/slots/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   deleteSlot: (token, id) =>
     request(`/counsellor/slots/${id}`, { method: 'DELETE', headers: headers(token) }),
+  createBulkSlots: (token, body) =>
+    request('/counsellor/slots/bulk', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  deleteBulkSlots: (token, body) =>
+    request('/counsellor/slots/bulk', { method: 'DELETE', headers: headers(token), body: JSON.stringify(body) }),
   slotBookings: (token, slotId) =>
     request(`/counsellor/slots/${slotId}/bookings`, { headers: headers(token) }),
   payments: (token, params = {}) => {
@@ -315,6 +333,14 @@ export const careersApi = {
   },
   get: (slug) => request(`/careers/${slug}`),
   categories: () => request('/careers/categories'),
+};
+
+export const blogApi = {
+  list: (params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request(`/blog${q ? `?${q}` : ''}`);
+  },
+  get: (slug) => request(`/blog/${encodeURIComponent(slug)}`),
 };
 
 /** Ping server early so Render free tier wakes before user actions */

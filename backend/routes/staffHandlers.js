@@ -3,8 +3,10 @@ import { calcProfileCompletion, normalizeProfile, profileChecklist, defaultProfi
 import {
   listSlots,
   createSlot,
+  createBulkSlots,
   updateSlot,
   deleteSlot,
+  deleteBulkSlots,
   getAvailableSlots,
   getSlotBookings,
   listConsultationsEnriched,
@@ -324,6 +326,52 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
     const from = req.query.from;
     const to = req.query.to;
     res.json({ slots: listSlots({ from, to }) });
+  });
+
+  router.post('/slots/bulk', async (req, res) => {
+    try {
+      const {
+        startDate,
+        endDate,
+        daysOfWeek,
+        startTime,
+        endTime,
+        mode,
+        location,
+        title,
+        meeting_link,
+        capacity,
+        counsellor,
+      } = req.body;
+      const result = createBulkSlots({
+        startDate,
+        endDate,
+        daysOfWeek,
+        startTime,
+        endTime,
+        mode,
+        location,
+        title,
+        meeting_link,
+        capacity,
+        counsellor,
+      });
+      await flushDatabase();
+      res.status(201).json(result);
+    } catch (e) {
+      res.status(400).json({ message: e.message });
+    }
+  });
+
+  router.delete('/slots/bulk', async (req, res) => {
+    try {
+      const { from, to, onlyEmpty } = req.body;
+      const result = deleteBulkSlots({ from, to, onlyEmpty: onlyEmpty !== false });
+      await flushDatabase();
+      res.json(result);
+    } catch (e) {
+      res.status(400).json({ message: e.message });
+    }
   });
 
   router.get('/slots/:id/bookings', (req, res) => {

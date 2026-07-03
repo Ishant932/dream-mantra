@@ -6,19 +6,36 @@ import UserDownloadMenu from './UserDownloadMenu';
 import { programs } from '../data/content';
 
 const PROFILE_FIELDS = [
-  { key: 'classLevel', label: 'Class / Level', type: 'select', options: programs.map((p) => p.title) },
-  { key: 'stream', label: 'Stream', type: 'text' },
-  { key: 'city', label: 'City', type: 'text' },
-  { key: 'state', label: 'State', type: 'text' },
-  { key: 'careerGoal', label: 'Career Goal', type: 'text' },
   { key: 'dateOfBirth', label: 'Date of Birth', type: 'date' },
   { key: 'gender', label: 'Gender', type: 'text' },
-  { key: 'parentName', label: 'Parent Name', type: 'text' },
-  { key: 'parentPhone', label: 'Parent Phone', type: 'text' },
+  { key: 'city', label: 'City', type: 'text' },
+  { key: 'state', label: 'State', type: 'text' },
+  { key: 'classLevel', label: 'Class / Level', type: 'select', options: programs.map((p) => p.title) },
+  { key: 'stream', label: 'Stream / Interest', type: 'text' },
+  { key: 'board', label: 'Board / Curriculum', type: 'text' },
+  { key: 'schoolOrCollege', label: 'School / College', type: 'text' },
+  { key: 'careerGoal', label: 'Career Goal', type: 'text' },
+  { key: 'hobbies', label: 'Hobbies & Interests', type: 'textarea' },
+  { key: 'biggestChallenge', label: 'Biggest Challenge', type: 'textarea' },
+  { key: 'parentName', label: 'Parent / Guardian Name', type: 'text' },
+  { key: 'parentPhone', label: 'Parent Contact', type: 'text' },
   { key: 'whatsappNumber', label: 'WhatsApp Number', type: 'text' },
+  { key: 'preferredMode', label: 'Counselling Mode', type: 'text' },
+  { key: 'howHeard', label: 'How You Found Us', type: 'text' },
 ];
 
-export default function AdminUserProfileModal({ user, open, onClose, loading, onSave, saving, api, token, onError }) {
+export default function AdminUserProfileModal({
+  user,
+  stats,
+  open,
+  onClose,
+  loading,
+  onSave,
+  saving,
+  api,
+  token,
+  onError,
+}) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', profile: {} });
 
@@ -41,6 +58,8 @@ export default function AdminUserProfileModal({ user, open, onClose, loading, on
     onSave?.(user.id, form);
   };
 
+  const checklist = user?.profileChecklist || [];
+
   return (
     <AnimatePresence>
       <motion.div
@@ -55,7 +74,7 @@ export default function AdminUserProfileModal({ user, open, onClose, loading, on
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.96, y: 12 }}
           transition={{ type: 'spring', stiffness: 340, damping: 28 }}
-          className="relative w-full max-w-2xl bg-[var(--bg-elevated)] dark:bg-sand-900 rounded-3xl border border-sand-200 dark:border-sand-700 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+          className="relative w-full max-w-3xl bg-[var(--bg-elevated)] dark:bg-sand-900 rounded-3xl border border-sand-200 dark:border-sand-700 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-[var(--bg-elevated)] dark:bg-sand-900 border-b border-sand-200 dark:border-sand-700">
@@ -63,7 +82,7 @@ export default function AdminUserProfileModal({ user, open, onClose, loading, on
               <UserCircle className="w-7 h-7 text-amber-500" />
               <div>
                 <h2 className="font-display text-lg font-bold">User Profile</h2>
-                <p className="text-xs opacity-60">{editing ? 'Edit & save details' : 'View student details'}</p>
+                <p className="text-xs opacity-60">{editing ? 'Edit and save all details' : 'Complete student record'}</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -96,7 +115,66 @@ export default function AdminUserProfileModal({ user, open, onClose, loading, on
                   <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60">
                     <p className="text-xs font-bold uppercase tracking-wide opacity-60 mb-2">Dreams ID</p>
                     <CopyableUserId uid={user.user_uid} />
-                    <p className="text-xs opacity-60 mt-2">Joined {user.created_at && new Date(user.created_at).toLocaleDateString('en-IN', { dateStyle: 'medium' })}</p>
+                    <div className="flex flex-wrap gap-3 mt-2 text-xs opacity-70">
+                      <span>Joined {user.created_at && new Date(user.created_at).toLocaleDateString('en-IN', { dateStyle: 'medium' })}</span>
+                      {user.assigned_counsellor_name && (
+                        <span>Counsellor: {user.assigned_counsellor_name}</span>
+                      )}
+                      {user.account_status === 'suspended' && (
+                        <span className="font-bold text-red-600">Suspended{user.suspended_until ? ` until ${new Date(user.suspended_until).toLocaleString('en-IN')}` : ''}</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {stats && (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="p-3 rounded-xl bg-sand-50 dark:bg-sand-800/50 text-center">
+                      <p className="text-lg font-bold text-amber-700">{stats.consultations ?? 0}</p>
+                      <p className="text-[10px] font-bold uppercase opacity-60">Consultations</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-sand-50 dark:bg-sand-800/50 text-center">
+                      <p className="text-lg font-bold text-amber-700">{stats.assessments ?? 0}</p>
+                      <p className="text-[10px] font-bold uppercase opacity-60">Assessments</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-sand-50 dark:bg-sand-800/50 text-center">
+                      <p className="text-lg font-bold text-emerald-700">{stats.paidTests ?? 0}</p>
+                      <p className="text-[10px] font-bold uppercase opacity-60">Paid modules</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-sand-50 dark:bg-sand-800/50 text-center">
+                      <p className="text-lg font-bold">{user.profileCompletion ?? 0}%</p>
+                      <p className="text-[10px] font-bold uppercase opacity-60">Profile</p>
+                    </div>
+                  </div>
+                )}
+
+                {stats?.assessmentsList?.length > 0 && (
+                  <div className="p-4 rounded-xl border border-sand-200 dark:border-sand-700">
+                    <p className="text-xs font-bold uppercase opacity-60 mb-2">Module purchases</p>
+                    <ul className="space-y-1.5 text-sm">
+                      {stats.assessmentsList.map((a) => (
+                        <li key={a.id} className="flex flex-wrap justify-between gap-2">
+                          <span>{a.type || a.product_title || 'Module'}</span>
+                          <span className={`text-xs font-bold capitalize ${a.status === 'paid' ? 'text-emerald-700' : 'text-amber-700'}`}>{a.status}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {checklist.length > 0 && !editing && (
+                  <div className="p-4 rounded-xl border border-sand-200 dark:border-sand-700">
+                    <p className="text-xs font-bold uppercase opacity-60 mb-2">Profile checklist</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {checklist.map((item) => (
+                        <span
+                          key={item.key}
+                          className={`text-[10px] font-bold px-2 py-1 rounded-full ${item.done ? 'bg-emerald-100 text-emerald-800' : 'bg-sand-100 text-sand-600'}`}
+                        >
+                          {item.label}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -131,14 +209,14 @@ export default function AdminUserProfileModal({ user, open, onClose, loading, on
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold uppercase opacity-60 mb-1 block">Profile completion</label>
-                    <p className="input-field w-full !bg-sand-50 dark:!bg-sand-800 font-bold text-amber-700">{user.profileCompletion ?? 0}%</p>
+                    <label className="text-xs font-bold uppercase opacity-60 mb-1 block">Two-factor auth</label>
+                    <p className="input-field w-full !bg-sand-50 dark:!bg-sand-800 font-semibold">{user.twoFactorEnabled ? 'Enabled' : 'Not enabled'}</p>
                   </div>
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-sand-200/60 dark:border-sand-700/40">
                   {PROFILE_FIELDS.map(({ key, label, type, options }) => (
-                    <div key={key}>
+                    <div key={key} className={type === 'textarea' ? 'sm:col-span-2' : ''}>
                       <label className="text-xs font-bold uppercase opacity-60 mb-1 block">{label}</label>
                       {type === 'select' ? (
                         <select
@@ -152,6 +230,14 @@ export default function AdminUserProfileModal({ user, open, onClose, loading, on
                             <option key={o} value={o}>{o}</option>
                           ))}
                         </select>
+                      ) : type === 'textarea' ? (
+                        <textarea
+                          className="input-field w-full min-h-[4rem]"
+                          value={form.profile[key] || ''}
+                          onChange={(e) => setForm({ ...form, profile: { ...form.profile, [key]: e.target.value } })}
+                          disabled={!editing}
+                          rows={2}
+                        />
                       ) : (
                         <input
                           type={type}

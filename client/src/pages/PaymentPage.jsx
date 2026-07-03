@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CreditCard, Shield, CheckCircle, Loader2, Tag, Clock,
-  AlertCircle, RefreshCw, UserCheck, Smartphone, MessageCircle,
+  RefreshCw, UserCheck, Smartphone, MessageCircle,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { paymentsApi, userApi } from '../api';
@@ -11,6 +11,9 @@ import { applyVoucherPrice } from '../data/promotions';
 import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests, MODULE_CATALOG, resolveCounsellingAddon } from '../data/moduleCatalog';
 import { purchaseIncludesCounselling } from '../utils/moduleAccess';
 import SkillMappingBandPicker from '../components/SkillMappingBandPicker';
+
+const UPI_VPA = '8824652354@pthdfc';
+const UPI_QR_IMAGE = '/payments/upi-qr.png';
 
 function formatPrice(n) {
   return `₹${n.toLocaleString('en-IN')}`;
@@ -88,6 +91,8 @@ export default function PaymentPage() {
   useEffect(() => {
     if (order?.gatewayEnabled) {
       setPaymentMethod('razorpay');
+    } else {
+      setPaymentMethod('admin');
     }
   }, [order?.gatewayEnabled]);
 
@@ -398,7 +403,8 @@ export default function PaymentPage() {
   }
 
   const { lineItems, displayTitle, catalogTotal, moduleMeta, slug } = checkout;
-  const originalPrice = catalogTotal;
+  const subtotal = lineItems.reduce((sum, item) => sum + (Number(item.amount) || 0), 0) || catalogTotal;
+  const originalPrice = subtotal;
   const { final: finalPrice, savings } = couponApplied
     ? applyVoucherPrice(originalPrice, couponApplied)
     : { final: originalPrice, savings: 0 };
@@ -504,7 +510,23 @@ export default function PaymentPage() {
                   <span className="font-semibold">{formatPrice(item.amount)}</span>
                 </li>
               ))}
-              <li className="flex justify-between pt-2 border-t font-bold">
+              <li className="flex justify-between pt-2 border-t border-sand-200/80 dark:border-sand-700/80">
+                <span className="text-sand-600">Subtotal</span>
+                <span className="font-semibold">{formatPrice(originalPrice)}</span>
+              </li>
+              {couponApplied && savings > 0 && (
+                <>
+                  <li className="flex justify-between gap-3 text-emerald-700 dark:text-emerald-400">
+                    <span>Coupon applied</span>
+                    <span className="font-semibold font-mono">{couponApplied.code}</span>
+                  </li>
+                  <li className="flex justify-between gap-3 text-amber-700 dark:text-amber-400">
+                    <span>Discount</span>
+                    <span className="font-semibold">−{formatPrice(savings)}</span>
+                  </li>
+                </>
+              )}
+              <li className="flex justify-between pt-2 border-t font-bold text-base">
                 <span>Total</span>
                 <span className="text-brand-600">{formatPrice(finalPrice)}</span>
               </li>
@@ -583,9 +605,8 @@ export default function PaymentPage() {
               </button>
             </div>
             {couponApplied && (
-              <p className="text-sm text-amber-600 mt-2 flex items-center gap-1">
-                <CheckCircle className="w-4 h-4" /> {couponApplied.label} applied!
-                {savings > 0 && <span className="text-sand-500"> (save {formatPrice(savings)})</span>}
+              <p className="text-sm text-emerald-600 mt-2 flex items-center gap-1">
+                <CheckCircle className="w-4 h-4" /> {couponApplied.label || couponApplied.code} applied to your order total above.
               </p>
             )}
           </div>
@@ -603,8 +624,8 @@ export default function PaymentPage() {
                 }`}
               >
                 <UserCheck className={`w-6 h-6 mb-2 ${paymentMethod === 'admin' ? 'text-brand-600' : 'text-sand-500'}`} />
-                <p className="font-bold text-sm">Admin Verification</p>
-                <p className="text-xs text-sand-500 mt-1">Order sent to admin for manual confirmation</p>
+                <p className="font-bold text-sm">Pay via UPI</p>
+                <p className="text-xs text-sand-500 mt-1">Scan QR, pay, then upload screenshot for confirmation</p>
               </button>
 
               <button
@@ -630,17 +651,23 @@ export default function PaymentPage() {
 
           {paymentMethod === 'admin' && (
             <div className="mb-6 space-y-4">
-              <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 flex gap-3">
-                <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                <div className="text-sm">
-                  <p className="font-bold text-amber-900">Admin verification</p>
-                  <p className="text-amber-800 mt-1">
-                    Pay via UPI, then upload your payment screenshot. Our team confirms within 24 hours.
-                  </p>
-                  <ul className="mt-2 space-y-0.5 text-amber-800">
-                    <li>• UPI / PhonePe / GPay: <strong>9680102276</strong></li>
-                    <li>• Amount: <strong>{formatPrice(finalPrice)}</strong></li>
-                  </ul>
+              <div className="p-4 rounded-xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800/40">
+                <p className="text-sm text-amber-900 dark:text-amber-100 leading-relaxed">
+                  Pay via UPI, then upload your payment screenshot. Our team confirms within 24 hours.
+                </p>
+                <p className="mt-3 text-sm font-bold text-amber-900 dark:text-amber-50">
+                  UPI: <span className="font-mono tracking-wide">{UPI_VPA}</span>
+                </p>
+                <p className="mt-1 text-sm text-amber-800 dark:text-amber-200">
+                  Amount to pay: <strong>{formatPrice(finalPrice)}</strong>
+                </p>
+                <div className="mt-4 flex flex-col items-center">
+                  <img
+                    src={UPI_QR_IMAGE}
+                    alt="UPI QR code — scan to pay Dream Mantra"
+                    className="w-full max-w-[220px] rounded-xl border border-amber-200/80 dark:border-amber-700/50 shadow-md bg-white"
+                  />
+                  <p className="text-xs text-amber-700 dark:text-amber-300 mt-2 text-center">Scan with PhonePe, GPay, Paytm, or any UPI app</p>
                 </div>
               </div>
               <div>
@@ -683,7 +710,7 @@ export default function PaymentPage() {
             <li className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-amber-500" />
               {paymentMethod === 'admin'
-                ? 'Status: Awaiting admin confirmation after you submit'
+                ? 'Status: Awaiting confirmation after you submit payment proof'
                 : paymentMethod === 'razorpay'
                   ? 'Access unlocks instantly after successful payment'
                   : 'Select a payment method to continue'}
@@ -706,7 +733,7 @@ export default function PaymentPage() {
             {paying
               ? 'Processing…'
               : paymentMethod === 'admin'
-                ? `Send to Admin · ${formatPrice(finalPrice)}`
+                ? `Submit payment proof · ${formatPrice(finalPrice)}`
                 : paymentMethod === 'razorpay'
                   ? `Pay ${formatPrice(finalPrice)}`
                   : 'Choose a payment method'}

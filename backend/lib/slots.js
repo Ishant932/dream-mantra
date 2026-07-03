@@ -125,6 +125,97 @@ export function deleteSlot(id) {
   return true;
 }
 
+function nextIstDate(dateStr) {
+  const d = new Date(`${dateStr}T12:00:00+05:30`);
+  d.setTime(d.getTime() + 24 * 60 * 60 * 1000);
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(d);
+}
+
+function istDayOfWeek(dateStr) {
+  return new Date(`${dateStr}T12:00:00+05:30`).getUTCDay();
+}
+
+export function createBulkSlots({
+  startDate,
+  endDate,
+  daysOfWeek = [1, 2, 3, 4, 5, 6],
+  startTime,
+  endTime,
+  mode = 'online',
+  location,
+  title,
+  meeting_link,
+  capacity = 1,
+  counsellor,
+}) {
+  if (!startDate || !endDate || !startTime || !endTime) {
+    throw new Error('Start date, end date, start time and end time are required');
+  }
+  if (endDate < startDate) throw new Error('End date must be on or after start date');
+
+  const daySet = new Set((daysOfWeek || []).map(Number));
+  const created = [];
+  const errors = [];
+  let cur = startDate;
+
+  while (cur <= endDate) {
+    if (daySet.has(istDayOfWeek(cur))) {
+      try {
+        const start_at = new Date(`${cur}T${startTime}:00+05:30`).toISOString();
+        const end_at = new Date(`${cur}T${endTime}:00+05:30`).toISOString();
+        created.push(createSlot({
+          start_at,
+          end_at,
+          mode,
+          location,
+          title,
+          meeting_link,
+          capacity,
+          counsellor,
+        }));
+      } catch (e) {
+        errors.push({ date: cur, message: e.message });
+      }
+    }
+    if (cur === endDate) break;
+    cur = nextIstDate(cur);
+  }
+
+  return { created, errors, count: created.length };
+}
+
+export function deleteBulkSlots({ from, to, onlyEmpty = true } = {}) {
+  ensureSlotsInitialized();
+  const data = getData();
+  const fromTs = from ? new Date(`${from}T00:00:00+05:30`).toISOString() : null;
+  const toTs = to ? new Date(`${to}T23:59:59+05:30`).toISOString() : null;
+
+  const ids = [];
+  let skippedBooked = 0;
+
+  for (const slot of data.availability_slots || []) {
+    if (fromTs && slot.start_at < fromTs) continue;
+    if (toTs && slot.start_at > toTs) continue;
+    if (onlyEmpty && (slot.booked_count || 0) > 0) {
+      skippedBooked += 1;
+      continue;
+    }
+    ids.push(slot.id);
+  }
+
+  let deleted = 0;
+  const errors = [];
+  for (const id of ids) {
+    try {
+      if (deleteSlot(id)) deleted += 1;
+    } catch (e) {
+      errors.push({ id, message: e.message });
+    }
+  }
+
+  return { deleted, skippedBooked, errors };
+}
+
 export function bookConsultationWithSlot(userId, { program, notes, slot_id }, userRecord = null) {
   if (!userHasCounsellingAccess(userId)) {
     throw new Error('Counselling sessions unlock when you purchase a module with counselling.');

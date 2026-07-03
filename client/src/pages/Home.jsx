@@ -9,18 +9,18 @@ import HomeModulesIntro from '../components/HomeModulesIntro';
 import HomeHowDreamzWorks from '../components/HomeHowDreamzWorks';
 import HomeWhoWeGuide from '../components/HomeWhoWeGuide';
 import HomeWhyCounselling from '../components/HomeWhyCounselling';
-import MarqueeStrip, { MarqueePill } from '../components/MarqueeStrip';
+import MarqueeStrip, { CollegePartnerPill } from '../components/MarqueeStrip';
 import AdvisoryPersonCard from '../components/AdvisoryPersonCard';
 import LazyMount from '../components/LazyMount';
 import MobileHomeQuickNav from '../components/MobileHomeQuickNav';
-import { partners } from '../data/infigonContent';
+import HomeBlogTeaser from '../components/HomeBlogTeaser';
+import { COLLEGE_PARTNERS } from '../data/collegePartners';
 import { partners as partnerTypes } from '../data/content';
 import { useHomeContent } from '../i18n/useSiteContent';
 import { useLang } from '../context/LanguageContext';
 import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
 
-const AIFeatures = lazy(() => import('../components/AIFeatures'));
-import WelcomeOfferBanner from '../components/WelcomeOfferBanner';
+const WelcomeOfferBanner = lazy(() => import('../components/WelcomeOfferBanner'));
 const TestimonialMarquee = lazy(() => import('../components/TestimonialMarquee'));
 const CertificationsShowcase = lazy(() => import('../components/CertificationsShowcase'));
 
@@ -256,15 +256,13 @@ export default function Home() {
 
           <HomeDivider />
 
-          <LazyBlock minHeight={200}>
-            <AIFeatures />
-          </LazyBlock>
-
-          <HomeDivider />
-
           <Suspense fallback={<SectionPlaceholder />}>
             <WelcomeOfferBanner />
           </Suspense>
+
+          <HomeDivider />
+
+          <HomeBlogTeaser />
 
           <HomeDivider />
 
@@ -284,14 +282,14 @@ export default function Home() {
               </p>
             )}
             <MarqueeStrip speed="32s" gap="gap-5">
-              {partners.map((p) => (
-                <MarqueePill key={p}>{p}</MarqueePill>
+              {COLLEGE_PARTNERS.map((p) => (
+                <CollegePartnerPill key={p.id} partner={p} />
               ))}
             </MarqueeStrip>
             {!mobile && (
               <MarqueeStrip speed="40s" direction="right" gap="gap-5" className="mt-4 home-marquee-second">
-                {[...partners].reverse().map((p) => (
-                  <MarqueePill key={`rev-${p}`}>{p}</MarqueePill>
+                {[...COLLEGE_PARTNERS].reverse().map((p) => (
+                  <CollegePartnerPill key={`rev-${p.id}`} partner={p} />
                 ))}
               </MarqueeStrip>
             )}

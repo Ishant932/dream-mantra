@@ -18,5 +18,5 @@ export function formatBotReply(text) {
     )
     .join('\n');
 
-  return s.replace(/\n{3,}/g, '\n\n').trim();
+  return s.replace(/\n{3,}/g, '\n\n').trim().replace(/[\/!\\|]/g, '');
 }

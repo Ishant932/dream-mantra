@@ -156,18 +156,18 @@ router.post('/message', async (req, res) => {
 
 • कीमत — Mind Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999, CRP ₹1499
 • Take test — Modules → Take test → ID verify → test नई tab में
-• Book counselling — /dashboard?tab=book (purchase confirm के बाद)
+• Book counselling — Dashboard Book tab (purchase confirm के बाद)
 • Streams — PCM, PCB, Commerce
-• 950+ careers — /careers
+• 950+ careers — dreammantra.in Career Library
 
 कॉल: 9680102276 | info@dreammantra.in`
       : `I'm Esh, Dream Mantra's AI counsellor. Ask me about:
 
 • Pricing — Mind Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499
 • Take test — Dashboard → Modules → Take test → verify ID → opens in new tab
-• Book counselling — /dashboard?tab=book (after payment confirmed)
+• Book counselling — Dashboard Book tab (after payment confirmed)
 • Streams — PCM, PCB, Commerce, Arts
-• 950+ careers — /careers
+• 950+ careers — Career Library on dreammantra.in
 
 Call 9680102276 | info@dreammantra.in | Mon–Sat 11am–7pm`;
     source = 'fallback';

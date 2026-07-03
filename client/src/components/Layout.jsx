@@ -9,7 +9,8 @@ import ScrollRevealInit from './ScrollRevealInit';
 import ScrollToTop from './ScrollToTop';
 import HashScrollHandler from './HashScrollHandler';
 import ErrorBoundary from './ErrorBoundary';
-import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
+import { isMobilePerf, isPhoneViewport, runWhenIdle } from '../utils/mobilePerf';
+import { isMobileBottomNavVisible } from '../utils/mobileBottomNav';
 import MobileBottomNav from './MobileBottomNav';
 
 const Chatbot = lazy(() => import('./Chatbot'));
@@ -35,11 +36,17 @@ export default function Layout() {
     location.pathname.startsWith('/dashboard')
     || location.pathname.startsWith('/admin')
     || location.pathname.startsWith('/counsellor');
+  const showMobileNavPadding = phoneNav && isMobileBottomNavVisible(location.pathname);
   const [loadChatbot, setLoadChatbot] = useState(!mobilePerf);
   const [enableScrollReveal, setEnableScrollReveal] = useState(false);
 
   useEffect(() => {
-    setEnableScrollReveal(true);
+    if (isMobilePerf()) return undefined;
+    let cancelled = false;
+    runWhenIdle(() => {
+      if (!cancelled) setEnableScrollReveal(true);
+    }, 2000);
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -50,7 +57,7 @@ export default function Layout() {
 
   return (
     <div
-      className={`layout-shell min-h-screen flex flex-col relative${isDashboard ? ' layout-shell--dashboard' : ''}${phoneNav && !isDashboard ? ' layout-shell--mobile-nav' : ''}`}
+      className={`layout-shell min-h-screen flex flex-col relative${isDashboard ? ' layout-shell--dashboard' : ''}${isDashboard && phoneNav ? ' layout-shell--dashboard-mobile' : ''}${showMobileNavPadding ? ' layout-shell--mobile-nav' : ''}`}
     >
       <AnimatedBackground />
       {enableScrollReveal && <ScrollRevealInit />}
@@ -66,7 +73,6 @@ export default function Layout() {
       <Footer />
       <ScrollToTop />
       <HashScrollHandler />
-      {!mobilePerf && null}
       {mobilePerf && !loadChatbot && (
         <button
           type="button"

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar, Clock, MapPin, Link2, Phone, Mail, Save, UserCircle, Search, Filter, X,
+  CalendarPlus, Trash2, Users, LayoutGrid, UserCog,
 } from 'lucide-react';
 import { useLang } from '../../context/LanguageContext';
 import SlotCalendar from '../SlotCalendar';
@@ -9,6 +10,7 @@ import AdminOpenSlotCard from '../AdminOpenSlotCard';
 import ProfileSnapshot from './ProfileSnapshot';
 import AdminPanelHeader from '../AdminPanelHeader';
 import AdminSectionExport from '../AdminSectionExport';
+import BulkSlotsTool from './BulkSlotsTool';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All statuses' },
@@ -18,8 +20,30 @@ const STATUS_OPTIONS = [
   { value: 'cancelled', label: 'Cancelled' },
 ];
 
+const TAB_PANEL = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -6 },
+  transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+};
+
+function BookingSectionHead({ icon: Icon, iconTone, title, desc }) {
+  return (
+    <div className="staff-booking-section__head">
+      <div className={`staff-booking-section__icon staff-booking-section__icon--${iconTone}`}>
+        <Icon className="w-5 h-5" />
+      </div>
+      <div className="min-w-0">
+        <h2 className="staff-booking-section__title">{title}</h2>
+        {desc && <p className="staff-booking-section__desc">{desc}</p>}
+      </div>
+    </div>
+  );
+}
+
 export default function StaffBookingsPanel({ api, token, onViewProfile, onError, onNotice }) {
   const { t } = useLang();
+  const [activeTab, setActiveTab] = useState('calendar');
   const [consultations, setConsultations] = useState([]);
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
@@ -61,6 +85,24 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
     () => slots.filter((s) => s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1)),
     [slots]
   );
+
+  const counsellorNames = useMemo(() => {
+    const names = new Set();
+    slots.forEach((s) => {
+      const name = (s.counsellor || '').trim();
+      if (name) names.add(name);
+    });
+    return [...names].sort((a, b) => a.localeCompare(b));
+  }, [slots]);
+
+  const bookingTabs = useMemo(() => [
+    { id: 'create-bulk', label: 'Create bulk slots', shortLabel: 'Create bulk', icon: CalendarPlus },
+    { id: 'delete-bulk', label: 'Delete bulk slots', shortLabel: 'Delete bulk', icon: Trash2 },
+    { id: 'calendar', label: 'Live calendar', shortLabel: 'Calendar', icon: Calendar },
+    { id: 'open-slots', label: 'Open slots', shortLabel: 'Open slots', icon: Clock, count: openSlots.length },
+    { id: 'consultations', label: 'Consultations', shortLabel: 'Consultations', icon: Users, count: consultations.length },
+    { id: 'counsellors', label: 'All counsellors', shortLabel: 'Counsellors', icon: UserCog, count: counsellorNames.length },
+  ], [openSlots.length, consultations.length, counsellorNames.length]);
 
   const filteredConsultations = useMemo(() => {
     const q = consultationSearch.trim().toLowerCase();
@@ -171,10 +213,278 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
     { label: 'Status', get: (s) => s.status },
     { label: 'Capacity', get: (s) => s.capacity },
     { label: 'Booked', get: (s) => s.booked_count },
+    { label: 'Counsellor', get: (s) => s.counsellor },
   ];
 
+  const renderTabPanel = () => {
+    switch (activeTab) {
+      case 'create-bulk':
+        return (
+          <section className="dash-inner-card staff-booking-section">
+            <BookingSectionHead
+              icon={CalendarPlus}
+              iconTone="bulk"
+              title="Create bulk slots"
+              desc="Generate recurring counselling slots across a date range for selected weekdays."
+            />
+            <BulkSlotsTool
+              mode="create"
+              api={api}
+              token={token}
+              onSuccess={(msg) => { onNotice?.(msg); loadSlots(); }}
+              onError={onError}
+            />
+          </section>
+        );
+      case 'delete-bulk':
+        return (
+          <section className="dash-inner-card staff-booking-section">
+            <BookingSectionHead
+              icon={Trash2}
+              iconTone="bulk"
+              title="Delete bulk slots"
+              desc="Remove slots in a date range. By default only empty (unbooked) slots are deleted."
+            />
+            <BulkSlotsTool
+              mode="delete"
+              api={api}
+              token={token}
+              onSuccess={(msg) => { onNotice?.(msg); loadSlots(); }}
+              onError={onError}
+            />
+          </section>
+        );
+      case 'calendar':
+        return (
+          <section className="dash-inner-card staff-booking-section">
+            <BookingSectionHead
+              icon={Calendar}
+              iconTone="calendar"
+              title="Live slots calendar"
+              desc="Click any day or slot to create, edit capacity, counsellor, and meeting link. Delete empty slots with the trash icon."
+            />
+            <SlotCalendar
+              mode="admin"
+              size="large"
+              slots={slots}
+              loading={slotsLoading}
+              onCreateSlot={handleCreateSlot}
+              onUpdateSlot={handleUpdateSlot}
+              onDeleteSlot={handleDeleteSlot}
+            />
+          </section>
+        );
+      case 'counsellors':
+        return (
+          <section className="dash-inner-card staff-booking-section">
+            <BookingSectionHead
+              icon={UserCog}
+              iconTone="users"
+              title="All counsellors"
+              desc="Counsellors assigned across your booking slots."
+            />
+            {counsellorNames.length === 0 ? (
+              <p className="text-sm opacity-70">No counsellors on slots yet. Add counsellor names when creating slots.</p>
+            ) : (
+              <div className="staff-booking-counsellor-chips">
+                {counsellorNames.map((name) => (
+                  <span key={name} className="staff-booking-counsellor-chip">
+                    <UserCog className="w-3.5 h-3.5 opacity-70" />
+                    {name}
+                  </span>
+                ))}
+              </div>
+            )}
+          </section>
+        );
+      case 'consultations':
+        return (
+          <section className="dash-inner-card staff-booking-section">
+            <div className="flex flex-wrap items-start justify-between gap-3 staff-booking-section__head">
+              <div className="flex items-start gap-3 min-w-0 flex-1">
+                <div className="staff-booking-section__icon staff-booking-section__icon--users">
+                  <Users className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                  <h2 className="staff-booking-section__title">{t('admin.manageConsultations')}</h2>
+                  <p className="staff-booking-section__desc">
+                    {filteredConsultations.length} of {consultations.length} shown
+                    {hasConsultationFilters ? ' (filtered)' : ''}
+                  </p>
+                </div>
+              </div>
+              <AdminSectionExport title="Slots" filename="booking-slots" rows={slots} columns={slotExportColumns} />
+            </div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5 staff-booking-filters">
+              <div className="sm:col-span-2">
+                <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
+                  <Search className="w-3 h-3" /> Search
+                </label>
+                <input
+                  type="search"
+                  className="input-field w-full !py-2 !text-sm"
+                  placeholder="Name, email, phone, program, slot…"
+                  value={consultationSearch}
+                  onChange={(e) => setConsultationSearch(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wide opacity-60 mb-1.5 block">From date</label>
+                <input
+                  type="date"
+                  className="input-field w-full !py-2 !text-sm"
+                  value={consultationDateFrom}
+                  onChange={(e) => setConsultationDateFrom(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wide opacity-60 mb-1.5 block">To date</label>
+                <input
+                  type="date"
+                  className="input-field w-full !py-2 !text-sm"
+                  value={consultationDateTo}
+                  onChange={(e) => setConsultationDateTo(e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
+                  <Filter className="w-3 h-3" /> Status
+                </label>
+                <select
+                  className="input-field w-full !py-2 !text-sm"
+                  value={consultationStatusFilter}
+                  onChange={(e) => setConsultationStatusFilter(e.target.value)}
+                >
+                  {STATUS_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
+                </select>
+              </div>
+              {hasConsultationFilters && (
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={clearConsultationFilters}
+                    className="btn-outline !py-2 !px-3 text-sm w-full inline-flex items-center justify-center gap-1"
+                  >
+                    <X className="w-3.5 h-3.5" /> Clear filters
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4 max-h-[32rem] overflow-y-auto pr-1">
+              {consultations.length === 0 ? (
+                <p className="text-sm opacity-70">No consultations yet.</p>
+              ) : filteredConsultations.length === 0 ? (
+                <p className="text-sm opacity-70">No consultations match your filters.</p>
+              ) : filteredConsultations.map((c) => (
+                <motion.div
+                  key={c.id}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="dash-inner-card dash-admin-consult-card admin-booking-card"
+                >
+                  <div className="flex flex-wrap justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-bold text-base">{c.user_name} — {c.program}</p>
+                      <p className="text-sm font-medium text-amber-700 dark:text-amber-400 mt-0.5">{c.slot_title || 'Counselling Session'}</p>
+                      <div className="flex flex-wrap gap-3 mt-2 text-xs opacity-80">
+                        {c.email && <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{c.email}</span>}
+                        {c.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{c.phone}</span>}
+                      </div>
+                      {c.scheduled_at && (
+                        <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                          <Clock className="w-3 h-3" />
+                          {new Date(c.scheduled_at).toLocaleString('en-IN', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}
+                          {c.end_at && ` – ${new Date(c.end_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}`}
+                        </p>
+                      )}
+                      {c.location && (
+                        <p className="text-xs mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" />{c.location} · {c.mode}</p>
+                      )}
+                      {c.notes && <p className="text-xs mt-2 p-2 rounded-lg bg-sand-100 dark:bg-sand-800/60 italic">&quot;{c.notes}&quot;</p>}
+                      <ProfileSnapshot profile={c.user_profile || c.user_snapshot?.profile} />
+                    </div>
+                    {onViewProfile && (
+                      <button
+                        type="button"
+                        onClick={() => onViewProfile(c.user_id)}
+                        className="dash-admin-view-btn shrink-0 h-9 w-9 rounded-xl inline-flex items-center justify-center"
+                        title="Full profile"
+                      >
+                        <UserCircle className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="mt-4 pt-3 border-t border-sand-200/60 dark:border-sand-700/40">
+                    <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
+                      <Link2 className="w-3 h-3" /> Meeting link (share with user)
+                    </label>
+                    <div className="flex gap-2 flex-wrap">
+                      <input
+                        type="url"
+                        className="input-field flex-1 min-w-[12rem] !py-2 !text-sm"
+                        placeholder="https://meet.google.com/..."
+                        value={meetingLinks[c.id] ?? c.meeting_link ?? ''}
+                        onChange={(e) => setMeetingLinks({ ...meetingLinks, [c.id]: e.target.value })}
+                      />
+                      <button type="button" onClick={() => saveMeetingLink(c.id)} className="btn-primary !py-2 !px-4 text-sm flex items-center gap-1">
+                        <Save className="w-3.5 h-3.5" /> Save
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    {['pending', 'confirmed', 'completed'].map((st) => (
+                      <button
+                        key={st}
+                        type="button"
+                        onClick={() => updateStatus(c.id, st)}
+                        className={`text-xs px-3 py-1.5 rounded-lg capitalize transition ${c.status === st ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-amber-50 shadow-md' : 'dash-admin-status-idle'}`}
+                      >
+                        {st}
+                      </button>
+                    ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </section>
+        );
+      case 'open-slots':
+      default:
+        return (
+          <section className="dash-inner-card staff-booking-section">
+            <BookingSectionHead
+              icon={Clock}
+              iconTone="slots"
+              title={`All open slots (${openSlots.length})`}
+              desc="Available slots students can book. Use the pencil icon to edit date, time, capacity, counsellor, and meeting link."
+            />
+            {openSlots.length === 0 ? (
+              <p className="text-sm opacity-70">No open slots right now. Use Create bulk slots or the Calendar tab to add slots.</p>
+            ) : (
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[28rem] overflow-y-auto pr-1">
+                {openSlots.map((s) => (
+                  <AdminOpenSlotCard
+                    key={s.id}
+                    slot={s}
+                    onUpdate={handleUpdateSlot}
+                    onDelete={handleDeleteSlot}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        );
+    }
+  };
+
   return (
-    <div className="space-y-4">
+    <div className="staff-booking-page">
       <AdminPanelHeader
         title="Booking Management"
         subtitle={`${filteredConsultations.length} consultations · ${slots.length} slots`}
@@ -185,197 +495,77 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
           columns: consultationExportColumns,
         }}
       />
-      <section className="staff-booking-block">
-        <h2 className="text-lg font-bold flex items-center gap-2 mb-2">
-          <Calendar className="w-5 h-5 text-amber-500" /> Consultation Slots — Live Calendar
-        </h2>
-        <p className="text-sm opacity-70 mb-2">
-          Create slots below, or click any slot on the calendar to edit time, capacity, counsellor, and meeting link. Delete empty slots with the trash icon.
-        </p>
-        <p className="text-xs font-semibold text-amber-700 dark:text-amber-400 mb-6">
-          {openSlots.length} open slots across all dates · {slots.length} total
-        </p>
-        <SlotCalendar
-          mode="admin"
-          size="large"
-          slots={slots}
-          loading={slotsLoading}
-          onCreateSlot={handleCreateSlot}
-          onUpdateSlot={handleUpdateSlot}
-          onDeleteSlot={handleDeleteSlot}
-        />
-      </section>
 
-      <section className="staff-booking-block">
-        <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-          <div>
-            <h2 className="text-lg font-bold">{t('admin.manageConsultations')}</h2>
-            <p className="text-sm opacity-70">
-              {filteredConsultations.length} of {consultations.length}
-              {hasConsultationFilters && ' (filtered)'}
-            </p>
+      <div className="staff-booking-stats">
+        <button type="button" className="dash-inner-card staff-booking-stat staff-booking-stat--btn" onClick={() => setActiveTab('open-slots')}>
+          <div className="staff-booking-stat__icon staff-booking-stat__icon--emerald">
+            <Clock className="w-5 h-5" />
           </div>
-          <AdminSectionExport title="Slots" filename="booking-slots" rows={slots} columns={slotExportColumns} />
-        </div>
+          <div className="text-left">
+            <p className="staff-booking-stat__value">{openSlots.length}</p>
+            <p className="staff-booking-stat__label">Open slots</p>
+          </div>
+        </button>
+        <button type="button" className="dash-inner-card staff-booking-stat staff-booking-stat--btn" onClick={() => setActiveTab('calendar')}>
+          <div className="staff-booking-stat__icon staff-booking-stat__icon--amber">
+            <LayoutGrid className="w-5 h-5" />
+          </div>
+          <div className="text-left">
+            <p className="staff-booking-stat__value">{slots.length}</p>
+            <p className="staff-booking-stat__label">Total slots</p>
+          </div>
+        </button>
+        <button type="button" className="dash-inner-card staff-booking-stat staff-booking-stat--btn" onClick={() => setActiveTab('consultations')}>
+          <div className="staff-booking-stat__icon staff-booking-stat__icon--blue">
+            <Users className="w-5 h-5" />
+          </div>
+          <div className="text-left">
+            <p className="staff-booking-stat__value">{consultations.length}</p>
+            <p className="staff-booking-stat__label">Consultations</p>
+          </div>
+        </button>
+        <button type="button" className="dash-inner-card staff-booking-stat staff-booking-stat--btn" onClick={() => setActiveTab('counsellors')}>
+          <div className="staff-booking-stat__icon staff-booking-stat__icon--violet">
+            <UserCog className="w-5 h-5" />
+          </div>
+          <div className="text-left">
+            <p className="staff-booking-stat__value">{counsellorNames.length}</p>
+            <p className="staff-booking-stat__label">Counsellors</p>
+          </div>
+        </button>
+      </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5 staff-booking-filters">
-          <div className="sm:col-span-2">
-            <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
-              <Search className="w-3 h-3" /> Search
-            </label>
-            <input
-              type="search"
-              className="input-field w-full !py-2 !text-sm"
-              placeholder="Name, email, phone, program, slot…"
-              value={consultationSearch}
-              onChange={(e) => setConsultationSearch(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="text-xs font-bold uppercase tracking-wide opacity-60 mb-1.5 block">From date</label>
-            <input
-              type="date"
-              className="input-field w-full !py-2 !text-sm"
-              value={consultationDateFrom}
-              onChange={(e) => setConsultationDateFrom(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="text-xs font-bold uppercase tracking-wide opacity-60 mb-1.5 block">To date</label>
-            <input
-              type="date"
-              className="input-field w-full !py-2 !text-sm"
-              value={consultationDateTo}
-              onChange={(e) => setConsultationDateTo(e.target.value)}
-            />
-          </div>
-          <div>
-            <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
-              <Filter className="w-3 h-3" /> Status
-            </label>
-            <select
-              className="input-field w-full !py-2 !text-sm"
-              value={consultationStatusFilter}
-              onChange={(e) => setConsultationStatusFilter(e.target.value)}
-            >
-              {STATUS_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-          </div>
-          {hasConsultationFilters && (
-            <div className="flex items-end">
+      <div className="staff-booking-tabs-wrap dash-inner-card">
+        <div className="staff-booking-tabs" role="tablist" aria-label="Booking management sections">
+          {bookingTabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            return (
               <button
+                key={tab.id}
                 type="button"
-                onClick={clearConsultationFilters}
-                className="btn-outline !py-2 !px-3 text-sm w-full inline-flex items-center justify-center gap-1"
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActiveTab(tab.id)}
+                className={`staff-booking-tab${isActive ? ' staff-booking-tab--active' : ''}`}
               >
-                <X className="w-3.5 h-3.5" /> Clear filters
-              </button>
-            </div>
-          )}
-        </div>
-
-        <div className="space-y-4 max-h-[32rem] overflow-y-auto pr-1">
-          {consultations.length === 0 ? (
-            <p className="text-sm opacity-70">No consultations yet.</p>
-          ) : filteredConsultations.length === 0 ? (
-            <p className="text-sm opacity-70">No consultations match your filters.</p>
-          ) : filteredConsultations.map((c) => (
-            <motion.div
-              key={c.id}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="dash-admin-consult-card admin-booking-card"
-            >
-              <div className="flex flex-wrap justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="font-bold text-base">{c.user_name} — {c.program}</p>
-                  <p className="text-sm font-medium text-amber-700 dark:text-amber-400 mt-0.5">{c.slot_title || 'Counselling Session'}</p>
-                  <div className="flex flex-wrap gap-3 mt-2 text-xs opacity-80">
-                    {c.email && <span className="flex items-center gap-1"><Mail className="w-3 h-3" />{c.email}</span>}
-                    {c.phone && <span className="flex items-center gap-1"><Phone className="w-3 h-3" />{c.phone}</span>}
-                  </div>
-                  {c.scheduled_at && (
-                    <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {new Date(c.scheduled_at).toLocaleString('en-IN', { dateStyle: 'full', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}
-                      {c.end_at && ` – ${new Date(c.end_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}`}
-                    </p>
-                  )}
-                  {c.location && (
-                    <p className="text-xs mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" />{c.location} · {c.mode}</p>
-                  )}
-                  {c.notes && <p className="text-xs mt-2 p-2 rounded-lg bg-sand-100 dark:bg-sand-800/60 italic">&quot;{c.notes}&quot;</p>}
-                  <ProfileSnapshot profile={c.user_profile || c.user_snapshot?.profile} />
-                </div>
-                {onViewProfile && (
-                  <button
-                    type="button"
-                    onClick={() => onViewProfile(c.user_id)}
-                    className="dash-admin-view-btn shrink-0 h-9 w-9 rounded-xl inline-flex items-center justify-center"
-                    title="Full profile"
-                  >
-                    <UserCircle className="w-5 h-5" />
-                  </button>
+                <Icon className="w-4 h-4 shrink-0" aria-hidden />
+                <span className="staff-booking-tab__label hidden sm:inline">{tab.label}</span>
+                <span className="staff-booking-tab__label sm:hidden">{tab.shortLabel}</span>
+                {tab.count != null && tab.count > 0 && (
+                  <span className="staff-booking-tab__badge">{tab.count}</span>
                 )}
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-sand-200/60 dark:border-sand-700/40">
-                <label className="text-xs font-bold uppercase tracking-wide opacity-60 flex items-center gap-1 mb-1.5">
-                  <Link2 className="w-3 h-3" /> Meeting link (share with user)
-                </label>
-                <div className="flex gap-2 flex-wrap">
-                  <input
-                    type="url"
-                    className="input-field flex-1 min-w-[12rem] !py-2 !text-sm"
-                    placeholder="https://meet.google.com/..."
-                    value={meetingLinks[c.id] ?? c.meeting_link ?? ''}
-                    onChange={(e) => setMeetingLinks({ ...meetingLinks, [c.id]: e.target.value })}
-                  />
-                  <button type="button" onClick={() => saveMeetingLink(c.id)} className="btn-primary !py-2 !px-4 text-sm flex items-center gap-1">
-                    <Save className="w-3.5 h-3.5" /> Save
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex gap-2 mt-3 flex-wrap">
-                {['pending', 'confirmed', 'completed'].map((st) => (
-                  <button
-                    key={st}
-                    type="button"
-                    onClick={() => updateStatus(c.id, st)}
-                    className={`text-xs px-3 py-1.5 rounded-lg capitalize transition ${c.status === st ? 'bg-gradient-to-r from-amber-600 to-orange-600 text-amber-50 shadow-md' : 'dash-admin-status-idle'}`}
-                  >
-                    {st}
-                  </button>
-                ))}
-              </div>
-            </motion.div>
-          ))}
+              </button>
+            );
+          })}
         </div>
-      </section>
+      </div>
 
-      {openSlots.length > 0 && (
-        <section className="staff-booking-block">
-          <h3 className="font-bold mb-2 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-amber-500" /> All open slots ({openSlots.length})
-          </h3>
-          <p className="text-xs opacity-70 mb-4">
-            Click the pencil icon on any card to edit date, time, capacity, counsellor, and meeting link.
-          </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-[28rem] overflow-y-auto pr-1">
-            {openSlots.map((s) => (
-              <AdminOpenSlotCard
-                key={s.id}
-                slot={s}
-                onUpdate={handleUpdateSlot}
-                onDelete={handleDeleteSlot}
-              />
-            ))}
-          </div>
-        </section>
-      )}
+      <AnimatePresence mode="wait">
+        <motion.div key={activeTab} {...TAB_PANEL} className="staff-booking-tab-panel">
+          {renderTabPanel()}
+        </motion.div>
+      </AnimatePresence>
     </div>
   );
 }

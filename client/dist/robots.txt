@@ -13,8 +13,3 @@ Disallow: /counsellor
 Disallow: /api/
 
 Sitemap: https://dreammantra.in/sitemap.xml
-Sitemap: https://dreammantra.in/sitemap-pages.xml
-Sitemap: https://dreammantra.in/sitemap-assessments.xml
-Sitemap: https://dreammantra.in/sitemap-programs.xml
-Sitemap: https://dreammantra.in/sitemap-partners.xml
-Sitemap: https://dreammantra.in/sitemap-careers.xml

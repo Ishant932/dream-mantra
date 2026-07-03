@@ -10,6 +10,7 @@ import WelcomeOfferBanner from './WelcomeOfferBanner';
 import ProfileDetailsCard from './ProfileDetailsCard';
 import { dedupeAssessmentsBySlug, getAssessmentDisplayTitle } from '../utils/assessmentHelpers';
 import { getConfirmedPaidAssessments, isAssessmentUnlocked } from '../utils/moduleAccess';
+import { getDashboardNextStep } from '../utils/dashboardNextStep';
 
 function QuickStat({ icon: Icon, label, value, accent }) {
   return (
@@ -47,42 +48,29 @@ export default function DashboardOverview({
     (c) => c.status !== 'cancelled' && c.scheduled_at && new Date(c.scheduled_at) > new Date()
   );
 
-  let nextAction = {
-    title: 'Complete your profile',
-    desc: 'Add class, stream, and goals so we can personalise your journey.',
-    cta: 'Complete profile',
-    onClick: onCompleteProfile,
+  const step = getDashboardNextStep({
+    profileCompletion,
+    pendingPayment,
+    assessments: data.assessments,
+    paidAssessment,
+    counsellingAccess,
+    consultations: data.consultations,
+  });
+
+  const actionHandlers = {
+    profile: onCompleteProfile,
+    payment: onPayment,
+    modules: onBookModule,
+    process: onProductAction || onProcess,
+    book: onBookCounselling,
   };
 
-  if (profileCompletion >= 60 && pendingPayment && pendingPayment.payment_confirmed !== true) {
-    nextAction = {
-      title: 'Finish payment',
-      desc: `Complete checkout for ${getAssessmentDisplayTitle(pendingPayment)}.`,
-      cta: 'Pay now',
-      onClick: onPayment,
-    };
-  } else if (profileCompletion >= 60 && !activeModules.length) {
-    nextAction = {
-      title: 'Choose your first module',
-      desc: 'Mind Mapping, Skill Mapping, or the full combo — start your assessment journey.',
-      cta: 'Browse modules',
-      onClick: onBookModule,
-    };
-  } else if (paidAssessment) {
-    nextAction = {
-      title: 'Continue your assessment',
-      desc: 'Follow the process steps or take your skill mapping tests.',
-      cta: 'Process & Take test',
-      onClick: onProductAction || onProcess,
-    };
-  } else if (counsellingAccess && !upcomingBookings.length) {
-    nextAction = {
-      title: 'Book your counselling session',
-      desc: 'Your counselling add-on is active — pick a slot with our certified counsellor.',
-      cta: 'Book session',
-      onClick: onBookCounselling,
-    };
-  }
+  const nextAction = {
+    title: step.title,
+    desc: step.desc,
+    cta: step.cta,
+    onClick: actionHandlers[step.action] || onCompleteProfile,
+  };
 
   return (
     <div className="dash-b2b-stack">

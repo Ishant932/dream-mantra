@@ -1,4 +1,5 @@
 import { IMAGES, PORTRAITS } from './content';
+import { partnerNames } from './collegePartners';
 
 export const stats = [
   { value: 50000, suffix: '+', label: 'Students Guided' },
@@ -84,11 +85,7 @@ export const counsellors = [
   { name: 'Esha Lohiya', city: 'Jaipur', role: 'Founder & Chief Counselor', initials: 'EL', image: IMAGES.founder },
 ];
 
-export const partners = [
-  'Manipal University', 'Amity University', 'BITS Pilani', 'Christ University',
-  'Symbiosis International', 'LPU Punjab', 'NMIMS Mumbai', 'Poornima University Jaipur',
-  'Jaipur National University', 'Maharaja College Jaipur', 'St. Xavier\'s Jaipur', 'Pan-India Online',
-];
+export const partners = partnerNames;
 
 export const advisors = [
   { name: 'Esha Lohiya', role: 'Founder & Chief Counsellor', initials: 'EL' },

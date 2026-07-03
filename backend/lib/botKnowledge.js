@@ -298,7 +298,7 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['my reports', 'report link', 'where is my report', 'assessment report'],
-    en: 'MY REPORTS (Dashboard)\n\nAfter your counsellor publishes your report:\n• Log in → Dashboard → My Reports tab (/dashboard?tab=reports)\n• Open the Google Drive / PDF link\n• You get a notification when a new or updated report is ready\n\nIf empty, your report may still be in review. Call 9680102276 with your Dreams ID.',
+    en: 'MY REPORTS (Dashboard)\n\nAfter your counsellor publishes your report:\n• Log in → Dashboard → My Reports tab\n• Kindly download your report within 10 days of upload\n• Open the Google Drive or PDF link when ready\n• You get a notification when a new or updated report is ready\n\nIf empty, your report may still be in review. Call 9680102276 with your Dreams ID.',
     hi: 'Reports: Dashboard → My Reports tab। Notification aayegi jab report ready ho। 9680102276',
   },
   {

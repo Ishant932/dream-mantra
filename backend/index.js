@@ -23,6 +23,7 @@ import chatbotRoutes from './routes/chatbot.js';
 import careersRoutes from './routes/careers.js';
 import paymentsRoutes from './routes/payments.js';
 import contactRoutes from './routes/contact.js';
+import blogRoutes from './routes/blog.js';
 
 dotenv.config();
 
@@ -116,6 +117,7 @@ app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/careers', careersRoutes);
 app.use('/api/payments', paymentsRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/blog', blogRoutes);
 
 /** Legacy junk URLs (old store listings indexed by Google) → homepage */
 const LEGACY_HOME_REDIRECTS = [

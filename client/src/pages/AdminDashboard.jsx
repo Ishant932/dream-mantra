@@ -29,6 +29,7 @@ import {
 import DashboardB2BBanner from '../components/DashboardB2BBanner';
 import NotificationBell from '../components/NotificationBell';
 import AdminMessagesPanel from '../components/MessagesPanel';
+import AdminBlogPanel from '../components/AdminBlogPanel';
 
 const ADMIN_TABS = [
   { id: 'overview', label: 'Overview', desc: 'Stats & quick summary' },
@@ -42,6 +43,7 @@ const ADMIN_TABS = [
   { id: 'messages', label: 'Messages', desc: 'Direct messages to students' },
   { id: 'reports', label: 'Report Management', desc: 'Deliver reports to users' },
   { id: 'leads', label: 'Contact Leads', desc: 'Website enquiries & messages' },
+  { id: 'blogs', label: 'Blogs', desc: 'Create & publish website articles' },
   { id: 'settings', label: 'Community & Links', desc: 'AI Launchpad community URL' },
 ];
 
@@ -59,6 +61,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [profileUser, setProfileUser] = useState(null);
+  const [profileStats, setProfileStats] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [communityLink, setCommunityLink] = useState('');
@@ -175,9 +178,11 @@ export default function AdminDashboard() {
     setProfileOpen(true);
     setProfileLoading(true);
     setProfileUser(null);
+    setProfileStats(null);
     try {
       const data = await adminApi.getUser(token, userId);
       setProfileUser(data.user);
+      setProfileStats(data.stats || null);
     } catch (err) {
       setError(err.message);
       setProfileOpen(false);
@@ -216,16 +221,17 @@ export default function AdminDashboard() {
       <AdminUserProfileModal
         open={profileOpen}
         user={profileUser}
+        stats={profileStats}
         loading={profileLoading}
         saving={profileSaving}
         onSave={saveUserProfile}
-        onClose={() => { setProfileOpen(false); setProfileUser(null); }}
+        onClose={() => { setProfileOpen(false); setProfileUser(null); setProfileStats(null); }}
         api={adminApi}
         token={token}
         onError={setError}
       />
 
-      <div className="dash-b2b-page max-w-[1440px] mx-auto px-4 sm:px-6">
+      <div className="dash-b2b-page w-full max-w-none mx-0 px-0">
         {notice && (
           <DashAlert type="success">
             <p className="text-sm">{notice}</p>
@@ -386,6 +392,10 @@ export default function AdminDashboard() {
 
               {tab === 'leads' && (
                 <AdminLeadsPanel token={token} onNotice={setNotice} onError={setError} />
+              )}
+
+              {tab === 'blogs' && (
+                <AdminBlogPanel token={token} onNotice={setNotice} onError={setError} />
               )}
 
               {tab === 'settings' && (

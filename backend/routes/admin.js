@@ -30,6 +30,13 @@ import {
   markThreadRead,
   countUnreadForAdmin,
 } from '../lib/messages.js';
+import {
+  listBlogPosts,
+  getBlogPostById,
+  createBlogPost,
+  updateBlogPost,
+  deleteBlogPost,
+} from '../lib/blogs.js';
 
 const router = Router();
 router.use(authRequired, adminRequired);
@@ -240,6 +247,54 @@ router.post('/messages/user/:userId', async (req, res) => {
     });
     await flushDatabase();
     res.json(result);
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.get('/blogs', (req, res) => {
+  try {
+    const status = req.query.status || 'all';
+    const posts = listBlogPosts({ status });
+    res.json({ posts });
+  } catch (e) {
+    res.status(500).json({ message: e.message || 'Failed to load blogs' });
+  }
+});
+
+router.get('/blogs/:id', (req, res) => {
+  const post = getBlogPostById(req.params.id);
+  if (!post) return res.status(404).json({ message: 'Blog post not found' });
+  res.json({ post });
+});
+
+router.post('/blogs', async (req, res) => {
+  try {
+    const post = createBlogPost(req.body);
+    await flushDatabase();
+    res.status(201).json({ post });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.patch('/blogs/:id', async (req, res) => {
+  try {
+    const post = updateBlogPost(req.params.id, req.body);
+    if (!post) return res.status(404).json({ message: 'Blog post not found' });
+    await flushDatabase();
+    res.json({ post });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.delete('/blogs/:id', async (req, res) => {
+  try {
+    const ok = deleteBlogPost(req.params.id);
+    if (!ok) return res.status(404).json({ message: 'Blog post not found' });
+    await flushDatabase();
+    res.json({ message: 'Deleted' });
   } catch (e) {
     res.status(400).json({ message: e.message });
   }

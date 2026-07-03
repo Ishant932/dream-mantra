@@ -49,6 +49,7 @@ export const siteHi = {
       { to: '/#certifications', label: 'Certifications' },
       { to: '/counselling?tab=book', label: 'सत्र बुक करें' },
       { to: '/about', label: 'हमारे बारे में' },
+      { to: '/blog', label: 'ब्लॉग' },
       { to: '/terms', label: 'नियम और शर्तें' },
     ],
   },
@@ -69,6 +70,7 @@ export const siteHi = {
         links: [
           { to: '/counselling?tab=book', label: 'सत्र बुक करें', desc: 'मुफ्त परामर्श', icon: '📅' },
           { to: '/about', label: 'हमारे बारे में', desc: 'हमारी कहानी और संस्थापक', icon: '✨' },
+          { to: '/blog', label: 'ब्लॉग', desc: 'करियर टिप्स और लेख', icon: '📝' },
           { to: '/terms', label: 'नियम और शर्तें', desc: 'नीतियां और दिशानिर्देश', icon: '📄' },
         ],
       },
@@ -79,6 +81,8 @@ export const siteHi = {
     home: 'होम',
     counselling: 'परामर्श',
     tests: 'टेस्ट',
+    dashboard: 'डैशबोर्ड',
+    contact: 'संपर्क',
     careers: 'करियर',
     call: 'कॉल',
     modules: 'मॉड्यूल',
@@ -107,6 +111,7 @@ export const siteHi = {
     footerQuickLinks: [
       { to: '/', label: 'होम' },
       { to: '/about', label: 'हमारे बारे में' },
+      { to: '/blog', label: 'ब्लॉग' },
       { to: '/contact', label: 'संपर्क' },
       { to: '/terms', label: 'नियम और शर्तें' },
     ],
@@ -293,15 +298,14 @@ export const siteHi = {
     trustBar: {
       tagline: 'India भर में trusted science-backed career guidance',
       items: [
-        { type: 'number', value: 7000, suffix: '+', label: 'Counsellings Done', icon: '🎯' },
+        { type: 'badge', label: '360° Analysis', icon: '🔬' },
         { type: 'badge', label: 'Internationally Certified', icon: '🌍' },
         { type: 'badge', label: 'Government Certified', icon: '🏛️' },
         { type: 'badge', label: 'IIT Madras Certified', icon: '🎓' },
         { type: 'number', value: 30, suffix: '+', label: 'Countries Validated', icon: '🌐' },
         { type: 'number', value: 50, suffix: '+', label: 'School Partners', icon: '🏫' },
         { type: 'number', value: 120, suffix: '+', label: 'Coaching Partners', icon: '📚' },
-        { type: 'number', value: 950, suffix: '+', label: 'Career Maps In-App', icon: '🗺️' },
-        { type: 'badge', label: '360° Analysis', icon: '🔬' },
+        { type: 'number', value: 7000, suffix: '+', label: 'Counsellings Done', icon: '🎯' },
       ],
     },
     whoWeGuide: {

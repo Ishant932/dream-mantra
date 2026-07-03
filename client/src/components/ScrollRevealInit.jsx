@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { isMobilePerf } from '../utils/mobilePerf';
 
 const REVEAL_CLASSES = [
   'reveal', 'reveal-title', 'reveal-left', 'reveal-right', 'reveal-scale',
@@ -108,8 +109,10 @@ function tagRevealElements() {
 export default function ScrollRevealInit() {
   const location = useLocation();
   const observerRef = useRef(null);
+  const mobile = isMobilePerf();
 
   useEffect(() => {
+    if (mobile) return undefined;
     let cancelled = false;
 
     const observe = () => {
@@ -159,7 +162,7 @@ export default function ScrollRevealInit() {
       clearTimeout(t1);
       clearTimeout(fallback);
     };
-  }, [location.pathname, location.search]);
+  }, [location.pathname, location.search, mobile]);
 
   return null;
 }

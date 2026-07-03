@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, Sparkles, CheckCircle2, Quote } from 'lucide-react';
+import { Quote } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { isMobilePerf } from '../utils/mobilePerf';
 
@@ -75,56 +74,14 @@ export default function HomeWhyCounselling() {
             whileHover={mobile ? undefined : { y: -8, scale: 1.02 }}
             className="home-problem-card"
           >
-            <motion.span
-              className="home-stat-pop"
-              animate={mobile ? undefined : { scale: [1, 1.04, 1] }}
-              transition={mobile ? undefined : { duration: 2.5, repeat: Infinity, delay: i * 0.4 }}
-            >
+            <span className="home-stat-pop">
               {item.stat}
-            </motion.span>
+            </span>
             <p className="home-problem-card__label">{item.label}</p>
             <p className="home-problem-card__desc">{item.desc}</p>
           </motion.div>
         ))}
       </div>
-
-      <motion.div
-        {...fadeUp}
-        transition={mobile ? undefined : { delay: 0.1 }}
-        className="home-solution-panel"
-      >
-        <div className="grid lg:grid-cols-[1fr_auto] gap-8 items-center">
-          <div>
-            <span className="home-eyebrow home-eyebrow--solution inline-flex items-center gap-2 mb-3">
-              <Sparkles className="w-4 h-4" /> {copy.solutionTitle}
-            </span>
-            <p className="home-hook home-hook--solution mb-5">{copy.solutionDesc}</p>
-            <ul className="grid sm:grid-cols-2 gap-3">
-              {copy.solutionPoints.map((point, i) => (
-                <motion.li
-                  key={point}
-                  initial={mobile ? false : { opacity: 0, x: -12 }}
-                  whileInView={mobile ? undefined : { opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={mobile ? undefined : { delay: 0.2 + i * 0.06 }}
-                  className="home-solution-point"
-                >
-                  <CheckCircle2 className="w-4 h-4 shrink-0" />
-                  {point}
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-          <motion.div whileHover={mobile ? undefined : { scale: 1.03 }} whileTap={{ scale: 0.98 }}>
-            <Link
-              to={copy.knowMoreLink}
-              className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-base shadow-lg shadow-amber-500/25"
-            >
-              {copy.knowMore} <ArrowRight className="w-5 h-5" />
-            </Link>
-          </motion.div>
-        </div>
-      </motion.div>
     </div>
   );
 }

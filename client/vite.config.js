@@ -6,6 +6,7 @@ export default defineConfig({
   build: {
     target: 'es2020',
     cssMinify: true,
+    modulePreload: { polyfill: false },
     rollupOptions: {
       output: {
         manualChunks: {
@@ -18,11 +19,12 @@ export default defineConfig({
     chunkSizeWarningLimit: 600,
   },
   server: {
+    host: '127.0.0.1',
     port: 5173,
-    strictPort: false,
-    open: true,
+    strictPort: true,
+    open: '/',
     proxy: {
-      '/api': { target: 'http://localhost:5000', changeOrigin: true },
+      '/api': { target: 'http://127.0.0.1:5000', changeOrigin: true },
     },
   },
 });

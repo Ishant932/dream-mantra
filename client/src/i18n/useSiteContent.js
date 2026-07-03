@@ -1,6 +1,6 @@
 import { useLang } from '../context/LanguageContext';
 import { pillars as pillarMeta } from '../data/pillars';
-import { PORTRAITS, IMAGES, managementTeam as mgmtBase, founder as founderBase, certifications as certBase } from '../data/content';
+import { IMAGES, managementTeam as mgmtBase, founder as founderBase, certifications as certBase } from '../data/content';
 import {
   navAssessmentRoutes,
   navAssessmentIcons,
@@ -71,16 +71,7 @@ export function useHomeContent() {
     link: whoWeGuideRoutes[i],
   }));
 
-  const portraitList = [
-    PORTRAITS.parent1,
-    PORTRAITS.student2,
-    null,
-    PORTRAITS.professional1,
-    PORTRAITS.parent1,
-    PORTRAITS.student1,
-    null,
-    PORTRAITS.professional1,
-  ];
+  const portraitList = [null, null, null, null, null, null, null, null];
   const testimonials = d('data.testimonials').map((item, i) => ({
     ...item,
     image: portraitList[i] || null,

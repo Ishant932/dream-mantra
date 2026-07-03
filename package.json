@@ -2,11 +2,13 @@
   "name": "dreams-mantra",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=20"
   },
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev": "concurrently -k \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "restart": "node scripts/restart-dev.mjs",
     "dev:backend": "cd backend && node index.js",
     "dev:frontend": "cd client && npm run dev",
     "install:all": "npm install && cd backend && npm install && cd ../client && npm install",
