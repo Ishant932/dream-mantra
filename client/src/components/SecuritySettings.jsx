@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Shield, ShieldCheck, ShieldOff, QrCode, Loader2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { authApi } from '../api';
+import AuthenticatorQrScanner from './AuthenticatorQrScanner';
 
 export default function SecuritySettings() {
   const { user, token, refreshUser } = useAuth();
@@ -113,11 +114,13 @@ export default function SecuritySettings() {
 
       {setup && (
         <motion.form initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} onSubmit={enable2FA} className="space-y-4">
-          <p className="text-sm text-sand-600">Scan this QR code with your authenticator app:</p>
-          <img src={setup.qrCode} alt="2FA QR Code" className="mx-auto w-48 h-48 rounded-xl border p-2 bg-[var(--bg-elevated)]" />
-          <p className="text-xs text-sand-500 text-center font-mono break-all">
-            Manual key: {setup.manualEntry}
-          </p>
+          <AuthenticatorQrScanner
+            qrSrc={setup.qrCode}
+            manualEntry={setup.manualEntry}
+            badge="Google Auth"
+            caption="Scan with Google Authenticator, Authy, or Microsoft Authenticator"
+            downloadName="dream-mantra-2fa-qr.png"
+          />
           <input
             className="input-field text-center tracking-widest font-mono"
             value={code}

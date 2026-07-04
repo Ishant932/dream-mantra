@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
 import PasswordInput from '../components/PasswordInput';
+import AuthenticatorQrScanner from '../components/AuthenticatorQrScanner';
 
 export default function Login() {
   const { login, verify2FA, complete2FASetup, user, loading: authLoading } = useAuth();
@@ -38,6 +39,9 @@ export default function Login() {
   const [setupToken, setSetupToken] = useState('');
   const [setupQr, setSetupQr] = useState('');
   const [setupManualEntry, setSetupManualEntry] = useState('');
+  const [setupAdminLabel, setSetupAdminLabel] = useState('');
+  const [dualSetups, setDualSetups] = useState([]);
+  const [loginUserId, setLoginUserId] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -49,10 +53,20 @@ export default function Login() {
       const trimmed = identifier.trim();
       const loginId = trimmed.includes('@') ? trimmed.toLowerCase() : trimmed.replace(/\s+/g, '');
       const data = await login(loginId, password);
-      if (data.requires2FASetup) {
+      if (data.requires2FASetup && data.dualSetup && data.setups?.length >= 2) {
+        setDualSetups(
+          data.setups.map((s) => ({
+            ...s,
+            code: '',
+          }))
+        );
+        setLoginUserId(data.loginUserId);
+        setStep('2fa-dual-setup');
+      } else if (data.requires2FASetup) {
         setSetupToken(data.setupToken);
         setSetupQr(data.qrCode);
         setSetupManualEntry(data.manualEntry || '');
+        setSetupAdminLabel(data.adminName || data.adminEmail || 'Admin');
         setStep('2fa-setup');
       } else if (data.requires2FA) {
         setTempToken(data.tempToken);
@@ -95,6 +109,29 @@ export default function Login() {
     }
   };
 
+  const handleDual2FASetup = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      const data = await complete2FASetup({
+        loginUserId,
+        setups: dualSetups.map((s) => ({ setupToken: s.setupToken, code: s.code })),
+      });
+      finishLogin(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateDualCode = (userId, nextCode) => {
+    setDualSetups((prev) =>
+      prev.map((s) => (s.userId === userId ? { ...s, code: nextCode } : s))
+    );
+  };
+
   const resetToCredentials = () => {
     setStep('credentials');
     setCode('');
@@ -102,8 +139,13 @@ export default function Login() {
     setSetupToken('');
     setSetupQr('');
     setSetupManualEntry('');
+    setSetupAdminLabel('');
+    setDualSetups([]);
+    setLoginUserId(null);
     setError('');
   };
+
+  const isWideAuth = step === '2fa-dual-setup';
 
   if (authLoading) {
     return (
@@ -157,7 +199,7 @@ export default function Login() {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
+          className={`w-full ${isWideAuth ? 'max-w-5xl' : 'max-w-md'}`}
         >
           <div className="lg:hidden mb-6 sm:mb-8 flex justify-center">
             <Logo size="md" asLink={false} />
@@ -225,6 +267,69 @@ export default function Login() {
                   </Link>
                 </p>
               </>
+            ) : step === '2fa-dual-setup' ? (
+              <>
+                <div className="text-center mb-6">
+                  <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-100 flex items-center justify-center mb-4">
+                    <Shield className="w-7 h-7 text-amber-600" />
+                  </div>
+                  <h1 className="font-display text-2xl font-bold">Set Up Admin 2FA (Both Users)</h1>
+                  <p className="text-sand-500 text-sm mt-2 max-w-xl mx-auto">
+                    Each admin scans their own QR in Google Authenticator, then enter both 6-digit codes below.
+                  </p>
+                </div>
+
+                {error && (
+                  <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
+                )}
+
+                <div className="auth-dual-2fa-grid">
+                  {dualSetups.map((adminSetup, index) => (
+                    <div key={adminSetup.userId} className="auth-dual-2fa-card">
+                      <p className="auth-dual-2fa-card__title">
+                        Admin {index + 1}: {adminSetup.name}
+                      </p>
+                      <p className="auth-dual-2fa-card__email">{adminSetup.email}</p>
+                      <AuthenticatorQrScanner
+                        qrSrc={adminSetup.qrCode}
+                        manualEntry={adminSetup.manualEntry}
+                        badge="Google Auth"
+                        brand={`Admin ${index + 1}`}
+                        caption="Google Authenticator → + → Scan QR code"
+                        downloadName={`dream-mantra-admin-${index + 1}-2fa-qr.png`}
+                        ariaLabel={`Google Authenticator QR for ${adminSetup.email}`}
+                      />
+                      <input
+                        className="input-field text-center text-xl tracking-[0.4em] font-mono mt-4"
+                        value={adminSetup.code}
+                        onChange={(e) =>
+                          updateDualCode(
+                            adminSetup.userId,
+                            e.target.value.replace(/\D/g, '').slice(0, 6)
+                          )
+                        }
+                        placeholder="000000"
+                        maxLength={6}
+                        required
+                        aria-label={`6-digit code for ${adminSetup.email}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <form onSubmit={handleDual2FASetup} className="space-y-4 mt-6">
+                  <button type="submit" disabled={loading} className="btn-primary w-full">
+                    {loading ? 'Enabling 2FA...' : 'Enable 2FA for Both & Continue'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetToCredentials}
+                    className="text-sm text-amber-600 hover:underline w-full text-center"
+                  >
+                    Back to login
+                  </button>
+                </form>
+              </>
             ) : step === '2fa-setup' ? (
               <>
                 <div className="text-center mb-8">
@@ -232,6 +337,9 @@ export default function Login() {
                     <Shield className="w-7 h-7 text-amber-600" />
                   </div>
                   <h1 className="font-display text-2xl font-bold">Set Up Admin 2FA</h1>
+                  {setupAdminLabel && (
+                    <p className="text-amber-700 font-semibold text-sm mt-1">{setupAdminLabel}</p>
+                  )}
                   <p className="text-sand-500 text-sm mt-2">
                     Scan this QR code with Google Authenticator, Authy, or Microsoft Authenticator
                   </p>
@@ -241,20 +349,15 @@ export default function Login() {
                   <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
                 )}
 
-                {setupQr && (
-                  <img
-                    src={setupQr}
-                    alt="2FA QR Code"
-                    className="mx-auto w-48 h-48 rounded-xl border p-2 bg-[var(--bg-elevated)] mb-4"
-                  />
-                )}
-                {setupManualEntry && (
-                  <p className="text-xs text-sand-500 text-center font-mono break-all mb-4">
-                    Manual key: {setupManualEntry}
-                  </p>
-                )}
+                <AuthenticatorQrScanner
+                  qrSrc={setupQr}
+                  manualEntry={setupManualEntry}
+                  badge="Google Auth"
+                  caption="Open Google Authenticator → tap + → Scan QR code"
+                  downloadName="dream-mantra-admin-2fa-qr.png"
+                />
 
-                <form onSubmit={handle2FASetup} className="space-y-5">
+                <form onSubmit={handle2FASetup} className="space-y-5 mt-5">
                   <input
                     className="input-field text-center text-2xl tracking-[0.5em] font-mono"
                     value={code}

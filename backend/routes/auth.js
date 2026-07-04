@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import db, { repo } from '../db.js';
+import db, { repo, getData } from '../db.js';
 import { authRequired } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 import { generateTwoFactorSecret, qrCodeDataUrl, verifyTotp } from '../utils/totp.js';
@@ -51,6 +51,24 @@ function signTemp2FASetupToken(user) {
 
 function requiresMandatory2FA(user) {
   return user?.role === 'admin';
+}
+
+function adminsNeeding2FASetup() {
+  return (getData().users || []).filter((u) => u.role === 'admin' && !u.twoFactorEnabled);
+}
+
+async function buildAdminSetupEntry(admin) {
+  const { base32, otpauthUrl } = generateTwoFactorSecret(admin.email, admin.name);
+  repo.updateUser(admin.id, { twoFactorPendingSecret: base32 });
+  const qrCode = await qrCodeDataUrl(otpauthUrl);
+  return {
+    userId: admin.id,
+    email: admin.email,
+    name: admin.name,
+    setupToken: signTemp2FASetupToken(admin),
+    qrCode,
+    manualEntry: base32,
+  };
 }
 
 function sanitize(user) {
@@ -149,18 +167,37 @@ router.post('/login', loginLimiter, async (req, res) => {
       });
     }
 
-    const { base32, otpauthUrl } = generateTwoFactorSecret(user.email, user.name);
-    repo.updateUser(user.id, { twoFactorPendingSecret: base32 });
-    await flushDatabase();
+    const pendingAdmins = adminsNeeding2FASetup();
 
     try {
-      const qrCode = await qrCodeDataUrl(otpauthUrl);
+      if (pendingAdmins.length >= 2) {
+        const setups = [];
+        for (const admin of pendingAdmins.slice(0, 2)) {
+          setups.push(await buildAdminSetupEntry(admin));
+        }
+        await flushDatabase();
+        return res.json({
+          requires2FASetup: true,
+          dualSetup: true,
+          loginUserId: user.id,
+          setups,
+          message:
+            'Both admin accounts need Google Authenticator. Each person scans their own QR code, then enter both 6-digit codes below.',
+        });
+      }
+
+      const setup = await buildAdminSetupEntry(user);
+      await flushDatabase();
       return res.json({
         requires2FASetup: true,
-        setupToken: signTemp2FASetupToken(user),
-        qrCode,
-        manualEntry: base32,
-        message: 'Admin accounts require two-factor authentication. Scan the QR code, then enter a code to continue.',
+        dualSetup: false,
+        setupToken: setup.setupToken,
+        qrCode: setup.qrCode,
+        manualEntry: setup.manualEntry,
+        adminName: user.name,
+        adminEmail: user.email,
+        message:
+          'Admin accounts require two-factor authentication. Scan the QR code, then enter a code to continue.',
       });
     } catch (e) {
       console.error('Admin 2FA setup QR error:', e);
@@ -258,48 +295,72 @@ router.post('/verify-2fa', (req, res) => {
 
 // ─── Complete mandatory admin 2FA setup after login ─────────────────────────
 router.post('/complete-2fa-setup', async (req, res) => {
-  const { setupToken, code } = req.body;
-  if (!setupToken || !code) {
+  const { setupToken, code, setups, loginUserId } = req.body;
+  const items =
+    Array.isArray(setups) && setups.length > 0
+      ? setups
+      : setupToken && code
+        ? [{ setupToken, code }]
+        : null;
+
+  if (!items?.length) {
     return res.status(400).json({ message: 'Setup token and verification code required' });
   }
 
-  let payload;
-  try {
-    payload = jwt.verify(setupToken, JWT_SECRET());
-  } catch {
-    return res.status(401).json({ message: 'Setup session expired. Please login again.' });
+  let sessionUserId = loginUserId ? Number(loginUserId) : null;
+
+  for (const item of items) {
+    if (!item?.setupToken || !item?.code) {
+      return res.status(400).json({ message: 'Each admin needs a verification code' });
+    }
+
+    let payload;
+    try {
+      payload = jwt.verify(item.setupToken, JWT_SECRET());
+    } catch {
+      return res.status(401).json({ message: 'Setup session expired. Please login again.' });
+    }
+
+    if (payload.purpose !== '2fa-setup') {
+      return res.status(401).json({ message: 'Invalid setup session' });
+    }
+
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(payload.id);
+    if (!user || !requiresMandatory2FA(user)) {
+      return res.status(400).json({ message: 'Two-factor setup is not required for this account' });
+    }
+    if (!user.twoFactorPendingSecret) {
+      return res.status(400).json({ message: 'Setup expired. Please login again.' });
+    }
+    if (!verifyTotp(user.twoFactorPendingSecret, item.code)) {
+      return res.status(401).json({
+        message: `Invalid code for ${user.email || user.name}. Check the matching authenticator entry.`,
+      });
+    }
+    if (isUserSuspended(user)) {
+      return res.status(403).json({ message: suspensionMessage(user) });
+    }
+
+    repo.updateUser(user.id, {
+      twoFactorEnabled: true,
+      twoFactorSecret: user.twoFactorPendingSecret,
+      twoFactorPendingSecret: null,
+    });
+
+    if (!sessionUserId) sessionUserId = user.id;
   }
 
-  if (payload.purpose !== '2fa-setup') {
-    return res.status(401).json({ message: 'Invalid setup session' });
-  }
-
-  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(payload.id);
-  if (!user || !requiresMandatory2FA(user)) {
-    return res.status(400).json({ message: 'Two-factor setup is not required for this account' });
-  }
-  if (!user.twoFactorPendingSecret) {
-    return res.status(400).json({ message: 'Setup expired. Please login again.' });
-  }
-  if (!verifyTotp(user.twoFactorPendingSecret, code)) {
-    return res.status(401).json({ message: 'Invalid code. Check your authenticator app.' });
-  }
-  if (isUserSuspended(user)) {
-    return res.status(403).json({ message: suspensionMessage(user) });
-  }
-
-  repo.updateUser(user.id, {
-    twoFactorEnabled: true,
-    twoFactorSecret: user.twoFactorPendingSecret,
-    twoFactorPendingSecret: null,
-  });
   await flushDatabase();
 
-  const updated = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
-  const token = signToken(updated);
+  const sessionUser = db.prepare('SELECT * FROM users WHERE id = ?').get(sessionUserId);
+  if (!sessionUser) {
+    return res.status(400).json({ message: 'Login session not found. Please sign in again.' });
+  }
+
+  const token = signToken(sessionUser);
   res.json({
     token,
-    user: sanitize(updated),
+    user: sanitize(sessionUser),
     message: 'Two-factor authentication enabled. Login successful.',
   });
 });

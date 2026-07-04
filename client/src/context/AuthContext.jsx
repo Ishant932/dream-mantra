@@ -198,10 +198,14 @@ export function AuthProvider({ children }) {
     return data;
   };
 
-  const complete2FASetup = async (setupToken, code) => {
+  const complete2FASetup = async (payloadOrToken, code) => {
     invalidateAuthRequests();
     setUser(null);
-    const data = await authApi.complete2FASetup({ setupToken, code });
+    const body =
+      typeof payloadOrToken === 'object' && payloadOrToken !== null
+        ? payloadOrToken
+        : { setupToken: payloadOrToken, code };
+    const data = await authApi.complete2FASetup(body);
     persist(data.token, data.user);
     return data;
   };

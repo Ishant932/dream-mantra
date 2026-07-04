@@ -536,40 +536,65 @@ export const repo = {
 };
 
 export function seedAdmin() {
-  const email = (process.env.ADMIN_EMAIL || 'admin@dreamsmantra.com').trim().toLowerCase();
-  const phone = (process.env.ADMIN_PHONE || '9999999999').trim();
-  const password = process.env.ADMIN_PASSWORD || 'Admin@123';
-  const hashed = bcrypt.hashSync(password, 10);
+  const admins = [
+    {
+      email: (process.env.ADMIN_EMAIL || 'admin@dreamsmantra.com').trim().toLowerCase(),
+      phone: (process.env.ADMIN_PHONE || '9999999999').trim(),
+      password: process.env.ADMIN_PASSWORD || 'Admin@123',
+      name: process.env.ADMIN_NAME || 'Dream Mantra Admin',
+    },
+    {
+      email: (process.env.ADMIN2_EMAIL || 'admin2@dreamsmantra.com').trim().toLowerCase(),
+      phone: (process.env.ADMIN2_PHONE || '9999999998').trim(),
+      password: process.env.ADMIN2_PASSWORD || process.env.ADMIN_PASSWORD || 'Admin@123',
+      name: process.env.ADMIN2_NAME || 'Dream Mantra Admin 2',
+    },
+  ];
 
-  const existing = data.users.find((u) => u.role === 'admin');
-  if (existing) {
-    existing.name = existing.name || 'Dream Mantra Admin';
-    existing.email = email;
-    existing.phone = phone;
-    existing.password = hashed;
-    saveData();
-    console.log(`Admin credentials synced: ${email}`);
-    return;
+  const reset2fa = process.env.ADMIN_RESET_2FA === 'true';
+
+  for (const cfg of admins) {
+    const hashed = bcrypt.hashSync(cfg.password, 10);
+    let user = data.users.find((u) => u.email?.toLowerCase() === cfg.email);
+
+    if (user) {
+      user.name = cfg.name;
+      user.email = cfg.email;
+      user.phone = cfg.phone;
+      user.password = hashed;
+      user.role = 'admin';
+    } else {
+      const id = data.nextId.users++;
+      const created_at = new Date().toISOString();
+      user = {
+        id,
+        user_uid: nextUserUid(data, created_at),
+        name: cfg.name,
+        email: cfg.email,
+        phone: cfg.phone,
+        password: hashed,
+        role: 'admin',
+        twoFactorEnabled: false,
+        twoFactorSecret: null,
+        twoFactorPendingSecret: null,
+        profile: defaultProfile(),
+        created_at,
+      };
+      data.users.push(user);
+    }
+
+    if (reset2fa) {
+      user.twoFactorEnabled = false;
+      user.twoFactorSecret = null;
+      user.twoFactorPendingSecret = null;
+    }
   }
 
-  const id = data.nextId.users++;
-  const created_at = new Date().toISOString();
-  data.users.push({
-    id,
-    user_uid: nextUserUid(data, created_at),
-    name: 'Dream Mantra Admin',
-    email,
-    phone,
-    password: hashed,
-    role: 'admin',
-    twoFactorEnabled: false,
-    twoFactorSecret: null,
-    twoFactorPendingSecret: null,
-    profile: defaultProfile(),
-    created_at,
-  });
   saveData();
-  console.log(`Admin seeded: ${email}`);
+  console.log(`Admin accounts synced: ${admins.map((a) => a.email).join(', ')}`);
+  if (reset2fa) {
+    console.log('Admin 2FA reset (ADMIN_RESET_2FA=true) — scan QR on next login');
+  }
 }
 
 export default db;
