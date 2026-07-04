@@ -68,10 +68,6 @@ export default function DashboardMobileDeck({
       <div className="dash-mobile-deck__grid" aria-hidden />
 
       <div className="dash-mobile-deck__top">
-        <span className="dash-mobile-deck__live">
-          <span className="dash-mobile-deck__live-dot" aria-hidden />
-          LIVE
-        </span>
         {headerAction && (
           <div className="dash-mobile-deck__notif">{headerAction}</div>
         )}
@@ -97,7 +93,7 @@ export default function DashboardMobileDeck({
                   )}
                 </div>
               </button>
-              {nextStep && showProfileCompletion && variant === 'user' && (
+              {nextStep && (variant === 'admin' || (showProfileCompletion && variant === 'user')) && (
                 <button
                   type="button"
                   className="dash-mobile-deck__next-step"

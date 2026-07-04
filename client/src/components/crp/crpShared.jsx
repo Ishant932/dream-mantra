@@ -87,28 +87,16 @@ export function CRPStatsStrip({ statItems }) {
   );
 }
 
-export function CRPCrossNav({ explore, launch, current }) {
+export function CRPCrossNav({ explore, current }) {
+  if (current === 'explore') return null;
+
   return (
     <div className="flex flex-wrap justify-center gap-3 mb-10">
       <Link
         to="/crp/explore"
-        className={`px-5 py-2.5 rounded-full text-sm font-semibold border transition ${
-          current === 'explore'
-            ? 'bg-amber-600 text-white border-amber-600 shadow-md'
-            : 'border-amber-200 text-amber-800 hover:bg-amber-50'
-        }`}
+        className="px-5 py-2.5 rounded-full text-sm font-semibold border transition border-amber-200 text-amber-800 hover:bg-amber-50"
       >
         🚀 {explore.label}
-      </Link>
-      <Link
-        to="/crp/launch"
-        className={`px-5 py-2.5 rounded-full text-sm font-semibold border transition ${
-          current === 'launch'
-            ? 'bg-amber-600 text-white border-amber-600 shadow-md'
-            : 'border-amber-200 text-amber-800 hover:bg-amber-50'
-        }`}
-      >
-        🤖 {launch.label}
       </Link>
     </div>
   );

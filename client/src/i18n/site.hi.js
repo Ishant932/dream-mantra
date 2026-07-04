@@ -26,10 +26,9 @@ export const siteHi = {
       ],
     },
     crp: {
-      title: 'AI Career Launchpad',
+      title: 'Training and placement',
       links: [
-        { label: 'Explore Program', desc: 'Blueprint · Sprints · Highlights · Parameters' },
-        { label: 'Launch With AI', desc: 'अपना cohort एनरोल करें' },
+        { label: 'AI Career Launchpad', desc: 'Blueprint · Sprints · Highlights · Parameters' },
       ],
     },
     crpPrograms: {
@@ -1579,12 +1578,12 @@ export const siteHi = {
         cta: 'Enroll Now',
       },
       explore: {
-        title: 'Explore Program — AI Career Launchpad',
+        title: 'AI Career Launchpad',
         subtitle: 'Full program roadmap · 5 AI skill sprints · program highlights · 20 parameters',
-        cta: 'Launch With AI',
+        cta: 'Enroll Now',
         footerTitle: 'AI Career Launchpad में enroll करने के लिए ready?',
         footerDesc: 'अपना audience path चुनें और next cohort join करें।',
-        nav: { label: 'Explore Program' },
+        nav: { label: 'AI Career Launchpad' },
       },
       launch: {
         title: 'Launch With AI',
@@ -1648,7 +1647,7 @@ export const siteHi = {
       ctaCard: {
         title: 'अपना career launch करने के लिए ready?',
         desc: 'AI Career Launchpad batch बुक करें — limited seats per cohort।',
-        button: 'Launch With AI',
+        button: 'Enroll Now',
         seePillars: 'सभी 7 Pillars देखें',
       },
     },

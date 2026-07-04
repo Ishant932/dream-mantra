@@ -18,8 +18,8 @@ export const navProgramRoutes = [
 ];
 export const navProgramIcons = ['🌱', '🎯', '📚', '🎓', '🏫', '💼', '🤝'];
 
-export const navCrpRoutes = ['/crp/explore', '/crp/launch'];
-export const navCrpIcons = ['🚀', '🤖'];
+export const navCrpRoutes = ['/crp/explore'];
+export const navCrpIcons = ['🚀'];
 
 export const navCrpProgramRoutes = [
   '/crp/launch?tab=college-students',

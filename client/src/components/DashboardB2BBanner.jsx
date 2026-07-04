@@ -87,7 +87,7 @@ export default function DashboardB2BBanner({
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, duration: 0.4 }}
         >
-          {nextStep && variant === 'user' && (
+          {nextStep && (
             <DashboardNextStepButton nextStep={nextStep} variant="hero" />
           )}
           {action}

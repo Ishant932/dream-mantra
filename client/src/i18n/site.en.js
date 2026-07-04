@@ -26,10 +26,9 @@ export const siteEn = {
       ],
     },
     crp: {
-      title: 'AI Career Launchpad',
+      title: 'Training and placement',
       links: [
-        { label: 'Explore Program', desc: 'Blueprint · Sprints · Highlights · Parameters' },
-        { label: 'Launch With AI', desc: 'Enroll your cohort' },
+        { label: 'AI Career Launchpad', desc: 'Blueprint · Sprints · Highlights · Parameters' },
       ],
     },
     crpPrograms: {
@@ -1651,12 +1650,12 @@ export const siteEn = {
         cta: 'Enroll Now',
       },
       explore: {
-        title: 'Explore Program — AI Career Launchpad',
+        title: 'AI Career Launchpad',
         subtitle: 'Full program roadmap · 5 AI skill sprints · program highlights · 20 parameters',
-        cta: 'Launch With AI',
+        cta: 'Enroll Now',
         footerTitle: 'Ready to enroll in AI Career Launchpad?',
         footerDesc: 'Choose your audience path and join the next cohort.',
-        nav: { label: 'Explore Program' },
+        nav: { label: 'AI Career Launchpad' },
       },
       launch: {
         title: 'Launch With AI',
@@ -1721,7 +1720,7 @@ export const siteEn = {
       ctaCard: {
         title: 'Ready to launch your career?',
         desc: 'Book your AI Career Launchpad batch — limited seats per cohort.',
-        button: 'Launch With AI',
+        button: 'Enroll Now',
         seePillars: 'See all 7 Pillars',
       },
     },

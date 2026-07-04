@@ -67,3 +67,52 @@ export function getDashboardNextStep({
 
   return step;
 }
+
+export const ADMIN_NEXT_STEP_ACTIONS = {
+  BOOKINGS: 'bookings',
+  REPORTS: 'reports',
+  PAYMENTS: 'payments',
+  MESSAGES: 'messages',
+  ANALYTICS: 'analytics',
+};
+
+/** Recommended next action for the admin dashboard overview + mobile deck. */
+export function getAdminDashboardNextStep({ stats, notifUnread = 0 }) {
+  if (stats?.pending > 0) {
+    return {
+      action: ADMIN_NEXT_STEP_ACTIONS.BOOKINGS,
+      title: 'Review pending bookings',
+      desc: `${stats.pending} consultation${stats.pending === 1 ? '' : 's'} awaiting confirmation.`,
+      cta: 'Open bookings',
+      shortCta: 'Next step',
+    };
+  }
+
+  if (notifUnread > 0) {
+    return {
+      action: ADMIN_NEXT_STEP_ACTIONS.MESSAGES,
+      title: 'Check new messages',
+      desc: `${notifUnread} unread notification${notifUnread === 1 ? '' : 's'} in your inbox.`,
+      cta: 'View messages',
+      shortCta: 'Next step',
+    };
+  }
+
+  if ((stats?.openSlots ?? 0) === 0) {
+    return {
+      action: ADMIN_NEXT_STEP_ACTIONS.BOOKINGS,
+      title: 'Add counselling slots',
+      desc: 'No open booking slots — add availability so students can schedule sessions.',
+      cta: 'Manage calendar',
+      shortCta: 'Next step',
+    };
+  }
+
+  return {
+    action: ADMIN_NEXT_STEP_ACTIONS.ANALYTICS,
+    title: 'Review platform analytics',
+    desc: 'Check sign-ups, revenue, and module performance at a glance.',
+    cta: 'View analytics',
+    shortCta: 'Next step',
+  };
+}

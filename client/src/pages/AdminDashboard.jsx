@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Users, Calendar, FlaskConical, Clock, AlertCircle,
   CreditCard, Settings, Save,
@@ -30,6 +30,7 @@ import DashboardB2BBanner from '../components/DashboardB2BBanner';
 import NotificationBell from '../components/NotificationBell';
 import AdminMessagesPanel from '../components/MessagesPanel';
 import AdminBlogPanel from '../components/AdminBlogPanel';
+import { getAdminDashboardNextStep, ADMIN_NEXT_STEP_ACTIONS } from '../utils/dashboardNextStep';
 
 const ADMIN_TABS = [
   { id: 'overview', label: 'Overview', desc: 'Stats & quick summary' },
@@ -51,6 +52,7 @@ export default function AdminDashboard() {
   const { t } = useLang();
   const { token, user } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const tabParam = new URLSearchParams(location.search).get('tab') || 'overview';
 
   const [stats, setStats] = useState(null);
@@ -214,6 +216,25 @@ export default function AdminDashboard() {
     { label: 'Paid Orders', value: stats.paidCount ?? 0, icon: CreditCard },
   ] : [];
 
+  const goTab = useCallback((tabId) => {
+    navigate({ pathname: location.pathname, search: `?tab=${tabId}` }, { replace: true });
+  }, [navigate, location.pathname]);
+
+  const nextStep = useMemo(() => {
+    const step = getAdminDashboardNextStep({ stats, notifUnread });
+    const handlers = {
+      [ADMIN_NEXT_STEP_ACTIONS.BOOKINGS]: () => goTab('bookings'),
+      [ADMIN_NEXT_STEP_ACTIONS.REPORTS]: () => goTab('reports'),
+      [ADMIN_NEXT_STEP_ACTIONS.PAYMENTS]: () => goTab('payments'),
+      [ADMIN_NEXT_STEP_ACTIONS.MESSAGES]: () => goTab('messages'),
+      [ADMIN_NEXT_STEP_ACTIONS.ANALYTICS]: () => goTab('analytics'),
+    };
+    return {
+      ...step,
+      onClick: handlers[step.action] || (() => goTab('analytics')),
+    };
+  }, [stats, notifUnread, goTab]);
+
   if (loading) return <DashboardLoading variant="admin" />;
 
   return (
@@ -250,6 +271,7 @@ export default function AdminDashboard() {
           title="Admin Dashboard"
           subtitle="Users · bookings · payments · vouchers · reports"
           variant="admin"
+          nextStep={nextStep}
           action={(
             <NotificationBell
               token={token}
@@ -260,7 +282,7 @@ export default function AdminDashboard() {
           )}
         />
 
-        <DashboardSidebarLayout tabs={ADMIN_TABS} defaultTab="overview" id="admin-dashboard" user={user} showProfileCompletion={false} sectionTitle="Dream Mantra Admin" deckVariant="admin" notifToken={token} notifUnread={notifUnread} onNotifRefresh={refreshNotifs}>
+        <DashboardSidebarLayout tabs={ADMIN_TABS} defaultTab="overview" id="admin-dashboard" user={user} showProfileCompletion={false} sectionTitle="Dream Mantra Admin" deckVariant="admin" notifToken={token} notifUnread={notifUnread} onNotifRefresh={refreshNotifs} nextStep={nextStep}>
           {(tab) => (
             <>
               {tab === 'overview' && (

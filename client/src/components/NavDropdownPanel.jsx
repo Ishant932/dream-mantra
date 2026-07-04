@@ -6,7 +6,7 @@ import { isMobilePerf } from '../utils/mobilePerf';
 
 const VARIANT_META = {
   counselling: { label: 'For Counselling', accent: '#013220', glow: 'rgba(1,50,32,0.15)' },
-  crp: { label: 'AI Career Launchpad', accent: '#FF6B4A', glow: 'rgba(255,107,74,0.2)' },
+  crp: { label: 'Training and placement', accent: '#FF6B4A', glow: 'rgba(255,107,74,0.2)' },
   explore: { label: 'Explore Dream Mantra', accent: '#C9A84C', glow: 'rgba(201,168,76,0.2)' },
   default: { label: 'Dream Mantra', accent: '#C9A84C', glow: 'rgba(201,168,76,0.15)' },
 };
@@ -52,10 +52,6 @@ function PanelShell({ lite, variant, className, children }) {
       style={{ perspective: 1200 }}
     >
       <div className="nav-mega-border-glow" aria-hidden />
-      <div className="nav-mega-corner nav-mega-corner-tl" aria-hidden />
-      <div className="nav-mega-corner nav-mega-corner-tr" aria-hidden />
-      <div className="nav-mega-corner nav-mega-corner-bl" aria-hidden />
-      <div className="nav-mega-corner nav-mega-corner-br" aria-hidden />
       <div className="nav-mega-hex" aria-hidden />
       <div className="nav-mega-mesh" aria-hidden />
       <motion.div
@@ -121,13 +117,6 @@ function PanelShell({ lite, variant, className, children }) {
             AI-powered · Tap any option
           </p>
         </div>
-        <motion.span
-          className="nav-mega-live"
-          animate={{ opacity: [1, 0.45, 1], scale: [1, 1.05, 1] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          Live
-        </motion.span>
       </div>
 
       <div className="relative z-[2] nav-mega-body">{children}</div>

@@ -37,7 +37,7 @@ export default function CRPLaunchPage() {
       <CRPStatsStrip statItems={statItems} />
 
       <section className="py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <CRPCrossNav explore={crp.explore.nav} launch={crp.launch.nav} current="launch" />
+        <CRPCrossNav explore={crp.explore.nav} current="launch" />
 
         <div id="programs" className="scroll-mt-28 mb-12">
           <SubTabs tabs={crpAudienceTabs} defaultTab="college-students" id="crp-audience">

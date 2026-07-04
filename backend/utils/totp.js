@@ -19,11 +19,13 @@ export async function qrCodeDataUrl(otpauthUrl) {
 }
 
 export function verifyTotp(secret, token) {
-  if (!secret || !token) return false;
+  if (!secret || token == null || token === '') return false;
+  const normalized = String(token).replace(/\D/g, '').padStart(6, '0').slice(-6);
+  if (normalized.length !== 6) return false;
   return speakeasy.totp.verify({
-    secret,
+    secret: String(secret).replace(/\s/g, '').toUpperCase(),
     encoding: 'base32',
-    token: String(token).replace(/\s/g, ''),
-    window: 2,
+    token: normalized,
+    window: 3,
   });
 }
