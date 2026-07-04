@@ -14,7 +14,6 @@ import {
 
 } from 'lucide-react';
 
-import { careersApi } from '../api';
 import { getCareerBySlugLocal } from '../utils/loadCareers';
 import CareerRoadmapFlow from '../components/CareerRoadmapFlow';
 
@@ -27,20 +26,16 @@ export default function CareerDetailPage() {
     let cancelled = false;
     setLoading(true);
 
-    (async () => {
-      try {
-        const local = await getCareerBySlugLocal(slug);
-        if (!cancelled) setData(local);
-      } catch {
+    getCareerBySlugLocal(slug)
+      .then((res) => {
+        if (!cancelled) setData(res);
+      })
+      .catch(() => {
         if (!cancelled) setData(null);
-      } finally {
+      })
+      .finally(() => {
         if (!cancelled) setLoading(false);
-      }
-
-      careersApi.get(slug).then((res) => {
-        if (!cancelled && res?.career) setData(res);
-      }).catch(() => {});
-    })();
+      });
 
     return () => { cancelled = true; };
   }, [slug]);

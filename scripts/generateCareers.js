@@ -346,10 +346,35 @@ const CATEGORY_INSTITUTES = {
   default: ['Central universities', 'State universities', 'Autonomous colleges', 'NAAC-accredited institutes'],
 };
 
-function indianSalary(category, id) {
+function detectRoleTier(title, variantIdx) {
+  const t = String(title || '').trim();
+  if (/^senior\s/i.test(t)) return 'senior';
+  if (/^specialist\s/i.test(t)) return 'specialist';
+  if (/^(principal|executive|global|strategic|regional)\s/i.test(t)) return 'senior';
+  if (/^(technical|digital)\s/i.test(t)) return 'specialist';
+  if (variantIdx === 1) return 'senior';
+  if (variantIdx === 2) return 'specialist';
+  return 'entry';
+}
+
+function baseRoleTitle(title) {
+  return String(title || '')
+    .trim()
+    .replace(/^(senior|specialist|associate|principal|regional|global|digital|strategic|technical|executive)\s+/i, '')
+    .trim();
+}
+
+function indianSalary(category, id, tier = 'entry') {
   const band = INDIAN_SALARY_BANDS[category] || { base: 300000, step: 60000, multMin: 2, multMax: 8 };
-  const salaryMin = band.base + (id % 12) * band.step;
-  const mult = band.multMin + (id % Math.ceil(band.multMax - band.multMin));
+  let salaryMin = band.base + (id % 12) * band.step;
+  let mult = band.multMin + (id % Math.ceil(band.multMax - band.multMin));
+  if (tier === 'senior') {
+    salaryMin = Math.round(salaryMin * 2.1 + 180000);
+    mult = Math.min(band.multMax + 4, mult + 2.5);
+  } else if (tier === 'specialist') {
+    salaryMin = Math.round(salaryMin * 1.55 + 120000);
+    mult = Math.min(band.multMax + 3, mult + 1.8);
+  }
   const salaryMax = Math.round(salaryMin * mult);
   return {
     salaryMin,
@@ -419,10 +444,12 @@ function categoryEducation(category, title, stream, id) {
   ];
 }
 
-function buildRoadmap(title, category, id, stream) {
+function buildRoadmap(title, category, id, stream, tier = 'entry') {
+  const base = baseRoleTitle(title);
   const isMedical = category.includes('Medical');
   const isEng = category.includes('Engineering') || category.includes('IT');
   const isLaw = category.includes('Law');
+  const isResearch = category.includes('Science') || category.includes('Research');
   const ug = isMedical
     ? 'MBBS / BDS / BPT (NEET required)'
     : isEng
@@ -430,44 +457,140 @@ function buildRoadmap(title, category, id, stream) {
       : isLaw
         ? 'BA LLB / LLB after Class 12 or graduation'
         : 'Bachelor\'s degree in relevant field';
-  const pg = isMedical ? 'MD / MS / DNB specialisation' : 'Master\'s / PG diploma (optional for senior roles)';
+  const pg = isMedical ? 'MD / MS / DNB specialisation' : isResearch ? 'M.Sc / Ph.D in domain specialisation' : 'Master\'s / PG diploma';
+
+  if (tier === 'senior') {
+    return [
+      { step: 1, title: 'Strong Academic Foundation', description: `Completed ${ug} plus ${pg} or equivalent experience for ${base} careers`, duration: 'Already completed', milestone: 'Recognised degree + 5+ years track record' },
+      { step: 2, title: 'Mid-Career Experience (5–8 years)', description: `Led projects, mentored juniors, and delivered measurable outcomes as ${base}`, duration: '5–8 years', milestone: 'Independent ownership of key deliverables' },
+      { step: 3, title: 'Leadership & People Management', description: `Manage teams, budgets, and cross-functional stakeholders as Senior ${base}`, duration: '2–4 years in lead role', milestone: 'Team lead / manager title' },
+      { step: 4, title: 'Advanced Credentials', description: id % 2 === 0 ? 'Executive education, PMP, or domain fellowships' : 'Published work, patents, or senior professional certifications', duration: '1–2 years parallel', milestone: 'Senior expert recognition' },
+      { step: 5, title: 'Strategic Ownership', description: `Own business unit goals, P&L awareness, and long-range planning for ${category.split(' ')[0]} initiatives`, duration: 'Ongoing', milestone: 'Department / practice head responsibilities' },
+      { step: 6, title: 'Industry Influence', description: 'Speak at conferences, guide policy, or represent organisation with clients and partners', duration: '3–5 years', milestone: 'External visibility as senior leader' },
+      { step: 7, title: 'Director / Principal Path', description: `Senior ${base} → Director, VP, Principal Consultant, or practice head`, duration: '10–20 years total', milestone: 'C-suite or principal leadership role' },
+    ];
+  }
+
+  if (tier === 'specialist') {
+    return [
+      { step: 1, title: 'Deep Domain Education', description: `${pg} or advanced diploma focused on a narrow ${base} specialisation`, duration: '2–6 years post-UG', milestone: 'Specialist academic credentials' },
+      { step: 2, title: 'Niche Skill Mastery', description: `Master tools, methods, and standards specific to Specialist ${base} work`, duration: '2–4 years', milestone: 'Portfolio of specialist projects' },
+      { step: 3, title: 'Certifications & Research', description: isResearch ? 'Lab techniques, peer-reviewed papers, or grant-funded research' : 'Vendor / industry certifications in sub-domain', duration: '1–3 years', milestone: 'Recognised specialist credentials' },
+      { step: 4, title: 'Consulting & Advisory Roles', description: `Advise multiple teams or clients as subject-matter expert in ${base}`, duration: '3–5 years', milestone: 'Trusted go-to expert internally' },
+      { step: 5, title: 'Complex Problem Solving', description: 'Handle high-stakes, ambiguous challenges others escalate to you', duration: 'Ongoing', milestone: 'Critical-path specialist assignments' },
+      { step: 6, title: 'Thought Leadership', description: 'Train others, author guides, or lead standards committees in your niche', duration: '2–4 years', milestone: 'Industry recognition in specialisation' },
+      { step: 7, title: 'Principal Specialist / Fellow', description: `Specialist ${base} → Principal Scientist, Fellow, or chief specialist architect`, duration: '8–15 years', milestone: 'Top-tier expert consultant role' },
+    ];
+  }
+
   return [
-    { step: 1, title: 'Self Discovery (Class 6–8)', description: `Take DMIT & Psychometric at Dreams Mantra to map aptitude for ${title}`, duration: 'Age 11–14', milestone: 'Learning style & interest profile' },
+    { step: 1, title: 'Self Discovery (Class 6–8)', description: `Take DMIT & Psychometric at Dreams Mantra to map aptitude for ${base}`, duration: 'Age 11–14', milestone: 'Learning style & interest profile' },
     { step: 2, title: 'Stream Selection (Class 9–10)', description: `Choose PCM, PCB, Commerce, or Arts aligned with ${category} careers`, duration: 'Class 9–10', milestone: 'Board exams + stream locked' },
     { step: 3, title: 'Undergraduate Education', description: ug, duration: '3–5 years', milestone: 'Degree + internships' },
     { step: 4, title: 'Entrance Exams & Admissions', description: id % 2 === 0 ? 'Prepare for JEE/NEET/CUET/CAT as applicable' : 'Domain-specific entrance tests & college applications', duration: '1–2 years prep', milestone: 'College admission secured' },
-    { step: 5, title: 'Skill Building & Certifications', description: `Build technical and soft skills specific to ${title}`, duration: 'During UG + after', milestone: 'Portfolio / certifications' },
-    { step: 6, title: 'First Job / Internship', description: `Entry-level ${title} role — campus placement, off-campus, or startup`, duration: '0–2 years experience', milestone: 'Professional experience' },
-    { step: 7, title: 'Career Growth & Specialisation', description: pg + `${title} → Senior → Lead/Manager path`, duration: '5–15 years', milestone: 'Leadership or expert consultant role' },
+    { step: 5, title: 'Skill Building & Certifications', description: `Build technical and soft skills specific to ${base}`, duration: 'During UG + after', milestone: 'Portfolio / certifications' },
+    { step: 6, title: 'First Job / Internship', description: `Entry-level ${base} role — campus placement, off-campus, or startup`, duration: '0–2 years experience', milestone: 'First professional role secured' },
+    { step: 7, title: 'Career Growth & Specialisation', description: `${pg} optional — grow toward Senior ${base} or Specialist ${base} tracks`, duration: '5–12 years', milestone: 'Mid-level professional with clear specialisation' },
   ];
 }
 
+function isResearchCategory(category) {
+  return String(category || '').includes('Science') || String(category || '').includes('Research');
+}
+
 function buildCareer(id, title, category, config, variantIdx) {
-  const { salaryMin, salaryMax, salaryDisplay } = indianSalary(category, id);
+  const tier = detectRoleTier(title, variantIdx);
+  const base = baseRoleTitle(title);
+  const { salaryMin, salaryMax, salaryDisplay } = indianSalary(category, id, tier);
   const emp = employers[category] || employers.default;
   const stream = config.stream;
   const classStreams = resolveClassStreams(category, title, stream);
   const exams = categoryExams(category, id);
   const institutes = categoryInstitutes(category, id);
 
+  const shortDescription = tier === 'senior'
+    ? `Senior ${base} is a leadership-track role in India — typically 6–12 years of experience, team ownership, and significantly higher pay than entry-level ${base} positions.`
+    : tier === 'specialist'
+      ? `Specialist ${base} is a deep-expert track in India — niche skills, advanced credentials, and advisory roles with premium compensation in ${category.toLowerCase()}.`
+      : `${title} is a recognised career path in India for students from ${classStreams.filter((s) => s !== 'Vocational').join(', ') || 'relevant'} streams — with clear UG/PG routes, entrance exams, and growing demand across metros and tier-2 cities.`;
+
+  const description = tier === 'senior'
+    ? `Senior ${base} professionals in India usually have 6–12+ years of experience after their UG/PG, with proven delivery on complex projects and people-management exposure.\n\nThey are hired by ${emp.slice(0, 3).join(', ')} and similar employers for lead, manager, or principal roles. Compensation is typically 2–3× entry-level ${base} salaries.\n\nDream Mantra recommends Skill Mapping + career counselling to plan the leap from mid-level ${base} to senior leadership.`
+    : tier === 'specialist'
+      ? `Specialist ${base} professionals are narrow-domain experts — often with M.Sc/Ph.D, advanced certifications, or 5–10 years of focused practice in one sub-field.\n\nIndian employers in ${category.toLowerCase()} hire specialists for R&D, consulting, compliance, and high-stakes technical decisions. Pay can match or exceed general senior roles in the same field.\n\nDream Mantra helps students identify whether the specialist or senior leadership track fits their aptitude and interests.`
+      : `${title} professionals in India typically enter through board exams and competitive entrances (where applicable), followed by a domain degree from a recognised Indian university or institute.\n\nIn the Indian job market, ${title} roles are hired by ${emp.slice(0, 3).join(', ')} and similar employers. Freshers often start through campus placements, off-campus drives, or government recruitment.\n\nDream Mantra recommends Mind Mapping + Skill Mapping before finalising this path — to match aptitude, learning style, and family expectations with realistic Indian salary bands and exam timelines.`;
+
+  const dayInLife = tier === 'senior'
+    ? `A Senior ${base} in India typically leads stand-ups, reviews team output, aligns with senior management, handles escalations, and mentors 3–10 juniors. About 40% time on strategy and stakeholders, 60% on technical or operational decisions.`
+    : tier === 'specialist'
+      ? `A Specialist ${base} spends most of the day on deep technical work — analysis, design, troubleshooting, or research that others cannot do. You may advise multiple teams, review critical deliverables, and join senior meetings only for your domain.`
+      : `A typical Indian workday as ${title} includes domain tasks, team coordination, stakeholder updates, and compliance with organisation SOPs. Work settings range from offices and hospitals to field sites, depending on employer and city.`;
+
+  const growthPath = tier === 'senior'
+    ? `${base} (3–5 yrs) → Senior ${base} (6–10 yrs) → Lead / Manager → Director / VP / Practice Head`
+    : tier === 'specialist'
+      ? `${base} (2–4 yrs) → Specialist ${base} (5–8 yrs) → Principal Specialist / Fellow → Chief Architect / Head of R&D`
+      : `Entry-level ${base} → Mid-level ${base} → Senior ${base} or Specialist ${base} → Director / Consultant`;
+
+  const eligibility = tier === 'senior'
+    ? `Bachelor's + typically 6–12 years relevant experience; Master's preferred for research-heavy ${category.toLowerCase()} roles`
+    : tier === 'specialist'
+      ? `UG + PG/advanced certification in sub-domain; 4–8 years focused practice or research credentials`
+      : `Class 12 (${stream.join('/')}) with relevant subjects; some roles accept any stream with aptitude`;
+
+  const duration = tier === 'senior'
+    ? '6–12+ years total experience (post-education)'
+    : tier === 'specialist'
+      ? '4–10 years to establish specialist credibility'
+      : pick(['3–4 years UG + experience', '4–5 years UG + PG', 'Diploma 2–3 years + on-job training'], id);
+
+  const demand = tier === 'senior'
+    ? pick(['High', 'Stable', 'Growing'], id + 1)
+    : tier === 'specialist'
+      ? pick(['High', 'Very High', 'Growing'], id + 2)
+      : pick(['High', 'Very High', 'Growing', 'Stable'], id);
+
+  const workLifeBalance = tier === 'senior'
+    ? pick(['Moderate', 'Demanding'], id)
+    : tier === 'specialist'
+      ? pick(['Good', 'Moderate'], id + 1)
+      : pick(wlb, id);
+
   return {
     id,
     slug: `${slugify(title)}-${id}`,
     title,
+    careerTier: tier,
     category,
     sector: category.split(' ')[0],
     stream,
     classStreams,
-    shortDescription: `${title} is a recognised career path in India for students from ${classStreams.filter((s) => s !== 'Vocational').join(', ') || 'relevant'} streams — with clear UG/PG routes, entrance exams, and growing demand across metros and tier-2 cities.`,
-    description: `${title} professionals in India typically enter through board exams and competitive entrances (where applicable), followed by a domain degree from a recognised Indian university or institute.\n\nIn the Indian job market, ${title} roles are hired by ${emp.slice(0, 3).join(', ')} and similar employers. Freshers often start through campus placements, off-campus drives, or government recruitment.\n\nDream Mantra recommends Mind Mapping + Skill Mapping before finalising this path — to match aptitude, learning style, and family expectations with realistic Indian salary bands and exam timelines.`,
-    dayInLife: `A typical Indian workday as ${title} includes domain tasks, team coordination, stakeholder updates, and compliance with organisation SOPs. Work settings range from offices and hospitals to field sites, depending on employer and city.`,
-    responsibilities: [
-      `Execute core ${title.split(' ').slice(-1)[0] || 'role'} duties with quality and timelines`,
-      'Collaborate with cross-functional teams and stakeholders',
-      'Maintain professional standards and compliance requirements',
-      pick(['Analyze data and prepare reports', 'Manage projects and deliverables', 'Train juniors and share knowledge'], id),
-      pick(['Research industry trends', 'Optimize processes for efficiency', 'Support business growth goals'], id + 2),
-    ],
+    shortDescription,
+    description,
+    dayInLife,
+    responsibilities: tier === 'senior'
+      ? [
+          `Lead and mentor a team of ${base} professionals`,
+          'Set priorities, allocate work, and review quality across deliverables',
+          'Present to senior management and external clients or partners',
+          pick(['Own budget and hiring decisions', 'Drive process improvement across the unit', 'Represent the organisation in industry forums'], id),
+          pick(['Resolve escalations and cross-team conflicts', 'Define KPIs and performance standards', 'Align team goals with business strategy'], id + 2),
+        ]
+      : tier === 'specialist'
+        ? [
+            `Solve the most complex ${base} problems escalated by the wider team`,
+            'Design standards, playbooks, and best practices for your niche',
+            'Review and approve critical technical or domain decisions',
+            pick(['Publish research, whitepapers, or internal knowledge bases', 'Train others through workshops and office hours', 'Evaluate tools and methodologies for the organisation'], id),
+            pick(['Support audits, compliance, and high-stakes client deliverables', 'Partner with vendors and external experts', 'Innovate new approaches in your specialisation'], id + 2),
+        ]
+        : [
+          `Execute core ${base.split(' ').slice(-1)[0] || 'role'} duties with quality and timelines`,
+          'Collaborate with cross-functional teams and stakeholders',
+          'Maintain professional standards and compliance requirements',
+          pick(['Analyze data and prepare reports', 'Manage projects and deliverables', 'Train juniors and share knowledge'], id),
+          pick(['Research industry trends', 'Optimize processes for efficiency', 'Support business growth goals'], id + 2),
+        ],
     education: categoryEducation(category, title, stream, id),
     skills: [
       'Communication & presentation', 'Critical thinking', 'Domain expertise',
@@ -491,30 +614,54 @@ function buildCareer(id, title, category, config, variantIdx) {
     institutes,
     topEmployers: emp.slice(0, 4 + (id % 3)),
     industries: [category.split(' & ')[0], pick(['Private sector', 'Government', 'Startups', 'Consulting'], id)],
-    workEnvironment: pick(environments, id),
-    eligibility: `Class 12 (${stream.join('/')}) with relevant subjects; some roles accept any stream with aptitude`,
-    duration: pick(['3–4 years UG + experience', '4–5 years UG + PG', 'Diploma 2–3 years + on-job training'], id),
-    demand: pick(['High', 'Very High', 'Growing', 'Stable'], id),
-    growthPath: `Entry-level ${title} → Mid-level specialist → Team lead/Manager → Director/Consultant/Entrepreneur`,
-    aiResilience: pick(aiLevels, id + variantIdx),
-    workLifeBalance: pick(wlb, id),
+    workEnvironment: pick(environments, id + (tier === 'senior' ? 0 : tier === 'specialist' ? 2 : 1)),
+    eligibility,
+    duration,
+    demand,
+    growthPath,
+    aiResilience: tier === 'senior' ? pick(['Medium', 'Low'], id) : tier === 'specialist' ? pick(['Low', 'Medium'], id) : pick(aiLevels, id + variantIdx),
+    workLifeBalance,
     futureScope: pick([
       'Strong demand expected over the next decade with digital transformation',
       'Growing opportunities in tier-2/3 cities and remote roles',
       'Global mobility possible with right credentials and experience',
       'Emerging specializations creating new sub-roles every year',
     ], id),
-    roadmap: buildRoadmap(title, category, id, stream),
-    challenges: [
-      'Competitive entrance exams and limited seats at top institutes',
-      'Need for continuous upskilling in a fast-changing market',
-      pick(['Initial years require patience before peak earnings', 'Work-life balance varies by employer and role'], id),
-    ],
-    perks: [
-      pick(['Strong salary growth with experience', 'Respected professional identity', 'Global career mobility'], id),
-      pick(['Intellectual satisfaction', 'Social impact and recognition', 'Flexible remote/hybrid options'], id + 1),
-      'Diverse industry options across public and private sector',
-    ],
+    roadmap: buildRoadmap(title, category, id, stream, tier),
+    challenges: tier === 'senior'
+      ? [
+          'Balancing people management with staying technically credible',
+          'Higher accountability for team failures and business outcomes',
+          pick(['Longer hours during deadlines and organisational change', 'Politics and stakeholder alignment at senior levels'], id),
+        ]
+      : tier === 'specialist'
+        ? [
+            'Risk of over-specialising in a niche that may shrink',
+            'Fewer promotion paths unless you move into leadership or consulting',
+            pick(['Pressure to stay current in a fast-evolving sub-field', 'Limited roles outside metro hubs for some specialisations'], id),
+          ]
+        : [
+          'Competitive entrance exams and limited seats at top institutes',
+          'Need for continuous upskilling in a fast-changing market',
+          pick(['Initial years require patience before peak earnings', 'Work-life balance varies by employer and role'], id),
+        ],
+    perks: tier === 'senior'
+      ? [
+          'Significantly higher compensation and bonus potential',
+          'Authority to shape team culture and hiring',
+          pick(['Executive education and leadership programmes', 'Equity or profit-sharing at growth companies', 'Industry recognition as a leader'], id),
+        ]
+      : tier === 'specialist'
+        ? [
+            'Premium pay for rare, high-demand expertise',
+            'Respected as the go-to expert in your organisation',
+            pick(['Flexible consulting and advisory opportunities', 'Conference speaking and publication credits', 'Strong job security in regulated or R&D roles'], id),
+          ]
+        : [
+          pick(['Strong salary growth with experience', 'Respected professional identity', 'Global career mobility'], id),
+          pick(['Intellectual satisfaction', 'Social impact and recognition', 'Flexible remote/hybrid options'], id + 1),
+          'Diverse industry options across public and private sector',
+        ],
     toolsAndTech: pick([
       ['Microsoft Office / Google Workspace', 'Industry-specific software', 'Project management tools'],
       ['CAD / design software', 'Data analysis tools', 'Communication platforms'],
@@ -525,22 +672,62 @@ function buildCareer(id, title, category, config, variantIdx) {
       pick(['Domain technical skills', 'Data literacy', 'Regulatory knowledge'], id),
       pick(['Programming / analytics', 'Financial modelling', 'Research methodology'], id + 1),
     ],
-    internshipPath: `Seek internships in ${category.split(' ')[0]} sector from Year 2 of UG — apply via campus, LinkedIn, and Dreams Mantra AI Career Launchpad programme`,
-    higherStudies: [
-      category.includes('Medical') ? 'MD / MS / DNB specialisation' : "Master's / PG diploma in India (optional for senior roles)",
-      id % 3 === 0 ? 'PhD / research pathway for academia' : 'Executive MBA for leadership track',
-      'International certifications for global roles',
-    ],
-    jobRoles: [
-      `Entry: Junior ${title.replace(/^(Senior|Specialist|Associate|Principal|Regional|Global|Digital|Strategic|Technical|Executive)\s+/i, '')}`,
-      `Mid: ${title}`,
-      `Senior: Lead / Manager / Consultant ${title.split(' ').slice(-1)[0] || 'Specialist'}`,
-    ],
-    salaryProgression: [
-      `Fresher: ${(salaryMin / 100000).toFixed(1)} LPA approx.`,
-      `3–5 years: ${((salaryMin * 1.5) / 100000).toFixed(1)}–${((salaryMin * 2.2) / 100000).toFixed(1)} LPA`,
-      `10+ years: ${((salaryMax * 0.75) / 100000).toFixed(1)}+ LPA (senior/lead roles)`,
-    ],
+    internshipPath: tier === 'entry'
+      ? `Seek internships in ${category.split(' ')[0]} sector from Year 2 of UG — apply via campus, LinkedIn, and Dreams Mantra AI Career Launchpad programme`
+      : tier === 'senior'
+        ? `Senior roles are reached through internal promotion, head-hunter networks, and LinkedIn — build a track record of leading teams and delivering outcomes as ${base}`
+        : `Specialist roles often come via PG research, niche certifications, and referrals — demonstrate depth through publications, portfolios, or complex project ownership`,
+    higherStudies: tier === 'senior'
+      ? [
+          'Executive MBA or leadership programmes (IIMs, ISB, global EMBA)',
+          category.includes('Medical') ? 'MD / MS / DNB for clinical leadership' : "Master's for research-track senior roles",
+          'Industry fellowships and senior management certifications',
+        ]
+      : tier === 'specialist'
+        ? [
+            isResearchCategory(category) ? 'Ph.D / post-doctoral research in sub-domain' : "Master's + advanced vendor/domain certifications",
+            'International specialist credentials and workshop training',
+            'Cross-training in adjacent niches to broaden advisory scope',
+          ]
+        : [
+          category.includes('Medical') ? 'MD / MS / DNB specialisation' : "Master's / PG diploma in India (optional for senior roles)",
+          id % 3 === 0 ? 'PhD / research pathway for academia' : 'Executive MBA for leadership track',
+          'International certifications for global roles',
+        ],
+    jobRoles: tier === 'senior'
+      ? [
+          `Mid: ${base} (3–5 years)`,
+          `Senior: ${title}`,
+          `Lead: Manager / Principal ${base} → Director`,
+        ]
+      : tier === 'specialist'
+        ? [
+            `Foundation: ${base} (2–4 years)`,
+            `Specialist: ${title}`,
+            `Expert: Principal / Fellow ${base}`,
+          ]
+        : [
+          `Entry: Junior ${base}`,
+          `Mid: ${base}`,
+          `Senior: Lead ${base} or Specialist ${base}`,
+        ],
+    salaryProgression: tier === 'senior'
+      ? [
+          `At senior level: ${(salaryMin / 100000).toFixed(1)}–${(salaryMax / 100000).toFixed(1)} LPA typical`,
+          `Lead / manager: ${((salaryMin * 1.15) / 100000).toFixed(1)}–${((salaryMax * 1.1) / 100000).toFixed(1)} LPA`,
+          `Director+: ${((salaryMax * 0.9) / 100000).toFixed(1)}+ LPA with equity potential`,
+        ]
+      : tier === 'specialist'
+        ? [
+          `Specialist band: ${(salaryMin / 100000).toFixed(1)}–${(salaryMax / 100000).toFixed(1)} LPA`,
+          `Principal specialist: ${((salaryMin * 1.3) / 100000).toFixed(1)}–${((salaryMax * 1.15) / 100000).toFixed(1)} LPA`,
+          `Fellow / chief expert: ${((salaryMax * 0.85) / 100000).toFixed(1)}+ LPA`,
+        ]
+        : [
+          `Fresher: ${(salaryMin / 100000).toFixed(1)} LPA approx.`,
+          `3–5 years: ${((salaryMin * 1.5) / 100000).toFixed(1)}–${((salaryMin * 2.2) / 100000).toFixed(1)} LPA`,
+          `10+ years: ${((salaryMax * 0.75) / 100000).toFixed(1)}+ LPA (senior/lead roles)`,
+        ],
     globalOpportunities: pick([
       'Strong demand in UAE, USA, UK, Canada, Singapore for qualified professionals',
       'Remote roles increasingly available from Indian offices',

@@ -18,14 +18,18 @@ export function loadCareersData() {
   for (const p of PATHS) {
     try {
       if (fs.existsSync(p)) {
-        cache = JSON.parse(fs.readFileSync(p, 'utf8'));
+        const data = JSON.parse(fs.readFileSync(p, 'utf8'));
+        const careers = data.careers || [];
+        const slugIndex = new Map(careers.map((c) => [c.slug, c]));
+        const categories = [...new Set(careers.map((c) => c.category))].sort();
+        cache = { ...data, careers, slugIndex, categories };
         return cache;
       }
     } catch {
       /* try next */
     }
   }
-  cache = { careers: [], meta: { total: 0 } };
+  cache = { careers: [], meta: { total: 0 }, slugIndex: new Map(), categories: [] };
   return cache;
 }
 
@@ -129,7 +133,9 @@ export function queryCareers({ q, category, stream, demand, sort, page = 1, limi
   const p = Math.max(1, parseInt(page, 10));
   const l = Math.min(96, Math.max(12, parseInt(limit, 10)));
   const start = (p - 1) * l;
-  const categories = [...new Set(all.map((c) => c.category))].sort();
+  const categories = data.categories?.length
+    ? data.categories
+    : [...new Set(all.map((c) => c.category))].sort();
   const streams = CLASS_11_STREAM_VALUES;
   const demands = [...new Set(all.map((c) => c.demand).filter(Boolean))].sort();
 
@@ -152,7 +158,7 @@ export function queryCareers({ q, category, stream, demand, sort, page = 1, limi
 
 export function getCareerBySlug(slug) {
   const data = loadCareersData();
-  const career = (data.careers || []).find((c) => c.slug === slug);
+  const career = data.slugIndex?.get(slug) || (data.careers || []).find((c) => c.slug === slug);
   if (!career) return null;
   const related = data.careers
     .filter((c) => c.category === career.category && c.id !== career.id)
