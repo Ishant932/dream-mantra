@@ -4,7 +4,10 @@ import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import { warmupServer } from './api';
 import { runWhenIdle, isPhoneViewport } from './utils/mobilePerf';
+import { clearChunkReloadFlag } from './utils/lazyWithRetry';
 import './index.css';
+
+clearChunkReloadFlag();
 
 function applyPerformanceHints() {
   const root = document.documentElement;

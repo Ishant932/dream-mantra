@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { motion } from 'framer-motion';
 import {
   Calendar, FlaskConical, User, CheckCircle, Award, Briefcase,
@@ -12,6 +12,7 @@ import { userApi } from '../api';
 import { programs } from '../data/content';
 import ModulesPanel from '../components/ModulesPanel';
 import DashboardSidebarLayout from '../components/DashboardSidebarLayout';
+import { lazyWithRetry } from '../utils/lazyWithRetry';
 import SecuritySettings from '../components/SecuritySettings';
 import ProfileOnboardingModal from '../components/ProfileOnboardingModal';
 import ProfileDetailsCard from '../components/ProfileDetailsCard';
@@ -32,7 +33,7 @@ import { getDashboardNextStep, NEXT_STEP_ACTIONS } from '../utils/dashboardNextS
 import { hasSkillMappingTests } from '../data/moduleCatalog';
 import { prefetchCareers } from '../utils/loadCareers';
 
-const CareerLibraryExplorer = lazy(() => import('../components/CareerLibraryExplorer'));
+const CareerLibraryExplorer = lazyWithRetry(() => import('../components/CareerLibraryExplorer'));
 
 function TabLoader() {
   return (

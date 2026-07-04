@@ -167,7 +167,8 @@ if (hasBuiltClient) {
   );
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();
-    res.set('Cache-Control', 'no-cache');
+    res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.set('Pragma', 'no-cache');
     res.sendFile(path.join(clientDist, 'index.html'));
   });
 }
