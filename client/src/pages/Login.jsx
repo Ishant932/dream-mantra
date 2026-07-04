@@ -42,7 +42,6 @@ export default function Login() {
   const [setupAdminLabel, setSetupAdminLabel] = useState('');
   const [dualSetups, setDualSetups] = useState([]);
   const [loginUserId, setLoginUserId] = useState(null);
-  const [isAdminFlow, setIsAdminFlow] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -76,8 +75,6 @@ export default function Login() {
       const trimmed = identifier.trim();
       const loginId = trimmed.includes('@') ? trimmed.toLowerCase() : trimmed.replace(/\s+/g, '');
       const data = await login(loginId, password, options);
-      const adminLogin = !!data.isAdmin || loginId.includes('admin') || data.requires2FASetup;
-      if (adminLogin) setIsAdminFlow(true);
 
       if (applySetupResponse(data)) {
         // setup step set
@@ -89,25 +86,6 @@ export default function Login() {
       }
     } catch (err) {
       setError(err.message || 'Sign in failed. Please check your details and try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const showAdminQrSetup = async () => {
-    setError('');
-    setCode('');
-    setLoading(true);
-    try {
-      const trimmed = identifier.trim();
-      const loginId = trimmed.includes('@') ? trimmed.toLowerCase() : trimmed.replace(/\s+/g, '');
-      const data = await login(loginId, password, { adminSetup2FA: true });
-      setIsAdminFlow(true);
-      if (!applySetupResponse(data)) {
-        setError(data.message || 'Could not start scanner setup. Please try again.');
-      }
-    } catch (err) {
-      setError(err.message || 'Could not reset Google Authenticator. Check your password and try again.');
     } finally {
       setLoading(false);
     }
@@ -174,7 +152,6 @@ export default function Login() {
     setSetupAdminLabel('');
     setDualSetups([]);
     setLoginUserId(null);
-    setIsAdminFlow(false);
     setError('');
   };
 
@@ -358,14 +335,6 @@ export default function Login() {
                   </button>
                   <button
                     type="button"
-                    onClick={showAdminQrSetup}
-                    disabled={loading}
-                    className="auth-2fa-setup-link"
-                  >
-                    Generate fresh QR codes
-                  </button>
-                  <button
-                    type="button"
                     onClick={resetToCredentials}
                     className="text-sm text-amber-600 hover:underline w-full text-center"
                   >
@@ -437,25 +406,12 @@ export default function Login() {
                   </div>
                   <h1 className="font-display text-2xl font-bold">Google Authenticator</h1>
                   <p className="text-sand-500 text-sm mt-2">
-                    {isAdminFlow
-                      ? 'Enter the 6-digit code from Scanner 1 or Scanner 2'
-                      : 'Enter the 6-digit code from your Google Authenticator app'}
+                    Enter 6-digit code from Google Authenticator
                   </p>
                 </div>
 
                 {error && (
                   <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
-                )}
-
-                {isAdminFlow && (
-                  <button
-                    type="button"
-                    onClick={showAdminQrSetup}
-                    disabled={loading}
-                    className="auth-2fa-setup-link"
-                  >
-                    Reset &amp; set up Scanner 1 &amp; 2 again (new QR codes)
-                  </button>
                 )}
 
                 <form onSubmit={handle2FA} className="space-y-5">
