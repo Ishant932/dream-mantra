@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, HeartHandshake, FlaskConical, LayoutGrid, Phone } from 'lucide-react';
+import { Home, HeartHandshake, Briefcase, LayoutGrid, Phone } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { isPhoneViewport } from '../utils/mobilePerf';
 import { isMobileBottomNavVisible, isDashboardBottomNav } from '../utils/mobileBottomNav';
@@ -23,14 +23,11 @@ const ITEMS = [
     },
   },
   {
-    id: 'tests',
-    icon: FlaskConical,
+    id: 'crp',
+    icon: Briefcase,
     labelKey: 'mobileNav.tests',
-    getTo: (onDashboard) => (onDashboard ? '/dashboard?tab=process-guides' : '/assessments'),
-    isActive: (path, tab) => {
-      if (isDashboardBottomNav(path)) return tab === 'process-guides';
-      return path.startsWith('/assessments');
-    },
+    getTo: () => '/crp/explore',
+    isActive: (path) => path.startsWith('/crp'),
   },
   {
     id: 'dashboard',
