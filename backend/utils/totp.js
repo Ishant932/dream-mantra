@@ -24,6 +24,6 @@ export function verifyTotp(secret, token) {
     secret,
     encoding: 'base32',
     token: String(token).replace(/\s/g, ''),
-    window: 1,
+    window: 2,
   });
 }

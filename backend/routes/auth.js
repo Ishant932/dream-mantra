@@ -56,19 +56,20 @@ function getAllAdmins() {
   return (getData().users || []).filter((u) => u.role === 'admin');
 }
 
+function adminsWithActive2FA() {
+  return getAllAdmins().filter((u) => u.twoFactorEnabled && u.twoFactorSecret);
+}
+
+function orgAdmin2FAReady() {
+  return adminsWithActive2FA().length > 0;
+}
+
 function adminsNeeding2FASetup() {
   return getAllAdmins().filter((u) => !u.twoFactorEnabled || !u.twoFactorSecret);
 }
 
-function verifyAdminLoginCode(user, code) {
-  if (verifyTotp(user.twoFactorSecret, code)) return true;
-  return getAllAdmins().some(
-    (admin) =>
-      admin.id !== user.id &&
-      admin.twoFactorEnabled &&
-      admin.twoFactorSecret &&
-      verifyTotp(admin.twoFactorSecret, code)
-  );
+function verifyAnyAdminTotp(code) {
+  return adminsWithActive2FA().some((admin) => verifyTotp(admin.twoFactorSecret, code));
 }
 
 async function buildAdminSetupEntry(admin) {
@@ -186,7 +187,7 @@ router.post('/login', loginLimiter, async (req, res) => {
       user = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id) || user;
     }
 
-    if (user.twoFactorEnabled && user.twoFactorSecret && !forceSetup) {
+    if ((user.twoFactorEnabled && user.twoFactorSecret || orgAdmin2FAReady()) && !forceSetup) {
       return res.json({
         requires2FA: true,
         tempToken: signTemp2FAToken(user),
@@ -309,20 +310,29 @@ router.post('/verify-2fa', (req, res) => {
   }
 
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(payload.id);
-  if (!user?.twoFactorEnabled || !user.twoFactorSecret) {
-    return res.status(400).json({ message: 'Two-factor authentication is not enabled' });
+  if (!user) {
+    return res.status(400).json({ message: 'User not found' });
   }
 
-  const codeOk =
-    requiresMandatory2FA(user) && getAllAdmins().length >= 2
-      ? verifyAdminLoginCode(user, code)
-      : verifyTotp(user.twoFactorSecret, code);
+  let codeOk = false;
+  if (requiresMandatory2FA(user)) {
+    if (!orgAdmin2FAReady()) {
+      return res.status(400).json({
+        message: 'Two-factor authentication is not set up yet. Please sign in again to scan the QR codes.',
+      });
+    }
+    codeOk = verifyAnyAdminTotp(code);
+  } else {
+    if (!user.twoFactorEnabled || !user.twoFactorSecret) {
+      return res.status(400).json({ message: 'Two-factor authentication is not enabled' });
+    }
+    codeOk = verifyTotp(user.twoFactorSecret, code);
+  }
 
   if (!codeOk) {
-    const hint =
-      requiresMandatory2FA(user) && getAllAdmins().length >= 2
-        ? 'Invalid code. Use Scanner 1 or Scanner 2 from Google Authenticator.'
-        : 'Invalid authenticator code';
+    const hint = requiresMandatory2FA(user)
+      ? 'Invalid code. Use Scanner 1 or Scanner 2 from Google Authenticator.'
+      : 'Invalid authenticator code';
     return res.status(401).json({ message: hint });
   }
   if (isUserSuspended(user)) {
