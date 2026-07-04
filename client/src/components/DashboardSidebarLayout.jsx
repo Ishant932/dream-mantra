@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import CopyableUserId from './CopyableUserId';
 import DashboardMobileDeck from './DashboardMobileDeck';
-import DashboardNextStepButton from './DashboardNextStepButton';
 import NotificationBell from './NotificationBell';
 import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
 import { scrollPageToTop } from '../utils/scrollToTop';
@@ -171,9 +170,6 @@ export default function DashboardSidebarLayout({
                     <p className="dash-sidebar-meta">Administrator</p>
                   )}
                 </div>
-                {nextStep && showProfileCompletion && deckVariant === 'user' && (
-                  <DashboardNextStepButton nextStep={nextStep} variant="sidebar" className="shrink-0" />
-                )}
               </motion.div>
             )}
 

@@ -41,9 +41,6 @@ export default function DashboardB2BBanner({
             )}
           </div>
           <div className="dash-b2b-hero__cockpit-right">
-            {nextStep && variant === 'user' && (
-              <DashboardNextStepButton nextStep={nextStep} variant="cockpit" />
-            )}
             {action}
             <span className="dash-b2b-hero__date dash-b2b-hero__date--cockpit">{today}</span>
           </div>

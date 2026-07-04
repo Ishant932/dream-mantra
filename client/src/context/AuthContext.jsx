@@ -185,7 +185,7 @@ export function AuthProvider({ children }) {
     invalidateAuthRequests();
     setUser(null);
     const data = await authApi.login({ identifier, password });
-    if (data.requires2FA) return data;
+    if (data.requires2FA || data.requires2FASetup) return data;
     persist(data.token, data.user);
     return data;
   };
@@ -194,6 +194,14 @@ export function AuthProvider({ children }) {
     invalidateAuthRequests();
     setUser(null);
     const data = await authApi.verify2FA({ tempToken, code });
+    persist(data.token, data.user);
+    return data;
+  };
+
+  const complete2FASetup = async (setupToken, code) => {
+    invalidateAuthRequests();
+    setUser(null);
+    const data = await authApi.complete2FASetup({ setupToken, code });
     persist(data.token, data.user);
     return data;
   };
@@ -224,6 +232,7 @@ export function AuthProvider({ children }) {
         loading,
         login,
         verify2FA,
+        complete2FASetup,
         register,
         refreshUser,
         persist,

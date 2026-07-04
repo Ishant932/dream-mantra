@@ -79,8 +79,8 @@ export const siteEn = {
 
   mobileNav: {
     home: 'Home',
-    counselling: 'Counsel',
-    tests: 'Tests',
+    counselling: 'Counselling',
+    tests: 'Training and Placement',
     dashboard: 'Dashboard',
     contact: 'Contact',
     careers: 'Careers',
@@ -202,6 +202,7 @@ export const siteEn = {
       title: 'How Dream Mantra',
       titleHighlight: 'Works',
       subtitle: 'Science-backed counselling from first assessment to your personalised roadmap.',
+      processesLabel: 'Processes',
       counsellingLabel: 'Counselling Process',
       modulesLabel: 'Module Processes',
       stepLabel: 'STEP',

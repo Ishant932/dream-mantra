@@ -10,7 +10,6 @@ import WelcomeOfferBanner from './WelcomeOfferBanner';
 import ProfileDetailsCard from './ProfileDetailsCard';
 import { dedupeAssessmentsBySlug, getAssessmentDisplayTitle } from '../utils/assessmentHelpers';
 import { getConfirmedPaidAssessments, isAssessmentUnlocked } from '../utils/moduleAccess';
-import { getDashboardNextStep } from '../utils/dashboardNextStep';
 
 function QuickStat({ icon: Icon, label, value, accent }) {
   return (
@@ -48,30 +47,6 @@ export default function DashboardOverview({
     (c) => c.status !== 'cancelled' && c.scheduled_at && new Date(c.scheduled_at) > new Date()
   );
 
-  const step = getDashboardNextStep({
-    profileCompletion,
-    pendingPayment,
-    assessments: data.assessments,
-    paidAssessment,
-    counsellingAccess,
-    consultations: data.consultations,
-  });
-
-  const actionHandlers = {
-    profile: onCompleteProfile,
-    payment: onPayment,
-    modules: onBookModule,
-    process: onProductAction || onProcess,
-    book: onBookCounselling,
-  };
-
-  const nextAction = {
-    title: step.title,
-    desc: step.desc,
-    cta: step.cta,
-    onClick: actionHandlers[step.action] || onCompleteProfile,
-  };
-
   return (
     <div className="dash-b2b-stack">
       {welcomeUid && (
@@ -97,19 +72,6 @@ export default function DashboardOverview({
         />
         <QuickStat icon={Briefcase} label="Careers" value="950+" accent="blue" />
       </div>
-
-      <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="dash-overview-next">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-wide text-amber-700 dark:text-amber-400 mb-1">Recommended next step</p>
-            <h3 className="font-bold text-lg dash-card-title">{nextAction.title}</h3>
-            <p className="text-sm dash-card-meta mt-1 max-w-xl">{nextAction.desc}</p>
-          </div>
-          <button type="button" onClick={nextAction.onClick} className="btn-primary shrink-0 inline-flex items-center gap-2">
-            {nextAction.cta} <ArrowRight className="w-4 h-4" />
-          </button>
-        </div>
-      </motion.div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <button type="button" onClick={() => onGoTab('careers')} className="dash-overview-quick">

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import { warmupServer } from './api';
-import { runWhenIdle } from './utils/mobilePerf';
+import { runWhenIdle, isPhoneViewport } from './utils/mobilePerf';
 import './index.css';
 
 function applyPerformanceHints() {
@@ -12,9 +12,8 @@ function applyPerformanceHints() {
   const narrow = window.matchMedia('(max-width: 767px)').matches;
   const tablet = window.matchMedia('(max-width: 1024px)').matches;
   const laptop = window.matchMedia('(max-width: 1280px)').matches;
-  if (narrow || coarse) root.classList.add('is-phone');
+  if (isPhoneViewport()) root.classList.add('is-phone');
   if (narrow || coarse || laptop) root.classList.add('is-mobile-perf');
-  if (!import.meta.env.DEV) root.classList.add('is-mobile-perf');
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     root.classList.add('is-mobile-perf', 'is-reduced-motion');
   }

@@ -8,7 +8,7 @@ import Logo from '../components/Logo';
 import PasswordInput from '../components/PasswordInput';
 
 export default function Login() {
-  const { login, verify2FA, user, loading: authLoading } = useAuth();
+  const { login, verify2FA, complete2FASetup, user, loading: authLoading } = useAuth();
   const { t } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,6 +35,9 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [code, setCode] = useState('');
   const [tempToken, setTempToken] = useState('');
+  const [setupToken, setSetupToken] = useState('');
+  const [setupQr, setSetupQr] = useState('');
+  const [setupManualEntry, setSetupManualEntry] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -46,7 +49,12 @@ export default function Login() {
       const trimmed = identifier.trim();
       const loginId = trimmed.includes('@') ? trimmed.toLowerCase() : trimmed.replace(/\s+/g, '');
       const data = await login(loginId, password);
-      if (data.requires2FA) {
+      if (data.requires2FASetup) {
+        setSetupToken(data.setupToken);
+        setSetupQr(data.qrCode);
+        setSetupManualEntry(data.manualEntry || '');
+        setStep('2fa-setup');
+      } else if (data.requires2FA) {
         setTempToken(data.tempToken);
         setStep('2fa');
       } else {
@@ -71,6 +79,30 @@ export default function Login() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handle2FASetup = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      const data = await complete2FASetup(setupToken, code);
+      finishLogin(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const resetToCredentials = () => {
+    setStep('credentials');
+    setCode('');
+    setTempToken('');
+    setSetupToken('');
+    setSetupQr('');
+    setSetupManualEntry('');
+    setError('');
   };
 
   if (authLoading) {
@@ -193,6 +225,57 @@ export default function Login() {
                   </Link>
                 </p>
               </>
+            ) : step === '2fa-setup' ? (
+              <>
+                <div className="text-center mb-8">
+                  <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-100 flex items-center justify-center mb-4">
+                    <Shield className="w-7 h-7 text-amber-600" />
+                  </div>
+                  <h1 className="font-display text-2xl font-bold">Set Up Admin 2FA</h1>
+                  <p className="text-sand-500 text-sm mt-2">
+                    Scan this QR code with Google Authenticator, Authy, or Microsoft Authenticator
+                  </p>
+                </div>
+
+                {error && (
+                  <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
+                )}
+
+                {setupQr && (
+                  <img
+                    src={setupQr}
+                    alt="2FA QR Code"
+                    className="mx-auto w-48 h-48 rounded-xl border p-2 bg-[var(--bg-elevated)] mb-4"
+                  />
+                )}
+                {setupManualEntry && (
+                  <p className="text-xs text-sand-500 text-center font-mono break-all mb-4">
+                    Manual key: {setupManualEntry}
+                  </p>
+                )}
+
+                <form onSubmit={handle2FASetup} className="space-y-5">
+                  <input
+                    className="input-field text-center text-2xl tracking-[0.5em] font-mono"
+                    value={code}
+                    onChange={(e) => setCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    placeholder="000000"
+                    maxLength={6}
+                    autoFocus
+                    required
+                  />
+                  <button type="submit" disabled={loading} className="btn-primary w-full">
+                    {loading ? 'Enabling 2FA...' : 'Enable 2FA & Continue'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetToCredentials}
+                    className="text-sm text-amber-600 hover:underline w-full text-center"
+                  >
+                    Back to login
+                  </button>
+                </form>
+              </>
             ) : (
               <>
                 <div className="text-center mb-8">
@@ -222,7 +305,7 @@ export default function Login() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => { setStep('credentials'); setCode(''); setError(''); }}
+                    onClick={resetToCredentials}
                     className="text-sm text-amber-600 hover:underline w-full text-center"
                   >
                     Back to login

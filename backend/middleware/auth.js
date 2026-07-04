@@ -44,6 +44,14 @@ export function adminRequired(req, res, next) {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access required' });
   }
+  const data = getData();
+  const dbUser = data.users?.find((u) => Number(u.id) === Number(req.user.id));
+  if (dbUser && !dbUser.twoFactorEnabled) {
+    return res.status(403).json({
+      message: 'Admin two-factor authentication is required. Please sign in again and complete 2FA setup.',
+      requires2FASetup: true,
+    });
+  }
   next();
 }
 

@@ -79,8 +79,8 @@ export const siteHi = {
 
   mobileNav: {
     home: 'होम',
-    counselling: 'परामर्श',
-    tests: 'टेस्ट',
+    counselling: 'Counselling',
+    tests: 'Training and Placement',
     dashboard: 'डैशबोर्ड',
     contact: 'संपर्क',
     careers: 'करियर',
@@ -201,6 +201,7 @@ export const siteHi = {
       title: 'Dream Mantra',
       titleHighlight: 'कैसे काम करता है',
       subtitle: 'पहले assessment से personalised roadmap तक — science-backed counselling journey।',
+      processesLabel: 'Processes',
       counsellingLabel: 'Counselling Process',
       modulesLabel: 'Module Processes',
       stepLabel: 'STEP',

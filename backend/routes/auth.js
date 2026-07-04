@@ -41,6 +41,18 @@ function signTemp2FAToken(user) {
   );
 }
 
+function signTemp2FASetupToken(user) {
+  return jwt.sign(
+    { id: user.id, purpose: '2fa-setup' },
+    JWT_SECRET(),
+    { expiresIn: '10m' }
+  );
+}
+
+function requiresMandatory2FA(user) {
+  return user?.role === 'admin';
+}
+
 function sanitize(user) {
   if (!user) return null;
   const { password, twoFactorSecret, twoFactorPendingSecret, ...rest } = user;
@@ -113,8 +125,8 @@ router.post('/register', (req, res) => {
   }
 });
 
-// ─── Login (password + optional 2FA) ───────────────────────────────────────
-router.post('/login', loginLimiter, (req, res) => {
+// ─── Login (password + optional 2FA; mandatory for admin) ───────────────────
+router.post('/login', loginLimiter, async (req, res) => {
   const { identifier, password } = req.body;
   if (!identifier?.trim() || !password) {
     return res.status(400).json({ message: 'Email/phone and password required' });
@@ -126,6 +138,34 @@ router.post('/login', loginLimiter, (req, res) => {
   }
   if (isUserSuspended(user)) {
     return res.status(403).json({ message: suspensionMessage(user) });
+  }
+
+  if (requiresMandatory2FA(user)) {
+    if (user.twoFactorEnabled && user.twoFactorSecret) {
+      return res.json({
+        requires2FA: true,
+        tempToken: signTemp2FAToken(user),
+        message: 'Enter the 6-digit code from your authenticator app',
+      });
+    }
+
+    const { base32, otpauthUrl } = generateTwoFactorSecret(user.email, user.name);
+    repo.updateUser(user.id, { twoFactorPendingSecret: base32 });
+    await flushDatabase();
+
+    try {
+      const qrCode = await qrCodeDataUrl(otpauthUrl);
+      return res.json({
+        requires2FASetup: true,
+        setupToken: signTemp2FASetupToken(user),
+        qrCode,
+        manualEntry: base32,
+        message: 'Admin accounts require two-factor authentication. Scan the QR code, then enter a code to continue.',
+      });
+    } catch (e) {
+      console.error('Admin 2FA setup QR error:', e);
+      return res.status(500).json({ message: 'Could not start two-factor setup. Please try again.' });
+    }
   }
 
   if (user.twoFactorEnabled && user.twoFactorSecret) {
@@ -216,6 +256,54 @@ router.post('/verify-2fa', (req, res) => {
   res.json({ token, user: sanitize(user), message: 'Login successful' });
 });
 
+// ─── Complete mandatory admin 2FA setup after login ─────────────────────────
+router.post('/complete-2fa-setup', async (req, res) => {
+  const { setupToken, code } = req.body;
+  if (!setupToken || !code) {
+    return res.status(400).json({ message: 'Setup token and verification code required' });
+  }
+
+  let payload;
+  try {
+    payload = jwt.verify(setupToken, JWT_SECRET());
+  } catch {
+    return res.status(401).json({ message: 'Setup session expired. Please login again.' });
+  }
+
+  if (payload.purpose !== '2fa-setup') {
+    return res.status(401).json({ message: 'Invalid setup session' });
+  }
+
+  const user = db.prepare('SELECT * FROM users WHERE id = ?').get(payload.id);
+  if (!user || !requiresMandatory2FA(user)) {
+    return res.status(400).json({ message: 'Two-factor setup is not required for this account' });
+  }
+  if (!user.twoFactorPendingSecret) {
+    return res.status(400).json({ message: 'Setup expired. Please login again.' });
+  }
+  if (!verifyTotp(user.twoFactorPendingSecret, code)) {
+    return res.status(401).json({ message: 'Invalid code. Check your authenticator app.' });
+  }
+  if (isUserSuspended(user)) {
+    return res.status(403).json({ message: suspensionMessage(user) });
+  }
+
+  repo.updateUser(user.id, {
+    twoFactorEnabled: true,
+    twoFactorSecret: user.twoFactorPendingSecret,
+    twoFactorPendingSecret: null,
+  });
+  await flushDatabase();
+
+  const updated = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
+  const token = signToken(updated);
+  res.json({
+    token,
+    user: sanitize(updated),
+    message: 'Two-factor authentication enabled. Login successful.',
+  });
+});
+
 // ─── 2FA setup (authenticated) ─────────────────────────────────────────────
 router.get('/2fa/setup', authRequired, async (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
@@ -268,6 +356,9 @@ router.post('/2fa/disable', authRequired, (req, res) => {
   const { password, code } = req.body;
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
   if (!user) return res.status(404).json({ message: 'User not found' });
+  if (requiresMandatory2FA(user)) {
+    return res.status(403).json({ message: 'Two-factor authentication cannot be disabled for admin accounts' });
+  }
   if (!user.twoFactorEnabled) {
     return res.status(400).json({ message: 'Two-factor authentication is not enabled' });
   }

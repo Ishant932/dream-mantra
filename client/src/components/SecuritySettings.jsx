@@ -6,6 +6,7 @@ import { authApi } from '../api';
 
 export default function SecuritySettings() {
   const { user, token, refreshUser } = useAuth();
+  const isMandatory2FA = user?.role === 'admin';
   const [setup, setSetup] = useState(null);
   const [code, setCode] = useState('');
   const [password, setPassword] = useState('');
@@ -132,7 +133,7 @@ export default function SecuritySettings() {
         </motion.form>
       )}
 
-      {user?.twoFactorEnabled && (
+      {user?.twoFactorEnabled && !isMandatory2FA && (
         <form onSubmit={disable2FA} className="space-y-4 mt-4 pt-6 border-t">
           <p className="text-sm font-semibold text-sand-700">Disable 2FA</p>
           <input
@@ -155,6 +156,12 @@ export default function SecuritySettings() {
             Disable 2FA
           </button>
         </form>
+      )}
+
+      {user?.twoFactorEnabled && isMandatory2FA && (
+        <p className="text-sm text-sand-600 mt-4 pt-6 border-t">
+          Two-factor authentication is required for admin accounts and cannot be disabled.
+        </p>
       )}
 
     </div>

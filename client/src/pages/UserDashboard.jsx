@@ -291,7 +291,7 @@ export default function UserDashboard() {
 
   const goToCounsellingTopUp = () => goTab('assess', '&shop=counselling-topup');
 
-  const mobileNextStep = useMemo(() => {
+  const nextStep = useMemo(() => {
     const step = getDashboardNextStep({
       profileCompletion,
       pendingPayment,
@@ -364,7 +364,7 @@ export default function UserDashboard() {
               onRefresh={refreshDashboard}
             />
           )}
-          nextStep={mobileNextStep}
+          nextStep={nextStep}
         />
 
         {msg && (
@@ -389,7 +389,7 @@ export default function UserDashboard() {
             notifToken={token}
             notifUnread={data.unreadNotifications || 0}
             onNotifRefresh={refreshDashboard}
-            nextStep={mobileNextStep}
+            nextStep={nextStep}
           >
             {(tab) => (
                 <>

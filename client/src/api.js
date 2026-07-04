@@ -89,6 +89,8 @@ export const authApi = {
     request('/auth/login', { method: 'POST', headers: headers(), body: JSON.stringify(body) }),
   verify2FA: (body) =>
     request('/auth/verify-2fa', { method: 'POST', headers: headers(), body: JSON.stringify(body) }),
+  complete2FASetup: (body) =>
+    request('/auth/complete-2fa-setup', { method: 'POST', headers: headers(), body: JSON.stringify(body) }),
   me: (token, signal) => request('/auth/me', { headers: headers(token), signal }),
   setup2FA: (token) => request('/auth/2fa/setup', { headers: headers(token) }),
   enable2FA: (token, code) =>
