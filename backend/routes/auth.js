@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import db, { repo } from '../db.js';
+import db, { repo, getData, flushDatabase } from '../db.js';
 import { authRequired } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 import { generateTwoFactorSecret, qrCodeDataUrl, verifyTotp } from '../utils/totp.js';
@@ -16,7 +16,6 @@ import {
   resetPasswordWithOtp,
   validateResetIdentifier,
 } from '../lib/passwordResetService.js';
-import { flushDatabase } from '../db.js';
 
 const router = Router();
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 12, keyPrefix: 'login' });
@@ -51,6 +50,25 @@ function signTemp2FASetupToken(user) {
 
 function requiresMandatory2FA(user) {
   return user?.role === 'admin';
+}
+
+function getAllAdmins() {
+  return (getData().users || []).filter((u) => u.role === 'admin');
+}
+
+function adminsNeeding2FASetup() {
+  return getAllAdmins().filter((u) => !u.twoFactorEnabled || !u.twoFactorSecret);
+}
+
+function verifyAdminLoginCode(user, code) {
+  if (verifyTotp(user.twoFactorSecret, code)) return true;
+  return getAllAdmins().some(
+    (admin) =>
+      admin.id !== user.id &&
+      admin.twoFactorEnabled &&
+      admin.twoFactorSecret &&
+      verifyTotp(admin.twoFactorSecret, code)
+  );
 }
 
 async function buildAdminSetupEntry(admin) {
@@ -146,7 +164,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     return res.status(400).json({ message: 'Email/phone and password required' });
   }
 
-  const user = findByIdentifier(identifier);
+  let user = findByIdentifier(identifier);
   if (!user || !safeComparePassword(password, user.password)) {
     return res.status(401).json({ message: 'Invalid email, phone, Dreams ID, or password' });
   }
@@ -155,24 +173,60 @@ router.post('/login', loginLimiter, async (req, res) => {
   }
 
   if (requiresMandatory2FA(user)) {
-    if (user.twoFactorEnabled && user.twoFactorSecret) {
+    const forceSetup = req.body.adminSetup2FA === true;
+
+    if (forceSetup) {
+      for (const admin of getAllAdmins()) {
+        repo.updateUser(admin.id, {
+          twoFactorEnabled: false,
+          twoFactorSecret: null,
+          twoFactorPendingSecret: null,
+        });
+      }
+      user = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id) || user;
+    }
+
+    if (user.twoFactorEnabled && user.twoFactorSecret && !forceSetup) {
       return res.json({
         requires2FA: true,
         tempToken: signTemp2FAToken(user),
-        message: 'Enter the 6-digit code from Google Authenticator',
+        isAdmin: true,
+        acceptAnyAdminCode: true,
+        message: 'Enter the 6-digit code from Scanner 1 or Scanner 2 (Google Authenticator)',
       });
     }
 
+    const pendingAdmins = forceSetup ? getAllAdmins().slice(0, 2) : adminsNeeding2FASetup();
+
     try {
+      if (pendingAdmins.length >= 2) {
+        const setups = [];
+        for (const admin of pendingAdmins.slice(0, 2)) {
+          setups.push(await buildAdminSetupEntry(admin));
+        }
+        await flushDatabase();
+        return res.json({
+          requires2FASetup: true,
+          dualSetup: true,
+          loginUserId: user.id,
+          setups,
+          isAdmin: true,
+          message:
+            'Scan both QR codes on two devices. Enter each 6-digit code below, then continue.',
+        });
+      }
+
       const setup = await buildAdminSetupEntry(user);
       await flushDatabase();
       return res.json({
         requires2FASetup: true,
+        dualSetup: false,
         setupToken: setup.setupToken,
         qrCode: setup.qrCode,
         manualEntry: setup.manualEntry,
         adminName: user.name,
         adminEmail: user.email,
+        isAdmin: true,
         message:
           'Scan the QR code with Google Authenticator, then enter your 6-digit code to continue.',
       });
@@ -259,8 +313,17 @@ router.post('/verify-2fa', (req, res) => {
     return res.status(400).json({ message: 'Two-factor authentication is not enabled' });
   }
 
-  if (!verifyTotp(user.twoFactorSecret, code)) {
-    return res.status(401).json({ message: 'Invalid authenticator code' });
+  const codeOk =
+    requiresMandatory2FA(user) && getAllAdmins().length >= 2
+      ? verifyAdminLoginCode(user, code)
+      : verifyTotp(user.twoFactorSecret, code);
+
+  if (!codeOk) {
+    const hint =
+      requiresMandatory2FA(user) && getAllAdmins().length >= 2
+        ? 'Invalid code. Use Scanner 1 or Scanner 2 from Google Authenticator.'
+        : 'Invalid authenticator code';
+    return res.status(401).json({ message: hint });
   }
   if (isUserSuspended(user)) {
     return res.status(403).json({ message: suspensionMessage(user) });

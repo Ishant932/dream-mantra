@@ -16678,3 +16678,56 @@ html.is-reduced-motion .blog-hero-gradient-text {
   margin-bottom: 0.75rem;
   word-break: break-all;
 }
+
+/* Google Authenticator QR on login — must stay visible (glass-card uses overflow:hidden) */
+.auth-login-root {
+  min-height: 100dvh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.auth-form-card--2fa,
+.auth-form-card--2fa-dual {
+  overflow: visible !important;
+  animation: none !important;
+}
+html.light .auth-form-card--2fa:hover,
+html.light .auth-form-card--2fa-dual:hover,
+html.dark .auth-form-card--2fa:hover,
+html.dark .auth-form-card--2fa-dual:hover {
+  transform: none !important;
+}
+.auth-form-card--2fa {
+  max-width: 28rem;
+}
+.auth-form-card--2fa-dual {
+  max-width: 56rem;
+}
+.auth-dual-2fa-grid .auth-qr-scanner {
+  max-width: 100%;
+}
+.auth-qr-scanner {
+  margin: 0 auto 1rem;
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+  z-index: 2;
+}
+.auth-qr-scanner--empty {
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px dashed rgba(245, 158, 11, 0.45);
+  background: rgba(255, 251, 235, 0.9);
+}
+.auth-qr-scanner__mat {
+  max-width: 100% !important;
+}
+.auth-qr-scanner__image {
+  max-width: 100% !important;
+  min-height: 180px;
+  object-fit: contain;
+  background: #fff;
+}
+.auth-qr-scanner__manual {
+  margin-top: -0.25rem;
+  margin-bottom: 0.5rem;
+}

@@ -181,10 +181,10 @@ export function AuthProvider({ children }) {
     };
   }, [token, logout, applyUserIfCurrent]);
 
-  const login = async (identifier, password) => {
+  const login = async (identifier, password, options = {}) => {
     invalidateAuthRequests();
     setUser(null);
-    const data = await authApi.login({ identifier, password });
+    const data = await authApi.login({ identifier, password, ...options });
     if (data.requires2FA || data.requires2FASetup) return data;
     persist(data.token, data.user);
     return data;

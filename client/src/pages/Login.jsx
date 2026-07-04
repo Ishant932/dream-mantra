@@ -40,23 +40,47 @@ export default function Login() {
   const [setupQr, setSetupQr] = useState('');
   const [setupManualEntry, setSetupManualEntry] = useState('');
   const [setupAdminLabel, setSetupAdminLabel] = useState('');
+  const [dualSetups, setDualSetups] = useState([]);
+  const [loginUserId, setLoginUserId] = useState(null);
+  const [isAdminFlow, setIsAdminFlow] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
+  }, [step]);
+
+  const applySetupResponse = (data) => {
+    if (data.requires2FASetup && data.dualSetup && data.setups?.length >= 2) {
+      setDualSetups(data.setups.map((s) => ({ ...s, code: '' })));
+      setLoginUserId(data.loginUserId);
+      setStep('2fa-dual-setup');
+      return true;
+    }
+    if (data.requires2FASetup) {
+      setSetupToken(data.setupToken);
+      setSetupQr(data.qrCode || '');
+      setSetupManualEntry(data.manualEntry || '');
+      setSetupAdminLabel(data.adminName || data.adminEmail || 'Admin');
+      setStep('2fa-setup');
+      return true;
+    }
+    return false;
+  };
+
+  const handleLogin = async (e, options = {}) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
       const trimmed = identifier.trim();
       const loginId = trimmed.includes('@') ? trimmed.toLowerCase() : trimmed.replace(/\s+/g, '');
-      const data = await login(loginId, password);
-      if (data.requires2FASetup) {
-        setSetupToken(data.setupToken);
-        setSetupQr(data.qrCode);
-        setSetupManualEntry(data.manualEntry || '');
-        setSetupAdminLabel(data.adminName || data.adminEmail || 'Admin');
-        setStep('2fa-setup');
+      const data = await login(loginId, password, options);
+      const adminLogin = !!data.isAdmin || loginId.includes('admin') || data.requires2FASetup;
+      if (adminLogin) setIsAdminFlow(true);
+
+      if (applySetupResponse(data)) {
+        // setup step set
       } else if (data.requires2FA) {
         setTempToken(data.tempToken);
         setStep('2fa');
@@ -84,6 +108,29 @@ export default function Login() {
     }
   };
 
+  const handleDual2FASetup = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+    try {
+      const data = await complete2FASetup({
+        loginUserId,
+        setups: dualSetups.map((s) => ({ setupToken: s.setupToken, code: s.code })),
+      });
+      finishLogin(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateDualCode = (userId, nextCode) => {
+    setDualSetups((prev) =>
+      prev.map((s) => (s.userId === userId ? { ...s, code: nextCode } : s))
+    );
+  };
+
   const handle2FASetup = async (e) => {
     e.preventDefault();
     setError('');
@@ -106,8 +153,13 @@ export default function Login() {
     setSetupQr('');
     setSetupManualEntry('');
     setSetupAdminLabel('');
+    setDualSetups([]);
+    setLoginUserId(null);
+    setIsAdminFlow(false);
     setError('');
   };
+
+  const isWideAuth = step === '2fa-dual-setup' || step === '2fa-setup';
 
   if (authLoading) {
     return (
@@ -118,7 +170,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-[calc(100dvh-var(--site-header-h)-var(--safe-top))] flex flex-col lg:flex-row">
+    <div className="auth-login-root min-h-screen flex flex-col lg:flex-row">
       {/* Left panel — branding */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-[#b45309] via-[#ea580c] to-[#f97316]">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.06\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]" />
@@ -156,18 +208,19 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Right panel — form */}
-      <div className="flex-1 flex items-center justify-center px-4 py-10 sm:py-16 pb-safe bg-gradient-to-br from-amber-50 via-[var(--bg-elevated)] to-amber-50 dark:from-[#5c6b2e] dark:via-[#523010] dark:to-[#5c6b2e]">
+      {/* Right panel — form (scrollable so dual QR scanners stay visible) */}
+      <div className="flex-1 flex items-start justify-center px-4 py-8 sm:py-12 pb-safe overflow-y-auto bg-gradient-to-br from-amber-50 via-[var(--bg-elevated)] to-amber-50 dark:from-[#5c6b2e] dark:via-[#523010] dark:to-[#5c6b2e]">
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          key={step}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
+          className={`w-full my-auto ${isWideAuth ? 'max-w-4xl' : 'max-w-md'}`}
         >
           <div className="lg:hidden mb-6 sm:mb-8 flex justify-center">
             <Logo size="md" asLink={false} />
           </div>
 
-          <div className="glass-card auth-form-card p-6 sm:p-8 md:p-10 shadow-2xl border border-amber-100/80 dark:border-sand-700">
+          <div className={`glass-card auth-form-card shadow-2xl border border-amber-100/80 dark:border-sand-700 p-6 sm:p-8 md:p-10 ${isWideAuth ? (step === '2fa-dual-setup' ? 'auth-form-card--2fa-dual' : 'auth-form-card--2fa') : ''}`}>
             {step === 'credentials' ? (
               <>
                 <div className="text-center mb-8">
@@ -229,6 +282,70 @@ export default function Login() {
                   </Link>
                 </p>
               </>
+            ) : step === '2fa-dual-setup' ? (
+              <>
+                <div className="text-center mb-6">
+                  <div className="w-14 h-14 mx-auto rounded-2xl bg-amber-100 flex items-center justify-center mb-4">
+                    <Shield className="w-7 h-7 text-amber-600" />
+                  </div>
+                  <h1 className="font-display text-2xl font-bold">Google Authenticator — 2 Devices</h1>
+                  <p className="text-sand-500 text-sm mt-2 max-w-xl mx-auto">
+                    Scanner 1 and Scanner 2: each device scans its own QR, then enter both 6-digit codes below.
+                    After setup, either device&apos;s code works at every login.
+                  </p>
+                </div>
+
+                {error && (
+                  <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
+                )}
+
+                <div className="auth-dual-2fa-grid">
+                  {dualSetups.map((adminSetup, index) => (
+                    <div key={adminSetup.userId} className="auth-dual-2fa-card">
+                      <p className="auth-dual-2fa-card__title">
+                        Scanner {index + 1}: {adminSetup.name}
+                      </p>
+                      <p className="auth-dual-2fa-card__email">{adminSetup.email}</p>
+                      <AuthenticatorQrScanner
+                        qrSrc={adminSetup.qrCode}
+                        manualEntry={adminSetup.manualEntry}
+                        badge="Google Auth"
+                        brand={`Scanner ${index + 1}`}
+                        caption="Google Authenticator → + → Scan QR code"
+                        downloadName={`dream-mantra-scanner-${index + 1}-2fa-qr.png`}
+                        ariaLabel={`Google Authenticator QR for scanner ${index + 1}`}
+                      />
+                      <input
+                        className="input-field text-center text-xl tracking-[0.4em] font-mono mt-4"
+                        value={adminSetup.code}
+                        onChange={(e) =>
+                          updateDualCode(
+                            adminSetup.userId,
+                            e.target.value.replace(/\D/g, '').slice(0, 6)
+                          )
+                        }
+                        placeholder="000000"
+                        maxLength={6}
+                        required
+                        aria-label={`6-digit code for scanner ${index + 1}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <form onSubmit={handleDual2FASetup} className="space-y-4 mt-6">
+                  <button type="submit" disabled={loading} className="btn-primary w-full">
+                    {loading ? 'Enabling 2FA...' : 'Enable Both Scanners & Continue'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetToCredentials}
+                    className="text-sm text-amber-600 hover:underline w-full text-center"
+                  >
+                    Back to login
+                  </button>
+                </form>
+              </>
             ) : step === '2fa-setup' ? (
               <>
                 <div className="text-center mb-8">
@@ -246,6 +363,13 @@ export default function Login() {
 
                 {error && (
                   <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
+                )}
+
+                {!setupQr && setupManualEntry && (
+                  <div className="mb-4 p-3 rounded-xl bg-amber-50 text-amber-900 text-sm border border-amber-200">
+                    <p className="font-semibold mb-1">Manual setup key</p>
+                    <p className="font-mono text-xs break-all">{setupManualEntry}</p>
+                  </div>
                 )}
 
                 <AuthenticatorQrScanner
@@ -285,7 +409,11 @@ export default function Login() {
                     <Shield className="w-7 h-7 text-amber-600" />
                   </div>
                   <h1 className="font-display text-2xl font-bold">Google Authenticator</h1>
-                  <p className="text-sand-500 text-sm mt-2">Enter the 6-digit code from your Google Authenticator app</p>
+                  <p className="text-sand-500 text-sm mt-2">
+                    {isAdminFlow
+                      ? 'Enter the 6-digit code from Scanner 1 or Scanner 2'
+                      : 'Enter the 6-digit code from your Google Authenticator app'}
+                  </p>
                 </div>
 
                 {error && (

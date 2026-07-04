@@ -1,19 +1,51 @@
 /**
- * Start dev servers (backend :5000 + Vite :5173).
- * If ports are busy, stop other node terminals first or run: taskkill /F /IM node.exe
+ * Clean start: free ports 5000 + 5173, then run backend + Vite.
+ * Usage: npm run dev   or   npm run restart
  */
-import { spawn } from 'child_process';
+import { spawn, execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import path from 'path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const isWin = process.platform === 'win32';
+const PORTS = [5000, 5173];
 
-console.log('Starting Dream Mantra dev servers...');
-console.log('  Frontend: http://127.0.0.1:5173');
-console.log('  API:      http://127.0.0.1:5000/api/health\n');
+function killPort(port) {
+  try {
+    if (isWin) {
+      const out = execSync(`netstat -ano | findstr :${port}`, { encoding: 'utf8', stdio: ['pipe', 'pipe', 'ignore'] });
+      const pids = new Set();
+      for (const line of out.split('\n')) {
+        if (!line.includes('LISTENING')) continue;
+        const parts = line.trim().split(/\s+/);
+        const pid = parts[parts.length - 1];
+        if (pid && /^\d+$/.test(pid) && pid !== '0') pids.add(pid);
+      }
+      for (const pid of pids) {
+        try {
+          execSync(`taskkill /F /PID ${pid}`, { stdio: 'ignore' });
+          console.log(`  Freed port ${port} (PID ${pid})`);
+        } catch {
+          /* already gone */
+        }
+      }
+    } else {
+      execSync(`lsof -ti tcp:${port} | xargs -r kill -9`, { stdio: 'ignore', shell: true });
+    }
+  } catch {
+    /* port already free */
+  }
+}
 
-const child = spawn(isWin ? 'npm.cmd' : 'npm', ['run', 'dev'], {
+console.log('Dream Mantra — preparing dev servers...\n');
+for (const port of PORTS) killPort(port);
+
+await new Promise((r) => setTimeout(r, 800));
+
+console.log('\n  Open in browser:  http://localhost:5173/login');
+console.log('  API health:       http://localhost:5000/api/health\n');
+
+const child = spawn(isWin ? 'npm.cmd' : 'npm', ['run', 'dev:servers'], {
   cwd: root,
   stdio: 'inherit',
   shell: isWin,

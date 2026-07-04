@@ -183,12 +183,16 @@ async function startServer() {
       console.log('');
       console.log('  Dream Mantra is running!');
       console.log(`  Database: ${dbInfo.mode}`);
-      if (hasBuiltClient) {
+      if (hasBuiltClient && isProd) {
         console.log(`  Open in browser: http://localhost:${PORT}`);
+      } else if (hasBuiltClient) {
+        console.log(`  API: http://localhost:${PORT}`);
+        console.log('  Dev UI (latest code): http://localhost:5173/login');
+        console.log('  Tip: use port 5173 in dev — port 5000 may serve an older built UI');
       } else {
         console.log(`  API: http://localhost:${PORT}`);
         console.log('  Build the site first: npm run build');
-        console.log('  Or use dev mode: npm run dev  →  http://localhost:5173');
+        console.log('  Or use dev mode: npm run dev  →  http://localhost:5173/login');
       }
       console.log('');
 
