@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MessageCircle } from 'lucide-react';
 import SiteHeader from './SiteHeader';
@@ -13,7 +13,9 @@ import { isMobilePerf, isPhoneViewport, runWhenIdle } from '../utils/mobilePerf'
 import { isMobileBottomNavVisible } from '../utils/mobileBottomNav';
 import MobileBottomNav from './MobileBottomNav';
 
-const Chatbot = lazy(() => import('./Chatbot'));
+import { lazyWithRetry } from '../utils/lazyWithRetry';
+
+const Chatbot = lazyWithRetry(() => import('./Chatbot'));
 
 function PageLoader() {
   return (

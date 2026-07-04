@@ -4,7 +4,8 @@ import App from './App';
 import ErrorBoundary from './components/ErrorBoundary';
 import { warmupServer } from './api';
 import { runWhenIdle, isPhoneViewport } from './utils/mobilePerf';
-import { clearChunkReloadFlag } from './utils/lazyWithRetry';
+import { clearChunkReloadFlag, isChunkLoadError, reloadForStaleChunk } from './utils/lazyWithRetry';
+import { ensureLatestDeploy } from './utils/deployVersion';
 import './index.css';
 
 clearChunkReloadFlag();
@@ -28,6 +29,14 @@ if ('scrollRestoration' in window.history) {
 }
 
 applyPerformanceHints();
+
+window.addEventListener('unhandledrejection', (event) => {
+  if (isChunkLoadError(event.reason)) {
+    event.preventDefault();
+    reloadForStaleChunk();
+  }
+});
+
 if (!import.meta.env.DEV) {
   runWhenIdle(() => warmupServer(), 1800);
 }
@@ -36,11 +45,13 @@ const root = document.getElementById('root');
 if (!root) {
   document.body.innerHTML = '<p style="padding:2rem;font-family:sans-serif">Error: #root not found. Run from client folder: npm run dev</p>';
 } else {
-  ReactDOM.createRoot(root).render(
-    <React.StrictMode>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
-    </React.StrictMode>
-  );
+  ensureLatestDeploy().finally(() => {
+    ReactDOM.createRoot(root).render(
+      <React.StrictMode>
+        <ErrorBoundary>
+          <App />
+        </ErrorBoundary>
+      </React.StrictMode>
+    );
+  });
 }

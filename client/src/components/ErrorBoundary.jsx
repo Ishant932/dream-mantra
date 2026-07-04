@@ -18,7 +18,9 @@ export default class ErrorBoundary extends Component {
 
   handleRetry = () => {
     if (isChunkLoadError(this.state.error)) {
-      window.location.reload();
+      const url = new URL(window.location.href);
+      url.searchParams.set('_refresh', String(Date.now()));
+      window.location.replace(`${url.pathname}${url.search}${url.hash}`);
       return;
     }
     this.setState({ hasError: false, error: null });

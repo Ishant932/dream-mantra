@@ -15,7 +15,9 @@ export function isChunkLoadError(error) {
 export function reloadForStaleChunk() {
   if (sessionStorage.getItem(RELOAD_KEY)) return false;
   sessionStorage.setItem(RELOAD_KEY, '1');
-  window.location.reload();
+  const url = new URL(window.location.href);
+  url.searchParams.set('_chunk', String(Date.now()));
+  window.location.replace(`${url.pathname}${url.search}${url.hash}`);
   return true;
 }
 

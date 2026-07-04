@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import db, { repo, getData } from '../db.js';
+import db, { repo } from '../db.js';
 import { authRequired } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 import { generateTwoFactorSecret, qrCodeDataUrl, verifyTotp } from '../utils/totp.js';
@@ -51,10 +51,6 @@ function signTemp2FASetupToken(user) {
 
 function requiresMandatory2FA(user) {
   return user?.role === 'admin';
-}
-
-function adminsNeeding2FASetup() {
-  return (getData().users || []).filter((u) => u.role === 'admin' && !u.twoFactorEnabled);
 }
 
 async function buildAdminSetupEntry(admin) {
@@ -163,41 +159,22 @@ router.post('/login', loginLimiter, async (req, res) => {
       return res.json({
         requires2FA: true,
         tempToken: signTemp2FAToken(user),
-        message: 'Enter the 6-digit code from your authenticator app',
+        message: 'Enter the 6-digit code from Google Authenticator',
       });
     }
 
-    const pendingAdmins = adminsNeeding2FASetup();
-
     try {
-      if (pendingAdmins.length >= 2) {
-        const setups = [];
-        for (const admin of pendingAdmins.slice(0, 2)) {
-          setups.push(await buildAdminSetupEntry(admin));
-        }
-        await flushDatabase();
-        return res.json({
-          requires2FASetup: true,
-          dualSetup: true,
-          loginUserId: user.id,
-          setups,
-          message:
-            'Both admin accounts need Google Authenticator. Each person scans their own QR code, then enter both 6-digit codes below.',
-        });
-      }
-
       const setup = await buildAdminSetupEntry(user);
       await flushDatabase();
       return res.json({
         requires2FASetup: true,
-        dualSetup: false,
         setupToken: setup.setupToken,
         qrCode: setup.qrCode,
         manualEntry: setup.manualEntry,
         adminName: user.name,
         adminEmail: user.email,
         message:
-          'Admin accounts require two-factor authentication. Scan the QR code, then enter a code to continue.',
+          'Scan the QR code with Google Authenticator, then enter your 6-digit code to continue.',
       });
     } catch (e) {
       console.error('Admin 2FA setup QR error:', e);
