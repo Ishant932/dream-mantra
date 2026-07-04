@@ -94,6 +94,25 @@ export default function Login() {
     }
   };
 
+  const showAdminQrSetup = async () => {
+    setError('');
+    setCode('');
+    setLoading(true);
+    try {
+      const trimmed = identifier.trim();
+      const loginId = trimmed.includes('@') ? trimmed.toLowerCase() : trimmed.replace(/\s+/g, '');
+      const data = await login(loginId, password, { adminSetup2FA: true });
+      setIsAdminFlow(true);
+      if (!applySetupResponse(data)) {
+        setError(data.message || 'Could not start scanner setup. Please try again.');
+      }
+    } catch (err) {
+      setError(err.message || 'Could not reset Google Authenticator. Check your password and try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handle2FA = async (e) => {
     e.preventDefault();
     setError('');
@@ -339,6 +358,14 @@ export default function Login() {
                   </button>
                   <button
                     type="button"
+                    onClick={showAdminQrSetup}
+                    disabled={loading}
+                    className="auth-2fa-setup-link"
+                  >
+                    Generate fresh QR codes
+                  </button>
+                  <button
+                    type="button"
                     onClick={resetToCredentials}
                     className="text-sm text-amber-600 hover:underline w-full text-center"
                   >
@@ -418,6 +445,17 @@ export default function Login() {
 
                 {error && (
                   <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-700 text-sm border border-red-200">{error}</div>
+                )}
+
+                {isAdminFlow && (
+                  <button
+                    type="button"
+                    onClick={showAdminQrSetup}
+                    disabled={loading}
+                    className="auth-2fa-setup-link"
+                  >
+                    Reset &amp; set up Scanner 1 &amp; 2 again (new QR codes)
+                  </button>
                 )}
 
                 <form onSubmit={handle2FA} className="space-y-5">

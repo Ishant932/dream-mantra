@@ -1,2 +1,2 @@
 /** Updated each release — visible at GET /api/health */
-export const APP_VERSION = '2026-07-04-admin-2fa-fix-v7';
+export const APP_VERSION = '2026-07-04-admin-2fa-reset-v8';
