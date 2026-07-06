@@ -37,7 +37,7 @@ export const featuredAssessments = [
 export const whyDifferent = [
   'Science-backed Mind Mapping + 7 Skill Mapping frameworks — not guesswork',
   '7-Pillar holistic career model (Counselling → Job Ready + AI Career Launchpad)',
-  '950+ career library with detailed roadmaps',
+  '1000+ career library with detailed roadmaps',
   'Free consultation — Mon–Sat 11am–7pm',
   'Certified counsellors: Govt of India, IIT Madras, NLP, Reliance Foundation',
   'Jaipur centres + Pan-India online counselling',

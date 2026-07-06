@@ -1,10 +1,11 @@
 /**
- * Generates 950+ career opportunities with rich detail
+ * Generates 1000+ unique career pathways with rich detail (no Senior/Specialist duplicates).
  * Run: node scripts/generateCareers.js
  */
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getAllCareerEntries } from './careerTitleBank.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -292,7 +293,6 @@ const categories = {
   },
 };
 
-const variants = ['', 'Senior ', 'Specialist '];
 const outlooks = ['Excellent', 'Very Good', 'Good', 'Moderate', 'Growing'];
 const environments = ['Office', 'Field', 'Lab', 'Remote', 'Hybrid', 'Hospital', 'Studio', 'Outdoor'];
 const aiLevels = ['High', 'Medium', 'Low'];
@@ -435,7 +435,28 @@ function categoryEducation(category, title, stream, id) {
     return ['Class 12 any stream', 'B.Des / BFA / diploma from NID/NIFT/PEARL', 'Portfolio + industry internship'];
   }
   if (category === 'Trades & Vocational') {
+    if (/^iti -/i.test(t)) {
+      return ['Class 10 pass (stream/trade dependent)', 'ITI 6 months–2 years (NCVT/SCVT recognised institute)', 'Apprenticeship + ITI entrance / skill assessment'];
+    }
+    if (/^certificate in/i.test(t)) {
+      return ['Class 8–12 depending on course', '3–12 month certificate from ITI / NSDC / private skill centre', 'Skill India / sector skill council assessment'];
+    }
+    if (/^bachelor of vocation/i.test(t)) {
+      return ['Class 12 any stream', '3-year B.Voc (UGC recognised university)', 'Internship + NSQF-aligned skill certification'];
+    }
     return ['Class 8–12 (varies by trade)', 'ITI / NSQF diploma / apprenticeship', 'Skill India certification + on-job experience'];
+  }
+  if (/^diploma in/i.test(t)) {
+    return ['Class 10 (PCM/PCB/Commerce as per trade)', '2–3 year polytechnic / recognised diploma', 'Lateral entry to B.Tech / industry placement'];
+  }
+  if (/^b\.tech/i.test(t) || /^b\.e\./i.test(t)) {
+    return ['Class 12 PCM', '4-year B.Tech / B.E. (AICTE recognised)', 'GATE / campus placement / M.Tech optional'];
+  }
+  if (/^b\.sc/i.test(t)) {
+    return ['Class 12 PCM or PCB as per subject', '3-year B.Sc', 'M.Sc / research / industry roles'];
+  }
+  if (/^certificate in/i.test(t)) {
+    return ['Class 10–12 (course dependent)', 'Short-term certificate (3–12 months)', 'Practical assessment + placement support'];
   }
   return [
     `Class 12 (${stream.join('/')}) with relevant subjects`,
@@ -743,40 +764,25 @@ function buildCareer(id, title, category, config, variantIdx) {
 const careers = [];
 let id = 1;
 
-for (const [category, config] of Object.entries(categories)) {
-  for (const baseTitle of config.base) {
-    for (let v = 0; v < variants.length; v++) {
-      const title = `${variants[v]}${baseTitle}`.trim();
-      if (title.length > 80) continue;
-      careers.push(buildCareer(id++, title, category, config, v));
-    }
-  }
+const careerEntries = getAllCareerEntries();
+
+for (const { title, category } of careerEntries) {
+  if (title.length > 100) continue;
+  const config = categories[category] || { stream: ['Any'] };
+  careers.push(buildCareer(id++, title, category, config, 0));
 }
 
-// Pad to 950 with specialist variants
-const prefixes = ['Associate', 'Principal', 'Regional', 'Global', 'Digital', 'Strategic', 'Technical', 'Executive'];
-let padIdx = 0;
-while (careers.length < 950) {
-  const base = careers[padIdx % Math.min(careers.length, 400)];
-  const prefix = prefixes[Math.floor(padIdx / 50) % prefixes.length];
-  const title = `${prefix} ${base.title.replace(/^(Senior|Lead|Junior|Consultant|Specialist)\s+/i, '')}`;
-  careers.push({
-    ...buildCareer(id++, title, base.category, { stream: base.stream }, padIdx),
-    slug: `${slugify(title)}-${id}`,
-  });
-  padIdx++;
-}
-
-const finalCareers = careers.slice(0, 950);
+const total = careers.length;
+const displayLabel = total >= 1000 ? `${Math.floor(total / 100) * 100}+` : `${total}+`;
 
 const out = {
   meta: {
-    total: 950,
-    displayLabel: '950+',
+    total,
+    displayLabel,
     source: 'Dreams Mantra Career Library — comprehensive India-focused guidance',
     updated: new Date().toISOString().slice(0, 10),
   },
-  careers: finalCareers,
+  careers,
 };
 
 const outPaths = [

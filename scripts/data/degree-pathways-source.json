@@ -1,0 +1,3863 @@
+[
+  {
+    "id": "CU00001",
+    "name": "ITI - Electrician",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Safety",
+      "Precision",
+      "Technical know-how",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Hotel Front Office",
+      "Certificate in Floriculture & Gardening",
+      "Certificate in Embroidery"
+    ],
+    "alternativeDegrees": [
+      "ITI - Foundryman",
+      "Certificate in Laptop & Computer Repairing",
+      "ITI - Surveyor"
+    ],
+    "similarDegrees": [
+      "ITI - Draughtsman",
+      "Bachelor of Vocation Logistics",
+      "Bachelor of Vocation Beauty & Wellness"
+    ],
+    "progressionPath": "ITI - Electrician → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00002",
+    "name": "ITI - Fitter",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Technical know-how",
+      "Precision",
+      "Manual dexterity",
+      "Problem solving",
+      "Safety"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Hotel Front Office",
+      "Certificate in Mobile Phone Repairing",
+      "ITI - Plastic Processing Operator"
+    ],
+    "alternativeDegrees": [
+      "ITI - Sheet Metal Worker",
+      "ITI - Mechanic",
+      "Certificate in Handloom Weaving"
+    ],
+    "similarDegrees": [
+      "ITI - Dental Laboratory Equipment Technician",
+      "Certificate in Data Entry Operator",
+      "Certificate in Beekeeping"
+    ],
+    "progressionPath": "ITI - Fitter → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00003",
+    "name": "ITI - Welder",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Manual dexterity",
+      "Technical know-how",
+      "Safety",
+      "Precision"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Plumber & Pipe Fitter",
+      "Bachelor of Vocation Beauty & Wellness",
+      "ITI - Driver cum Mechanic"
+    ],
+    "alternativeDegrees": [
+      "ITI - Forger & Heat Treater",
+      "ITI - Agro Processing",
+      "Certificate in Patient Care Assistant"
+    ],
+    "similarDegrees": [
+      "ITI - Wireman",
+      "ITI - Fireman",
+      "Bachelor of Vocation Web Technologies"
+    ],
+    "progressionPath": "ITI - Welder → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00004",
+    "name": "ITI - Turner",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Problem solving",
+      "Precision",
+      "Technical know-how",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Plastic Processing Operator",
+      "ITI - Maintenance Mechanic",
+      "Certificate in Two-Wheeler Mechanic"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Makeup Artistry",
+      "Certificate in Driving & Auto Maintenance",
+      "ITI - Sewing Technology"
+    ],
+    "similarDegrees": [
+      "Certificate in Carpentry",
+      "ITI - Tool & Die Maker",
+      "ITI - Footwear Maker"
+    ],
+    "progressionPath": "ITI - Turner → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00005",
+    "name": "ITI - Machinist",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Safety",
+      "Precision",
+      "Manual dexterity",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Laboratory Assistant",
+      "ITI - Solar Technician",
+      "ITI - Plumber"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Plumbing",
+      "Certificate in Video Editing",
+      "ITI - Maintenance Mechanic"
+    ],
+    "similarDegrees": [
+      "ITI - Plumber & Pipe Fitter",
+      "ITI - Plumber",
+      "Bachelor of Vocation Healthcare"
+    ],
+    "progressionPath": "ITI - Machinist → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00006",
+    "name": "ITI - Plumber",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Precision",
+      "Technical know-how",
+      "Safety",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Wireman",
+      "Certificate in Videography",
+      "ITI - Mechanic"
+    ],
+    "alternativeDegrees": [
+      "ITI - Electrical Maintenance",
+      "ITI - Cutting & Sewing",
+      "Certificate in Video Editing"
+    ],
+    "similarDegrees": [
+      "ITI - Rubber Technician",
+      "Certificate in Hair Styling",
+      "ITI - Plastic Processing Operator"
+    ],
+    "progressionPath": "ITI - Plumber → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00007",
+    "name": "ITI - Carpenter",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Technical know-how",
+      "Safety",
+      "Precision",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Housekeeper",
+      "ITI - Hair & Skin Care",
+      "Certificate in Beekeeping"
+    ],
+    "alternativeDegrees": [
+      "Bachelor of Vocation Healthcare",
+      "ITI - Mechanic",
+      "Certificate in Data Entry Operator"
+    ],
+    "similarDegrees": [
+      "Certificate in Electrical House Wiring",
+      "Certificate in Home Health Aide",
+      "Certificate in Stenography"
+    ],
+    "progressionPath": "ITI - Carpenter → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00008",
+    "name": "ITI - Mason",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Problem solving",
+      "Precision",
+      "Technical know-how",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Health Sanitary Inspector",
+      "Certificate in Air Hostess / Cabin Crew Training",
+      "Certificate in Two-Wheeler Mechanic"
+    ],
+    "alternativeDegrees": [
+      "ITI - Agro Processing",
+      "ITI - Instrument Mechanic",
+      "Certificate in Hotel Front Office"
+    ],
+    "similarDegrees": [
+      "ITI - Lift & Escalator Mechanic",
+      "ITI - Marine Fitter",
+      "Certificate in Medical Lab Technician"
+    ],
+    "progressionPath": "ITI - Mason → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00009",
+    "name": "ITI - Painter",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Precision",
+      "Manual dexterity",
+      "Technical know-how",
+      "Safety"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Plastic Processing Operator",
+      "ITI - Architectural Assistant",
+      "Certificate in Hair Styling"
+    ],
+    "alternativeDegrees": [
+      "ITI - Spinning Technician",
+      "ITI - Hair & Skin Care",
+      "ITI - Mason"
+    ],
+    "similarDegrees": [
+      "ITI - Desktop Publishing Operator",
+      "Certificate in Office Assistant",
+      "Certificate in Carpentry"
+    ],
+    "progressionPath": "ITI - Painter → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00010",
+    "name": "ITI - Wireman",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Technical know-how",
+      "Safety",
+      "Manual dexterity",
+      "Problem solving",
+      "Precision"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Driver cum Mechanic",
+      "ITI - Fireman",
+      "Certificate in Floriculture & Gardening"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Housekeeping",
+      "Bachelor of Vocation Logistics",
+      "Certificate in Poultry Farming"
+    ],
+    "similarDegrees": [
+      "ITI - Surveyor",
+      "ITI - Weaving Technician",
+      "ITI - Solar Technician"
+    ],
+    "progressionPath": "ITI - Wireman → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00011",
+    "name": "ITI - Mechanic",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Precision",
+      "Safety",
+      "Manual dexterity",
+      "Problem solving",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Plate Maker cum Impositor",
+      "Certificate in Bakery & Confectionery",
+      "ITI - Embroidery & Needle Work"
+    ],
+    "alternativeDegrees": [
+      "Bachelor of Vocation Food Processing",
+      "ITI - Instrument Mechanic",
+      "Certificate in CCTV Installation"
+    ],
+    "similarDegrees": [
+      "Certificate in Apparel Manufacturing",
+      "Certificate in Poultry Farming",
+      "Certificate in Food & Beverage Service"
+    ],
+    "progressionPath": "ITI - Mechanic → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00012",
+    "name": "ITI - Electronics Mechanic",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Basic Electronics",
+      "Electrical Technology",
+      "Mathematics"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Learn to install, test and repair electronic equipment and industrial control systems.",
+    "skills": [
+      "Circuit troubleshooting",
+      "Safety",
+      "Precision",
+      "Technical know-how",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Electronics Technician",
+      "Service Engineer",
+      "Maintenance Technician",
+      "Self-employed Repair Specialist"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Low",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Medium",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "B.Com Accounting & Auditing",
+      "Diploma in Accounting & Taxation",
+      "B.Com Cost & Management Accounting"
+    ],
+    "alternativeDegrees": [
+      "B.Com Bank Management",
+      "B.Com Insurance & Risk Management",
+      "M.Com Business Management"
+    ],
+    "similarDegrees": [
+      "PGDM Finance",
+      "M.Com Accounting & Finance",
+      "B.Com Co-operation"
+    ],
+    "progressionPath": "ITI - Electronics Mechanic → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00013",
+    "name": "ITI - Instrument Mechanic",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Precision",
+      "Manual dexterity",
+      "Safety",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Computer Operator & Programming Assistant",
+      "Bachelor of Vocation Web Technologies",
+      "Certificate in Hotel Front Office"
+    ],
+    "alternativeDegrees": [
+      "ITI - Rubber Technician",
+      "Certificate in AC & Refrigeration Repair",
+      "ITI - Fitter"
+    ],
+    "similarDegrees": [
+      "Bachelor of Vocation Logistics",
+      "ITI - Welding & Inspection",
+      "Certificate in Stenography"
+    ],
+    "progressionPath": "ITI - Instrument Mechanic → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00014",
+    "name": "ITI - Information Technology",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Information Technology & Software",
+    "clusterKey": "software",
+    "subjects": [
+      "Computer Science",
+      "Mathematics",
+      "Informatics Practices"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India & International",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "NIMCET",
+      "JEE/CUET",
+      "University entrance"
+    ],
+    "whatYouStudy": "Computing builds the software, data and AI systems that power every industry.",
+    "skills": [
+      "Data structures",
+      "System design",
+      "Problem solving",
+      "Version control",
+      "Programming"
+    ],
+    "topCareers": [
+      "Software Engineer",
+      "Full-Stack Developer",
+      "Data Engineer",
+      "DevOps Engineer",
+      "Cloud Engineer",
+      "Tech Lead"
+    ],
+    "difficulty": "Medium-High",
+    "costRange": "Medium (INR 1-6L) + bootcamps",
+    "scholarship": "Many free/affordable online paths",
+    "industryDemand": "Very High",
+    "futureDemand": "Very High",
+    "aiImpactRisk": "Medium",
+    "aiProofScore": 6,
+    "salaryEntry": "INR 3-5 LPA",
+    "salaryMid": "INR 10-16 LPA",
+    "salarySenior": "INR 19-31 LPA",
+    "remoteWork": "High",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "High",
+    "research": "Medium",
+    "globalMobility": 9,
+    "description": "Computing builds the software, data and AI systems that power every industry.",
+    "workEnvironment": "Tech offices & fully remote; flexible",
+    "typicalDay": "Write/review code, design systems, debug, attend standups, ship features",
+    "personalityFit": "Logical, curious builders who like solving puzzles and learning fast",
+    "riasec": "Investigative, Realistic",
+    "mbti": "INTP, INTJ, ISTP",
+    "multipleIntelligence": "Logical-Mathematical",
+    "futureOutlook": "Very strong; AI augments but expands software demand",
+    "relatedDegrees": [
+      "Diploma in Software Development",
+      "M.Sc Computer Science",
+      "MCA Cyber Security"
+    ],
+    "alternativeDegrees": [
+      "Bachelor of Vocation Software Development",
+      "Certificate in Computer Applications",
+      "B.Tech Software Engineering"
+    ],
+    "similarDegrees": [
+      "B.Tech Computer Science & Engineering",
+      "M.Sc Information Technology",
+      "Certificate in Computer Applications"
+    ],
+    "progressionPath": "ITI - Information Technology → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00015",
+    "name": "ITI - Computer Operator & Programming Assistant",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Precision",
+      "Manual dexterity",
+      "Problem solving",
+      "Safety",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Bachelor of Vocation Food Processing",
+      "Certificate in Makeup Artistry",
+      "ITI - Mechanic"
+    ],
+    "alternativeDegrees": [
+      "ITI - Cosmetology",
+      "ITI - Plumber",
+      "ITI - Agro Processing"
+    ],
+    "similarDegrees": [
+      "Certificate in Mushroom Cultivation",
+      "ITI - Turner",
+      "ITI - Desktop Publishing Operator"
+    ],
+    "progressionPath": "ITI - Computer Operator & Programming Assistant → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00016",
+    "name": "ITI - Draughtsman",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Technical know-how",
+      "Manual dexterity",
+      "Precision",
+      "Problem solving",
+      "Safety"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Stenography",
+      "Certificate in Laptop & Computer Repairing",
+      "ITI - Surveyor"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Patient Care Assistant",
+      "Certificate in Tailoring & Dressmaking",
+      "ITI - Wireman"
+    ],
+    "similarDegrees": [
+      "ITI - Driver cum Mechanic",
+      "ITI - Dress Making",
+      "Certificate in Beekeeping"
+    ],
+    "progressionPath": "ITI - Draughtsman → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00017",
+    "name": "ITI - Surveyor",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Precision",
+      "Problem solving",
+      "Manual dexterity",
+      "Technical know-how",
+      "Safety"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Poultry Farming",
+      "ITI - Weaving Technician",
+      "ITI - Electrician"
+    ],
+    "alternativeDegrees": [
+      "Bachelor of Vocation Hospitality Operations",
+      "ITI - Turner",
+      "Certificate in Embroidery"
+    ],
+    "similarDegrees": [
+      "Bachelor of Vocation Beauty & Wellness",
+      "Certificate in Mobile Phone Repairing",
+      "ITI - Housekeeper"
+    ],
+    "progressionPath": "ITI - Surveyor → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00018",
+    "name": "ITI - Sheet Metal Worker",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Technical know-how",
+      "Problem solving",
+      "Precision",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Driving & Auto Maintenance",
+      "Certificate in Bakery & Confectionery",
+      "ITI - Photographer"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Plumbing",
+      "ITI - Baker & Confectioner",
+      "ITI - Leather Goods Maker"
+    ],
+    "similarDegrees": [
+      "Bachelor of Vocation Logistics",
+      "Certificate in Floriculture & Gardening",
+      "Certificate in Tally with GST"
+    ],
+    "progressionPath": "ITI - Sheet Metal Worker → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00019",
+    "name": "ITI - Tool & Die Maker",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Technical know-how",
+      "Problem solving",
+      "Safety",
+      "Precision",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Mobile Phone Repairing",
+      "Certificate in Food & Beverage Service",
+      "ITI - Photographer"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Medical Lab Technician",
+      "Certificate in Videography",
+      "ITI - Instrument Mechanic"
+    ],
+    "similarDegrees": [
+      "Bachelor of Vocation Food Processing",
+      "Certificate in Mushroom Cultivation",
+      "Certificate in Pottery & Ceramics"
+    ],
+    "progressionPath": "ITI - Tool & Die Maker → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00020",
+    "name": "ITI - Foundryman",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Precision",
+      "Problem solving",
+      "Technical know-how",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Housekeeping",
+      "Bachelor of Vocation Logistics",
+      "ITI - Mechanic"
+    ],
+    "alternativeDegrees": [
+      "ITI - Marine Fitter",
+      "Certificate in CCTV Installation",
+      "ITI - Machinist"
+    ],
+    "similarDegrees": [
+      "ITI - Welding & Inspection",
+      "Certificate in Data Entry Operator",
+      "Certificate in Bakery & Confectionery"
+    ],
+    "progressionPath": "ITI - Foundryman → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00021",
+    "name": "ITI - Forger & Heat Treater",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Technical know-how",
+      "Manual dexterity",
+      "Safety",
+      "Precision",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Food & Beverage Service",
+      "ITI - Tool & Die Maker",
+      "Certificate in Carpentry"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Mushroom Cultivation",
+      "Fellowship in Critical Care",
+      "ITI - Embroidery & Needle Work"
+    ],
+    "similarDegrees": [
+      "Certificate in Patient Care Assistant",
+      "ITI - Mechanic",
+      "Certificate in Mobile Phone Repairing"
+    ],
+    "progressionPath": "ITI - Forger & Heat Treater → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00022",
+    "name": "ITI - Pump Operator-cum-Mechanic",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Precision",
+      "Problem solving",
+      "Manual dexterity",
+      "Technical know-how",
+      "Safety"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Sheet Metal Worker",
+      "ITI - Desktop Publishing Operator",
+      "ITI - Hair & Skin Care"
+    ],
+    "alternativeDegrees": [
+      "ITI - Health Sanitary Inspector",
+      "ITI - Painter",
+      "Certificate in Videography"
+    ],
+    "similarDegrees": [
+      "Certificate in Personality Development",
+      "Certificate in Hotel Front Office",
+      "Certificate in Apparel Manufacturing"
+    ],
+    "progressionPath": "ITI - Pump Operator-cum-Mechanic → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00023",
+    "name": "ITI - Lift & Escalator Mechanic",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Safety",
+      "Technical know-how",
+      "Precision",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Surveyor",
+      "ITI - Housekeeper",
+      "ITI - Photographer"
+    ],
+    "alternativeDegrees": [
+      "ITI - Driver cum Mechanic",
+      "Certificate in Nail Art",
+      "ITI - Footwear Maker"
+    ],
+    "similarDegrees": [
+      "ITI - Plate Maker cum Impositor",
+      "ITI - Food Production",
+      "Certificate in Video Editing"
+    ],
+    "progressionPath": "ITI - Lift & Escalator Mechanic → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00024",
+    "name": "ITI - Solar Technician",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Precision",
+      "Technical know-how",
+      "Problem solving",
+      "Safety"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Bachelor of Vocation Mobile Application Development",
+      "ITI - Housekeeper",
+      "ITI - Architectural Assistant"
+    ],
+    "alternativeDegrees": [
+      "ITI - Baker & Confectioner",
+      "Certificate in Makeup Artistry",
+      "Certificate in Handloom Weaving"
+    ],
+    "similarDegrees": [
+      "ITI - CNC Programming & Operations",
+      "ITI - Driver cum Mechanic",
+      "Certificate in Video Editing"
+    ],
+    "progressionPath": "ITI - Solar Technician → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00025",
+    "name": "ITI - Architectural Assistant",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Technical know-how",
+      "Manual dexterity",
+      "Precision",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Wireman",
+      "Certificate in Stenography",
+      "Certificate in AC & Refrigeration Repair"
+    ],
+    "alternativeDegrees": [
+      "Bachelor of Vocation Mobile Application Development",
+      "Certificate in Air Hostess / Cabin Crew Training",
+      "Certificate in Solar Panel Installation"
+    ],
+    "similarDegrees": [
+      "ITI - Dental Laboratory Equipment Technician",
+      "Certificate in Carpentry",
+      "ITI - Plumber"
+    ],
+    "progressionPath": "ITI - Architectural Assistant → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00026",
+    "name": "ITI - Stenographer & Secretarial Assistant",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "English",
+      "Office Management",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Train in shorthand, typing, office procedures and secretarial support for government and private offices.",
+    "skills": [
+      "Shorthand",
+      "Typing",
+      "Communication",
+      "Organization",
+      "Computer literacy"
+    ],
+    "topCareers": [
+      "Stenographer",
+      "Secretarial Assistant",
+      "Court Reporter",
+      "Office Assistant"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Low",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Medium",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Offices, courts, government departments",
+    "typicalDay": "Take dictation, transcribe notes, manage correspondence and office records",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "MA Comparative Literature",
+      "PG Diploma in Supply Chain & Logistics",
+      "Master of Public Administration"
+    ],
+    "alternativeDegrees": [
+      "Diploma in Leather Technology",
+      "Diploma in Ophthalmic Technology",
+      "PG Diploma in Cloud Computing"
+    ],
+    "similarDegrees": [
+      "MA Political Economy",
+      "MA French",
+      "BA Corporate Communication"
+    ],
+    "progressionPath": "ITI - Stenographer & Secretarial Assistant → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00027",
+    "name": "ITI - Sewing Technology",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Safety",
+      "Technical know-how",
+      "Precision",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Embroidery",
+      "ITI - Painter",
+      "Certificate in Welding Technology"
+    ],
+    "alternativeDegrees": [
+      "ITI - Civil Engineer Assistant",
+      "Certificate in Phlebotomy",
+      "Certificate in Mobile Phone Repairing"
+    ],
+    "similarDegrees": [
+      "Certificate in Mobile Phone Repairing",
+      "Certificate in CCTV Installation",
+      "Certificate in Air Hostess / Cabin Crew Training"
+    ],
+    "progressionPath": "ITI - Sewing Technology → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00028",
+    "name": "ITI - Dress Making",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Technical know-how",
+      "Precision",
+      "Safety",
+      "Manual dexterity",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Civil Engineer Assistant",
+      "ITI - Leather Goods Maker",
+      "ITI - Plastic Processing Operator"
+    ],
+    "alternativeDegrees": [
+      "ITI - Network Technician",
+      "ITI - Plastic Processing Operator",
+      "Certificate in Driving & Auto Maintenance"
+    ],
+    "similarDegrees": [
+      "ITI - Mason",
+      "ITI - Fitter",
+      "ITI - Footwear Maker"
+    ],
+    "progressionPath": "ITI - Dress Making → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00029",
+    "name": "ITI - Fashion Design & Technology",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Design & Creative Industries",
+    "clusterKey": "design",
+    "subjects": [
+      "Engineering Graphics",
+      "Fine Arts",
+      "Design Studies"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India & International",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "CEED",
+      "NIFT",
+      "NID DAT"
+    ],
+    "whatYouStudy": "Design solves problems and shapes experiences through creativity and form.",
+    "skills": [
+      "Creativity",
+      "User empathy",
+      "Design tools",
+      "Visual communication",
+      "Prototyping"
+    ],
+    "topCareers": [
+      "UX/UI Designer",
+      "Graphic Designer",
+      "Product Designer",
+      "Art Director",
+      "Creative Lead"
+    ],
+    "difficulty": "Medium-High",
+    "costRange": "High (INR 1-12L)",
+    "scholarship": "Institute & merit scholarships",
+    "industryDemand": "High",
+    "futureDemand": "High",
+    "aiImpactRisk": "Medium",
+    "aiProofScore": 7,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 6-9 LPA",
+    "salarySenior": "INR 13-22 LPA",
+    "remoteWork": "High",
+    "govtOpportunities": "Low",
+    "privateOpportunities": "High",
+    "entrepreneurship": "Very High",
+    "research": "Medium",
+    "globalMobility": 8,
+    "description": "Design solves problems and shapes experiences through creativity and form.",
+    "workEnvironment": "Studios, agencies, tech firms; remote-friendly",
+    "typicalDay": "Research users, sketch, prototype, refine designs, collaborate",
+    "personalityFit": "Imaginative, visual, empathetic problem-solvers",
+    "riasec": "Artistic, Investigative",
+    "mbti": "INFP, ENFP, ISFP",
+    "multipleIntelligence": "Spatial, Linguistic",
+    "futureOutlook": "Strong; creativity stays human-led",
+    "relatedDegrees": [
+      "PG Diploma in UI/UX Design",
+      "Bachelor of Design",
+      "B.Des Information Design"
+    ],
+    "alternativeDegrees": [
+      "Certificate in DTP & Graphic Design",
+      "M.Des Communication Design",
+      "M.Des Interaction Design"
+    ],
+    "similarDegrees": [
+      "Diploma in Interior Design",
+      "PG Diploma in Interior Design",
+      "Bachelor of Fashion Technology"
+    ],
+    "progressionPath": "ITI - Fashion Design & Technology → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00030",
+    "name": "ITI - Cutting & Sewing",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Technical know-how",
+      "Precision",
+      "Manual dexterity",
+      "Safety"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Phlebotomy",
+      "Certificate in Mushroom Cultivation",
+      "ITI - Wireman"
+    ],
+    "alternativeDegrees": [
+      "Bachelor of Vocation Web Technologies",
+      "ITI - Dress Making",
+      "Certificate in Masonry"
+    ],
+    "similarDegrees": [
+      "ITI - Health Sanitary Inspector",
+      "ITI - CNC Programming & Operations",
+      "Fellowship in Critical Care"
+    ],
+    "progressionPath": "ITI - Cutting & Sewing → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00031",
+    "name": "ITI - Embroidery & Needle Work",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Safety",
+      "Problem solving",
+      "Precision",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Electrical Maintenance",
+      "Bachelor of Vocation Mobile Application Development",
+      "Certificate in Phlebotomy"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Mobile Phone Repairing",
+      "ITI - Photographer",
+      "ITI - Lift & Escalator Mechanic"
+    ],
+    "similarDegrees": [
+      "Certificate in Carpentry",
+      "ITI - Cosmetology",
+      "Certificate in Personality Development"
+    ],
+    "progressionPath": "ITI - Embroidery & Needle Work → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00032",
+    "name": "ITI - Hair & Skin Care",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Manual dexterity",
+      "Problem solving",
+      "Precision",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Fitter",
+      "ITI - Health Sanitary Inspector",
+      "Certificate in Video Editing"
+    ],
+    "alternativeDegrees": [
+      "ITI - Dental Laboratory Equipment Technician",
+      "Bachelor of Vocation Healthcare",
+      "ITI - Laboratory Assistant"
+    ],
+    "similarDegrees": [
+      "Certificate in Laptop & Computer Repairing",
+      "Certificate in Pottery & Ceramics",
+      "Certificate in Welding Technology"
+    ],
+    "progressionPath": "ITI - Hair & Skin Care → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00033",
+    "name": "ITI - Cosmetology",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Precision",
+      "Safety",
+      "Technical know-how",
+      "Manual dexterity",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Food & Beverage Service Assistant",
+      "Certificate in Bakery & Confectionery",
+      "Certificate in Tally with GST"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Laptop & Computer Repairing",
+      "Bachelor of Vocation Web Technologies",
+      "Certificate in Driving & Auto Maintenance"
+    ],
+    "similarDegrees": [
+      "Certificate in Pottery & Ceramics",
+      "Certificate in Masonry",
+      "ITI - Wireman"
+    ],
+    "progressionPath": "ITI - Cosmetology → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00034",
+    "name": "ITI - Food Production",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Manual dexterity",
+      "Safety",
+      "Precision",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Embroidery",
+      "ITI - Wireman",
+      "ITI - Computer Operator & Programming Assistant"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Beekeeping",
+      "ITI - Laboratory Assistant",
+      "Certificate in Tally with GST"
+    ],
+    "similarDegrees": [
+      "ITI - Cosmetology",
+      "ITI - Driver cum Mechanic",
+      "Certificate in Phlebotomy"
+    ],
+    "progressionPath": "ITI - Food Production → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00035",
+    "name": "ITI - Food & Beverage Service Assistant",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Manual dexterity",
+      "Technical know-how",
+      "Precision",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Electrical Maintenance",
+      "ITI - Foundryman",
+      "Certificate in Driving & Auto Maintenance"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Data Entry Operator",
+      "ITI - Foundryman",
+      "Bachelor of Vocation Food Processing"
+    ],
+    "similarDegrees": [
+      "Certificate in Air Hostess / Cabin Crew Training",
+      "Bachelor of Vocation Mobile Application Development",
+      "ITI - Front Office Assistant"
+    ],
+    "progressionPath": "ITI - Food & Beverage Service Assistant → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00036",
+    "name": "ITI - Baker & Confectioner",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Precision",
+      "Safety",
+      "Manual dexterity",
+      "Technical know-how",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Plate Maker cum Impositor",
+      "ITI - Marine Fitter",
+      "Certificate in Mushroom Cultivation"
+    ],
+    "alternativeDegrees": [
+      "ITI - Turner",
+      "ITI - Front Office Assistant",
+      "Fellowship in Critical Care"
+    ],
+    "similarDegrees": [
+      "ITI - Cosmetology",
+      "ITI - Embroidery & Needle Work",
+      "ITI - Driver cum Mechanic"
+    ],
+    "progressionPath": "ITI - Baker & Confectioner → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00037",
+    "name": "ITI - Housekeeper",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Manual dexterity",
+      "Precision",
+      "Technical know-how",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in General Duty Assistant",
+      "Certificate in Bakery & Confectionery",
+      "Certificate in Medical Lab Technician"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Beekeeping",
+      "ITI - Lift & Escalator Mechanic",
+      "Certificate in General Duty Assistant"
+    ],
+    "similarDegrees": [
+      "Certificate in Tailoring & Dressmaking",
+      "Certificate in Mobile Phone Repairing",
+      "Certificate in Pottery & Ceramics"
+    ],
+    "progressionPath": "ITI - Housekeeper → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00038",
+    "name": "ITI - Front Office Assistant",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Precision",
+      "Manual dexterity",
+      "Safety",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Laptop & Computer Repairing",
+      "ITI - Plastic Processing Operator",
+      "ITI - Food Production"
+    ],
+    "alternativeDegrees": [
+      "ITI - Draughtsman",
+      "Bachelor of Vocation Web Technologies",
+      "Certificate in Home Health Aide"
+    ],
+    "similarDegrees": [
+      "Certificate in Pottery & Ceramics",
+      "Certificate in Handloom Weaving",
+      "ITI - Network Technician"
+    ],
+    "progressionPath": "ITI - Front Office Assistant → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00039",
+    "name": "ITI - Catering & Hospitality Assistant",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Hospitality, Travel & Tourism",
+    "clusterKey": "hospitality",
+    "subjects": [
+      "Hospitality",
+      "Home Science",
+      "English"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India & International",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "NCHMCT JEE",
+      "University entrance"
+    ],
+    "whatYouStudy": "Hospitality delivers guest experiences across hotels, food and travel.",
+    "skills": [
+      "Cultural sensitivity",
+      "Customer service",
+      "Operations",
+      "Communication",
+      "Multitasking"
+    ],
+    "topCareers": [
+      "Hotel Manager",
+      "Chef",
+      "Event Manager",
+      "Travel Consultant",
+      "F&B Manager"
+    ],
+    "difficulty": "Medium",
+    "costRange": "Medium (INR 1-6L)",
+    "scholarship": "Institute scholarships",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 4-7 LPA",
+    "salarySenior": "INR 9-14 LPA",
+    "remoteWork": "Low",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "High",
+    "entrepreneurship": "Very High",
+    "research": "Medium",
+    "globalMobility": 8,
+    "description": "Hospitality delivers guest experiences across hotels, food and travel.",
+    "workEnvironment": "Hotels, restaurants, resorts, travel; on-site",
+    "typicalDay": "Serve guests, manage operations, plan events, ensure experiences",
+    "personalityFit": "Warm, energetic, service-oriented multitaskers",
+    "riasec": "Social, Enterprising",
+    "mbti": "ESFJ, ESFP, ENFJ",
+    "multipleIntelligence": "Interpersonal, Bodily-Kinesthetic",
+    "futureOutlook": "Strong with travel & experience economy",
+    "relatedDegrees": [
+      "PhD in Tourism",
+      "Master of Tourism Administration",
+      "BA Tourism Studies"
+    ],
+    "alternativeDegrees": [
+      "Diploma in Aviation Hospitality",
+      "MA Tourism",
+      "Certificate in Travel & Tourism"
+    ],
+    "similarDegrees": [
+      "PhD in Tourism",
+      "Diploma in Aviation Hospitality",
+      "MA Tourism"
+    ],
+    "progressionPath": "ITI - Catering & Hospitality Assistant → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00040",
+    "name": "ITI - Health Sanitary Inspector",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Problem solving",
+      "Technical know-how",
+      "Safety",
+      "Precision"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Hotel Front Office",
+      "Certificate in Office Assistant",
+      "ITI - Tool & Die Maker"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Patient Care Assistant",
+      "ITI - Lift & Escalator Mechanic",
+      "ITI - Leather Goods Maker"
+    ],
+    "similarDegrees": [
+      "Bachelor of Vocation Food Processing",
+      "Certificate in Laptop & Computer Repairing",
+      "ITI - Fitter"
+    ],
+    "progressionPath": "ITI - Health Sanitary Inspector → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00041",
+    "name": "ITI - Dental Laboratory Equipment Technician",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Technical know-how",
+      "Precision",
+      "Safety",
+      "Problem solving",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Plumbing",
+      "Certificate in Videography",
+      "ITI - Sewing Technology"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Personality Development",
+      "Certificate in Office Assistant",
+      "ITI - Leather Goods Maker"
+    ],
+    "similarDegrees": [
+      "ITI - Painter",
+      "ITI - Mason",
+      "ITI - Laboratory Assistant"
+    ],
+    "progressionPath": "ITI - Dental Laboratory Equipment Technician → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00042",
+    "name": "ITI - Plate Maker cum Impositor",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Technical know-how",
+      "Precision",
+      "Safety",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Bachelor of Vocation Healthcare",
+      "Certificate in Food & Beverage Service",
+      "ITI - Fireman"
+    ],
+    "alternativeDegrees": [
+      "ITI - Welder",
+      "Certificate in Medical Lab Technician",
+      "Certificate in Personality Development"
+    ],
+    "similarDegrees": [
+      "Certificate in Data Entry Operator",
+      "Certificate in Personality Development",
+      "ITI - Fitter"
+    ],
+    "progressionPath": "ITI - Plate Maker cum Impositor → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00043",
+    "name": "ITI - Desktop Publishing Operator",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Precision",
+      "Manual dexterity",
+      "Problem solving",
+      "Safety",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Turner",
+      "ITI - Tool & Die Maker",
+      "ITI - Rubber Technician"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Driving & Auto Maintenance",
+      "Certificate in Masonry",
+      "ITI - Driver cum Mechanic"
+    ],
+    "similarDegrees": [
+      "Certificate in Personality Development",
+      "ITI - Footwear Maker",
+      "ITI - Network Technician"
+    ],
+    "progressionPath": "ITI - Desktop Publishing Operator → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00044",
+    "name": "ITI - Photographer",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Safety",
+      "Precision",
+      "Technical know-how",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Laptop & Computer Repairing",
+      "ITI - Baker & Confectioner",
+      "ITI - Front Office Assistant"
+    ],
+    "alternativeDegrees": [
+      "ITI - Maintenance Mechanic",
+      "ITI - Baker & Confectioner",
+      "Bachelor of Vocation Healthcare"
+    ],
+    "similarDegrees": [
+      "ITI - Agro Processing",
+      "ITI - Laboratory Assistant",
+      "Certificate in Handloom Weaving"
+    ],
+    "progressionPath": "ITI - Photographer → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00045",
+    "name": "ITI - Plastic Processing Operator",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Precision",
+      "Safety",
+      "Problem solving",
+      "Technical know-how",
+      "Manual dexterity"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Poultry Farming",
+      "Certificate in Bakery & Confectionery",
+      "Bachelor of Vocation Logistics"
+    ],
+    "alternativeDegrees": [
+      "ITI - Surveyor",
+      "ITI - Health Sanitary Inspector",
+      "ITI - Cutting & Sewing"
+    ],
+    "similarDegrees": [
+      "ITI - Food Production",
+      "Certificate in Data Entry Operator",
+      "Certificate in Housekeeping"
+    ],
+    "progressionPath": "ITI - Plastic Processing Operator → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00046",
+    "name": "ITI - Rubber Technician",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Technical know-how",
+      "Precision",
+      "Manual dexterity",
+      "Problem solving"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Bachelor of Vocation Logistics",
+      "ITI - Surveyor",
+      "Certificate in Beekeeping"
+    ],
+    "alternativeDegrees": [
+      "Bachelor of Vocation Automobile",
+      "Certificate in CCTV Installation",
+      "ITI - Plumber"
+    ],
+    "similarDegrees": [
+      "ITI - Food Production",
+      "Certificate in Laptop & Computer Repairing",
+      "ITI - Fireman"
+    ],
+    "progressionPath": "ITI - Rubber Technician → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00047",
+    "name": "ITI - Leather Goods Maker",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Problem solving",
+      "Precision",
+      "Technical know-how",
+      "Safety"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Air Hostess / Cabin Crew Training",
+      "Certificate in Pottery & Ceramics",
+      "ITI - Housekeeper"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Office Assistant",
+      "Certificate in Data Entry Operator",
+      "ITI - Driver cum Mechanic"
+    ],
+    "similarDegrees": [
+      "Bachelor of Vocation Healthcare",
+      "Certificate in CCTV Installation",
+      "ITI - Weaving Technician"
+    ],
+    "progressionPath": "ITI - Leather Goods Maker → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00048",
+    "name": "ITI - Footwear Maker",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Problem solving",
+      "Safety",
+      "Technical know-how",
+      "Manual dexterity",
+      "Precision"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "ITI - Marine Fitter",
+      "ITI - Plastic Processing Operator",
+      "Certificate in Video Editing"
+    ],
+    "alternativeDegrees": [
+      "Certificate in Floriculture & Gardening",
+      "ITI - Forger & Heat Treater",
+      "ITI - Leather Goods Maker"
+    ],
+    "similarDegrees": [
+      "ITI - Computer Operator & Programming Assistant",
+      "Certificate in Patient Care Assistant",
+      "Certificate in Office Assistant"
+    ],
+    "progressionPath": "ITI - Footwear Maker → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00049",
+    "name": "ITI - Spinning Technician",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Home Science",
+      "Computer Applications"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "Skill assessment",
+      "ITI entrance"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Safety",
+      "Manual dexterity",
+      "Problem solving",
+      "Technical know-how",
+      "Precision"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Pottery & Ceramics",
+      "Certificate in Medical Lab Technician",
+      "ITI - Photographer"
+    ],
+    "alternativeDegrees": [
+      "ITI - Instrument Mechanic",
+      "Fellowship in Critical Care",
+      "Certificate in Handloom Weaving"
+    ],
+    "similarDegrees": [
+      "ITI - Health Sanitary Inspector",
+      "Certificate in Data Entry Operator",
+      "ITI - Fireman"
+    ],
+    "progressionPath": "ITI - Spinning Technician → Senior specialist / professor / industry leadership"
+  },
+  {
+    "id": "CU00050",
+    "name": "ITI - Weaving Technician",
+    "degreeType": "Certification/ITI",
+    "level": "After Class 10",
+    "streams": [
+      "Vocational",
+      "Open to All Streams"
+    ],
+    "cluster": "Skilled Trades & Vocational",
+    "clusterKey": "vocational",
+    "subjects": [
+      "Computer Applications",
+      "Home Science"
+    ],
+    "duration": "6 months - 2 years",
+    "country": "India (similar trades abroad)",
+    "eligibility": "Passed Class 10 (stream/trade dependent)",
+    "entranceExams": [
+      "ITI entrance",
+      "Skill assessment"
+    ],
+    "whatYouStudy": "Vocational training builds practical, job-ready trade skills.",
+    "skills": [
+      "Manual dexterity",
+      "Precision",
+      "Problem solving",
+      "Safety",
+      "Technical know-how"
+    ],
+    "topCareers": [
+      "Skilled Technician",
+      "Self-employed Professional",
+      "Supervisor",
+      "Service Provider"
+    ],
+    "difficulty": "Low-Medium",
+    "costRange": "Low (INR 0.1-1.5L)",
+    "scholarship": "Govt skill scheme support",
+    "industryDemand": "Medium",
+    "futureDemand": "Medium",
+    "aiImpactRisk": "Low",
+    "aiProofScore": 8,
+    "salaryEntry": "INR 2-3 LPA",
+    "salaryMid": "INR 3-5 LPA",
+    "salarySenior": "INR 6-9 LPA",
+    "remoteWork": "Medium",
+    "govtOpportunities": "Medium",
+    "privateOpportunities": "Very High",
+    "entrepreneurship": "Low",
+    "research": "Low",
+    "globalMobility": 6,
+    "description": "Vocational training builds practical, job-ready trade skills.",
+    "workEnvironment": "Workshops, sites, service centres",
+    "typicalDay": "Build, repair, install and service with hands-on skills",
+    "personalityFit": "Practical, skilled, hands-on doers",
+    "riasec": "Realistic",
+    "mbti": "ISTP, ESTP, ISTJ",
+    "multipleIntelligence": "Bodily-Kinesthetic, Spatial",
+    "futureOutlook": "Steady; skilled trades stay in demand",
+    "relatedDegrees": [
+      "Certificate in Floriculture & Gardening",
+      "Bachelor of Vocation Mobile Application Development",
+      "ITI - Plate Maker cum Impositor"
+    ],
+    "alternativeDegrees": [
+      "ITI - Electrician",
+      "ITI - Cutting & Sewing",
+      "Certificate in Solar Panel Installation"
+    ],
+    "similarDegrees": [
+      "Certificate in Housekeeping",
+      "ITI - Footwear Maker",
+      "Certificate in Bakery & Confectionery"
+    ],
+    "progressionPath": "ITI - Weaving Technician → Senior specialist / professor / industry leadership"
+  }
+]

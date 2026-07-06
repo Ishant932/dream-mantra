@@ -80,7 +80,7 @@ export const pillars = [
       'Salary & hiring trends',
       'Emerging vs declining roles',
       'Regional opportunity mapping',
-      '950+ career library reference',
+      '1000+ career library reference',
     ],
     link: '/careers',
   },

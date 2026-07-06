@@ -120,7 +120,7 @@ export const programPathwaysEn = {
       'choosing the right stream without regret after Class 11?',
       'convincing parents with data — not arguments — about your career direction?',
       'understanding which board and subject combination fits your personality?',
-      'seeing beyond "Doctor-Engineer" to 950+ real career options?',
+      'seeing beyond "Doctor-Engineer" to 1000+ real career options?',
       'building a Plan A and Plan B before boards begin?',
       'studying smarter using your natural learning style — not just harder?',
     ],

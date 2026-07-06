@@ -175,7 +175,7 @@ export const partnerDetailsEn = {
       'Career counsellor certification pathway with Dream Mantra credentials',
       'Referral income on every successful student enrollment',
       'Training on Mind Mapping & Skill Mapping report interpretation',
-      'Access to 950+ career library for classroom and parent discussions',
+      'Access to 1000+ career library for classroom and parent discussions',
       'Dedicated partner support manager via WhatsApp',
       'Marketing kit for parent outreach — posters, scripts, FAQs',
       'Monthly mentor webinars with senior counsellors',

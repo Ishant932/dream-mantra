@@ -46,7 +46,6 @@ export const siteEn = {
     links: [
       { to: '/pillars', label: '7 Pillars Framework' },
       { to: '/#certifications', label: 'Certifications' },
-      { to: '/counselling?tab=book', label: 'Book Session' },
       { to: '/about', label: 'About Us' },
       { to: '/blog', label: 'Blog' },
       { to: '/terms', label: 'Terms & Conditions' },
@@ -294,7 +293,7 @@ export const siteEn = {
       solutionPoints: [
         'Mind Mapping (DMIT) — fingerprint science validated in 30+ countries',
         'Skill Mapping — 7 frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
-        '950+ career library with education paths, salaries & roadmaps',
+        '1000+ career library with education paths, salaries & roadmaps',
         '1-on-1 sessions with Govt & IIT Madras certified counsellors',
         'Jaipur centres (Raja Park, Shastri Nagar, Nirman Nagar) + Pan-India online',
         'Free initial consultation — Mon–Sat, 11am–7pm · 9680102276',
@@ -511,7 +510,7 @@ export const siteEn = {
     toolkitServices: [
       {
         title: 'Career Library',
-        desc: 'Explore 950+ careers with skills, salaries, education paths, and growth.',
+        desc: 'Explore 1000+ careers with skills, salaries, education paths, and growth.',
       },
       {
         title: 'Modules',
@@ -791,7 +790,7 @@ export const siteEn = {
 
     dashboardTabs: [
       { id: 'overview', label: 'Overview', desc: 'Profile, stats & activity' },
-      { id: 'careers', label: 'Career Library', desc: 'Explore 950+ career paths' },
+      { id: 'careers', label: 'Career Library', desc: 'Explore 1000+ career paths' },
       { id: 'assess', label: 'Modules', desc: 'Mind Mapping & Skill Mapping modules' },
       { id: 'process-guides', label: 'Process & Take test', desc: 'Step guides & skill mapping forms' },
       { id: 'reports', label: 'My Reports', desc: 'Assessment reports & deliverables' },
@@ -1031,7 +1030,7 @@ export const siteEn = {
       whyDifferent: [
         'Science-backed Mind Mapping + 7 Skill Mapping frameworks — not guesswork or astrology',
         '7-Pillar holistic career model (Counselling → Job Ready + AI Career Launchpad)',
-        '950+ career library with detailed roadmaps, salaries & entrance exams',
+        '1000+ career library with detailed roadmaps, salaries & entrance exams',
         'Free consultation — Mon–Sat 11am–7pm · Call 9680102276',
         'Certified counsellors: Govt of India, IIT Madras, NLP, Reliance Foundation',
         'Jaipur centres + Pan-India online counselling — same quality everywhere',
@@ -1040,7 +1039,7 @@ export const siteEn = {
       ],
       impactStats: [
         { value: '7,000+', label: 'Counsellings completed' },
-        { value: '950+', label: 'Careers in library' },
+        { value: '1000+', label: 'Careers in library' },
         { value: '30+', label: 'Countries validate DMIT' },
         { value: '7', label: 'Psychometric frameworks' },
       ],
@@ -1051,7 +1050,7 @@ export const siteEn = {
         tableHeaders: ['Factor', 'Friends / relatives advice', 'Generic online tests', 'Dream Mantra counselling'],
         rows: [
           ['Scientific basis', 'Personal opinion & social bias', 'Single questionnaire, often unverified', 'DMIT in 30+ countries + 7 psychometric frameworks'],
-          ['Personalisation', 'One-size advice from their experience', 'Automated PDF with generic text', 'Fingerprint + behaviour profile mapped to 950+ India careers'],
+          ['Personalisation', 'One-size advice from their experience', 'Automated PDF with generic text', 'Fingerprint + behaviour profile mapped to 1000+ India careers'],
           ['Pressure & labels', 'Comparison with cousins & neighbours', 'Ranking without context', 'No pressure. No comparison. Clarity only.'],
           ['Counsellor support', 'Not trained in career psychology', 'No human follow-up', 'Govt & IIT Madras certified counsellors — 1-on-1 sessions'],
           ['Roadmap depth', 'Vague “take science” suggestions', 'Career names only', 'Education path, exams (JEE/NEET/CUET), salary bands, institutes'],
@@ -1078,7 +1077,7 @@ export const siteEn = {
           { label: 'Students feel confused about stream choice', value: '87%', source: 'Industry surveys — Class 9–12 India' },
           { label: 'Parents want scientific guidance', value: '92%', source: 'Urban & tier-2 counselling demand' },
           { label: 'Dream Mantra counsellings completed', value: '7,000+', source: 'Dream Mantra records' },
-          { label: 'Career paths mapped in-app', value: '950+', source: 'India-focused career library' },
+          { label: 'Career paths mapped in-app', value: '1000+', source: 'India-focused career library' },
           { label: 'Students know only 7–10 career names', value: '90%', source: 'National career awareness studies' },
           { label: 'Graduates underemployed in India', value: '65%', source: 'Labour market & graduate outcome reports' },
         ],
@@ -1206,7 +1205,7 @@ export const siteEn = {
       { icon: '🎯', title: 'Accurate Stream Fit', desc: 'Confirm PCM, PCB, Commerce or Arts with scientific data — not marks or peer pressure alone.' },
       { icon: '👨‍👩‍👧', title: 'Family-Aligned Guidance', desc: "Reports give parents objective insight — counsellors align expectations with the child's real strengths." },
       { icon: '🗺️', title: 'Personalised Roadmap', desc: 'Post-report counselling session converts data into a step-by-step academic and career plan.' },
-      { icon: '📈', title: 'Market-Aware Decisions', desc: 'Counsellors connect your profile to 950+ careers, exams, and current industry trends.' },
+      { icon: '📈', title: 'Market-Aware Decisions', desc: 'Counsellors connect your profile to 1000+ careers, exams, and current industry trends.' },
       { icon: '🔄', title: 'Follow-Up Support', desc: 'Course correction sessions available as goals evolve through Class 11-12 and college.' },
     ],
     comboReportIncludes: [
@@ -1315,7 +1314,7 @@ export const siteEn = {
         'Salary & hiring trends',
         'Emerging vs declining roles',
         'Regional opportunity mapping',
-        '950+ career library reference',
+        '1000+ career library reference',
       ],
     },
     {
@@ -1382,7 +1381,7 @@ export const siteEn = {
               icon: '🧭',
               desc: 'For students and families ready to shortlist careers, courses, colleges, and admission steps — with a personalised roadmap.',
               points: [
-                'Career shortlisting from 950+ options in our library',
+                'Career shortlisting from 1000+ options in our library',
                 'Course, college & entrance exam planning',
                 'Admission support and documentation guidance',
                 'Working professionals: switch, growth & role alignment',
@@ -1522,7 +1521,7 @@ export const siteEn = {
         },
       ],
       library: {
-        title: '950+ Career Library',
+        title: '1000+ Career Library',
         desc: 'Detailed profiles — education paths, salary benchmarks, skills, entrance exams, roadmaps & AI resilience scores.',
         cta: 'Browse All Careers',
         sampleCareers: [

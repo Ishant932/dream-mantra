@@ -56,10 +56,18 @@ export default function CareersPage() {
             <Sparkles className="w-4 h-4" /> Dream Mantra Career Library
           </span>
           <h1 className="font-display text-4xl md:text-6xl font-extrabold text-sand-900 dark:text-amber-50 mb-4">
-            <span className="gradient-text">950+</span> {t('careers.title')}
+            <span className="gradient-text">1300+</span> {t('careers.title')}
           </h1>
           <p className="text-lg text-sand-600 dark:text-[var(--text-secondary)] max-w-2xl mx-auto">
             {t('careers.subtitle')} — education paths, salary insights, skills &amp; exams.
+          </p>
+          <p className="mt-4">
+            <Link
+              to="/careers/pathways"
+              className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700 dark:text-amber-300 hover:underline"
+            >
+              Explore ITI &amp; degree pathways →
+            </Link>
           </p>
         </motion.div>
       </section>
@@ -98,7 +106,7 @@ export default function CareersPage() {
             </div>
           </form>
           <p className="text-sm text-sand-600 dark:text-[var(--text-secondary)] mt-3">
-            Showing {data.careers?.length || 0} of {data.total || 950}+ opportunities
+            Showing {data.careers?.length || 0} of {data.total || 1300}+ opportunities
           </p>
 
           {data.categories?.length > 0 && (

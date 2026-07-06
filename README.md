@@ -20,7 +20,7 @@ dreams-mantra/
 - **Hindi / English** toggle
 - **JWT authentication** — email/phone + password signup & login
 - **Two-factor authentication (2FA)** — Google Authenticator / Authy (optional)
-- **950+ Career Library** with roadmaps, salary, skills
+- **1000+ Career Library** with roadmaps, salary, skills
 - **AI Career Advisor** — Esh chatbot (Gemini) + dashboard guidance
 - **User & Admin dashboards** — reports, bookings, assessments, payments
 - **Mind Mapping, Skill Mapping, CRP** programmes

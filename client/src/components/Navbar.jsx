@@ -155,7 +155,7 @@ export default function Navbar({ scrolled = false }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobile, setMobile] = useState(false);
-  const { counsellingMega, crpMega, quickLinks } = useSiteNav();
+  const { counsellingMega, crpMega } = useSiteNav();
   const navQuickMenu = d('navQuickMenu');
   const mainNav = buildMainNav(t, counsellingMega, crpMega);
   const navLite = isMobilePerf();
@@ -301,6 +301,17 @@ export default function Navbar({ scrolled = false }) {
               exit="exit"
               aria-label="Mobile navigation"
             >
+              <div className="nav-mobile-drawer-header">
+                <span className="nav-mobile-drawer-title">{t('nav.menu')}</span>
+                <button
+                  type="button"
+                  className="nav-mobile-drawer-close"
+                  onClick={closeMobile}
+                  aria-label="Close menu"
+                >
+                  <X className="w-5 h-5" strokeWidth={2.25} />
+                </button>
+              </div>
               <div className="nav-mobile-menu overflow-y-auto overscroll-contain">
                 <div className="nav-mobile-auth">
                   {user ? (
@@ -336,10 +347,7 @@ export default function Navbar({ scrolled = false }) {
                   <MobileNavLinks key={item.label} item={item} onClose={closeMobile} />
                 ))}
 
-                <div className="nav-mobile-section">
-                  <p className="nav-mobile-link nav-mobile-link--title text-brand-700" style={{ '--i': 20 }}>
-                    {t('nav.explore')}
-                  </p>
+                <div className="nav-mobile-section nav-mobile-section--discover">
                   {navQuickMenu.columns.map((col) => (
                     <div key={col.title} className="mb-2">
                       <p className="text-xs font-semibold text-royalOrange pl-1 mb-1">{col.title}</p>
@@ -358,22 +366,6 @@ export default function Navbar({ scrolled = false }) {
                   ))}
                 </div>
 
-                {quickLinks?.links?.length > 0 && (
-                  <div className="nav-mobile-section nav-mobile-section--quick">
-                    <p className="text-xs font-semibold text-royalOrange pl-1 mb-1">{quickLinks.title}</p>
-                    {quickLinks.links.map((link, i) => (
-                      <Link
-                        key={link.to}
-                        to={link.to}
-                        onClick={closeMobile}
-                        className="nav-mobile-link"
-                        style={{ '--i': 30 + i }}
-                      >
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
               </div>
             </motion.aside>
           </>

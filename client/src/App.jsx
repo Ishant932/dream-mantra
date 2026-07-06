@@ -27,6 +27,7 @@ const PartnerPage = lazyWithRetry(() => import('./pages/PartnerPage'));
 const CounsellingHub = lazyWithRetry(() => import('./pages/CounsellingHub'));
 const CounsellorsHub = lazyWithRetry(() => import('./pages/CounsellorsHub'));
 const CareersPage = lazyWithRetry(() => import('./pages/CareersPage'));
+const DegreePathwaysPage = lazyWithRetry(() => import('./pages/DegreePathwaysPage'));
 const PillarsPage = lazyWithRetry(() => import('./pages/PillarsPage'));
 const CRPExplorePage = lazyWithRetry(() => import('./pages/CRPExplorePage'));
 const CRPLaunchPage = lazyWithRetry(() => import('./pages/CRPLaunchPage'));
@@ -78,6 +79,7 @@ export default function App() {
               <Route path="crp/explore" element={<CRPExplorePage />} />
               <Route path="crp/launch" element={<CRPLaunchPage />} />
               <Route path="careers" element={<CareersPage />} />
+              <Route path="careers/pathways" element={<DegreePathwaysPage />} />
               <Route path="careers/:slug" element={<CareerDetailPage />} />
               <Route path="blog" element={<BlogPage />} />
               <Route path="blog/:slug" element={<BlogPostPage />} />

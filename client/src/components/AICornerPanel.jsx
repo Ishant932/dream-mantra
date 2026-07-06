@@ -14,7 +14,7 @@ const QUICK_PROMPTS = {
     'What is AI Career Launchpad?',
     'Commerce career options',
     'Class 9-10 stream selection',
-    '950+ careers — how to explore?',
+    '1000+ careers — how to explore?',
     'Jaipur centre locations',
   ],
   hi: [
@@ -26,7 +26,7 @@ const QUICK_PROMPTS = {
     'AI Career Launchpad',
     'Commerce careers',
     'Class 9-10 stream',
-    '950+ careers',
+    '1000+ careers',
     'Jaipur location',
   ],
 };

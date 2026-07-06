@@ -10,7 +10,7 @@ export async function loadCareersLocal(params = {}) {
 }
 
 export function getCachedCareersCount() {
-  return 950;
+  return 1316;
 }
 
 export async function getCareerBySlugLocal(slug) {

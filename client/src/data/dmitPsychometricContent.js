@@ -68,7 +68,7 @@ export const COMBO_BENEFITS = [
   { icon: '🎯', title: 'Accurate Stream Fit', desc: 'Confirm PCM, PCB, Commerce or Arts with scientific data — not marks or peer pressure alone.' },
   { icon: '👨‍👩‍👧', title: 'Family-Aligned Guidance', desc: 'Reports give parents objective insight — counsellors align expectations with the child\'s real strengths.' },
   { icon: '🗺️', title: 'Personalised Roadmap', desc: 'Post-report counselling session converts data into a step-by-step academic and career plan.' },
-  { icon: '📈', title: 'Market-Aware Decisions', desc: 'Counsellors connect your profile to 950+ careers, exams, and current industry trends.' },
+  { icon: '📈', title: 'Market-Aware Decisions', desc: 'Counsellors connect your profile to 1000+ careers, exams, and current industry trends.' },
   { icon: '🔄', title: 'Follow-Up Support', desc: 'Course correction sessions available as goals evolve through Class 11-12 and college.' },
 ];
 

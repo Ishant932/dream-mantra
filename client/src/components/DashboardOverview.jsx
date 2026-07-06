@@ -70,7 +70,7 @@ export default function DashboardOverview({
           value={counsellingAccess ? (upcomingBookings.length ? 'Booked' : 'Unlocked') : 'Locked'}
           accent={counsellingAccess ? 'emerald' : 'muted'}
         />
-        <QuickStat icon={Briefcase} label="Careers" value="950+" accent="blue" />
+        <QuickStat icon={Briefcase} label="Careers" value="1300+" accent="blue" />
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">

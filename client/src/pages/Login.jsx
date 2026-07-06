@@ -194,7 +194,7 @@ export default function Login() {
             transition={{ delay: 0.5 }}
             className="mt-10 space-y-3"
           >
-            {['950+ Career Opportunities', 'AI Career Advisor (Esh)', 'Mind Mapping & Skill Mapping access'].map((item) => (
+            {['1000+ Career Opportunities', 'AI Career Advisor (Esh)', 'Mind Mapping & Skill Mapping access'].map((item) => (
               <div key={item} className="flex items-center gap-3 text-amber-100">
                 <Sparkles className="w-5 h-5 text-amber-400 shrink-0" />
                 <span>{item}</span>

@@ -198,7 +198,7 @@ export default function CareerLibraryExplorer({
             animate={{ scale: 1, opacity: 1 }}
             className="career-lib-header-badge shrink-0 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-gradient-to-r from-amber-600 to-orange-600 text-amber-50 text-xs sm:text-sm font-bold shadow-lg shadow-amber-500/25"
           >
-            {data.total || 950} careers
+            {data.total || 1300} careers
           </motion.span>
         </motion.div>
       )}
@@ -390,7 +390,7 @@ export default function CareerLibraryExplorer({
 
           <p className="career-lib-results-meta">
             Showing <strong>{data.careers?.length || 0}</strong> of{' '}
-            <strong>{data.total || 950}</strong> careers
+            <strong>{data.total || 1300}</strong> careers
             {query && <> matching &ldquo;{query}&rdquo;</>}
             {data.pages > 1 && <> · Page {page} of {data.pages}</>}
           </p>

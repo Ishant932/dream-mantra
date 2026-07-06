@@ -19,7 +19,7 @@ const cards = [
 
 const typingLines = [
   'Analysing your strengths…',
-  'Matching 950+ careers…',
+  'Matching 1000+ careers…',
   'Building your roadmap…',
 ];
 
@@ -61,7 +61,7 @@ export default function HomeAIShowcase() {
               Meet <span className="gradient-text">Esh</span> — Your AI Career Partner
             </h2>
             <p className="text-secondary-theme text-lg leading-relaxed mb-8 max-w-lg">
-              Stream advice, Mind Mapping insights, AI Career Launchpad, dashboard tools &amp; 950+ careers — all in one intelligent experience.
+              Stream advice, Mind Mapping insights, AI Career Launchpad, dashboard tools &amp; 1000+ careers — all in one intelligent experience.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/signup" className="btn-primary">

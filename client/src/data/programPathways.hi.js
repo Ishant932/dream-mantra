@@ -120,7 +120,7 @@ export const programPathwaysHi = {
       'Class 11 ke baad regret ke bina sahi stream choose karna?',
       'parents ko data se convince karna — arguments se nahi?',
       'personality ke hisaab se board aur subject combination samajhna?',
-      '"Doctor-Engineer" ke alawa 950+ real careers dekhna?',
+      '"Doctor-Engineer" ke alawa 1000+ real careers dekhna?',
       'boards se pehle Plan A aur Plan B banana?',
       'natural learning style se smarter study — sirf harder nahi?',
     ],

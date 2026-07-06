@@ -326,7 +326,7 @@ export default function UserDashboard() {
     { label: 'Profile', value: `${profileCompletion}%`, icon: User },
     { label: t('dashboard.modules'), value: data.stats?.assessments ?? 0, icon: FlaskConical },
     { label: 'Consultations', value: data.stats?.consultations ?? 0, icon: Calendar },
-    { label: 'Career Options', value: '950+', icon: Briefcase },
+    { label: 'Career Options', value: '1300+', icon: Briefcase },
   ];
 
   if (loading) return <DashboardLoading />;

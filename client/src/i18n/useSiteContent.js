@@ -50,7 +50,7 @@ export function useHomeContent() {
 
   const stats = [
     { value: 7000, suffix: '+', label: statsLabels.clientsServed },
-    { value: 950, suffix: '+', label: statsLabels.careersMapped },
+    { value: 1000, suffix: '+', label: statsLabels.careersMapped },
     { value: 30, suffix: '+', label: statsLabels.countriesValidated },
     { value: 7, suffix: '', label: statsLabels.pillarFramework },
   ];

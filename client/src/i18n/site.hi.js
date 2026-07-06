@@ -46,7 +46,6 @@ export const siteHi = {
     links: [
       { to: '/pillars', label: '7 स्तंभ फ्रेमवर्क' },
       { to: '/#certifications', label: 'Certifications' },
-      { to: '/counselling?tab=book', label: 'सत्र बुक करें' },
       { to: '/about', label: 'हमारे बारे में' },
       { to: '/blog', label: 'ब्लॉग' },
       { to: '/terms', label: 'नियम और शर्तें' },
@@ -291,7 +290,7 @@ export const siteHi = {
       solutionPoints: [
         'DMIT fingerprint science — 30+ देशों में validated',
         'Skill Mapping में 7 psychometric frameworks',
-        '950+ career library — live market data के साथ',
+        '1000+ career library — live market data के साथ',
         'Certified counsellors के साथ 1-on-1 sessions',
       ],
     },
@@ -506,7 +505,7 @@ export const siteHi = {
     toolkitServices: [
       {
         title: 'Career Library',
-        desc: '950+ careers — skills, salaries, education paths और growth के साथ explore करें।',
+        desc: '1000+ careers — skills, salaries, education paths और growth के साथ explore करें।',
       },
       {
         title: 'Modules',
@@ -726,7 +725,7 @@ export const siteHi = {
 
     dashboardTabs: [
       { id: 'overview', label: 'अवलोकन', desc: 'Profile, stats और activity' },
-      { id: 'careers', label: 'Career Library', desc: '950+ career paths explore करें' },
+      { id: 'careers', label: 'Career Library', desc: '1000+ career paths explore करें' },
       { id: 'assess', label: 'Modules', desc: 'Mind Mapping और Skill Mapping modules' },
       { id: 'process-guides', label: 'Process & Take test', desc: 'Guides, steps और skill mapping forms' },
       { id: 'reports', label: 'My Reports', desc: 'Assessment reports और deliverables' },
@@ -962,7 +961,7 @@ export const siteHi = {
       whyDifferent: [
         'Science-backed Mind Mapping + 7 Skill Mapping frameworks — guesswork नहीं',
         '7-Pillar holistic career model (Counselling → Job Ready + AI Career Launchpad)',
-        '950+ career library detailed roadmaps के साथ',
+        '1000+ career library detailed roadmaps के साथ',
         'Free consultation — Mon–Sat 11am–7pm',
         'Certified counsellors: Govt of India, IIT Madras, NLP, Reliance Foundation',
         'Jaipur centres + Pan-India online counselling',
@@ -970,7 +969,7 @@ export const siteHi = {
       ],
       impactStats: [
         { value: '7,000+', label: 'Counsellings completed' },
-        { value: '950+', label: 'Careers in library' },
+        { value: '1000+', label: 'Careers in library' },
         { value: '30+', label: 'Countries validate DMIT' },
         { value: '7', label: 'Psychometric frameworks' },
       ],
@@ -981,7 +980,7 @@ export const siteHi = {
         tableHeaders: ['Factor', 'Friends / relatives advice', 'Generic online tests', 'Dream Mantra counselling'],
         rows: [
           ['Scientific basis', 'Personal opinion & social bias', 'Single questionnaire, often unverified', 'DMIT 30+ countries + 7 psychometric frameworks'],
-          ['Personalisation', 'Unke experience se one-size advice', 'Generic automated PDF', 'Fingerprint + behaviour profile — 950+ India careers'],
+          ['Personalisation', 'Unke experience se one-size advice', 'Generic automated PDF', 'Fingerprint + behaviour profile — 1000+ India careers'],
           ['Pressure & labels', 'Cousins & neighbours se comparison', 'Context ke bina ranking', 'No pressure. No comparison. Clarity only.'],
           ['Counsellor support', 'Career psychology mein trained nahi', 'No human follow-up', 'Govt & IIT Madras certified — 1-on-1 sessions'],
           ['Roadmap depth', 'Vague “science lo” suggestions', 'Sirf career names', 'Education path, exams (JEE/NEET/CUET), salary, institutes'],
@@ -1008,7 +1007,7 @@ export const siteHi = {
           { label: 'Students confused about stream choice', value: '87%', source: 'Class 9–12 India surveys' },
           { label: 'Parents want scientific guidance', value: '92%', source: 'Urban & tier-2 counselling demand' },
           { label: 'Dream Mantra counsellings completed', value: '7,000+', source: 'Dream Mantra records' },
-          { label: 'Career paths mapped in-app', value: '950+', source: 'India-focused career library' },
+          { label: 'Career paths mapped in-app', value: '1000+', source: 'India-focused career library' },
           { label: 'Students know only 7–10 career names', value: '90%', source: 'National career awareness studies' },
           { label: 'Graduates underemployed in India', value: '65%', source: 'Labour market reports' },
         ],
@@ -1137,7 +1136,7 @@ export const siteHi = {
       { icon: '🎯', title: 'Accurate Stream Fit', desc: 'PCM, PCB, Commerce या Arts scientific data से confirm करें — marks या peer pressure alone नहीं।' },
       { icon: '👨‍👩‍👧', title: 'Family-Aligned Guidance', desc: 'Reports parents को objective insight देते हैं — counsellors expectations को child की real strengths से align करते हैं।' },
       { icon: '🗺️', title: 'Personalised Roadmap', desc: 'Post-report counselling session data को step-by-step academic और career plan में convert करता है।' },
-      { icon: '📈', title: 'Market-Aware Decisions', desc: 'Counsellors profile को 950+ careers, exams और current industry trends से connect करते हैं।' },
+      { icon: '📈', title: 'Market-Aware Decisions', desc: 'Counsellors profile को 1000+ careers, exams और current industry trends से connect करते हैं।' },
       { icon: '🔄', title: 'Follow-Up Support', desc: 'Class 11-12 और college में goals evolve होने पर course correction sessions available।' },
     ],
     comboReportIncludes: [
@@ -1244,7 +1243,7 @@ export const siteHi = {
         'Salary और hiring trends',
         'Emerging vs declining roles',
         'Regional opportunity mapping',
-        '950+ career library reference',
+        '1000+ career library reference',
       ],
     },
     {
@@ -1311,7 +1310,7 @@ export const siteHi = {
               icon: '🧭',
               desc: 'Careers, courses, colleges और admission steps shortlist करने के लिए — personalised roadmap के साथ।',
               points: [
-                '950+ options में से career shortlisting',
+                '1000+ options में से career shortlisting',
                 'Course, college और entrance exam planning',
                 'Admission support और documentation guidance',
                 'Working professionals: switch, growth और role alignment',
@@ -1419,7 +1418,7 @@ export const siteHi = {
     },
     marketplace: {
       title: 'मार्केटप्लेस',
-      subtitle: 'वैज्ञानिक tests, 950+ careers, AI tools और career readiness — सब एक जगह',
+      subtitle: 'वैज्ञानिक tests, 1000+ careers, AI tools और career readiness — सब एक जगह',
       cta: 'Tests ब्राउज़ करें',
       tests: {
         premiumTitle: 'Premium Assessments',
@@ -1450,7 +1449,7 @@ export const siteHi = {
         },
       ],
       library: {
-        title: '950+ Career Library',
+        title: '1000+ Career Library',
         desc: 'Detailed profiles — education paths, salary benchmarks, skills, entrance exams, roadmaps और AI resilience scores।',
         cta: 'सभी Careers ब्राउज़ करें',
         sampleCareers: [
