@@ -53,6 +53,12 @@ function requiresMandatory2FA(user) {
   return user?.role === 'admin';
 }
 
+function shouldPromptFor2FA(user) {
+  if (!user?.twoFactorEnabled || !user?.twoFactorSecret) return false;
+  if (user.role === 'admin' && process.env.ADMIN_REQUIRE_2FA !== 'true') return false;
+  return true;
+}
+
 function getAllAdmins() {
   return (getData().users || []).filter((u) => u.role === 'admin');
 }
@@ -238,7 +244,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     }
   }
 
-  if (user.twoFactorEnabled && user.twoFactorSecret) {
+  if (shouldPromptFor2FA(user)) {
     return res.json({
       requires2FA: true,
       tempToken: signTemp2FAToken(user),
