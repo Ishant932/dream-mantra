@@ -6,7 +6,7 @@ export default function PageTransition() {
   const outlet = useOutlet();
 
   return (
-    <div key={location.pathname + location.search} className="page-enter">
+    <div key={location.pathname} className="page-enter">
       {outlet}
     </div>
   );

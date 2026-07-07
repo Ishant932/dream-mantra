@@ -1,1 +1,0 @@
-import{f as e}from"./index-B7cp_iyn.js";function t(){return e.list({page:1,limit:1}).catch(()=>null)}async function n(r={}){return e.list(r)}async function c(r){return e.get(r)}export{c as g,n as l,t as p};

@@ -5,11 +5,10 @@ import SiteHeader from './SiteHeader';
 import Footer from './Footer';
 import AnimatedBackground from './AnimatedBackground';
 import PageTransition from './PageTransition';
-import ScrollRevealInit from './ScrollRevealInit';
 import ScrollToTop from './ScrollToTop';
 import HashScrollHandler from './HashScrollHandler';
 import ErrorBoundary from './ErrorBoundary';
-import { isMobilePerf, isPhoneViewport, runWhenIdle } from '../utils/mobilePerf';
+import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
 import { isMobileBottomNavVisible } from '../utils/mobileBottomNav';
 import MobileBottomNav from './MobileBottomNav';
 
@@ -40,17 +39,6 @@ export default function Layout() {
     || location.pathname.startsWith('/counsellor');
   const showMobileNavPadding = phoneNav && isMobileBottomNavVisible(location.pathname);
   const [loadChatbot, setLoadChatbot] = useState(!mobilePerf);
-  const [enableScrollReveal, setEnableScrollReveal] = useState(false);
-
-  useEffect(() => {
-    if (isMobilePerf()) return undefined;
-    let cancelled = false;
-    runWhenIdle(() => {
-      if (!cancelled) setEnableScrollReveal(true);
-    }, 2000);
-    return () => { cancelled = true; };
-  }, []);
-
   useEffect(() => {
     if (mobilePerf) return undefined;
     const id = window.setTimeout(() => setLoadChatbot(true), import.meta.env.PROD ? 3000 : 1000);
@@ -62,7 +50,6 @@ export default function Layout() {
       className={`layout-shell min-h-screen flex flex-col relative${isDashboard ? ' layout-shell--dashboard' : ''}${isDashboard && phoneNav ? ' layout-shell--dashboard-mobile' : ''}${showMobileNavPadding ? ' layout-shell--mobile-nav' : ''}`}
     >
       <AnimatedBackground />
-      {enableScrollReveal && <ScrollRevealInit />}
       <SiteHeader />
       <div className="site-header-spacer" aria-hidden="true" />
       <main className="flex-1 relative w-full min-w-0">

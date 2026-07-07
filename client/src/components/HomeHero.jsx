@@ -2,10 +2,9 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
-import { IMAGES } from '../data/content';
 import { isMobilePerf } from '../utils/mobilePerf';
 
-const HERO_BG_IMAGE = IMAGES.counsellingSession;
+const HERO_BG_IMAGE = '/images/owner-hero.png';
 
 const fadeLite = {
   initial: { opacity: 0, y: 18 },

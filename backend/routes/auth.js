@@ -49,6 +49,7 @@ function signTemp2FASetupToken(user) {
 }
 
 function requiresMandatory2FA(user) {
+  if (process.env.ADMIN_REQUIRE_2FA !== 'true') return false;
   return user?.role === 'admin';
 }
 
