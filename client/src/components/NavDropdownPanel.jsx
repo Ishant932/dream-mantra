@@ -21,9 +21,10 @@ const particles = Array.from({ length: 16 }, (_, i) => ({
 
 function PanelShell({ lite, variant, className, children }) {
   const meta = VARIANT_META[variant] || VARIANT_META.default;
-  const panelClass = `nav-mega-panel nav-mega-panel-${variant} ${lite ? 'nav-mega-panel--lite' : ''} ${className}`.trim();
+  const useLite = lite || import.meta.env.PROD;
+  const panelClass = `nav-mega-panel nav-mega-panel-${variant} ${useLite ? 'nav-mega-panel--lite' : ''} ${className}`.trim();
 
-  if (lite) {
+  if (useLite) {
     return (
       <div className={panelClass}>
         <div className="nav-mega-header nav-mega-header--lite">

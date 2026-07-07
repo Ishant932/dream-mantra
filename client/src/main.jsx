@@ -17,7 +17,7 @@ function applyPerformanceHints() {
   const tablet = window.matchMedia('(max-width: 1024px)').matches;
   const laptop = window.matchMedia('(max-width: 1280px)').matches;
   if (isPhoneViewport()) root.classList.add('is-phone');
-  if (narrow || coarse || laptop) root.classList.add('is-mobile-perf');
+  if (narrow || coarse || laptop || import.meta.env.PROD) root.classList.add('is-mobile-perf');
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     root.classList.add('is-mobile-perf', 'is-reduced-motion');
   }

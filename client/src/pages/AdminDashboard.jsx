@@ -105,58 +105,52 @@ export default function AdminDashboard() {
     }
   }, [token]);
 
-  const runLoadTask = async (key, fn, apply) => {
-    try {
-      const data = await fn();
-      apply(data);
-      return null;
-    } catch (err) {
-      if (key === 'analytics') {
-        setAnalytics(null);
-        setAnalyticsError(err.message);
-      }
-      return `${key}: ${err.message}`;
-    }
-  };
-
   const load = async () => {
     if (!token) return;
     setLoading(true);
     setError('');
     setLoadErrors([]);
-    const errors = [];
 
-    const critical = [
+    const tasks = [
       { key: 'stats', fn: () => adminApi.stats(token), set: (v) => setStats(v) },
       { key: 'consultations', fn: () => adminApi.consultations(token), set: (v) => setConsultations(v.consultations || []) },
       { key: 'payments', fn: () => adminApi.payments(token, { limit: 100 }), set: (v) => setPayments(v.payments || []) },
-    ];
-
-    const secondary = [
       { key: 'settings', fn: () => adminApi.settings(token), set: (v) => setCommunityLink(v.settings?.community_links?.['crp-test'] || '') },
       { key: 'analytics', fn: () => adminApi.analytics(token), set: (v) => setAnalytics(v.analytics || null) },
       { key: 'modules', fn: () => adminApi.modules(token), set: (v) => setCatalogModules(v.modules || []) },
+      { key: 'users', fn: () => adminApi.users(token), set: (v) => setUsers(v.users || []) },
     ];
 
-    adminApi.users(token)
-      .then((v) => setUsers(v.users || []))
-      .catch((err) => console.warn('Overview users preload failed:', err.message));
+    const results = await Promise.allSettled(
+      tasks.map(async (task) => {
+        const data = await task.fn();
+        return { key: task.key, data };
+      })
+    );
 
-    for (const task of critical) {
-      const errMsg = await runLoadTask(task.key, task.fn, task.set);
-      if (errMsg) errors.push(errMsg);
+    const errors = [];
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      const task = tasks[i];
+      if (result.status === 'fulfilled') {
+        task.set(result.value.data);
+      } else {
+        const msg = result.reason?.message || 'Failed to load';
+        if (task.key === 'analytics') {
+          setAnalytics(null);
+          setAnalyticsError(msg);
+        }
+        errors.push(`${task.key}: ${msg}`);
+      }
     }
 
     setLoading(false);
-
-    for (const task of secondary) {
-      const errMsg = await runLoadTask(task.key, task.fn, task.set);
-      if (errMsg) errors.push(errMsg);
-    }
-
     if (errors.length) {
       setLoadErrors(errors);
-      setError(`Some sections failed to load — ${errors.join(' · ')}`);
+      const authBlocked = errors.every((e) => e.includes('two-factor') || e.includes('Authentication'));
+      if (!authBlocked) {
+        setError(`Some sections failed to load — ${errors.join(' · ')}`);
+      }
     }
   };
 

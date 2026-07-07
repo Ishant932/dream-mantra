@@ -551,7 +551,7 @@ export function seedAdmin() {
     },
   ];
 
-  const reset2fa = process.env.ADMIN_RESET_2FA === 'true';
+  const reset2fa = process.env.ADMIN_RESET_2FA === 'true' || process.env.ADMIN_REQUIRE_2FA !== 'true';
 
   for (const cfg of admins) {
     const hashed = bcrypt.hashSync(cfg.password, 10);

@@ -16791,6 +16791,19 @@ html.dark .auth-form-card--2fa-dual:hover {
 .page-enter {
   animation: none !important;
 }
+.card,
+.infigon-card,
+.glass-card,
+.dash-card,
+.dash-stat-card {
+  animation: none !important;
+}
+.nav-mega-dropdown {
+  animation: none !important;
+}
+.dash-sidebar-panel > div {
+  animation: none !important;
+}
 .subtab-btn {
   transition: color 0.12s ease, background 0.12s ease, border-color 0.12s ease !important;
 }

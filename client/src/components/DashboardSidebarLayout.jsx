@@ -1,6 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import {
   LayoutGrid,
   BookOpen,
@@ -43,11 +43,6 @@ const TAB_ICONS = {
   leads: MessageSquare,
 };
 
-const panelVariants = {
-  initial: { opacity: 0, x: 24, filter: 'blur(4px)' },
-  animate: { opacity: 1, x: 0, filter: 'blur(0px)', transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
-  exit: { opacity: 0, x: -16, filter: 'blur(4px)', transition: { duration: 0.25 } },
-};
 
 export default function DashboardSidebarLayout({
   tabs,
@@ -266,23 +261,9 @@ export default function DashboardSidebarLayout({
           )}
 
           <div className="dash-sidebar-panel" role="tabpanel" id={`${id}-panel`}>
-            {lite ? (
-              <div key={panelTab}>
-                {typeof children === 'function' ? children(panelTab) : children}
-              </div>
-            ) : (
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={panelTab}
-                  variants={panelVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="exit"
-                >
-                  {typeof children === 'function' ? children(panelTab) : children}
-                </motion.div>
-              </AnimatePresence>
-            )}
+            <div key={panelTab}>
+              {typeof children === 'function' ? children(panelTab) : children}
+            </div>
           </div>
         </div>
       </div>

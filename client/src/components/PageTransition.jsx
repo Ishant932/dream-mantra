@@ -1,13 +1,9 @@
+import { useRef, useEffect } from 'react';
 import { useLocation, useOutlet } from 'react-router-dom';
 
-/** Route outlet — CSS fade only (no framer-motion) for faster navigation */
+/** Route outlet — no remount key to avoid tab/page flicker */
 export default function PageTransition() {
-  const location = useLocation();
   const outlet = useOutlet();
 
-  return (
-    <div key={location.pathname} className="page-enter">
-      {outlet}
-    </div>
-  );
+  return <div className="page-enter">{outlet}</div>;
 }

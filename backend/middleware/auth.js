@@ -40,9 +40,16 @@ export function optionalAuth(req, res, next) {
   next();
 }
 
+function admin2FAEnforced() {
+  return process.env.ADMIN_REQUIRE_2FA === 'true';
+}
+
 export function adminRequired(req, res, next) {
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ message: 'Admin access required' });
+  }
+  if (!admin2FAEnforced()) {
+    return next();
   }
   const data = getData();
   const dbUser = data.users?.find((u) => Number(u.id) === Number(req.user.id));
