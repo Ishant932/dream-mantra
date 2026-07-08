@@ -112,7 +112,7 @@ async function sendRow(row) {
   return sendTextMessage(row.phone, row.body || '');
 }
 
-export async function processOutbox({ limit = 50 } = {}) {
+export async function processOutbox({ limit = 50, userId = null } = {}) {
   if (!isWhatsAppEnabled()) {
     return { processed: 0, sent: 0, failed: 0, skipped: true };
   }
@@ -120,8 +120,11 @@ export async function processOutbox({ limit = 50 } = {}) {
   ensureOutbox();
   const data = getData();
   const now = Date.now();
+  const uid = userId != null ? Number(userId) : null;
   const pending = (data.whatsapp_outbox || [])
-    .filter((r) => r.status === 'pending' && new Date(r.scheduled_at).getTime() <= now)
+    .filter((r) => r.status === 'pending'
+      && new Date(r.scheduled_at).getTime() <= now
+      && (uid == null || Number(r.user_id) === uid))
     .slice(0, limit);
 
   let sent = 0;

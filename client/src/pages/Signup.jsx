@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
 import PasswordInput from '../components/PasswordInput';
+import { getWhatsAppAgentLink } from '../data/siteLinks';
 
 export default function Signup() {
   const { register, user, loading: authLoading } = useAuth();
@@ -45,13 +46,34 @@ export default function Signup() {
     }
     setLoading(true);
     try {
+      const optedIn = whatsappOptIn && !!phone.trim();
       const data = await register({
         name: name.trim(),
         email: email.trim() || undefined,
         phone: phone.trim() || undefined,
         password,
-        whatsappOptIn: whatsappOptIn && !!phone.trim(),
+        whatsappOptIn: optedIn,
       });
+
+      // Sandbox: every phone must join once before messages work — open WhatsApp with join prefilled.
+      // Production (sandbox:false): opens "Hi Esh" chat with business sender instead.
+      if (optedIn && typeof window !== 'undefined') {
+        try {
+          let joinHref = getWhatsAppAgentLink({ sandbox: true });
+          const health = await fetch('/api/health', { cache: 'no-store' }).then((r) => r.json()).catch(() => null);
+          const wa = health?.whatsapp;
+          if (wa) {
+            joinHref = getWhatsAppAgentLink({
+              sandbox: !!wa.sandbox,
+              joinCode: wa.sandboxJoinCode || '',
+            });
+          }
+          window.open(joinHref, '_blank', 'noopener,noreferrer');
+        } catch {
+          /* non-blocking */
+        }
+      }
+
       navigate(
         slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard',
         { state: { welcomeUid: data.user?.user_uid || data.user_uid } }

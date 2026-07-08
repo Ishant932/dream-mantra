@@ -7,6 +7,7 @@ import { isWhatsAppEnabled } from './config.js';
 import { siteUrl } from './config.js';
 import { messageCatalog, supportLine } from './catalog.js';
 import { banner, bullet, cta, miniPulse, priceTag, sparkleBar } from './format.js';
+import { processOutbox } from './outbox.js';
 
 function ensureConvos() {
   const data = getData();
@@ -168,39 +169,57 @@ export async function handleInboundMessage({ from, text, messageId }) {
         profile: { ...profile, whatsappOptIn: true },
       });
     }
+    // User just connected (sandbox join / first message) — flush any pending welcome msgs now
+    try {
+      await processOutbox({ limit: 30, userId: user.id });
+    } catch (err) {
+      console.error('[whatsapp] outbox flush on inbound failed:', err.message);
+    }
   }
 
   const replies = [];
+  const upper = text.trim().toUpperCase();
+  const isJoin = upper.startsWith('JOIN ');
 
-  if (!convo.greeted) {
+  if (!convo.greeted && !isJoin) {
     convo.greeted = true;
     const welcome = messageCatalog('chat_welcome', user || { name: 'there' });
     if (welcome) replies.push(welcome);
   }
 
-  let replyText;
-  try {
-    replyText = await buildReply(text, user, convo);
-  } catch (err) {
-    console.error('[whatsapp] reply error:', err.message);
-    replyText = `Oops — hit a snag 😅\n\nReply *MENU* for options or *HELP* for our team.`;
+  let replyText = null;
+  if (!isJoin) {
+    try {
+      replyText = await buildReply(text, user, convo);
+    } catch (err) {
+      console.error('[whatsapp] reply error:', err.message);
+      replyText = `Oops — hit a snag 😅\n\nReply *MENU* for options or *HELP* for our team.`;
+    }
+  } else if (user) {
+    // After sandbox join confirmation, greet with Esh welcome
+    convo.greeted = true;
+    replyText = messageCatalog('registration_success', user)
+      || messageCatalog('chat_welcome', user)
+      || null;
   }
 
-  replies.push(replyText);
-  const fullReply = replies.join('\n\n');
+  if (replyText) replies.push(replyText);
+  const fullReply = replies.filter(Boolean).join('\n\n');
 
-  pushHistory(convo, 'assistant', fullReply);
+  if (fullReply) {
+    pushHistory(convo, 'assistant', fullReply);
+  }
   convo.last_outbound_at = new Date().toISOString();
   saveData();
 
-  if (isWhatsAppEnabled()) {
+  if (fullReply && isWhatsAppEnabled()) {
     try {
       await sendTextMessage(waId, fullReply);
     } catch (err) {
       console.error('[whatsapp] outbound reply failed:', err.message);
       return { ok: false, reason: err.message, reply: fullReply };
     }
-  } else {
+  } else if (!isWhatsAppEnabled()) {
     console.log('[whatsapp] dev inbound:', fromWhatsAppId(waId), text.slice(0, 80));
   }
 
