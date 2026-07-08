@@ -2,7 +2,7 @@ import { cronSecret, isWhatsAppEnabled } from './config.js';
 import { processOutbox, runReminderScan } from './events.js';
 
 const HOUR_MS = 60 * 60 * 1000;
-const OUTBOX_MS = 5 * 60 * 1000;
+const OUTBOX_MS = 2 * 60 * 1000;
 const BOOT_DELAY_MS = 30 * 1000;
 
 let running = false;
@@ -47,5 +47,5 @@ export function startWhatsAppScheduler() {
     setInterval(tick, HOUR_MS);
   }, BOOT_DELAY_MS);
 
-  console.log('  WhatsApp scheduler: outbox every 5m + reminders hourly');
+  console.log('  WhatsApp scheduler: outbox every 2m + reminders hourly');
 }

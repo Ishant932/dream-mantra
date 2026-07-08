@@ -239,6 +239,61 @@ Dream Mantra's 24/7 career buddy at your service! 💬
 
 Or just *type your question* — careers, courses, payments, anything! 🚀
 ${sparkleBar()}`,
+
+    test_complete: `${fireBar()}
+${banner('Module test complete!', '✅', '🎊')}
+
+*${name}*, great work finishing *${extra.moduleTitle || 'your module'}*! 🧠
+
+📊 *Your status:*
+${extra.statusSummary || 'Progress updated on your dashboard'}
+
+${bullet('📄', 'Report will be prepared by our team')}
+${bullet('📅', 'Book counselling when you are ready')}
+
+${cta('View dashboard', `${base}/dashboard`)}
+${sparkleBar()}`,
+
+    all_tests_complete: `${sparkleBar()}
+${banner('All tests complete!', '🏆', '🎉')}
+
+*${name}*, you have finished *all* your paid module tests! 🚀
+
+📊 *Status:* ${extra.statusSummary || 'All modules complete'}
+Journey: ${progressBar(95)}
+
+${bullet('📄', 'Reports & counselling next')}
+${bullet('🎯', 'Our team will review your profile')}
+
+${cta('Book counselling', `${base}/dashboard?tab=book`)}
+${cta('View reports', `${base}/dashboard?tab=reports`)}
+${sparkleBar()}`,
+
+    journey_status: `${banner('Your Dream Mantra status', '📊', '✨')}
+
+Hi *${name}*! Here is your latest journey update:
+
+Journey: ${progressBar(extra.progressPercent || 50)}
+
+📋 *${extra.statusSummary || 'Keep going — you are on track!'}*
+
+${cta('Continue on dashboard', `${base}/dashboard`)}
+
+Reply *MENU* for quick help · Ask Esh anything 💬`,
+
+    admin_all_tests_complete: `🎓 *ALL TESTS COMPLETE — Admin alert*
+
+*Student:* ${name}
+🆔 Dreams ID: \`${uid}\`
+📱 Phone: ${extra.phoneDisplay || '—'}
+
+📊 *Status:*
+${extra.statusSummary || 'All paid module tests finished'}
+
+📦 *Modules:*
+${extra.modulesSummary || extra.moduleTitle || 'See admin panel'}
+
+${cta('Open admin dashboard', `${base}/admin`)}`,
   };
 
   return messages[trigger] || null;

@@ -36,6 +36,13 @@ export function findUserByWhatsAppId(waId) {
   }) || null;
 }
 
+/** Admin alert numbers from env (ADMIN_PHONE, ADMIN2_PHONE). */
+export function resolveAdminPhones() {
+  const raw = [process.env.ADMIN_PHONE, process.env.ADMIN2_PHONE].filter(Boolean);
+  const ids = raw.map((p) => toWhatsAppId(p)).filter(Boolean);
+  return [...new Set(ids)];
+}
+
 export function userMayReceiveWhatsApp(user) {
   if (!user || user.role !== 'user') return false;
   const profile = normalizeProfile(user.profile);

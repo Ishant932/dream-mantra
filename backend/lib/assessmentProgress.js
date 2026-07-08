@@ -6,6 +6,15 @@ import {
   requiresSkillMappingBand,
   resolveAssessmentSlug,
 } from './moduleCatalog.js';
+import {
+  hasCompletedAllPaidModuleTests,
+  isPaidModuleActionComplete,
+} from './moduleAccess.js';
+import {
+  onAssessmentTestCompleted,
+  onAllTestsCompleted,
+  onJourneyStatusUpdate,
+} from './whatsapp/events.js';
 
 export const FLOW_STEPS = {
   CLASS: 'class_select',
@@ -91,6 +100,30 @@ export function updateAssessmentFlow(assessmentId, userId, patch) {
     progress.completedAt = progress.completedAt || new Date().toISOString();
   }
 
+  const userAssessments = data.assessments.filter((a) => Number(a.user_id) === Number(userId));
+  const wasModuleComplete = isPaidModuleActionComplete(assessment);
+  const wasAllComplete = hasCompletedAllPaidModuleTests(userAssessments);
+
   saveData();
+
+  const freshAssessment = data.assessments.find((a) => a.id === Number(assessmentId));
+  const freshUser = data.users.find((u) => u.id === userId);
+  const freshAssessments = data.assessments.filter((a) => Number(a.user_id) === Number(userId));
+  const isModuleComplete = isPaidModuleActionComplete(freshAssessment);
+  const isAllComplete = hasCompletedAllPaidModuleTests(freshAssessments);
+
+  if (freshUser && freshAssessment) {
+    const progressChanged = patch.step || patch.fingerprintDone || patch.communityJoined
+      || patch.processComplete || patch.completedAt;
+    if (!wasModuleComplete && isModuleComplete && !isAllComplete) {
+      onAssessmentTestCompleted(freshUser, freshAssessment, freshAssessments);
+    } else if (progressChanged && !isAllComplete) {
+      onJourneyStatusUpdate(freshUser, freshAssessments);
+    }
+    if (!wasAllComplete && isAllComplete) {
+      onAllTestsCompleted(freshUser, freshAssessments);
+    }
+  }
+
   return getAssessmentFlow(assessmentId, userId);
 }

@@ -1,8 +1,16 @@
 import { getData, saveData } from '../database.js';
 import { isProfileIncomplete } from '../profile.js';
 import { siteUrl } from './config.js';
-import { userMayReceiveWhatsApp, resolveUserPhone } from './phone.js';
-import { queueFromTemplate, hasRecentOutbox, scheduleWhatsAppMessage } from './outbox.js';
+import { userMayReceiveWhatsApp } from './phone.js';
+import { queueFromTemplate, hasRecentOutbox } from './outbox.js';
+import { isAssessmentFullyPaid } from '../paymentService.js';
+import {
+  getConfirmedPaidAssessments,
+  getUserJourneyStatus,
+  hasCompletedAllPaidModuleTests,
+  isPaidModuleActionComplete,
+  journeyProgressPercent,
+} from '../moduleAccess.js';
 
 const HOUR = 60 * 60 * 1000;
 
@@ -116,11 +124,9 @@ export function scanTestReminders() {
   let queued = 0;
 
   for (const assessment of data.assessments || []) {
-    if (assessment.status !== 'paid') continue;
-    const progress = assessment.progress || {};
-    const flow = progress.flow || {};
-    if (flow.testStarted || flow.testCompleted) continue;
-    if (hoursSince(assessment.paid_at) < 48) continue;
+    if (!isAssessmentFullyPaid(assessment)) continue;
+    if (isPaidModuleActionComplete(assessment)) continue;
+    if (hoursSince(assessment.paid_at || assessment.updated_at) < 48) continue;
 
     const user = users.find((u) => Number(u.id) === Number(assessment.user_id));
     if (!userMayReceiveWhatsApp(user)) continue;
@@ -128,6 +134,34 @@ export function scanTestReminders() {
 
     const row = queueFromTemplate('test_reminder', user, {
       moduleTitle: assessment.type || assessment.product_slug,
+    });
+    if (row) queued += 1;
+  }
+  return queued;
+}
+
+/** Periodic journey status for users with paid modules still in progress */
+export function scanJourneyStatusReminders() {
+  const data = getData();
+  const users = data.users || [];
+  let queued = 0;
+
+  for (const user of users) {
+    if (user.role !== 'user') continue;
+    if (!userMayReceiveWhatsApp(user)) continue;
+
+    const assessments = (data.assessments || []).filter((a) => Number(a.user_id) === Number(user.id));
+    const paid = getConfirmedPaidAssessments(assessments).filter(
+      (a) => String(a.product_slug || '').toLowerCase() !== 'counselling-topup'
+    );
+    if (!paid.length) continue;
+    if (hasCompletedAllPaidModuleTests(assessments)) continue;
+    if (hoursSince(user.created_at) < 24) continue;
+    if (hasRecentOutbox(user.id, 'journey_status', 72)) continue;
+
+    const row = queueFromTemplate('journey_status', user, {
+      statusSummary: getUserJourneyStatus(user, assessments),
+      progressPercent: journeyProgressPercent(user, assessments),
     });
     if (row) queued += 1;
   }
@@ -165,5 +199,6 @@ export function runReminderScan() {
     session: scanSessionReminders(),
     test: scanTestReminders(),
     community: scanCommunityReminders(),
+    journey: scanJourneyStatusReminders(),
   };
 }

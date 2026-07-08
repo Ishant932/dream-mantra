@@ -14,15 +14,17 @@ function hoursAgo(iso, hours) {
   return Date.now() - new Date(iso).getTime() < hours * 60 * 60 * 1000;
 }
 
-export function hasRecentOutbox(userId, trigger, hours = dedupHours()) {
+export function hasRecentOutbox(userId, trigger, hours = dedupHours(), metaUserId = null) {
   ensureOutbox();
-  const uid = Number(userId);
+  const uid = userId != null ? Number(userId) : null;
+  const metaUid = metaUserId != null ? Number(metaUserId) : null;
   return (getData().whatsapp_outbox || []).some(
-    (row) => row.user_id === uid
-      && row.trigger === trigger
+    (row) => row.trigger === trigger
       && row.status !== 'cancelled'
       && row.created_at
       && hoursAgo(row.created_at, hours)
+      && (uid == null || row.user_id === uid)
+      && (metaUid == null || Number(row.meta?.userId) === metaUid)
   );
 }
 
@@ -38,14 +40,18 @@ export function queueWhatsAppMessage({
   templateComponents = null,
   body = null,
   meta = {},
+  skipDedup = false,
 }) {
   if (!isWhatsAppEnabled()) return null;
 
   const waId = phone || resolveUserPhone(user);
   if (!waId) return null;
 
-  const uid = userId != null ? Number(userId) : Number(user?.id);
-  if (uid && hasRecentOutbox(uid, trigger)) return null;
+  const uid = userId != null ? Number(userId) : Number(user?.id) || null;
+  if (!skipDedup) {
+    if (uid && hasRecentOutbox(uid, trigger)) return null;
+    if (!uid && meta?.userId && hasRecentOutbox(null, trigger, dedupHours(), meta.userId)) return null;
+  }
 
   ensureOutbox();
   const data = getData();

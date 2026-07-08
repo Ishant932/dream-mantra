@@ -497,12 +497,25 @@ router.get('/assessments/:id/flow', (req, res) => {
 
 router.patch('/assessments/:id/flow', (req, res) => {
   try {
-    const { step, classLevel, answers, skillMappingBand } = req.body;
+    const {
+      step,
+      classLevel,
+      answers,
+      skillMappingBand,
+      fingerprintDone,
+      communityJoined,
+      processComplete,
+      completedAt,
+    } = req.body;
     const flow = updateAssessmentFlow(req.params.id, req.user.id, {
       step,
       classLevel,
       answers,
       skillMappingBand,
+      fingerprintDone,
+      communityJoined,
+      processComplete,
+      completedAt,
     });
     res.json(flow);
   } catch (e) {

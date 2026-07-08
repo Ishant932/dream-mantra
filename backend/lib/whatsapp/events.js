@@ -1,12 +1,20 @@
 import { getData, repo } from '../../db.js';
 import { normalizeProfile } from '../profile.js';
 import { isWhatsAppEnabled } from './config.js';
-import { resolveUserPhone, toWhatsAppId, userMayReceiveWhatsApp } from './phone.js';
+import { resolveUserPhone, toWhatsAppId, userMayReceiveWhatsApp, resolveAdminPhones, fromWhatsAppId } from './phone.js';
 import { scheduleWhatsAppMessage, queueWhatsAppMessage, processOutbox } from './outbox.js';
 import { markOptIn } from './conversations.js';
 import { messageCatalog } from './catalog.js';
 import { siteUrl } from './config.js';
 import { sendNotificationEmail, whatsappBodyToEmailHtml } from '../../utils/mail.js';
+import { notifyAdmins } from '../notifications.js';
+import {
+  getUserJourneyStatus,
+  hasCompletedAllPaidModuleTests,
+  isPaidModuleActionComplete,
+  journeyProgressPercent,
+} from '../moduleAccess.js';
+import { resolveAssessmentSlug } from '../moduleCatalog.js';
 
 const HOUR = 60 * 60 * 1000;
 
@@ -76,6 +84,34 @@ function scheduleText(trigger, user, delayMs, extra = {}) {
     body,
     meta: extra,
   }, delayMs);
+}
+
+async function sendAdminWhatsApp(trigger, user, extra = {}) {
+  const phones = resolveAdminPhones();
+  if (!phones.length) return;
+  const body = messageCatalog(trigger, user, extra);
+  if (!body) return;
+
+  for (const phone of phones) {
+    queueWhatsAppMessage({
+      phone,
+      trigger,
+      body,
+      meta: { ...extra, userId: user.id },
+      kind: 'admin',
+    });
+  }
+  await processOutbox({ limit: 20 });
+}
+
+function moduleSummary(assessments = []) {
+  return assessments
+    .map((a) => {
+      const title = a.type || resolveAssessmentSlug(a) || 'Module';
+      const done = isPaidModuleActionComplete(a) ? 'Done' : 'Pending';
+      return `• ${title}: ${done}`;
+    })
+    .join('\n');
 }
 
 export function onUserRegistered(user, { whatsappOptIn = true } = {}) {
@@ -150,6 +186,65 @@ export function onConsultationBooked(user, consultation) {
     queueText('booking_confirmed', user, { sessionDate, sessionTime });
     queueText('session_reminder', user, { sessionDate, sessionTime });
     await processOutbox({ limit: 20 });
+  });
+}
+
+export function onAssessmentTestCompleted(user, assessment, allAssessments = []) {
+  fire(async () => {
+    if (!user || !assessment) return;
+    const statusSummary = getUserJourneyStatus(user, allAssessments);
+    const extra = {
+      moduleTitle: assessment.type || resolveAssessmentSlug(assessment),
+      statusSummary,
+      progressPercent: journeyProgressPercent(user, allAssessments),
+    };
+
+    if (canSend(user)) {
+      await sendNow('test_complete', user, extra);
+      await sendNow('journey_status', user, extra);
+    }
+  });
+}
+
+export function onAllTestsCompleted(user, allAssessments = []) {
+  fire(async () => {
+    if (!user) return;
+    const statusSummary = getUserJourneyStatus(user, allAssessments);
+    const modulesSummary = moduleSummary(
+      allAssessments.filter((a) => resolveAssessmentSlug(a) !== 'counselling-topup')
+    );
+    const phoneDisplay = fromWhatsAppId(resolveUserPhone(user)) || user.phone || '—';
+    const extra = {
+      statusSummary,
+      modulesSummary,
+      progressPercent: journeyProgressPercent(user, allAssessments),
+      phoneDisplay,
+    };
+
+    if (canSend(user)) {
+      await sendNow('all_tests_complete', user, extra);
+    }
+
+    notifyAdmins({
+      type: 'all_tests_complete',
+      title: `${user.name || 'Student'} completed all tests`,
+      body: statusSummary,
+      link: '/admin',
+      meta: { userId: user.id, dreamsId: user.user_uid },
+    });
+
+    await sendAdminWhatsApp('admin_all_tests_complete', user, extra);
+  });
+}
+
+export function onJourneyStatusUpdate(user, allAssessments = []) {
+  fire(async () => {
+    if (!canSend(user)) return;
+    const statusSummary = getUserJourneyStatus(user, allAssessments);
+    await sendNow('journey_status', user, {
+      statusSummary,
+      progressPercent: journeyProgressPercent(user, allAssessments),
+    });
   });
 }
 

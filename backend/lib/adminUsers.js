@@ -1,14 +1,10 @@
-import { FLOW_STEPS } from './assessmentProgress.js';
 import { calcProfileCompletion, normalizeProfile } from './profile.js';
+import { isAssessmentFullyPaid } from './paymentService.js';
+import { isPaidModuleActionComplete } from './moduleAccess.js';
 
 export function isAssessmentComplete(assessment) {
-  if (!assessment || assessment.status !== 'paid') return false;
-  const p = assessment.progress || {};
-  if (p.step === FLOW_STEPS.COMPLETE || p.completedAt) return true;
-  const slug = assessment.product_slug || 'dmit';
-  if (slug === 'dmit' && p.fingerprintDone) return true;
-  if (slug === 'crp-test' && p.communityJoined) return true;
-  return false;
+  if (!assessment || !isAssessmentFullyPaid(assessment)) return false;
+  return isPaidModuleActionComplete(assessment);
 }
 
 export function summarizeUserAssessments(assessments = []) {
