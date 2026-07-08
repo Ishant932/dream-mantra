@@ -27,6 +27,7 @@ import blogRoutes from './routes/blog.js';
 import whatsappRoutes from './routes/whatsapp.js';
 import cronRoutes from './routes/cron.js';
 import { getWhatsAppPublicConfig } from './lib/whatsapp/events.js';
+import { startWhatsAppScheduler } from './lib/whatsapp/scheduler.js';
 
 dotenv.config();
 
@@ -209,6 +210,7 @@ async function startServer() {
           migrateLegacyPayments();
           const pay = getGatewayPublicConfig();
           console.log(`  Payments: ${pay.mode}${pay.gatewayEnabled ? ' (Razorpay live)' : ' (manual UPI + admin verify)'}`);
+          startWhatsAppScheduler();
         } catch (err) {
           console.error('Background startup task failed:', err.message);
         }
