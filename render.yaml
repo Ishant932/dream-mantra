@@ -70,6 +70,30 @@ services:
         sync: false
       - key: EMAIL_PASS
         sync: false
+      - key: WHATSAPP_ENABLED
+        value: false
+      - key: WHATSAPP_PROVIDER
+        value: twilio
+      - key: TWILIO_ACCOUNT_SID
+        sync: false
+      - key: TWILIO_AUTH_TOKEN
+        sync: false
+      - key: TWILIO_WHATSAPP_FROM
+        sync: false
+      - key: TWILIO_WHATSAPP_SANDBOX
+        value: true
+      - key: TWILIO_WHATSAPP_SANDBOX_CODE
+        sync: false
+      - key: WHATSAPP_SITE_URL
+        value: https://dreammantra.in
+      - key: WHATSAPP_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_VERIFY_TOKEN
+        sync: false
+      - key: CRON_SECRET
+        sync: false
 
   # Pings both URLs every 5 min to reduce Render free-tier cold starts
   - type: cron
@@ -80,3 +104,16 @@ services:
     startCommand: node -e "const urls=['https://dreammantra.in/api/warmup','https://dream-mantra.onrender.com/api/warmup'];Promise.allSettled(urls.map(u=>fetch(u,{headers:{'Cache-Control':'no-store'}}).then(r=>console.log(u,r.status))))"
     plan: free
     region: singapore
+
+  # Hourly WhatsApp reminders + outbox processing
+  - type: cron
+    name: dream-mantra-whatsapp
+    runtime: node
+    schedule: "0 * * * *"
+    buildCommand: echo "whatsapp-cron"
+    startCommand: node -e "const s=process.env.CRON_SECRET;if(!s){console.error('CRON_SECRET missing');process.exit(1)}fetch('https://dreammantra.in/api/cron/whatsapp',{method:'POST',headers:{Authorization:'Bearer '+s}}).then(r=>r.text()).then(console.log).catch(e=>{console.error(e);process.exit(1)})"
+    plan: free
+    region: singapore
+    envVars:
+      - key: CRON_SECRET
+        sync: false

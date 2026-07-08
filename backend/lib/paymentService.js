@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { getData, saveData, repo } from './database.js';
 import { notifyUser, notifyAdmins } from './notifications.js';
+import { onPaymentConfirmed } from './whatsapp/events.js';
 import { getProduct } from '../config/products.js';
 import { isGatewayEnabled } from './paymentGateway.js';
 import { savePaymentProof } from './paymentProof.js';
@@ -322,6 +323,8 @@ export function confirmPayment({
       link: '/dashboard?tab=assess',
       meta: { assessmentId: assessment.id, paymentId: pay.id },
     });
+    const user = data.users.find((u) => Number(u.id) === Number(assessment.user_id));
+    if (user) onPaymentConfirmed(user, assessment);
   }
 
   return { alreadyConfirmed: false, payment: enrichPaymentRow(pay), assessment };

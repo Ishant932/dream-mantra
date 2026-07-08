@@ -33,6 +33,7 @@ export function defaultProfile() {
     parentName: '',
     parentPhone: '',
     whatsappNumber: '',
+    whatsappOptIn: false,
     preferredMode: '',
     howHeard: '',
     setupComplete: false,

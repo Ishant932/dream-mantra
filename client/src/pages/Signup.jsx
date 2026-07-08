@@ -24,6 +24,7 @@ export default function Signup() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
+  const [whatsappOptIn, setWhatsappOptIn] = useState(true);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -49,6 +50,7 @@ export default function Signup() {
         email: email.trim() || undefined,
         phone: phone.trim() || undefined,
         password,
+        whatsappOptIn: whatsappOptIn && !!phone.trim(),
       });
       navigate(
         slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard',
@@ -150,15 +152,29 @@ export default function Signup() {
               </div>
               <div>
                 <label className="text-sm font-semibold text-sand-700 flex items-center gap-2 mb-1.5">
-                  <Phone className="w-4 h-4 text-amber-600" /> Phone <span className="text-sand-400 font-normal">(optional)</span>
+                  <Phone className="w-4 h-4 text-amber-600" /> Mobile / WhatsApp <span className="text-amber-600 font-normal">(recommended)</span>
                 </label>
                 <input
                   className="input-field"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="98XXXXXXXX"
+                  placeholder="10-digit WhatsApp number"
                 />
+                <p className="text-xs text-sand-500 mt-1">Registration updates & reminders are sent on WhatsApp.</p>
               </div>
+              {phone.trim() && (
+                <label className="flex items-start gap-3 p-3 rounded-xl bg-amber-50/80 border border-amber-100 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="mt-1 rounded border-amber-300 text-amber-600 focus:ring-amber-500"
+                    checked={whatsappOptIn}
+                    onChange={(e) => setWhatsappOptIn(e.target.checked)}
+                  />
+                  <span className="text-sm text-sand-700">
+                    Yes — send me Dream Mantra updates, reminders &amp; AI assistant messages on WhatsApp.
+                  </span>
+                </label>
+              )}
               <div>
                 <label className="text-sm font-semibold text-sand-700 flex items-center gap-2 mb-1.5">
                   <Lock className="w-4 h-4 text-amber-600" /> {t('auth.password')}

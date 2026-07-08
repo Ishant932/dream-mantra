@@ -1,5 +1,6 @@
 import { getData, saveData } from './database.js';
 import { notifyUser } from './notifications.js';
+import { onReportReady } from './whatsapp/events.js';
 import { normalizeProfile } from './profile.js';
 
 import { findUserByUid } from './userUid.js';
@@ -90,6 +91,8 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
         link: '/dashboard?tab=reports',
         meta: { reportId: row.id },
       });
+      const reportUser = data.users.find((u) => Number(u.id) === Number(row.user_id));
+      if (reportUser) onReportReady(reportUser, row);
     }
 
     return enriched;
@@ -138,6 +141,7 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
       link: '/dashboard?tab=reports',
       meta: { reportId: row.id },
     });
+    onReportReady(user, row);
   }
 
   return enrichReport(row);

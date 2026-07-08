@@ -29,6 +29,8 @@ const defaultData = {
   user_notifications: [],
   message_threads: [],
   messages: [],
+  whatsapp_outbox: [],
+  whatsapp_conversations: [],
   otpStore: [],
   nextId: {
     users: 1,
@@ -42,6 +44,7 @@ const defaultData = {
     user_notifications: 1,
     message_threads: 1,
     messages: 1,
+    whatsapp_outbox: 1,
   },
 };
 
@@ -65,6 +68,8 @@ function normalizePayload(parsed) {
   parsed.user_notifications = asArray(parsed.user_notifications);
   parsed.message_threads = asArray(parsed.message_threads);
   parsed.messages = asArray(parsed.messages);
+  parsed.whatsapp_outbox = asArray(parsed.whatsapp_outbox);
+  parsed.whatsapp_conversations = asArray(parsed.whatsapp_conversations);
   parsed.payments = asArray(parsed.payments);
   parsed.availability_slots = asArray(parsed.availability_slots);
   parsed.user_reports = asArray(parsed.user_reports);

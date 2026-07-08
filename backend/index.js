@@ -24,6 +24,9 @@ import careersRoutes from './routes/careers.js';
 import paymentsRoutes from './routes/payments.js';
 import contactRoutes from './routes/contact.js';
 import blogRoutes from './routes/blog.js';
+import whatsappRoutes from './routes/whatsapp.js';
+import cronRoutes from './routes/cron.js';
+import { getWhatsAppPublicConfig } from './lib/whatsapp/events.js';
 
 dotenv.config();
 
@@ -88,6 +91,7 @@ app.get('/api/health', (_, res) => {
     db: getDbStatus(),
     payments: getGatewayPublicConfig(),
     email: { configured: isEmailConfigured() },
+    whatsapp: getWhatsAppPublicConfig(),
   });
 });
 
@@ -118,6 +122,8 @@ app.use('/api/careers', careersRoutes);
 app.use('/api/payments', paymentsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/webhooks/whatsapp', whatsappRoutes);
+app.use('/api/cron', cronRoutes);
 
 /** Legacy junk URLs (old store listings indexed by Google) → homepage */
 const LEGACY_HOME_REDIRECTS = [
@@ -145,7 +151,7 @@ app.use((req, res, next) => {
 
   return next();
 });
-
+  
 if (hasBuiltClient) {
   app.use(
     express.static(clientDist, {

@@ -16,6 +16,7 @@ import {
   resetPasswordWithOtp,
   validateResetIdentifier,
 } from '../lib/passwordResetService.js';
+import { onUserRegistered } from '../lib/whatsapp/events.js';
 
 const router = Router();
 const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 12, keyPrefix: 'login' });
@@ -116,7 +117,7 @@ function validatePassword(password) {
 
 // ─── Register ──────────────────────────────────────────────────────────────
 router.post('/register', (req, res) => {
-  const { name, email, phone, password, identifier } = req.body;
+  const { name, email, phone, password, identifier, whatsappOptIn } = req.body;
   const trimmedName = name?.trim();
   const pwdErr = validatePassword(password);
   if (!trimmedName) return res.status(400).json({ message: 'Name is required' });
@@ -150,6 +151,7 @@ router.post('/register', (req, res) => {
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
     const token = signToken(user);
+    onUserRegistered(user, { whatsappOptIn: whatsappOptIn !== false && !!userPhone });
     res.status(201).json({
       token,
       user: sanitize(user),

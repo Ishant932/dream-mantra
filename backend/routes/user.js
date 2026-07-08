@@ -32,6 +32,11 @@ import {
   notifyUser,
 } from '../lib/notifications.js';
 import {
+  onProfileUpdated,
+  onPaymentPending,
+  onConsultationBooked,
+} from '../lib/whatsapp/events.js';
+import {
   getThreadForUser,
   sendMessage,
   markThreadRead,
@@ -104,14 +109,18 @@ router.patch('/profile', (req, res) => {
   const allowed = [
     'classLevel', 'stream', 'city', 'state', 'board', 'schoolOrCollege', 'careerGoal',
     'dateOfBirth', 'gender', 'hobbies', 'biggestChallenge', 'parentName', 'parentPhone',
-    'whatsappNumber', 'preferredMode', 'howHeard',
+    'whatsappNumber', 'whatsappOptIn', 'preferredMode', 'howHeard',
   ];
   const current = normalizeProfile(user.profile);
   const patch = { ...current };
 
   for (const key of allowed) {
     if (req.body[key] !== undefined) {
-      patch[key] = String(req.body[key] || '').trim();
+      if (key === 'whatsappOptIn') {
+        patch[key] = !!req.body[key];
+      } else {
+        patch[key] = String(req.body[key] || '').trim();
+      }
     }
   }
 
@@ -137,6 +146,7 @@ router.patch('/profile', (req, res) => {
     profileCompletion: calcProfileCompletion(updated, { paidTests, consultations: consultations.length }),
     message: 'Profile updated',
   });
+  onProfileUpdated(updated);
 });
 
 router.get('/career-matches', (req, res) => {
@@ -278,6 +288,7 @@ router.post('/consultations', (req, res) => {
       link: '/dashboard?tab=book',
       meta: { consultationId: result.consultation.id },
     });
+    onConsultationBooked(user, result.consultation);
     return res.status(201).json(result);
   } catch (e) {
     return res.status(400).json({ message: e.message });
@@ -417,6 +428,8 @@ router.post('/assessments/book', (req, res) => {
       assessmentId: existingPending.id,
       amount: catalog.total,
     });
+    const bookUser = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
+    onPaymentPending(bookUser, repo.getAssessment(existingPending.id));
     return res.status(200).json({
       assessment: repo.getAssessment(existingPending.id),
       paymentUrl: `/payment/${existingPending.id}`,
@@ -434,6 +447,8 @@ router.post('/assessments/book', (req, res) => {
     assessmentId: assessment.id,
     amount: catalog.total,
   });
+  const bookUser = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
+  onPaymentPending(bookUser, repo.getAssessment(assessment.id));
   res.status(201).json({
     assessment: repo.getAssessment(assessment.id),
     paymentUrl: `/payment/${assessment.id}`,
