@@ -6,6 +6,7 @@ import { findUserByWhatsAppId, fromWhatsAppId } from './phone.js';
 import { isWhatsAppEnabled } from './config.js';
 import { siteUrl } from './config.js';
 import { messageCatalog, supportLine } from './catalog.js';
+import { banner, bullet, cta, miniPulse, priceTag, sparkleBar } from './format.js';
 
 function ensureConvos() {
   const data = getData();
@@ -50,27 +51,56 @@ function pushHistory(convo, role, text) {
 function menuReply(lang) {
   const base = siteUrl();
   if (lang === 'hi') {
-    return `*Dream Mantra Menu*\n\n1️⃣ Modules & Pricing\n2️⃣ Book Counselling\n3️⃣ Dashboard — ${base}/dashboard\n4️⃣ Careers — ${base}/careers\n\nसवाल लिखें या *HELP* भेजें।`;
+    return `${sparkleBar()}
+${banner('Dream Mantra Menu', '📋', '✨')}
+
+1️⃣ 💎 Modules & pricing
+2️⃣ 📅 Counselling book करें
+3️⃣ 🏠 Dashboard — ${base}/dashboard
+4️⃣ 💼 Careers — ${base}/careers
+
+सवाल लिखें या *HELP* भेजें 🙌`;
   }
-  return `*Dream Mantra Menu*\n\n1️⃣ Modules & Pricing\n2️⃣ Book Counselling\n3️⃣ Dashboard — ${base}/dashboard\n4️⃣ Careers — ${base}/careers\n\nAsk me anything, or type *HELP* for support.`;
+  return `${sparkleBar()}
+${banner('Dream Mantra Menu', '📋', '✨')}
+
+1️⃣ 💎 Modules & pricing
+2️⃣ 📅 Book counselling
+3️⃣ 🏠 Dashboard — ${base}/dashboard
+4️⃣ 💼 Explore careers — ${base}/careers
+
+Ask me anything, or type *HELP* for support ${miniPulse('🚀', '💬')}`;
 }
 
 function helpReply(lang) {
+  const base = siteUrl();
   if (lang === 'hi') {
-    return `सहायता:\n📧 ${supportLine()}\n🌐 ${siteUrl()}/contact`;
+    return `${banner('सहायता', '🆘', '✨')}
+${bullet('📧', supportLine())}
+${bullet('🌐', `${base}/contact`)}
+${bullet('🕐', 'Mon–Sat 11am–7pm IST')}
+
+${cta('Contact form', `${base}/contact`)}`;
   }
-  return `Dream Mantra Support\n📧 ${supportLine()}\n🌐 ${siteUrl()}/contact\n\nMon–Sat 11am–7pm IST`;
+  return `${banner('Dream Mantra Support', '🆘', '✨')}
+${bullet('📧', supportLine())}
+${bullet('🌐', `${base}/contact`)}
+${bullet('🕐', 'Mon–Sat 11am–7pm IST')}
+
+${cta('Get help — contact us', `${base}/contact`)}
+Reply *MENU* to jump back 🚀`;
 }
 
 function idReply(user, lang) {
+  const base = siteUrl();
   if (!user?.user_uid) {
     return lang === 'hi'
-      ? `पहले ${siteUrl()}/signup पर account बनाएं।`
-      : `Create your account first: ${siteUrl()}/signup`;
+      ? `${banner('Account नहीं मिला', '🔐', '✨')}\n\n${cta('Sign up free', `${base}/signup`)}`
+      : `${banner('No account yet', '🔐', '✨')}\n\n${cta('Create free account', `${base}/signup`)}`;
   }
   return lang === 'hi'
-    ? `आपका Dreams ID: *${user.user_uid}*\n\nLogin: ${siteUrl()}/login`
-    : `Your Dreams ID: *${user.user_uid}*\n\nLogin: ${siteUrl()}/login`;
+    ? `${sparkleBar()}\n🆔 *Dreams ID:* \`${user.user_uid}\`\n\n${cta('Login', `${base}/login`)}`
+    : `${sparkleBar()}\n🆔 *Your Dreams ID:* \`${user.user_uid}\`\n\n${cta('Open dashboard', `${base}/dashboard`)}\n${cta('Login', `${base}/login`)}`;
 }
 
 function menuSelection(num, user, lang) {
@@ -78,12 +108,12 @@ function menuSelection(num, user, lang) {
   switch (num) {
     case '1':
       return lang === 'hi'
-        ? 'Modules:\n• Mind Mapping ₹1,999\n• Skill Mapping ₹699\n• Combo ₹2,999\n• CRP ₹1,499\n\n' + `${base}/dashboard?tab=assess`
-        : `*Modules & Pricing*\n\n• Mind Mapping — ₹1,999\n• Skill Mapping — ₹699\n• Combo + Counselling — ₹2,999\n• AI Career Launchpad — ₹1,499\n\n${base}/dashboard?tab=assess`;
+        ? `${banner('Modules & Pricing', '💎', '🔥')}\n\n${priceTag('Mind Mapping', '₹1,999')}\n${priceTag('Skill Mapping', '₹699')}\n${priceTag('Combo + Counselling', '₹2,999')}\n${priceTag('AI Career Launchpad', '₹1,499')}\n\n${cta('खरीदें', `${base}/dashboard?tab=assess`)}`
+        : `${banner('Modules & Pricing', '💎', '🔥')}\n\n${priceTag('Mind Mapping', '₹1,999', 'Personality + career fit')}\n${priceTag('Skill Mapping', '₹699', 'Skills → roles')}\n${priceTag('Combo + Counselling', '₹2,999', 'Best value')}\n${priceTag('AI Career Launchpad', '₹1,499', 'Community access')}\n\n${cta('Browse & pay', `${base}/dashboard?tab=assess`)}\n${cta('All programs', `${base}/programs`)}`;
     case '2':
       return lang === 'hi'
-        ? `Counselling payment confirm के बाद Book tab से बुक करें:\n${base}/dashboard?tab=book`
-        : `*Book Counselling*\n\nAfter payment is confirmed:\nDashboard → Book tab\n\n${base}/dashboard?tab=book`;
+        ? `${banner('Counselling', '📅', '✨')}\n\nPayment confirm के बाद Book tab से बुक करें:\n${cta('Book session', `${base}/dashboard?tab=book`)}`
+        : `${banner('Book Counselling', '📅', '✨')}\n\n${bullet('1️⃣', 'Confirm payment on dashboard')}\n${bullet('2️⃣', 'Dashboard → *Book* tab')}\n${bullet('3️⃣', 'Pick slot & get link')}\n\n${cta('Book now', `${base}/dashboard?tab=book`)}`;
     case '3':
       return idReply(user, lang);
     case '4':
@@ -153,7 +183,7 @@ export async function handleInboundMessage({ from, text, messageId }) {
     replyText = await buildReply(text, user, convo);
   } catch (err) {
     console.error('[whatsapp] reply error:', err.message);
-    replyText = `Sorry, I couldn't process that. Type *MENU* or *HELP*.`;
+    replyText = `Oops — hit a snag 😅\n\nReply *MENU* for options or *HELP* for our team.`;
   }
 
   replies.push(replyText);

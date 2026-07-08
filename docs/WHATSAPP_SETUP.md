@@ -69,9 +69,19 @@ Redeploy after saving.
 3. Try: `MENU`, `HELP`, `pricing`, `ID`
 4. Check health: `curl https://dreammantra.in/api/health` → `"whatsapp":{"provider":"twilio","configured":true,"sandbox":true}`
 
-### Step 6 — Cron reminders
+### Step 6 — Hourly reminders (cron)
 
-Set the same `CRON_SECRET` on the **dream-mantra-whatsapp** cron job in Render (from `render.yaml`).
+**Automatic (recommended):** GitHub Actions runs every hour via `.github/workflows/whatsapp-cron.yml`.
+
+One-time: add repo secret `CRON_SECRET` (same value as Render web service).
+
+```bash
+gh secret set CRON_SECRET --body "YOUR_CRON_SECRET" --repo DreamsMantra/dream-mantra
+```
+
+**Alternative:** cron-job.org — `node scripts/setup-cron-job-whatsapp.js` (needs `CRON_JOB_ORG_API_KEY`).
+
+**Render cron** (paid): `dream-mantra-whatsapp` in `render.yaml`.
 
 Manual test:
 

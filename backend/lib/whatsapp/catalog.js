@@ -1,8 +1,18 @@
 /**
- * Dream Mantra WhatsApp message catalog (ecommerce-style automated messages).
- * Twilio sends these as plain text in sandbox; map to Content SIDs in production.
+ * Dream Mantra WhatsApp message catalog — rich, emoji-heavy, link-rich templates.
+ * Twilio sandbox sends plain text; Meta maps to Content SIDs in production.
  */
 import { siteUrl } from './config.js';
+import {
+  banner,
+  bullet,
+  cta,
+  fireBar,
+  miniPulse,
+  priceTag,
+  progressBar,
+  sparkleBar,
+} from './format.js';
 
 export function supportLine() {
   return process.env.SUPPORT_EMAIL?.trim() || 'info@dreammantra.in';
@@ -14,102 +24,221 @@ export function messageCatalog(trigger, user, extra = {}) {
   const base = siteUrl();
 
   const messages = {
-    registration_success: `🎉 *Welcome to Dream Mantra, ${name}!*
+    registration_success: `${sparkleBar()}
+${banner('Welcome to Dream Mantra', '🎉', '🎉')}
 
-✅ Your registration is successful.
-🆔 Dreams ID: *${uid}*
+Hey *${name}*! ${miniPulse('🚀', '💫', '🌟')}
+Your *Dream Mantra* account is *LIVE* ✅
 
-👉 Complete your profile: ${base}/dashboard
+🆔 *Dreams ID:* \`${uid}\`
+📊 Journey: ${progressBar(25)}
 
-Reply *MENU* for quick options or ask me about Mind Mapping, Skill Mapping, careers & counselling.`,
+${fireBar()}
+*What you can do right now:*
+${bullet('🧠', 'Mind Mapping — discover your strengths')}
+${bullet('🎯', 'Skill Mapping — map skills to careers')}
+${bullet('💼', '1:1 Career Counselling')}
+${bullet('🤖', 'AI Career Launchpad community')}
 
-    welcome_step1: `Hi ${name}! 👋 Welcome to Dream Mantra.
+${cta('Open your dashboard', `${base}/dashboard`)}
+${cta('Explore modules & pricing', `${base}/dashboard?tab=assess`)}
 
-Your Dreams ID is *${uid}*.
-Start here: ${base}/dashboard
+💬 Reply *MENU* for quick options
+🤖 Ask *Esh* anything — careers, courses, counselling!
+${sparkleBar()}`,
 
-Reply *MENU* anytime.`,
+    welcome_step1: `${miniPulse('👋', '✨', '🌟')}
+Hi *${name}*! Welcome to *Dream Mantra* — India's AI-powered career platform.
 
-    welcome_step2: `Hi ${name}, complete your Dream Mantra profile to unlock counselling & tests.
+🆔 Your Dreams ID: *\`${uid}\`*
+📊 Profile: ${progressBar(30)}
 
-📝 Add class, stream, career goal & WhatsApp number:
-${base}/dashboard`,
+${cta('Start here — complete profile', `${base}/dashboard`)}
 
-    welcome_step3: `Hi ${name}! Explore our modules:
+Reply *MENU* anytime · Type *HELP* for human support`,
 
-• Mind Mapping — ₹1,999
-• Skill Mapping — ₹699
-• Combo + Counselling — ₹2,999
-• AI Career Launchpad — ₹1,499
+    welcome_step2: `${banner('Profile boost needed', '⏰', '✨')}
 
-Browse: ${base}/dashboard?tab=assess`,
+Hi *${name}*, you're *so close* to unlocking everything! 🔓
 
-    welcome_step4: `Hi ${name}! After payment, book counselling from Dashboard → Book tab.
+${progressBar(45)}
 
-${base}/dashboard?tab=book
+Add these to shine on your dashboard:
+${bullet('🎓', 'Class & stream')}
+${bullet('🎯', 'Career goal')}
+${bullet('📱', 'WhatsApp number (for alerts)')}
 
-Reply *HELP* to reach our team.`,
+${cta('Complete profile in 2 mins', `${base}/dashboard`)}
 
-    profile_reminder: `⏰ Hi ${name}, your Dream Mantra profile is incomplete.
+_Tip:_ Complete profile → unlock tests, reports & counselling booking 🚀`,
 
-Complete it to unlock modules, tests & counselling:
-${base}/dashboard`,
+    welcome_step3: `${banner('Pick your power-up', '💎', '🔥')}
 
-    profile_complete: `✅ Great work, ${name}! Your profile is complete.
+Hi *${name}*! Our most-loved career modules:
 
-Explore modules & book your career journey:
-${base}/dashboard?tab=assess`,
+${priceTag('Mind Mapping', '₹1,999', 'Deep personality + career fit')}
+${priceTag('Skill Mapping', '₹699', 'Skills → job roles')}
+${priceTag('Combo + Counselling', '₹2,999', 'Best value — tests + session')}
+${priceTag('AI Career Launchpad', '₹1,499', 'Community + mentorship')}
 
-    payment_reminder: `🛒 Hi ${name}, payment pending for *${extra.moduleTitle || 'your module'}*.
+${cta('Browse & pay securely', `${base}/dashboard?tab=assess`)}
+${cta('See all programs', `${base}/programs`)}
 
-Complete payment here:
-${extra.paymentUrl || `${base}/dashboard?tab=assess`}`,
+Reply *1* for full pricing breakdown 💬`,
 
-    payment_confirmed: `✅ Payment confirmed, ${name}!
+    welcome_step4: `${banner('Book your session', '📅', '✨')}
 
-*${extra.moduleTitle || 'Your module'}* is now active in your dashboard.
-${base}/dashboard?tab=assess`,
+*${name}*, payment done? Amazing! 🎊
 
-    payment_proof_pending: `📋 Hi ${name}, we received your payment proof for *${extra.moduleTitle || 'your module'}*.
+Next step → *Book counselling* from your dashboard:
+${bullet('1️⃣', 'Dashboard → *Book* tab')}
+${bullet('2️⃣', 'Pick date & time')}
+${bullet('3️⃣', 'Get session link on WhatsApp + email')}
 
-Our team is verifying it. You'll get a confirmation soon.
-${base}/dashboard`,
+${cta('Book counselling now', `${base}/dashboard?tab=book`)}
 
-    session_reminder: `📅 *Counselling reminder*
+Need help? Reply *HELP* — we're Mon–Sat 11am–7pm IST 🙌`,
 
-Hi ${name}, your session is on *${extra.sessionDate || 'your date'}* at *${extra.sessionTime || 'your time'}*.
+    profile_reminder: `${banner('Profile incomplete', '⏰', '🔔')}
 
-Check your dashboard for details: ${base}/dashboard?tab=book`,
+Hi *${name}*! Your Dream Mantra profile is still at ${progressBar(40)}
 
-    report_ready: `📄 Hi ${name}, your *${extra.reportTitle || 'assessment report'}* is ready!
+Without it you miss:
+${bullet('❌', 'Personalized career reports')}
+${bullet('❌', 'Test access')}
+${bullet('❌', 'Counselling booking')}
 
-View & download: ${base}/dashboard?tab=reports`,
+${cta('Finish profile now (2 min)', `${base}/dashboard`)}
 
-    test_reminder: `📝 Hi ${name}, your *${extra.moduleTitle || 'module'}* is active.
+_We sent this because you opted in for WhatsApp updates._`,
 
-Complete your test: Dashboard → Modules → Take test
-${base}/dashboard?tab=assess`,
+    profile_complete: `${sparkleBar()}
+${banner('Profile complete!', '✅', '🎉')}
 
-    community_invite: `👥 Hi ${name}, join the AI Career Launchpad community (Step 5 after payment).
+*${name}*, you're all set! ${miniPulse('🚀', '💫', '⭐')}
+Profile: ${progressBar(100)}
 
-${base}/dashboard?tab=assess`,
+${bullet('✅', 'Modules unlocked')}
+${bullet('✅', 'Tests ready')}
+${bullet('✅', 'Counselling booking open')}
 
-    booking_confirmed: `✅ Session booked, ${name}!
+${cta('Explore modules', `${base}/dashboard?tab=assess`)}
+${cta('Book a session', `${base}/dashboard?tab=book`)}
+${sparkleBar()}`,
 
-Date: ${extra.sessionDate || 'scheduled'}
-Time: ${extra.sessionTime || 'see dashboard'}
+    payment_reminder: `${banner('Payment pending', '🛒', '💳')}
 
-${base}/dashboard?tab=book`,
+Hi *${name}*! Your cart is waiting 🛍️
 
-    chat_welcome: `Hi! I'm *Esh*, Dream Mantra's AI counsellor 🤖
+📦 *${extra.moduleTitle || 'Your module'}*
+💰 Complete payment to activate instantly
 
-Reply with a number:
-1️⃣ Modules & pricing
-2️⃣ Book counselling
-3️⃣ My Dreams ID
-4️⃣ Talk to support
+${cta('Pay now — secure checkout', extra.paymentUrl || `${base}/dashboard?tab=assess`)}
 
-Or type your question directly!`,
+_Questions? Reply *HELP* or ask Esh anything._`,
+
+    payment_confirmed: `${fireBar()}
+${banner('Payment confirmed!', '✅', '🎊')}
+
+*${name}*, you're in! 🚀
+
+🎁 *${extra.moduleTitle || 'Your module'}* is now *ACTIVE*
+
+${bullet('📊', 'Dashboard updated')}
+${bullet('📝', 'Tests unlocked')}
+${bullet('📅', 'Book counselling when ready')}
+
+${cta('Go to dashboard', `${base}/dashboard?tab=assess`)}
+${sparkleBar()}`,
+
+    payment_proof_pending: `${banner('Proof received', '📋', '⏳')}
+
+Hi *${name}*! We got your payment proof for *${extra.moduleTitle || 'your module'}* ✅
+
+🔍 Status: *Under verification*
+⏱️ Usually confirmed within *24 hours*
+
+${cta('Track on dashboard', `${base}/dashboard`)}
+
+We'll WhatsApp you the moment it's approved! 🔔`,
+
+    session_reminder: `${banner('Counselling reminder', '📅', '🔔')}
+
+Hi *${name}*! Your session is coming up ⏰
+
+🗓️ *Date:* ${extra.sessionDate || 'See dashboard'}
+🕐 *Time:* ${extra.sessionTime || 'See dashboard'}
+
+${bullet('💻', 'Join from dashboard link')}
+${bullet('📝', 'Keep your Dreams ID handy')}
+${bullet('🎯', 'List 2–3 career questions')}
+
+${cta('Open session details', `${base}/dashboard?tab=book`)}
+
+_Good luck — you've got this!_ 🌟`,
+
+    report_ready: `${banner('Report ready!', '📄', '✨')}
+
+*${name}*, your *${extra.reportTitle || 'assessment report'}* is ready to download! 🎉
+
+${bullet('📊', 'Career insights & scores')}
+${bullet('🎯', 'Recommended paths')}
+${bullet('💡', 'Next-step action plan')}
+
+${cta('View & download report', `${base}/dashboard?tab=reports`)}
+
+Share with parents — they'll love it 👨‍👩‍👧`,
+
+    test_reminder: `${banner('Test waiting for you', '📝', '⚡')}
+
+Hi *${name}*! *${extra.moduleTitle || 'Your module'}* is active — time to take the test! 🧠
+
+${progressBar(60)}
+${bullet('⏱️', '~20–30 mins')}
+${bullet('📱', 'Works on phone')}
+${bullet('📄', 'Report auto-generated')}
+
+${cta('Start test now', `${base}/dashboard?tab=assess`)}
+
+Reply *MENU* if you need help navigating 🙌`,
+
+    community_invite: `${banner('Join the community', '👥', '🚀')}
+
+*${name}*, welcome to the *AI Career Launchpad* inner circle! ✨
+
+${bullet('🤝', 'Peer network of ambitious students')}
+${bullet('💼', 'Industry mentors & tips')}
+${bullet('🎯', 'Weekly career challenges')}
+
+${cta('Enter community (Step 5)', `${base}/dashboard?tab=assess`)}
+${cta('Learn about Launchpad', `${base}/programs`)}
+
+Let's grow together 🔥`,
+
+    booking_confirmed: `${sparkleBar()}
+${banner('Session booked!', '✅', '📅')}
+
+*${name}*, you're on the calendar! 🎊
+
+🗓️ *${extra.sessionDate || 'Scheduled'}*
+🕐 *${extra.sessionTime || 'See dashboard'}*
+
+${cta('View booking & join link', `${base}/dashboard?tab=book`)}
+${sparkleBar()}`,
+
+    chat_welcome: `${sparkleBar()}
+${banner("I'm Esh — your AI counsellor", '🤖', '✨')}
+
+Dream Mantra's 24/7 career buddy at your service! 💬
+
+*Quick menu — reply with a number:*
+1️⃣ 💎 Modules & pricing
+2️⃣ 📅 Book counselling
+3️⃣ 🆔 My Dreams ID
+4️⃣ 🆘 Talk to support
+
+Or just *type your question* — careers, courses, payments, anything! 🚀
+${sparkleBar()}`,
   };
 
   return messages[trigger] || null;
