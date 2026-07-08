@@ -6,6 +6,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
 import PasswordInput from '../components/PasswordInput';
+import { getWhatsAppAgentLink } from '../data/siteLinks';
+
 export default function Signup() {
   const { register, user, loading: authLoading } = useAuth();
   const { t } = useLang();
@@ -52,6 +54,21 @@ export default function Signup() {
         password,
         whatsappOptIn: optedIn,
       });
+
+      // Free Twilio sandbox: one-tap join (prefilled). User only presses Send.
+      if (optedIn && typeof window !== 'undefined') {
+        try {
+          let href = getWhatsAppAgentLink({ sandbox: true });
+          const health = await fetch('/api/health', { cache: 'no-store' }).then((r) => r.json()).catch(() => null);
+          const wa = health?.whatsapp;
+          if (wa?.sandboxJoinCode) {
+            href = getWhatsAppAgentLink({ sandbox: true, joinCode: wa.sandboxJoinCode });
+          }
+          window.open(href, '_blank', 'noopener,noreferrer');
+        } catch {
+          /* non-blocking */
+        }
+      }
 
       navigate(
         slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard',
@@ -172,7 +189,7 @@ export default function Signup() {
                     onChange={(e) => setWhatsappOptIn(e.target.checked)}
                   />
                   <span className="text-sm text-sand-700">
-                    Yes — send me Dream Mantra updates, reminders &amp; AI assistant messages on WhatsApp.
+                    Yes — WhatsApp updates &amp; AI counsellor (free). After signup, WhatsApp opens with a ready message — just tap <strong>Send</strong> once.
                   </span>
                 </label>
               )}

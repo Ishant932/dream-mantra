@@ -10,10 +10,13 @@ function WhatsAppIcon({ className }) {
   );
 }
 
-/** Floating WhatsApp — opens AI counsellor (Esh) on the live business number. */
+/**
+ * Free Twilio sandbox FAB.
+ * Prefills "join …" so users only tap Send once — then Esh + reminders work.
+ */
 export default function WhatsAppFloat() {
   const [mounted, setMounted] = useState(false);
-  const [href, setHref] = useState(() => getWhatsAppAgentLink({ sandbox: false }));
+  const [href, setHref] = useState(() => getWhatsAppAgentLink({ sandbox: true }));
 
   useEffect(() => {
     setMounted(true);
@@ -24,13 +27,12 @@ export default function WhatsAppFloat() {
         const data = await res.json();
         const wa = data?.whatsapp || {};
         if (cancelled) return;
-        // Production: Hi Esh. Sandbox fallback still uses join only if still on sandbox number.
         setHref(getWhatsAppAgentLink({
-          sandbox: !!wa.sandbox,
-          joinCode: wa.sandboxJoinCode || '',
+          sandbox: wa.sandbox !== false,
+          joinCode: wa.sandboxJoinCode || 'join atomic-later',
         }));
       } catch {
-        /* keep default */
+        /* keep default join link */
       }
     })();
     return () => { cancelled = true; };
@@ -44,13 +46,13 @@ export default function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       className="wa-fab"
-      aria-label="Chat on WhatsApp with Dream Mantra AI counsellor"
-      title="Chat with Esh on WhatsApp"
+      aria-label="Connect WhatsApp AI counsellor — tap Send on the prefilled message"
+      title="Tap → Send join → chat with Esh"
     >
       <span className="wa-fab-pulse" aria-hidden="true" />
       <span className="wa-fab-live" aria-hidden="true" />
       <WhatsAppIcon className="w-7 h-7 relative z-10" />
-      <span className="wa-fab-label">WhatsApp</span>
+      <span className="wa-fab-label">Chat</span>
     </a>,
     document.body
   );

@@ -90,25 +90,16 @@ curl -X POST https://dreammantra.in/api/cron/whatsapp \
   -H "Authorization: Bearer YOUR_CRON_SECRET"
 ```
 
-### Moving to production (ALL users — no join code)
+### Free plan reality (current Dream Mantra setup)
 
-Sandbox **cannot** message the public. Every phone must send `join …` first (72h). To serve **all registered users** automatically:
+**Free Twilio Sandbox can NEVER skip the join step.** This is a Meta/Twilio rule:
 
-1. Twilio Console → **Messaging** → **Senders** → **WhatsApp Senders** → **Create new sender**
-2. Complete **Self Sign-up**: link Meta Business Portfolio + WhatsApp Business Account
-3. Register a phone number **not** already on WhatsApp personal/app (or delete that WA account first). Can be a Twilio India number or your business SIM.
-4. Finish Meta OTP ownership check + **Business Verification** (documents)
-5. Set webhook: `https://dreammantra.in/api/webhooks/whatsapp` (POST)
-6. On Render, update:
-   ```env
-   TWILIO_WHATSAPP_FROM=+91YOUR_APPROVED_NUMBER
-   TWILIO_WHATSAPP_SANDBOX=false
-   VITE_WHATSAPP_BUSINESS_PHONE=91YOUR_APPROVED_NUMBER
-   ```
-7. Redeploy. Health check should show `"sandbox":false`.
-8. Optional: create Twilio Content Templates for outside-24h marketing (welcome templates).
+- Every user's WhatsApp must send `join <code>` once (lasts 72 hours)
+- Signup auto-opens WhatsApp with the join text pre-filled → user only taps **Send**
+- After that: registration welcome, reminders, notifications, and Esh chat work
+- Email backup still sends instantly even if WhatsApp isn't joined yet
 
-Until step 4–7 are done, keep the green **Join chat** button (opens WhatsApp with `join atomic-later` pre-filled).
+**No-join messaging for all users requires a paid WhatsApp Business sender** (Twilio upgrade + Meta verification). That is optional later — not part of the free plan.
 
 ---
 

@@ -32,7 +32,7 @@ export const footerPrograms = [
   { to: '/counsellors', label: 'Join as Counsellor' },
 ];
 
-/** Twilio number bought for Dream Mantra WhatsApp (+14244972690). Override with VITE_WHATSAPP_BUSINESS_PHONE. */
+/** Free Twilio WhatsApp Sandbox number. Production overrides via VITE_WHATSAPP_BUSINESS_PHONE. */
 export const WHATSAPP_AGENT_PHONE = (
   import.meta.env.VITE_WHATSAPP_BUSINESS_PHONE || '14155238886'
 ).replace(/\D/g, '');
@@ -42,19 +42,16 @@ const AGENT_PREFILL =
 
 /**
  * Opens WhatsApp chat with the AI agent.
- * @param {object|string} [opts]
- * @param {boolean} [opts.sandbox] — if true, prefill join code (required by Twilio sandbox)
- * @param {string} [opts.joinCode] — e.g. "join atomic-later"
- * @param {string} [opts.text] — custom message body
+ * Free sandbox ALWAYS needs a one-tap "join …" first (Twilio/Meta rule — not optional).
  */
 export function getWhatsAppAgentLink(opts = {}) {
   const options = typeof opts === 'string' ? { text: opts } : (opts || {});
   const joinCode = (options.joinCode || import.meta.env.VITE_WHATSAPP_SANDBOX_CODE || 'join atomic-later').trim();
+  // Default to sandbox join on free plan (production can pass sandbox:false)
+  const useSandbox = options.sandbox !== false;
   let text = options.text;
   if (!text) {
-    text = options.sandbox
-      ? joinCode
-      : AGENT_PREFILL;
+    text = useSandbox ? joinCode : AGENT_PREFILL;
   }
   return `https://wa.me/${WHATSAPP_AGENT_PHONE}?text=${encodeURIComponent(text)}`;
 }
