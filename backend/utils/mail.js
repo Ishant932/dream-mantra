@@ -93,6 +93,43 @@ function otpEmailBody({ name, otp, purpose }) {
   return { html, text, subject: `Dream Mantra — ${title} code: ${otp}` };
 }
 
+export async function sendNotificationEmail({ to, subject, html, text }) {
+  if (!to || !isEmailConfigured()) return { skipped: true };
+  const payload = {
+    to: String(to).trim(),
+    subject: subject || 'Dream Mantra',
+    html: html || `<pre style="font-family:Segoe UI,Arial,sans-serif;white-space:pre-wrap">${text || ''}</pre>`,
+    text: text || '',
+  };
+  if (process.env.RESEND_API_KEY?.trim()) {
+    try {
+      await sendViaResend(payload);
+      return { channel: 'resend' };
+    } catch (err) {
+      console.error('Resend notification failed, trying SMTP:', err.message);
+    }
+  }
+  const sent = await sendViaSmtp(payload);
+  if (sent) return { channel: 'smtp' };
+  return { skipped: true };
+}
+
+/** Convert WhatsApp body (*bold*, emojis) into a simple email. */
+export function whatsappBodyToEmailHtml(body) {
+  const escaped = String(body || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\*([^*]+)\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br/>');
+  return `
+    <div style="font-family:Segoe UI,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#fffdf8;border:1px solid #fde68a;border-radius:16px">
+      <h2 style="color:#b45309;margin:0 0 16px">Dream Mantra</h2>
+      <div style="color:#444;line-height:1.55;font-size:15px">${escaped}</div>
+      <p style="color:#999;font-size:12px;margin-top:28px">You're receiving this because you opted in on dreammantra.in</p>
+    </div>`;
+}
+
 export async function sendOtpEmail({ to, name, otp, purpose = 'register' }) {
   if (!isEmailConfigured()) {
     throw new Error(

@@ -32,7 +32,7 @@ export const footerPrograms = [
   { to: '/counsellors', label: 'Join as Counsellor' },
 ];
 
-/** Twilio WhatsApp sandbox number (AI agent / Esh). Override with VITE_WHATSAPP_BUSINESS_PHONE in production. */
+/** Twilio number bought for Dream Mantra WhatsApp (+14244972690). Override with VITE_WHATSAPP_BUSINESS_PHONE. */
 export const WHATSAPP_AGENT_PHONE = (
   import.meta.env.VITE_WHATSAPP_BUSINESS_PHONE || '14155238886'
 ).replace(/\D/g, '');

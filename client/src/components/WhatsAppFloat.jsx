@@ -10,15 +10,10 @@ function WhatsAppIcon({ className }) {
   );
 }
 
-/**
- * Floating WhatsApp button.
- * Sandbox: opens with "join <code>" so every user can connect (required by Twilio).
- * Production: opens AI agent prefilled "Hi Esh…".
- */
+/** Floating WhatsApp — opens AI counsellor (Esh) on the live business number. */
 export default function WhatsAppFloat() {
   const [mounted, setMounted] = useState(false);
-  const [href, setHref] = useState(() => getWhatsAppAgentLink({ sandbox: true }));
-  const [isSandbox, setIsSandbox] = useState(true);
+  const [href, setHref] = useState(() => getWhatsAppAgentLink({ sandbox: false }));
 
   useEffect(() => {
     setMounted(true);
@@ -29,13 +24,13 @@ export default function WhatsAppFloat() {
         const data = await res.json();
         const wa = data?.whatsapp || {};
         if (cancelled) return;
-        setIsSandbox(!!wa.sandbox);
+        // Production: Hi Esh. Sandbox fallback still uses join only if still on sandbox number.
         setHref(getWhatsAppAgentLink({
           sandbox: !!wa.sandbox,
           joinCode: wa.sandboxJoinCode || '',
         }));
       } catch {
-        /* keep default sandbox-safe link */
+        /* keep default */
       }
     })();
     return () => { cancelled = true; };
@@ -49,15 +44,13 @@ export default function WhatsAppFloat() {
       target="_blank"
       rel="noopener noreferrer"
       className="wa-fab"
-      aria-label={isSandbox
-        ? 'Connect WhatsApp AI counsellor (send join code first)'
-        : 'Chat on WhatsApp with Dream Mantra AI counsellor'}
-      title={isSandbox ? 'Tap → send join message → start chatting' : 'Chat on WhatsApp'}
+      aria-label="Chat on WhatsApp with Dream Mantra AI counsellor"
+      title="Chat with Esh on WhatsApp"
     >
       <span className="wa-fab-pulse" aria-hidden="true" />
       <span className="wa-fab-live" aria-hidden="true" />
       <WhatsAppIcon className="w-7 h-7 relative z-10" />
-      <span className="wa-fab-label">{isSandbox ? 'Join chat' : 'WhatsApp'}</span>
+      <span className="wa-fab-label">WhatsApp</span>
     </a>,
     document.body
   );

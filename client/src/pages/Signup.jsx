@@ -6,8 +6,6 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
 import PasswordInput from '../components/PasswordInput';
-import { getWhatsAppAgentLink } from '../data/siteLinks';
-
 export default function Signup() {
   const { register, user, loading: authLoading } = useAuth();
   const { t } = useLang();
@@ -54,25 +52,6 @@ export default function Signup() {
         password,
         whatsappOptIn: optedIn,
       });
-
-      // Sandbox: every phone must join once before messages work — open WhatsApp with join prefilled.
-      // Production (sandbox:false): opens "Hi Esh" chat with business sender instead.
-      if (optedIn && typeof window !== 'undefined') {
-        try {
-          let joinHref = getWhatsAppAgentLink({ sandbox: true });
-          const health = await fetch('/api/health', { cache: 'no-store' }).then((r) => r.json()).catch(() => null);
-          const wa = health?.whatsapp;
-          if (wa) {
-            joinHref = getWhatsAppAgentLink({
-              sandbox: !!wa.sandbox,
-              joinCode: wa.sandboxJoinCode || '',
-            });
-          }
-          window.open(joinHref, '_blank', 'noopener,noreferrer');
-        } catch {
-          /* non-blocking */
-        }
-      }
 
       navigate(
         slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard',
@@ -194,9 +173,6 @@ export default function Signup() {
                   />
                   <span className="text-sm text-sand-700">
                     Yes — send me Dream Mantra updates, reminders &amp; AI assistant messages on WhatsApp.
-                    <span className="block text-xs text-sand-500 mt-1">
-                      First message may ask you to tap <strong>Join chat</strong> (bottom of site) and send the join code — then Esh replies automatically.
-                    </span>
                   </span>
                 </label>
               )}

@@ -1,18 +1,29 @@
 /**
- * Guide + apply production WhatsApp sender once you finish Twilio Self Sign-up.
+ * Activate Dream Mantra WhatsApp for ALL users (no join code).
  *
- * I cannot finish Meta Business verification / OTP for you — that must be done
- * in the Twilio + Facebook popup in your browser.
+ * Prerequisite (one-time, ~10 mins — only you can do this in a browser):
+ *   1. Open: https://console.twilio.com/us1/develop/sms/senders/whatsapp-senders
+ *   2. Click "Create new sender"
+ *   3. Select phone: +1 424 497 2690  (already purchased for Dream Mantra)
+ *   4. Continue with Facebook → create Meta Business + WhatsApp Business Account
+ *   5. Display name: Dream Mantra | Category: Education
+ *   6. Complete OTP (shown in Twilio Console) + Confirm
+ *   7. Set webhook: https://dreammantra.in/api/webhooks/whatsapp (POST)
  *
- * After your sender shows ONLINE in Twilio Console:
+ * Then run:
  *   $env:RENDER_API_KEY = "rnd_..."
- *   $env:TWILIO_WHATSAPP_FROM = "+91XXXXXXXXXX"   # your approved sender
  *   node scripts/activate-whatsapp-production.js
+ *
+ * Optional override:
+ *   $env:TWILIO_WHATSAPP_FROM = "+14244972690"
  */
 const API = 'https://api.render.com/v1';
 const SERVICE_ID = process.env.RENDER_SERVICE_ID || 'srv-d8en4919rddc73chhqh0';
+const DEFAULT_FROM = '+14244972690';
+const TWILIO_SID = process.env.TWILIO_ACCOUNT_SID?.trim() || '';
+const TWILIO_TOKEN = process.env.TWILIO_AUTH_TOKEN?.trim() || '';
 
-async function api(path, options = {}) {
+async function renderApi(path, options = {}) {
   const key = process.env.RENDER_API_KEY;
   if (!key) throw new Error('Missing RENDER_API_KEY');
   const res = await fetch(`${API}${path}`, {
@@ -32,72 +43,109 @@ async function api(path, options = {}) {
 }
 
 async function upsertEnv(key, value) {
-  await api(`/services/${SERVICE_ID}/env-vars/${encodeURIComponent(key)}`, {
+  await renderApi(`/services/${SERVICE_ID}/env-vars/${encodeURIComponent(key)}`, {
     method: 'PUT',
     body: JSON.stringify({ value: String(value) }),
   });
   console.log(`  ${key} = ${value}`);
 }
 
-async function main() {
-  const from = process.env.TWILIO_WHATSAPP_FROM?.trim();
-  if (!from || from.includes('4155238886')) {
-    console.log(`
-═══════════════════════════════════════════════════════════
-  CANNOT skip Meta verification — Twilio Trial / Sandbox
-  cannot message ALL users without a real WhatsApp sender.
-═══════════════════════════════════════════════════════════
+async function listOnlineSenders() {
+  const token = TWILIO_TOKEN || process.env.TWILIO_AUTH_TOKEN;
+  if (!token) return [];
+  const auth = Buffer.from(`${TWILIO_SID}:${token}`).toString('base64');
+  const res = await fetch('https://messaging.twilio.com/v2/Channels/Senders?Channel=whatsapp', {
+    headers: { Authorization: `Basic ${auth}` },
+  });
+  const data = await res.json();
+  return (data.senders || []).filter((s) => {
+    const id = s.sender_id || '';
+    if (id.includes('4155238886')) return false; // skip sandbox
+    return String(s.status || '').toUpperCase() === 'ONLINE';
+  });
+}
 
-Do this in your browser (≈15–30 mins if Meta verifies quickly):
+function printGuide() {
+  console.log(`
+════════════════════════════════════════════════════════════════
+  WhatsApp for ALL users = Dream Mantra Business Sender
+  Sandbox CANNOT do this. One Meta link is required (once).
+════════════════════════════════════════════════════════════════
 
-1) Upgrade Twilio (needed for production WhatsApp):
-   https://console.twilio.com/billing/upgrade
+Phone already bought for you:  +1 424 497 2690
 
-2) Create WhatsApp sender (Self Sign-up):
-   https://console.twilio.com/us1/develop/sms/senders/whatsapp-senders
+DO THIS NOW (browser, ~10 minutes):
+
+1) https://console.twilio.com/billing/upgrade
+   (Upgrade Trial → paid — required for WhatsApp Business)
+
+2) https://console.twilio.com/us1/develop/sms/senders/whatsapp-senders
    → Create new sender
+   → Choose +14244972690
    → Continue with Facebook
-   → Create/link Meta Business Portfolio + WABA
+   → Create Meta Business Portfolio (Dream Mantra)
+   → Create WhatsApp Business Account
    → Display name: Dream Mantra
-   → Add a phone number that is NOT on personal WhatsApp
-     (buy a Twilio US/IN number OR use a spare SIM)
-   → Enter Meta OTP
+   → Category: Education
+   → Website: https://dreammantra.in
+   → Complete OTP from Twilio Console
    → Confirm Twilio access
 
-3) Complete Meta Business Verification (documents):
-   https://business.facebook.com/settings/security
+3) Sender webhook URL:
+   https://dreammantra.in/api/webhooks/whatsapp   (HTTP POST)
 
-4) In Twilio sender settings set webhook:
-   https://dreammantra.in/api/webhooks/whatsapp  (POST)
-
-5) Then run:
+4) Re-run this script (auto-detects ONLINE sender):
    $env:RENDER_API_KEY = "..."
-   $env:TWILIO_WHATSAPP_FROM = "+91YOUR_NUMBER"
+   $env:TWILIO_AUTH_TOKEN = "..."
    node scripts/activate-whatsapp-production.js
 
-Until then: signup auto-opens join WhatsApp so EVERY new user
-can connect in one tap (sandbox limitation).
+After that: registration, reminders, notifications and Esh chat
+go to ALL opted-in users with NO join code.
 `);
-    process.exit(from ? 1 : 0);
+}
+
+async function main() {
+  const forced = process.env.TWILIO_WHATSAPP_FROM?.trim();
+  let from = forced;
+
+  if (!from || from.includes('4155238886')) {
+    try {
+      const online = await listOnlineSenders();
+      if (online[0]?.sender_id) {
+        from = online[0].sender_id.replace(/^whatsapp:/i, '');
+        console.log(`Detected ONLINE sender: ${from}`);
+      }
+    } catch (err) {
+      console.warn('Could not list senders:', err.message);
+    }
   }
 
-  console.log('Switching Dream Mantra to production WhatsApp sender...\n');
+  if (!from || from.includes('4155238886')) {
+    printGuide();
+    from = DEFAULT_FROM;
+    console.log(`\nNo ONLINE business sender yet. Not switching env (still sandbox).\n`);
+    process.exit(0);
+  }
+
   const digits = from.replace(/\D/g, '');
+  const e164 = from.startsWith('+') ? from : `+${digits}`;
+
+  console.log('Activating production WhatsApp on Render...\n');
   await upsertEnv('WHATSAPP_ENABLED', 'true');
   await upsertEnv('WHATSAPP_PROVIDER', 'twilio');
-  await upsertEnv('TWILIO_WHATSAPP_FROM', from.startsWith('+') ? from : `+${digits}`);
+  await upsertEnv('TWILIO_WHATSAPP_FROM', e164);
   await upsertEnv('TWILIO_WHATSAPP_SANDBOX', 'false');
   await upsertEnv('VITE_WHATSAPP_BUSINESS_PHONE', digits);
+  await upsertEnv('WHATSAPP_SITE_URL', 'https://dreammantra.in');
 
   console.log('\nDeploying...');
-  const deploy = await api(`/services/${SERVICE_ID}/deploys`, {
+  const deploy = await renderApi(`/services/${SERVICE_ID}/deploys`, {
     method: 'POST',
     body: JSON.stringify({ clearCache: 'clear' }),
   });
   const d = deploy.deploy || deploy;
   console.log(`Deploy: ${d.id} (${d.status})`);
-  console.log('\nVerify: curl https://dreammantra.in/api/health');
-  console.log('Expect: "sandbox":false');
+  console.log('\nExpect health: "sandbox":false  "configured":true');
 }
 
 main().catch((err) => {

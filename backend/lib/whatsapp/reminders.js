@@ -51,8 +51,9 @@ export function scanPaymentReminders() {
     const user = users.find((u) => Number(u.id) === Number(assessment.user_id));
     if (!userMayReceiveWhatsApp(user)) continue;
 
-    const trigger = age >= 24 ? 'payment_reminder_24h' : 'payment_reminder_6h';
+    const age = hoursSince(assessment.created_at || assessment.updated_at);
     if (age < 6) continue;
+    const trigger = age >= 24 ? 'payment_reminder_24h' : 'payment_reminder_6h';
     if (hasRecentOutbox(user.id, trigger)) continue;
 
     const payload = {

@@ -6,13 +6,39 @@ import { scheduleWhatsAppMessage, queueWhatsAppMessage, processOutbox } from './
 import { markOptIn } from './conversations.js';
 import { messageCatalog } from './catalog.js';
 import { siteUrl } from './config.js';
+import { sendNotificationEmail, whatsappBodyToEmailHtml } from '../../utils/mail.js';
 
 const HOUR = 60 * 60 * 1000;
 
-/** Queue a message and flush the outbox immediately (instant delivery). */
+async function mirrorToEmail(trigger, user, body) {
+  if (!user?.email || !body) return;
+  try {
+    await sendNotificationEmail({
+      to: user.email,
+      subject: `Dream Mantra — ${String(trigger).replace(/_/g, ' ')}`,
+      html: whatsappBodyToEmailHtml(body),
+      text: body,
+    });
+  } catch (err) {
+    console.error('[whatsapp] email mirror failed:', err.message);
+  }
+}
+
+/** Queue a message, flush outbox immediately, and mirror to email for reliability. */
 async function sendNow(trigger, user, extra = {}) {
-  queueText(trigger, user, extra);
-  await processOutbox({ limit: 20 });
+  const body = messageCatalog(trigger, user, extra);
+  if (!body) return;
+  queueWhatsAppMessage({
+    userId: user.id,
+    user,
+    trigger,
+    body,
+    meta: extra,
+  });
+  const result = await processOutbox({ limit: 20, userId: user.id });
+  // Mirror to email so users always get the message (WhatsApp may be blocked until production sender)
+  await mirrorToEmail(trigger, user, body);
+  return result;
 }
 
 function canSend(user) {
