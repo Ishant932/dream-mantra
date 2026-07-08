@@ -53,6 +53,7 @@ export const siteEn = {
   },
 
   navQuickMenu: {
+    whatsappLabel: 'Chat with Esh on WhatsApp',
     footer: 'Scientific career guidance · Class 1 to First Job',
     columns: [
       {

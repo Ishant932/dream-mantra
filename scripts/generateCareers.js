@@ -6,6 +6,14 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getAllCareerEntries } from './careerTitleBank.js';
+import {
+  roleDayInLife,
+  roleResponsibilities,
+  roleHardSkills,
+  roleTools,
+  roleCertifications,
+  roleInternshipPath,
+} from './careerRoleSnippets.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -541,11 +549,7 @@ function buildCareer(id, title, category, config, variantIdx) {
       ? `Specialist ${base} professionals are narrow-domain experts — often with M.Sc/Ph.D, advanced certifications, or 5–10 years of focused practice in one sub-field.\n\nIndian employers in ${category.toLowerCase()} hire specialists for R&D, consulting, compliance, and high-stakes technical decisions. Pay can match or exceed general senior roles in the same field.\n\nDream Mantra helps students identify whether the specialist or senior leadership track fits their aptitude and interests.`
       : `${title} professionals in India typically enter through board exams and competitive entrances (where applicable), followed by a domain degree from a recognised Indian university or institute.\n\nIn the Indian job market, ${title} roles are hired by ${emp.slice(0, 3).join(', ')} and similar employers. Freshers often start through campus placements, off-campus drives, or government recruitment.\n\nDream Mantra recommends Mind Mapping + Skill Mapping before finalising this path — to match aptitude, learning style, and family expectations with realistic Indian salary bands and exam timelines.`;
 
-  const dayInLife = tier === 'senior'
-    ? `A Senior ${base} in India typically leads stand-ups, reviews team output, aligns with senior management, handles escalations, and mentors 3–10 juniors. About 40% time on strategy and stakeholders, 60% on technical or operational decisions.`
-    : tier === 'specialist'
-      ? `A Specialist ${base} spends most of the day on deep technical work — analysis, design, troubleshooting, or research that others cannot do. You may advise multiple teams, review critical deliverables, and join senior meetings only for your domain.`
-      : `A typical Indian workday as ${title} includes domain tasks, team coordination, stakeholder updates, and compliance with organisation SOPs. Work settings range from offices and hospitals to field sites, depending on employer and city.`;
+  const dayInLife = roleDayInLife(title, category, tier);
 
   const growthPath = tier === 'senior'
     ? `${base} (3–5 yrs) → Senior ${base} (6–10 yrs) → Lead / Manager → Director / VP / Practice Head`
@@ -589,40 +593,14 @@ function buildCareer(id, title, category, config, variantIdx) {
     shortDescription,
     description,
     dayInLife,
-    responsibilities: tier === 'senior'
-      ? [
-          `Lead and mentor a team of ${base} professionals`,
-          'Set priorities, allocate work, and review quality across deliverables',
-          'Present to senior management and external clients or partners',
-          pick(['Own budget and hiring decisions', 'Drive process improvement across the unit', 'Represent the organisation in industry forums'], id),
-          pick(['Resolve escalations and cross-team conflicts', 'Define KPIs and performance standards', 'Align team goals with business strategy'], id + 2),
-        ]
-      : tier === 'specialist'
-        ? [
-            `Solve the most complex ${base} problems escalated by the wider team`,
-            'Design standards, playbooks, and best practices for your niche',
-            'Review and approve critical technical or domain decisions',
-            pick(['Publish research, whitepapers, or internal knowledge bases', 'Train others through workshops and office hours', 'Evaluate tools and methodologies for the organisation'], id),
-            pick(['Support audits, compliance, and high-stakes client deliverables', 'Partner with vendors and external experts', 'Innovate new approaches in your specialisation'], id + 2),
-        ]
-        : [
-          `Execute core ${base.split(' ').slice(-1)[0] || 'role'} duties with quality and timelines`,
-          'Collaborate with cross-functional teams and stakeholders',
-          'Maintain professional standards and compliance requirements',
-          pick(['Analyze data and prepare reports', 'Manage projects and deliverables', 'Train juniors and share knowledge'], id),
-          pick(['Research industry trends', 'Optimize processes for efficiency', 'Support business growth goals'], id + 2),
-        ],
+    responsibilities: roleResponsibilities(title, category, tier, id),
     education: categoryEducation(category, title, stream, id),
     skills: [
-      'Communication & presentation', 'Critical thinking', 'Domain expertise',
-      pick(['Leadership', 'Teamwork', 'Analytics', 'Creativity', 'Technical proficiency'], id),
-      pick(['Problem solving', 'Time management', 'Adaptability', 'Attention to detail'], id + 1),
-      pick(['Digital literacy', 'Project management', 'Client handling'], id + 3),
+      ...roleHardSkills(title, category).slice(0, 4),
+      pick(['Leadership', 'Teamwork', 'Analytics', 'Creativity', 'Problem solving'], id),
+      pick(['Time management', 'Adaptability', 'Attention to detail', 'Client handling'], id + 1),
     ],
-    certifications: [
-      pick(['ISO certified training', 'Domain-specific professional certification', 'NASSCOM / sector skill council certificate'], id),
-      id % 2 === 0 ? 'Advanced specialization course from reputed institute' : 'Online micro-credentials from Coursera/edX',
-    ],
+    certifications: roleCertifications(title, category, id),
     courses: [
       pick(['B.Tech / B.Sc relevant stream', 'B.Com / BBA where applicable', 'B.A with specialization'], id),
       pick(['Industry bootcamp', 'Diploma from polytechnic/ITI', 'Professional degree pathway'], id + 1),
@@ -683,21 +661,14 @@ function buildCareer(id, title, category, config, variantIdx) {
           pick(['Intellectual satisfaction', 'Social impact and recognition', 'Flexible remote/hybrid options'], id + 1),
           'Diverse industry options across public and private sector',
         ],
-    toolsAndTech: pick([
-      ['Microsoft Office / Google Workspace', 'Industry-specific software', 'Project management tools'],
-      ['CAD / design software', 'Data analysis tools', 'Communication platforms'],
-      ['Clinical / lab equipment', 'CRM & ERP systems', 'Cloud collaboration tools'],
-    ], id),
+    toolsAndTech: roleTools(title, category),
     softSkills: ['Communication', 'Teamwork', 'Critical thinking', 'Adaptability', 'Time management'],
-    hardSkills: [
-      pick(['Domain technical skills', 'Data literacy', 'Regulatory knowledge'], id),
-      pick(['Programming / analytics', 'Financial modelling', 'Research methodology'], id + 1),
-    ],
-    internshipPath: tier === 'entry'
+    hardSkills: roleHardSkills(title, category),
+    internshipPath: roleInternshipPath(title, category, tier) || (tier === 'entry'
       ? `Seek internships in ${category.split(' ')[0]} sector from Year 2 of UG — apply via campus, LinkedIn, and Dreams Mantra AI Career Launchpad programme`
       : tier === 'senior'
         ? `Senior roles are reached through internal promotion, head-hunter networks, and LinkedIn — build a track record of leading teams and delivering outcomes as ${base}`
-        : `Specialist roles often come via PG research, niche certifications, and referrals — demonstrate depth through publications, portfolios, or complex project ownership`,
+        : `Specialist roles often come via PG research, niche certifications, and referrals — demonstrate depth through publications, portfolios, or complex project ownership`),
     higherStudies: tier === 'senior'
       ? [
           'Executive MBA or leadership programmes (IIMs, ISB, global EMBA)',

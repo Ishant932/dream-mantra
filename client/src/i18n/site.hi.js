@@ -53,6 +53,7 @@ export const siteHi = {
   },
 
   navQuickMenu: {
+    whatsappLabel: 'WhatsApp पर Esh से बात करें',
     footer: 'वैज्ञानिक करियर मार्गदर्शन · कक्षा 1 से पहली नौकरी',
     columns: [
       {
