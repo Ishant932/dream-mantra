@@ -2,12 +2,18 @@ import { getData, repo } from '../../db.js';
 import { normalizeProfile } from '../profile.js';
 import { isWhatsAppEnabled } from './config.js';
 import { resolveUserPhone, toWhatsAppId, userMayReceiveWhatsApp } from './phone.js';
-import { queueFromTemplate, scheduleWhatsAppMessage, queueWhatsAppMessage } from './outbox.js';
+import { scheduleWhatsAppMessage, queueWhatsAppMessage, processOutbox } from './outbox.js';
 import { markOptIn } from './conversations.js';
 import { messageCatalog } from './catalog.js';
 import { siteUrl } from './config.js';
 
 const HOUR = 60 * 60 * 1000;
+
+/** Queue a message and flush the outbox immediately (instant delivery). */
+async function sendNow(trigger, user, extra = {}) {
+  queueText(trigger, user, extra);
+  await processOutbox({ limit: 20 });
+}
 
 function canSend(user) {
   if (!isWhatsAppEnabled()) return false;
@@ -65,7 +71,7 @@ export function onUserRegistered(user, { whatsappOptIn = true } = {}) {
     const fresh = getData().users.find((u) => Number(u.id) === Number(user.id)) || user;
     if (!canSend(fresh)) return;
 
-    queueText('registration_success', fresh);
+    await sendNow('registration_success', fresh);
     scheduleText('welcome_step2', fresh, 2 * HOUR);
     scheduleText('welcome_step3', fresh, 24 * HOUR);
     scheduleText('welcome_step4', fresh, 48 * HOUR);
@@ -73,11 +79,11 @@ export function onUserRegistered(user, { whatsappOptIn = true } = {}) {
 }
 
 export function onProfileUpdated(user) {
-  fire(() => {
+  fire(async () => {
     if (!canSend(user)) return;
     const profile = normalizeProfile(user.profile);
     if (!profile.setupComplete) return;
-    queueText('profile_complete', user);
+    await sendNow('profile_complete', user);
   });
 }
 
@@ -92,31 +98,32 @@ export function onPaymentPending(user, assessment) {
 }
 
 export function onPaymentConfirmed(user, assessment) {
-  fire(() => {
+  fire(async () => {
     if (!canSend(user)) return;
-    queueText('payment_confirmed', user, {
+    await sendNow('payment_confirmed', user, {
       moduleTitle: assessment?.type || assessment?.product_slug,
     });
   });
 }
 
 export function onReportReady(user, report) {
-  fire(() => {
+  fire(async () => {
     if (!canSend(user)) return;
-    queueText('report_ready', user, {
+    await sendNow('report_ready', user, {
       reportTitle: report?.report_title || report?.title || 'Assessment report',
     });
   });
 }
 
 export function onConsultationBooked(user, consultation) {
-  fire(() => {
+  fire(async () => {
     if (!canSend(user) || !consultation?.scheduled_at) return;
     const d = new Date(consultation.scheduled_at);
     const sessionDate = d.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
     const sessionTime = d.toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit' });
     queueText('booking_confirmed', user, { sessionDate, sessionTime });
     queueText('session_reminder', user, { sessionDate, sessionTime });
+    await processOutbox({ limit: 20 });
   });
 }
 

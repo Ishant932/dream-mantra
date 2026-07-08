@@ -12,6 +12,7 @@ import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
 import { isMobileBottomNavVisible } from '../utils/mobileBottomNav';
 import MobileBottomNav from './MobileBottomNav';
 
+import WhatsAppFloat from './WhatsAppFloat';
 import { lazyWithRetry } from '../utils/lazyWithRetry';
 
 const Chatbot = lazyWithRetry(() => import('./Chatbot'));
@@ -62,6 +63,7 @@ export default function Layout() {
       <Footer />
       <ScrollToTop />
       <HashScrollHandler />
+      <WhatsAppFloat />
       {mobilePerf && !loadChatbot && (
         <button
           type="button"

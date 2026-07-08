@@ -6123,6 +6123,61 @@ html.light .scroll-top-btn {
   50% { opacity: 0.85; transform: scale(1.05); }
 }
 
+/* Floating WhatsApp — left of Esh chatbot FAB */
+.wa-fab {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 7.25rem;
+  z-index: 9998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-width: 3.5rem;
+  min-height: 3.5rem;
+  padding: 0.75rem 1.1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #128C7E, #25D366 55%, #20BA5A);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.875rem;
+  box-shadow: 0 12px 36px rgba(37, 211, 102, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  text-decoration: none;
+  overflow: visible;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.wa-fab:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 16px 44px rgba(37, 211, 102, 0.55);
+  color: #fff;
+}
+.wa-fab-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), transparent 65%);
+  animation: eshFabPulse 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+.wa-fab-live {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #86efac;
+  border: 2px solid #fff;
+  box-shadow: 0 0 8px rgba(134, 239, 172, 0.9);
+  animation: eshDotPulse 1.8s ease-in-out infinite;
+}
+.wa-fab-label {
+  position: relative;
+  z-index: 1;
+  letter-spacing: 0.01em;
+}
+
 .esh-panel {
   position: fixed;
   bottom: 1.5rem;
@@ -6581,6 +6636,16 @@ h1, h2, h3, h4, h5, h6,
     padding: 0.875rem;
     min-width: 48px;
     min-height: 48px;
+  }
+  .wa-fab {
+    bottom: calc(1rem + var(--safe-bottom));
+    right: calc(4.75rem + var(--safe-right));
+    padding: 0.875rem;
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .wa-fab-label {
+    display: none;
   }
   .esh-panel {
     inset: auto calc(0.5rem + var(--safe-right)) calc(0.5rem + var(--safe-bottom)) calc(0.5rem + var(--safe-left));
@@ -15081,6 +15146,10 @@ html.is-mobile-perf .home-lazy-placeholder {
   .esh-fab {
     bottom: calc(4.75rem + var(--safe-bottom)) !important;
     right: calc(0.85rem + var(--safe-right)) !important;
+  }
+  .wa-fab {
+    bottom: calc(4.75rem + var(--safe-bottom)) !important;
+    right: calc(4.6rem + var(--safe-right)) !important;
   }
 }
 
