@@ -5,6 +5,7 @@ import { useLang } from '../context/LanguageContext';
 import Logo from './Logo';
 import FooterLocations from './FooterLocations';
 import { footerSocial } from '../data/siteLinks';
+import { useWhatsAppAgentLink } from '../hooks/useWhatsAppAgentLink';
 import { isMobilePerf } from '../utils/mobilePerf';
 
 function WhatsAppIcon({ className }) {
@@ -102,6 +103,7 @@ function FooterQuickSections({ title, sections = [], index = 0 }) {
 export default function Footer() {
   const { t, d } = useLang();
   const footer = d('footer');
+  const waHref = useWhatsAppAgentLink();
   const lite = isMobilePerf();
   const FadeBox = lite ? 'div' : motion.div;
   const topMotion = lite ? {} : {
@@ -144,11 +146,21 @@ export default function Footer() {
             </ul>
             <p className="footer-pro__hours">{t('footer.hours')}</p>
 
+            <a
+              href={waHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-pro__wa-cta"
+            >
+              <WhatsAppIcon className="w-5 h-5 shrink-0" />
+              <span>Chat with Esh on WhatsApp</span>
+            </a>
+
             <div className="footer-pro__social">
               <span className="footer-pro__social-label">{footer.followUs}</span>
               <div className="footer-pro__social-icons">
                 {[
-                  { href: footerSocial.whatsapp, icon: WhatsAppIcon, label: 'WhatsApp' },
+                  { href: waHref, icon: WhatsAppIcon, label: 'WhatsApp AI counsellor' },
                   { href: footerSocial.instagram, icon: Instagram, label: 'Instagram' },
                   { href: footerSocial.linkedin, icon: Linkedin, label: 'LinkedIn' },
                   { href: footerSocial.facebook, icon: Facebook, label: 'Facebook' },
