@@ -32,22 +32,37 @@ export const footerPrograms = [
   { to: '/counsellors', label: 'Join as Counsellor' },
 ];
 
-/** Twilio WhatsApp sandbox (AI agent / Esh). Users must join with the sandbox code first. */
-export const WHATSAPP_AGENT_PHONE = '14155238886';
+/** Twilio WhatsApp sandbox number (AI agent / Esh). Override with VITE_WHATSAPP_BUSINESS_PHONE in production. */
+export const WHATSAPP_AGENT_PHONE = (
+  import.meta.env.VITE_WHATSAPP_BUSINESS_PHONE || '14155238886'
+).replace(/\D/g, '');
 
 const AGENT_PREFILL =
   'Hi Esh! I want career guidance from Dream Mantra 🚀';
 
-/** Opens WhatsApp chat with the AI agent (Twilio sandbox / production sender). */
-export function getWhatsAppAgentLink(text = AGENT_PREFILL) {
-  const q = encodeURIComponent(text);
-  return `https://wa.me/${WHATSAPP_AGENT_PHONE}?text=${q}`;
+/**
+ * Opens WhatsApp chat with the AI agent.
+ * @param {object|string} [opts]
+ * @param {boolean} [opts.sandbox] — if true, prefill join code (required by Twilio sandbox)
+ * @param {string} [opts.joinCode] — e.g. "join atomic-later"
+ * @param {string} [opts.text] — custom message body
+ */
+export function getWhatsAppAgentLink(opts = {}) {
+  const options = typeof opts === 'string' ? { text: opts } : (opts || {});
+  const joinCode = (options.joinCode || import.meta.env.VITE_WHATSAPP_SANDBOX_CODE || 'join atomic-later').trim();
+  let text = options.text;
+  if (!text) {
+    text = options.sandbox
+      ? joinCode
+      : AGENT_PREFILL;
+  }
+  return `https://wa.me/${WHATSAPP_AGENT_PHONE}?text=${encodeURIComponent(text)}`;
 }
 
 export const footerSocial = {
-  /** Business contact (office). Floating FAB uses getWhatsAppAgentLink() for the AI agent. */
+  /** Office / team WhatsApp (fixed business line). FAB uses getWhatsAppAgentLink() for AI agent. */
   whatsapp: 'https://api.whatsapp.com/send/?phone=919680102276&text&type=phone_number&app_absent=0',
-  whatsappAgent: getWhatsAppAgentLink(),
+  whatsappAgent: getWhatsAppAgentLink({ sandbox: true }),
   instagram: 'https://www.instagram.com/dream.mantra/',
   linkedin: 'https://www.linkedin.com/company/dreammantra',
   facebook: 'https://www.facebook.com/people/Dreamz/61577007261235/',

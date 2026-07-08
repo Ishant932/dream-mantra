@@ -90,15 +90,25 @@ curl -X POST https://dreammantra.in/api/cron/whatsapp \
   -H "Authorization: Bearer YOUR_CRON_SECRET"
 ```
 
-### Moving to production (later)
+### Moving to production (ALL users — no join code)
 
-When ready for real customers with your own number:
+Sandbox **cannot** message the public. Every phone must send `join …` first (72h). To serve **all registered users** automatically:
 
-1. Twilio Console → **Messaging** → **Senders** → request WhatsApp sender
-2. Connect a business number (can be different from 9680102276)
-3. Update `TWILIO_WHATSAPP_FROM` to your approved sender
-4. Set `TWILIO_WHATSAPP_SANDBOX=false`
-5. Optional: create **Content Templates** in Twilio and set `TWILIO_CONTENT_DM_WELCOME=HX...` etc.
+1. Twilio Console → **Messaging** → **Senders** → **WhatsApp Senders** → **Create new sender**
+2. Complete **Self Sign-up**: link Meta Business Portfolio + WhatsApp Business Account
+3. Register a phone number **not** already on WhatsApp personal/app (or delete that WA account first). Can be a Twilio India number or your business SIM.
+4. Finish Meta OTP ownership check + **Business Verification** (documents)
+5. Set webhook: `https://dreammantra.in/api/webhooks/whatsapp` (POST)
+6. On Render, update:
+   ```env
+   TWILIO_WHATSAPP_FROM=+91YOUR_APPROVED_NUMBER
+   TWILIO_WHATSAPP_SANDBOX=false
+   VITE_WHATSAPP_BUSINESS_PHONE=91YOUR_APPROVED_NUMBER
+   ```
+7. Redeploy. Health check should show `"sandbox":false`.
+8. Optional: create Twilio Content Templates for outside-24h marketing (welcome templates).
+
+Until step 4–7 are done, keep the green **Join chat** button (opens WhatsApp with `join atomic-later` pre-filled).
 
 ---
 

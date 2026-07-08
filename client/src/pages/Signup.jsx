@@ -172,6 +172,9 @@ export default function Signup() {
                   />
                   <span className="text-sm text-sand-700">
                     Yes — send me Dream Mantra updates, reminders &amp; AI assistant messages on WhatsApp.
+                    <span className="block text-xs text-sand-500 mt-1">
+                      First message may ask you to tap <strong>Join chat</strong> (bottom of site) and send the join code — then Esh replies automatically.
+                    </span>
                   </span>
                 </label>
               )}

@@ -10,25 +10,54 @@ function WhatsAppIcon({ className }) {
   );
 }
 
-/** Floating WhatsApp button — opens chat with Dream Mantra AI agent (Esh). */
+/**
+ * Floating WhatsApp button.
+ * Sandbox: opens with "join <code>" so every user can connect (required by Twilio).
+ * Production: opens AI agent prefilled "Hi Esh…".
+ */
 export default function WhatsAppFloat() {
   const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
+  const [href, setHref] = useState(() => getWhatsAppAgentLink({ sandbox: true }));
+  const [isSandbox, setIsSandbox] = useState(true);
+
+  useEffect(() => {
+    setMounted(true);
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/health', { cache: 'no-store' });
+        const data = await res.json();
+        const wa = data?.whatsapp || {};
+        if (cancelled) return;
+        setIsSandbox(!!wa.sandbox);
+        setHref(getWhatsAppAgentLink({
+          sandbox: !!wa.sandbox,
+          joinCode: wa.sandboxJoinCode || '',
+        }));
+      } catch {
+        /* keep default sandbox-safe link */
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   if (!mounted || typeof document === 'undefined') return null;
 
   return createPortal(
     <a
-      href={getWhatsAppAgentLink()}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
       className="wa-fab"
-      aria-label="Chat on WhatsApp with Dream Mantra AI counsellor"
-      title="Chat on WhatsApp"
+      aria-label={isSandbox
+        ? 'Connect WhatsApp AI counsellor (send join code first)'
+        : 'Chat on WhatsApp with Dream Mantra AI counsellor'}
+      title={isSandbox ? 'Tap → send join message → start chatting' : 'Chat on WhatsApp'}
     >
       <span className="wa-fab-pulse" aria-hidden="true" />
       <span className="wa-fab-live" aria-hidden="true" />
       <WhatsAppIcon className="w-7 h-7 relative z-10" />
-      <span className="wa-fab-label">WhatsApp</span>
+      <span className="wa-fab-label">{isSandbox ? 'Join chat' : 'WhatsApp'}</span>
     </a>,
     document.body
   );
