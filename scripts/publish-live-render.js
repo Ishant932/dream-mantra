@@ -1,5 +1,5 @@
 /**
- * Set ADMIN_REQUIRE_2FA=false on Render and trigger a fresh deploy.
+ * Set ADMIN_REQUIRE_2FA=true on Render and trigger a fresh deploy.
  * Usage: $env:RENDER_API_KEY = "rnd_..."; node scripts/publish-live-render.js
  */
 const API = 'https://api.render.com/v1';
@@ -40,7 +40,7 @@ async function main() {
   console.log('Publishing Dream Mantra to Render...\n');
 
   console.log('Setting environment:');
-  await upsertEnvVar('ADMIN_REQUIRE_2FA', 'false');
+  await upsertEnvVar('ADMIN_REQUIRE_2FA', 'true');
 
   console.log('\nTriggering deploy (clear cache)...');
   const deploy = await api(`/services/${SERVICE_ID}/deploys`, {
@@ -52,7 +52,7 @@ async function main() {
 
   console.log('\nTrack: https://dashboard.render.com/web/srv-d8en4919rddc73chhqh0/deploys');
   console.log('Live URLs: https://dreammantra.in  https://dream-mantra.onrender.com');
-  console.log('\nVerify when live: /api/health should show version eff015a or newer.');
+  console.log('\nVerify when live: /api/health should show version 2f53bae or newer.');
 }
 
 main().catch((err) => {
