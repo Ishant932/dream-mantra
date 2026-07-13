@@ -556,7 +556,7 @@ export function seedAdmin() {
     },
   ];
 
-  const reset2fa = process.env.ADMIN_RESET_2FA === 'true' || process.env.ADMIN_REQUIRE_2FA !== 'true';
+  const reset2fa = process.env.ADMIN_RESET_2FA === 'true';
 
   for (const cfg of admins) {
     const hashed = bcrypt.hashSync(cfg.password, 10);
@@ -598,7 +598,7 @@ export function seedAdmin() {
   saveData();
   console.log(`Admin accounts synced: ${admins.map((a) => a.email).join(', ')}`);
   if (reset2fa) {
-    console.log('Admin 2FA reset (ADMIN_RESET_2FA=true) — scan QR on next login');
+    console.log('Admin 2FA reset (ADMIN_RESET_2FA=true) — each admin scans QR on next login');
   }
 }
 

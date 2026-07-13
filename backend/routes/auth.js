@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import db, { repo, getData, flushDatabase } from '../db.js';
+import db, { repo, flushDatabase } from '../db.js';
 import { authRequired } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 import { generateTwoFactorSecret, qrCodeDataUrl, verifyTotp } from '../utils/totp.js';
@@ -58,26 +58,6 @@ function shouldPromptFor2FA(user) {
   if (!user?.twoFactorEnabled || !user?.twoFactorSecret) return false;
   if (user.role === 'admin' && process.env.ADMIN_REQUIRE_2FA !== 'true') return false;
   return true;
-}
-
-function getAllAdmins() {
-  return (getData().users || []).filter((u) => u.role === 'admin');
-}
-
-function adminsWithActive2FA() {
-  return getAllAdmins().filter((u) => u.twoFactorEnabled && u.twoFactorSecret);
-}
-
-function orgAdmin2FAReady() {
-  return adminsWithActive2FA().length > 0;
-}
-
-function adminsNeeding2FASetup() {
-  return getAllAdmins().filter((u) => !u.twoFactorEnabled || !u.twoFactorSecret);
-}
-
-function verifyAnyAdminTotp(code) {
-  return adminsWithActive2FA().some((admin) => verifyTotp(admin.twoFactorSecret, code));
 }
 
 async function buildAdminSetupEntry(admin) {
@@ -186,51 +166,28 @@ router.post('/login', loginLimiter, async (req, res) => {
     const forceSetup = req.body.adminSetup2FA === true;
 
     if (forceSetup) {
-      for (const admin of getAllAdmins()) {
-        repo.updateUser(admin.id, {
-          twoFactorEnabled: false,
-          twoFactorSecret: null,
-          twoFactorPendingSecret: null,
-        });
-      }
+      repo.updateUser(user.id, {
+        twoFactorEnabled: false,
+        twoFactorSecret: null,
+        twoFactorPendingSecret: null,
+      });
       user = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id) || user;
     }
 
-    if ((user.twoFactorEnabled && user.twoFactorSecret || orgAdmin2FAReady()) && !forceSetup) {
+    if (user.twoFactorEnabled && user.twoFactorSecret && !forceSetup) {
       return res.json({
         requires2FA: true,
         tempToken: signTemp2FAToken(user),
         isAdmin: true,
-        acceptAnyAdminCode: true,
-        message: 'Enter the 6-digit code from Scanner 1 or Scanner 2 (Google Authenticator)',
+        message: 'Enter the 6-digit code from Google Authenticator',
       });
     }
 
-    const pendingAdmins = forceSetup ? getAllAdmins().slice(0, 2) : adminsNeeding2FASetup();
-
     try {
-      if (pendingAdmins.length >= 2) {
-        const setups = [];
-        for (const admin of pendingAdmins.slice(0, 2)) {
-          setups.push(await buildAdminSetupEntry(admin));
-        }
-        await flushDatabase();
-        return res.json({
-          requires2FASetup: true,
-          dualSetup: true,
-          loginUserId: user.id,
-          setups,
-          isAdmin: true,
-          message:
-            'Scan both QR codes on two devices. Enter each 6-digit code below, then continue.',
-        });
-      }
-
       const setup = await buildAdminSetupEntry(user);
       await flushDatabase();
       return res.json({
         requires2FASetup: true,
-        dualSetup: false,
         setupToken: setup.setupToken,
         qrCode: setup.qrCode,
         manualEntry: setup.manualEntry,
@@ -325,12 +282,12 @@ router.post('/verify-2fa', (req, res) => {
 
   let codeOk = false;
   if (requiresMandatory2FA(user)) {
-    if (!orgAdmin2FAReady()) {
+    if (!user.twoFactorEnabled || !user.twoFactorSecret) {
       return res.status(400).json({
-        message: 'Two-factor authentication is not set up yet. Please sign in again to scan the QR codes.',
+        message: 'Two-factor authentication is not set up yet. Please sign in again to scan the QR code.',
       });
     }
-    codeOk = verifyAnyAdminTotp(code);
+    codeOk = verifyTotp(user.twoFactorSecret, code);
   } else {
     if (!user.twoFactorEnabled || !user.twoFactorSecret) {
       return res.status(400).json({ message: 'Two-factor authentication is not enabled' });
@@ -340,7 +297,7 @@ router.post('/verify-2fa', (req, res) => {
 
   if (!codeOk) {
     const hint = requiresMandatory2FA(user)
-      ? 'Invalid code. Use Scanner 1 or Scanner 2 from Google Authenticator.'
+      ? 'Invalid code. Check Google Authenticator for this admin account.'
       : 'Invalid authenticator code';
     return res.status(401).json({ message: hint });
   }

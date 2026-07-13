@@ -36,7 +36,7 @@ services:
       - key: ADMIN_RESET_2FA
         sync: false
       - key: ADMIN_REQUIRE_2FA
-        value: false
+        value: true
       - key: GEMINI_API_KEY
         sync: false
       - key: RAZORPAY_KEY_ID

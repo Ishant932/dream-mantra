@@ -1,8 +1,94 @@
 import { motion } from 'framer-motion';
+import { Mail, Phone, Github, MessageCircle } from 'lucide-react';
 import PersonPhoto from './PersonPhoto';
 import { IMAGES } from '../data/content';
 
 const PLACEHOLDER_IMAGES = [IMAGES.team, IMAGES.counselling, IMAGES.workshop, IMAGES.college, IMAGES.professional, IMAGES.students];
+
+function LeadershipExtendedMeta({ highlights, skills, contact }) {
+  const hasContent = highlights?.length || skills?.length || contact;
+  if (!hasContent) return null;
+
+  const links = [
+    contact?.phone && {
+      href: `tel:${contact.phone.replace(/\s/g, '')}`,
+      label: contact.phone,
+      short: 'Call',
+      icon: Phone,
+      external: false,
+    },
+    contact?.email && {
+      href: `mailto:${contact.email}`,
+      label: contact.email,
+      short: 'Email',
+      icon: Mail,
+      external: false,
+    },
+    contact?.whatsapp && {
+      href: contact.whatsapp,
+      label: 'WhatsApp',
+      short: 'WhatsApp',
+      icon: MessageCircle,
+      external: true,
+    },
+    contact?.github && {
+      href: contact.github,
+      label: 'GitHub',
+      short: 'GitHub',
+      icon: Github,
+      external: true,
+    },
+  ].filter(Boolean);
+
+  return (
+    <div className="leadership-card__meta-panel">
+      {highlights?.length > 0 && (
+        <div className="leadership-card__meta-block">
+          <p className="leadership-card__meta-label">Expertise</p>
+          <ul className="leadership-card__highlights">
+            {highlights.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {skills?.length > 0 && (
+        <div className="leadership-card__meta-block">
+          <p className="leadership-card__meta-label">Tech stack</p>
+          <div className="leadership-card__skills leadership-card__skills--grid">
+            {skills.map((skill) => (
+              <span key={skill} className="leadership-card__skill-chip">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {links.length > 0 && (
+        <div className="leadership-card__meta-block leadership-card__meta-block--contact">
+          <p className="leadership-card__meta-label">Connect</p>
+          <div className="leadership-card__contact leadership-card__contact--grid">
+            {links.map(({ href, label, short, icon: Icon, external }) => (
+              <a
+                key={label}
+                href={href}
+                className="leadership-card__contact-link leadership-card__contact-link--compact"
+                title={label}
+                {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+              >
+                <Icon className="shrink-0" aria-hidden />
+                <span className="leadership-card__contact-text">{label}</span>
+                <span className="leadership-card__contact-short">{short}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function ExecutiveLeadershipEntry({ person, index, isLast }) {
   return (
@@ -52,6 +138,7 @@ function ExecutiveLeadershipGroup({ people, indexOffset = 0 }) {
 
 function ExecutiveLeadershipCard({ person, index, featured }) {
   const hasPhoto = Boolean(person.image?.trim());
+  const hasExtras = person.contact || person.highlights?.length || person.skills?.length;
 
   return (
     <motion.article
@@ -60,7 +147,7 @@ function ExecutiveLeadershipCard({ person, index, featured }) {
       viewport={{ once: true, margin: '-40px' }}
       transition={{ delay: index * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4 }}
-      className={`leadership-card leadership-card--executive infigon-card glow-card h-full flex flex-col ${featured ? 'leadership-card--featured' : ''} ${hasPhoto ? 'leadership-card--executive-photo' : ''}`}
+      className={`leadership-card leadership-card--executive infigon-card glow-card h-full flex flex-col ${featured ? 'leadership-card--featured' : ''} ${hasPhoto ? 'leadership-card--executive-photo' : ''} ${hasExtras ? 'leadership-card--extended' : ''}`}
     >
       <div className={`leadership-card__header ${hasPhoto ? 'leadership-card__header--photo' : ''}`}>
         {hasPhoto && (
@@ -85,6 +172,11 @@ function ExecutiveLeadershipCard({ person, index, featured }) {
       {person.bio && (
         <p className="leadership-card__bio">{person.bio}</p>
       )}
+      <LeadershipExtendedMeta
+        highlights={person.highlights}
+        skills={person.skills}
+        contact={person.contact}
+      />
     </motion.article>
   );
 }

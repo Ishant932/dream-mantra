@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { isMobilePerf } from '../utils/mobilePerf';
@@ -15,6 +15,9 @@ const fadeLite = {
 export default function HomeHero() {
   const { t } = useLang();
   const mobile = isMobilePerf();
+  const { scrollY } = useScroll();
+  const bgY = useTransform(scrollY, [0, 600], [0, mobile ? 0 : 80]);
+  const bgScale = useTransform(scrollY, [0, 600], [1, mobile ? 1 : 1.08]);
 
   const textMotion = mobile
     ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.14 } }
@@ -26,10 +29,30 @@ export default function HomeHero() {
 
   return (
     <section
-      className={`no-reveal hero-section hero-section--photo-bg relative min-h-0 sm:min-h-[88vh] flex items-center overflow-hidden pt-4 sm:pt-10 pb-6 sm:pb-16${mobile ? ' hero-section--mobile hero-section--mobile-animated' : ''}`}
-      style={{ '--hero-bg-image': `url(${HERO_BG_IMAGE})` }}
+      className={`no-reveal hero-section hero-section--photo-bg hero-section--photo-right relative min-h-0 sm:min-h-[88vh] flex items-center overflow-hidden pt-4 sm:pt-10 pb-6 sm:pb-16${mobile ? ' hero-section--mobile hero-section--mobile-animated' : ''}`}
     >
-      <div className="relative max-w-7xl mx-auto px-4 py-4 sm:py-16 w-full z-[1]">
+      {/* Right-aligned portrait background with parallax */}
+      <motion.div
+        className="hero-photo-bg"
+        style={{
+          backgroundImage: `url(${HERO_BG_IMAGE})`,
+          y: bgY,
+          scale: bgScale,
+        }}
+        aria-hidden
+      />
+
+      {/* Animated effect layers */}
+      <div className="hero-photo-fx hero-photo-fx--mesh" aria-hidden />
+      <div className="hero-photo-fx hero-photo-fx--scan" aria-hidden />
+      <div className="hero-photo-fx hero-photo-fx--grain" aria-hidden />
+      <div className="hero-photo-fx hero-photo-fx--vignette" aria-hidden />
+      <div className="hero-photo-fx hero-photo-fx--glow hero-photo-fx--glow-a" aria-hidden />
+      <div className="hero-photo-fx hero-photo-fx--glow hero-photo-fx--glow-b" aria-hidden />
+      <div className="hero-photo-fx hero-photo-fx--light-leak" aria-hidden />
+      <div className="hero-photo-fx hero-photo-fx--shimmer" aria-hidden />
+
+      <div className="relative max-w-7xl mx-auto px-4 py-4 sm:py-16 w-full z-[2]">
         <div className="hero-section__content max-w-2xl mx-auto lg:mx-0 text-center lg:text-left">
           {mobile ? (
             <motion.span
