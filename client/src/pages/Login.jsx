@@ -429,14 +429,6 @@ export default function Login() {
                   </button>
                   <button
                     type="button"
-                    disabled={loading}
-                    onClick={(e) => handleLogin(e, { adminSetup2FA: true })}
-                    className="text-sm text-amber-600 hover:underline w-full text-center"
-                  >
-                    Set up Scanner 1 &amp; 2 again (new QR codes)
-                  </button>
-                  <button
-                    type="button"
                     onClick={resetToCredentials}
                     className="text-sm text-amber-600 hover:underline w-full text-center"
                   >
