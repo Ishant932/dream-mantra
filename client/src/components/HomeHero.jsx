@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Brain, Award, Shield, Sparkles } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { isMobilePerf } from '../utils/mobilePerf';
 
 const HERO_BG_IMAGE = '/images/owner-hero.png';
+const badgeIcons = [Brain, Award, Shield];
 
 const fadeLite = {
   initial: { opacity: 0, y: 18 },
@@ -13,11 +14,15 @@ const fadeLite = {
 };
 
 export default function HomeHero() {
-  const { t } = useLang();
+  const { t, d } = useLang();
   const mobile = isMobilePerf();
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 600], [0, mobile ? 0 : 80]);
   const bgScale = useTransform(scrollY, [0, 600], [1, mobile ? 1 : 1.08]);
+  const badges = d('hero.badges').map((label, i) => ({
+    icon: badgeIcons[i] || Sparkles,
+    label,
+  }));
 
   const textMotion = mobile
     ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.14 } }
@@ -31,7 +36,6 @@ export default function HomeHero() {
     <section
       className={`no-reveal hero-section hero-section--photo-bg hero-section--photo-right relative min-h-0 sm:min-h-[88vh] flex items-center overflow-hidden pt-4 sm:pt-10 pb-6 sm:pb-16${mobile ? ' hero-section--mobile hero-section--mobile-animated' : ''}`}
     >
-      {/* Right-aligned portrait background with parallax */}
       <motion.div
         className="hero-photo-bg"
         style={{
@@ -42,7 +46,6 @@ export default function HomeHero() {
         aria-hidden
       />
 
-      {/* Animated effect layers */}
       <div className="hero-photo-fx hero-photo-fx--mesh" aria-hidden />
       <div className="hero-photo-fx hero-photo-fx--scan" aria-hidden />
       <div className="hero-photo-fx hero-photo-fx--grain" aria-hidden />
@@ -97,57 +100,82 @@ export default function HomeHero() {
             </motion.h1>
           )}
 
-          {!mobile && (
-            <>
-              <motion.p
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.55, delay: 0.12 }}
-                className="hero-quote text-base sm:text-lg italic font-semibold mb-4 max-w-xl leading-relaxed"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                {t('hero.quote')}
-              </motion.p>
+          <motion.p
+            {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.1 } } : {
+              initial: { opacity: 0, x: -16 },
+              animate: { opacity: 1, x: 0 },
+              transition: { duration: 0.55, delay: 0.12 },
+            })}
+            className={`hero-quote text-sm sm:text-base md:text-lg italic font-semibold mb-3 sm:mb-4 max-w-xl leading-relaxed mx-auto lg:mx-0 ${mobile ? 'text-center lg:text-left' : ''}`}
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            {t('hero.quote')}
+          </motion.p>
 
-              <motion.p
-                initial={{ opacity: 0, x: -16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.55, delay: 0.14 }}
-                className="hero-problem-hook"
-              >
-                {t('hero.problemHook')}
-              </motion.p>
-            </>
-          )}
+          <motion.p
+            {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.12 } } : {
+              initial: { opacity: 0, x: -16 },
+              animate: { opacity: 1, x: 0 },
+              transition: { duration: 0.55, delay: 0.14 },
+            })}
+            className="hero-problem-hook mx-auto lg:mx-0"
+          >
+            {t('hero.problemHook')}
+          </motion.p>
 
           <motion.p
             {...textMotion}
             className="hero-sub text-base sm:text-lg md:text-xl font-semibold mb-3 sm:mb-4 max-w-xl leading-relaxed mx-auto lg:mx-0"
             style={{ color: 'var(--text-secondary)' }}
           >
-            {mobile ? t('hero.problemHook') : t('hero.subtitle')}
+            {t('hero.subtitle')}
           </motion.p>
 
-          {!mobile && (
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, delay: 0.22 }}
-              className="hero-sub text-base sm:text-lg mb-8 max-w-xl leading-relaxed"
-              style={{ color: 'var(--text-body)' }}
-            >
-              {t('hero.desc')}
-            </motion.p>
-          )}
+          <motion.p
+            {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.18 } } : {
+              initial: { opacity: 0, y: 20 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.55, delay: 0.22 },
+            })}
+            className="hero-sub text-sm sm:text-base md:text-lg mb-6 sm:mb-8 max-w-xl leading-relaxed mx-auto lg:mx-0"
+            style={{ color: 'var(--text-body)' }}
+          >
+            {t('hero.desc')}
+          </motion.p>
 
           <motion.div
-            {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.2 } } : {})}
+            {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.2 } } : {
+              initial: { opacity: 0, y: 20 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.55, delay: 0.26 },
+            })}
             className="hero-btns flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center lg:justify-start"
           >
             <Link to="/signup" className="btn-primary px-6 sm:px-8 py-3.5 sm:py-4 w-full sm:w-auto justify-center">
               {t('hero.cta1')} <ArrowRight className="w-5 h-5" />
             </Link>
             <Link to="/counselling?tab=book" className="btn-outline w-full sm:w-auto justify-center">{t('mobileNav.book')}</Link>
+          </motion.div>
+
+          <motion.div
+            {...(mobile ? { ...fadeLite, transition: { ...fadeLite.transition, delay: 0.24 } } : {
+              initial: { opacity: 0, y: 16 },
+              animate: { opacity: 1, y: 0 },
+              transition: { duration: 0.55, delay: 0.3 },
+            })}
+            className="hero-trust flex flex-wrap gap-2 sm:gap-3 mt-6 sm:mt-8 justify-center lg:justify-start"
+          >
+            {badges.map(({ icon: Icon, label }) => (
+              <span
+                key={label}
+                className="card flex items-center gap-2 text-xs sm:text-sm font-semibold px-3 py-2 rounded-full shine-hover"
+              >
+                <span className="card-icon-wrap w-7 h-7 rounded-lg flex items-center justify-center">
+                  <Icon className="w-3.5 h-3.5" />
+                </span>
+                {label}
+              </span>
+            ))}
           </motion.div>
         </div>
       </div>
