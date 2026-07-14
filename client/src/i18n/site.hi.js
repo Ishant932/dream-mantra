@@ -1995,7 +1995,7 @@ export const siteHi = {
         { title: '1. Terms की Acceptance', content: 'Dream Mantra website और services access और use करके, आप इस agreement की terms से bound agree करते हैं। ऊपर abide नहीं करना चाहते तो service use न करें।' },
         { title: '2. Assessment Services', content: 'सभी assessment results (Mind Mapping, Skill Mapping, AI Career Launchpad) advisory nature के हैं। Personality, aptitude और career preferences में scientific insights provide करते हैं। Final career decisions solely students, parents और guardians के पास रहते हैं। Dream Mantra assessment recommendations पर outcomes के लिए responsible नहीं है।' },
         { title: '3. Consultations और Counselling', content: 'Free consultations counsellor availability पर offered। Booked sessions 24 hours notice से reschedule करें। 24 hours पहले unfilled slots पर Dream Mantra cancel कर सकता है। सभी guidance professional advice है — educational या career outcomes की liability accept नहीं।' },
-        { title: '4. Refund Policy', content: 'As our company policy we are not providing any refund. All payments made for assessments, counselling sessions, programs, AI Career Launchpad, or any other paid services are final and non-refundable.' },
+        { title: '4. Refund Policy', content: 'Dream Mantra provides refunds as per company policy. After your refund request has been approved, the refund amount will be initiated within 2–3 business days. Once initiated, it may take an additional 10–15 business days for the amount to reflect in your original payment method, depending on your bank, card issuer, or payment gateway.' },
         { title: '5. User Responsibilities', content: 'Registration और assessments में accurate personal information provide करें। Account credentials confidential रखना आपकी responsibility। Unauthorized use immediately Dream Mantra support को report करें।' },
         { title: '6. Intellectual Property', content: 'Dream Mantra पर सभी content (assessments, materials, articles, videos, designs) Dream Mantra / Tibrewal Enterprises या licensed partners के owned है। Written permission के बिना reproduction, distribution या transmission prohibited।' },
         { title: '7. Limitation of Liability', content: 'Dream Mantra services "as is" without warranties provide करता है। Indirect, incidental या consequential damages liable नहीं। Total liability past 12 months में paid fees तक limited।' },
@@ -2088,7 +2088,7 @@ export const siteHi = {
             {
               title: 'Refund Policy',
               paragraphs: [
-                'Refund policy as our company policy we not providing any refund.',
+                'Dream Mantra provides refunds as per company policy. After your refund request has been approved, the refund amount will be initiated within 2–3 business days. Once initiated, it may take an additional 10–15 business days for the amount to reflect in your original payment method, depending on your bank, card issuer, or payment gateway.',
               ],
             },
             {
@@ -2214,7 +2214,7 @@ export const siteHi = {
             {
               title: 'Refund Policy',
               paragraphs: [
-                'Company policy: Dream Mantra कोई refund provide नहीं करता। Payments final और non-refundable हैं। Exceptional approved cases में amount 10–15 business days में original method पर credit हो सकता है।',
+                'Dream Mantra provides refunds as per company policy. After your refund request has been approved, the refund amount will be initiated within 2–3 business days. Once initiated, it may take an additional 10–15 business days for the amount to reflect in your original payment method, depending on your bank, card issuer, or payment gateway.',
               ],
             },
             {

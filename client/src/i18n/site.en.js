@@ -2129,7 +2129,7 @@ export const siteEn = {
         { title: '1. Acceptance of Terms', content: 'By accessing and using Dream Mantra website and services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.' },
         { title: '2. Assessment Services', content: 'All assessment results (Mind Mapping, Skill Mapping, AI Career Launchpad) are advisory in nature. They provide scientific insights into personality, aptitude, and career preferences. However, final career decisions remain solely with students, parents, and guardians. Dream Mantra is not responsible for any outcome based on assessment recommendations.' },
         { title: '3. Consultations and Counselling', content: 'Free consultations are offered based on counsellor availability. Booked sessions must be rescheduled with at least 24 hours notice. Dream Mantra reserves the right to cancel bookings if slots remain unfilled 24 hours before the scheduled time. All guidance is professional advice — Dream Mantra does not accept liability for educational or career outcomes.' },
-        { title: '4. Refund Policy', content: 'As our company policy we are not providing any refund. All payments made for assessments, counselling sessions, programs, AI Career Launchpad, or any other paid services are final and non-refundable.' },
+        { title: '4. Refund Policy', content: 'Dream Mantra provides refunds as per company policy. After your refund request has been approved, the refund amount will be initiated within 2–3 business days. Once initiated, it may take an additional 10–15 business days for the amount to reflect in your original payment method, depending on your bank, card issuer, or payment gateway.' },
         { title: '5. User Responsibilities', content: 'Users agree to provide accurate personal information during registration and assessments. You are responsible for maintaining confidentiality of your account credentials. Any unauthorized use of your account must be reported immediately to Dream Mantra support.' },
         { title: '6. Intellectual Property', content: 'All content on Dream Mantra (assessments, materials, articles, videos, designs) is owned by Dream Mantra / Tibrewal Enterprises or licensed partners. Reproduction, distribution, or transmission without written permission is prohibited.' },
         { title: '7. Limitation of Liability', content: 'Dream Mantra provides services "as is" without warranties. We are not liable for indirect, incidental, or consequential damages arising from your use of our services. Our total liability is limited to fees paid by you in the past 12 months.' },
@@ -2222,7 +2222,7 @@ export const siteEn = {
             {
               title: 'Refund Policy',
               paragraphs: [
-                'Refund policy as our company policy we not providing any refund.',
+                'Dream Mantra provides refunds as per company policy. After your refund request has been approved, the refund amount will be initiated within 2–3 business days. Once initiated, it may take an additional 10–15 business days for the amount to reflect in your original payment method, depending on your bank, card issuer, or payment gateway.',
               ],
             },
             {
@@ -2352,7 +2352,7 @@ export const siteEn = {
             {
               title: 'Refund Policy',
               paragraphs: [
-                'As per company policy, Dream Mantra does not provide any refund. All payments for assessments, programmes, counselling, and related services are final and non-refundable. In exceptional cases where a refund is specially approved by management, any approved amount will be processed and credited within 10–15 business days to the original payment method.',
+                'Dream Mantra provides refunds as per company policy. After your refund request has been approved, the refund amount will be initiated within 2–3 business days. Once initiated, it may take an additional 10–15 business days for the amount to reflect in your original payment method, depending on your bank, card issuer, or payment gateway.',
               ],
             },
             {
