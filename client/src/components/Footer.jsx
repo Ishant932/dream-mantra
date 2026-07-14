@@ -213,7 +213,13 @@ export default function Footer() {
 
       <div className="footer-pro__copyright">
         <div className="footer-pro__container footer-pro__copyright-inner">
-          © {new Date().getFullYear()} {footer.copyright}
+          <p>© {new Date().getFullYear()} {footer.copyright}</p>
+          {(footer.gstNumber || footer.gstAddress) && (
+            <p className="footer-pro__gst mt-2 text-xs opacity-90">
+              {footer.gstLabel || 'GSTIN'}: {footer.gstNumber}
+              {footer.gstAddress ? ` · ${footer.gstAddress}` : ''}
+            </p>
+          )}
         </div>
       </div>
     </footer>

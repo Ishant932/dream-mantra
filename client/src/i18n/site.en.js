@@ -98,7 +98,10 @@ export const siteEn = {
   footer: {
     followUs: 'Follow Us',
     whatsapp: 'WhatsApp Chat',
-    copyright: 'Dream Mantra · All rights reserved.',
+    copyright: 'Dream Mantra · Owned & Operated by Tibrewal Enterprises · All rights reserved.',
+    gstNumber: '08CDYPT7241R1Z4',
+    gstAddress: 'C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, Rajasthan — 302004',
+    gstLabel: 'GSTIN',
     agePathways: 'Age Pathways',
     counsellingOverview: 'Counselling Overview',
     quickLinks: 'Quick Links',
@@ -2135,7 +2138,8 @@ export const siteEn = {
         { title: '10. Modification of Terms', content: 'Dream Mantra reserves the right to modify these terms at any time. Continued use of services after modifications constitutes acceptance of updated terms. Changes will be effective immediately upon posting.' },
         { title: '11. Governing Law', content: 'These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Jaipur, Rajasthan.' },
         { title: '12. Brand Ownership', content: 'Dream Mantra is owned and operated by Tibrewal Enterprises. All brand names, logos, and trademarks related to Dream Mantra are the property of Tibrewal Enterprises and its authorised partners.' },
-        { title: '13. Contact Us', content: 'For questions or concerns about these terms, please contact us at info@dreammantra.in or call 9680102276. Office hours: Mon-Sat, 11am-7pm.' },
+        { title: '13. GST Details', content: 'GSTIN: 08CDYPT7241R1Z4. GST registered address: C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, District Jaipur, Rajasthan — 302004, India.' },
+        { title: '14. Contact Us', content: 'For questions or concerns about these terms, please contact us at info@dreammantra.in or call 9680102276. Office hours: Mon-Sat, 11am-7pm. GST address: C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, Rajasthan — 302004.' },
       ],
       disclaimer: {
         title: '⚠️ Important Disclaimer',
@@ -2143,6 +2147,8 @@ export const siteEn = {
         p2: 'Students and parents are advised to use our guidance in conjunction with their own research, family discussions, and institutional counselling. Dream Mantra does not guarantee job placement or admission to any institution.',
       },
       operator: 'Dream Mantra — Owned & Operated by Tibrewal Enterprises',
+      gstNumber: '08CDYPT7241R1Z4',
+      gstAddress: 'C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, District Jaipur, Rajasthan — 302004',
       lastUpdated: 'Last Updated:',
       lastUpdatedDate: 'January 29, 2025',
       lastUpdatedNote: 'For the latest version, visit our website regularly.',
@@ -2152,8 +2158,9 @@ export const siteEn = {
       phoneLabel: 'Phone:',
       hoursLabel: 'Hours:',
       hoursValue: 'Monday to Saturday, 11:00 AM - 7:00 PM',
-      locationLabel: 'Location:',
-      locationValue: 'Jaipur, Rajasthan, India',
+      locationLabel: 'GST Address:',
+      locationValue: 'C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, Rajasthan — 302004',
+      gstLabel: 'GSTIN:',
     },
 
     privacy: {
@@ -2283,11 +2290,14 @@ export const siteEn = {
         {
           title: '12. Contact',
           paragraphs: [
-            'For privacy questions: info@dreammantra.in · 9680102276 · Dream Mantra, Jaipur, Rajasthan, India.',
+            'For privacy questions: info@dreammantra.in · 9680102276 · Dream Mantra / Tibrewal Enterprises.',
+            'GSTIN: 08CDYPT7241R1Z4. GST address: C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, District Jaipur, Rajasthan — 302004, India.',
           ],
         },
       ],
       operator: 'Dream Mantra — Owned & Operated by Tibrewal Enterprises',
+      gstNumber: '08CDYPT7241R1Z4',
+      gstAddress: 'C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, District Jaipur, Rajasthan — 302004',
       lastUpdated: 'Last Updated:',
       lastUpdatedDate: 'January 29, 2025',
     },

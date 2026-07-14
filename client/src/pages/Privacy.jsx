@@ -84,6 +84,20 @@ export default function Privacy() {
               {page.operator}
             </motion.p>
           )}
+          {(page.gstNumber || page.gstAddress) && (
+            <div className="mt-4 text-center text-sm text-sand-600 space-y-1">
+              {page.gstNumber && (
+                <p>
+                  <strong>GSTIN:</strong> {page.gstNumber}
+                </p>
+              )}
+              {page.gstAddress && (
+                <p>
+                  <strong>GST Address:</strong> {page.gstAddress}
+                </p>
+              )}
+            </div>
+          )}
           <p className="text-sm text-sand-500 mt-6 text-center">
             {page.lastUpdated} {page.lastUpdatedDate || 'January 29, 2025'}
           </p>
