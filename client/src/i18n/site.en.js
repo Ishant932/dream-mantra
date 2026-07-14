@@ -2121,27 +2121,30 @@ export const siteEn = {
     terms: {
       title: 'Terms & Conditions',
       subtitle: 'Please read our complete policies and terms carefully',
-      intro: 'Welcome to Dream Mantra. These Terms & Conditions govern your access to and use of our website, assessments, consultations, and all services. By using Dream Mantra, you agree to be legally bound by these terms. If you do not agree, please refrain from using our services.',
+      intro: 'Welcome to Dream Mantra. These Terms & Conditions govern your access to and use of our website, assessments, consultations, and all services. By using Dream Mantra, you agree to be legally bound by these terms. If you do not agree, please refrain from using our services. Dream Mantra is owned and operated by Tibrewal Enterprises.',
       sections: [
         { title: '1. Acceptance of Terms', content: 'By accessing and using Dream Mantra website and services, you accept and agree to be bound by the terms and provision of this agreement. If you do not agree to abide by the above, please do not use this service.' },
         { title: '2. Assessment Services', content: 'All assessment results (Mind Mapping, Skill Mapping, AI Career Launchpad) are advisory in nature. They provide scientific insights into personality, aptitude, and career preferences. However, final career decisions remain solely with students, parents, and guardians. Dream Mantra is not responsible for any outcome based on assessment recommendations.' },
         { title: '3. Consultations and Counselling', content: 'Free consultations are offered based on counsellor availability. Booked sessions must be rescheduled with at least 24 hours notice. Dream Mantra reserves the right to cancel bookings if slots remain unfilled 24 hours before the scheduled time. All guidance is professional advice — Dream Mantra does not accept liability for educational or career outcomes.' },
-        { title: '4. Refund Policy', content: 'Refund requests must be submitted within 7 days of purchase. Refunds are processed within 10-15 business days to the original payment method. Non-refundable items include free assessments, demo sessions, and promotional offers. Dream Mantra reserves the right to refuse refunds if terms have been violated.' },
+        { title: '4. Refund Policy', content: 'As per company policy, Dream Mantra does not provide any refund on purchases of assessments, counselling sessions, programs, AI Career Launchpad, or any other paid services. All payments made are final and non-refundable. In exceptional cases where a refund is specially approved by management, any approved amount will be processed and credited within 10–15 business days to the original payment method.' },
         { title: '5. User Responsibilities', content: 'Users agree to provide accurate personal information during registration and assessments. You are responsible for maintaining confidentiality of your account credentials. Any unauthorized use of your account must be reported immediately to Dream Mantra support.' },
-        { title: '6. Intellectual Property', content: 'All content on Dream Mantra (assessments, materials, articles, videos, designs) is owned by Dream Mantra or licensed partners. Reproduction, distribution, or transmission without written permission is prohibited.' },
-        { title: '7. Data Privacy', content: 'Your personal data is processed in accordance with applicable laws. We use your information to provide services, send updates, and improve user experience. Data is never shared with third parties without explicit consent, except as required by law.' },
+        { title: '6. Intellectual Property', content: 'All content on Dream Mantra (assessments, materials, articles, videos, designs) is owned by Dream Mantra / Tibrewal Enterprises or licensed partners. Reproduction, distribution, or transmission without written permission is prohibited.' },
+        { title: '7. Data Privacy', content: 'Your personal data is processed in accordance with applicable laws and our Privacy Policy. We use your information to provide services, send updates, and improve user experience. Data is never shared with third parties without explicit consent, except as required by law.' },
         { title: '8. Limitation of Liability', content: 'Dream Mantra provides services "as is" without warranties. We are not liable for indirect, incidental, or consequential damages arising from your use of our services. Our total liability is limited to fees paid by you in the past 12 months.' },
         { title: '9. Age Restrictions', content: "Users under 18 must have parental/guardian consent to use our services. Parents/guardians are responsible for supervising minors' use of our platform." },
         { title: '10. Modification of Terms', content: 'Dream Mantra reserves the right to modify these terms at any time. Continued use of services after modifications constitutes acceptance of updated terms. Changes will be effective immediately upon posting.' },
         { title: '11. Governing Law', content: 'These terms are governed by the laws of India. Any disputes shall be subject to the exclusive jurisdiction of courts in Jaipur, Rajasthan.' },
-        { title: '12. Contact Us', content: 'For questions or concerns about these terms, please contact us at info@dreammantra.in or call 9680102276. Office hours: Mon-Sat, 11am-7pm.' },
+        { title: '12. Brand Ownership', content: 'Dream Mantra is owned and operated by Tibrewal Enterprises. All brand names, logos, and trademarks related to Dream Mantra are the property of Tibrewal Enterprises and its authorised partners.' },
+        { title: '13. Contact Us', content: 'For questions or concerns about these terms, please contact us at info@dreammantra.in or call 9680102276. Office hours: Mon-Sat, 11am-7pm.' },
       ],
       disclaimer: {
         title: '⚠️ Important Disclaimer',
         p1: 'Dream Mantra provides educational and career guidance services. Our assessments and recommendations are tools to aid decision-making, not substitutes for professional medical, psychological, or legal advice.',
         p2: 'Students and parents are advised to use our guidance in conjunction with their own research, family discussions, and institutional counselling. Dream Mantra does not guarantee job placement or admission to any institution.',
       },
+      operator: 'Dream Mantra — Owned & Operated by Tibrewal Enterprises',
       lastUpdated: 'Last Updated:',
+      lastUpdatedDate: 'January 29, 2025',
       lastUpdatedNote: 'For the latest version, visit our website regularly.',
       contactTitle: 'Questions About Our Terms?',
       contactDesc: 'Contact our support team for clarifications or concerns.',
@@ -2156,18 +2159,137 @@ export const siteEn = {
     privacy: {
       title: 'Privacy Policy',
       subtitle: 'How we collect, use, and protect your information',
-      intro: 'Dream Mantra ("we", "us") respects your privacy. This policy explains what data we collect when you use our website, dashboards, assessments, and counselling services — and how we keep it secure.',
+      intro: 'Dream Mantra ("we", "us"), owned and operated by Tibrewal Enterprises, respects your privacy. This policy explains what personal information we collect when you use our website, dashboards, assessments, counselling services, and related features — and how we keep it secure.',
       sections: [
-        { title: '1. Information We Collect', content: 'We collect information you provide directly: name, email, phone, student profile (class, stream, goals), booking notes, payment references, and assessment progress. We also store account security settings such as two-factor authentication status.' },
-        { title: '2. How We Use Your Data', content: 'Your data is used to deliver assessments, schedule counselling, process orders, deliver reports, improve our services, and communicate important updates about your account. We do not sell your personal data to third parties.' },
-        { title: '3. Payment Information', content: 'When online payment is enabled, payment processing is handled by certified payment partners. We store order IDs and confirmation status — not full card or UPI credentials. Manual payment proofs you upload are visible only to authorised admin staff.' },
-        { title: '4. Data Storage & Security', content: 'Account data is stored on secure servers with access restricted to authorised personnel. Passwords are hashed. We recommend enabling two-factor authentication on your dashboard for additional protection.' },
-        { title: '5. Cookies & Analytics', content: 'We use essential cookies and local storage for login sessions, language preference, and theme settings. We may use anonymised usage analytics to improve the platform experience.' },
-        { title: '6. Children & Parental Consent', content: 'Services for students under 18 require parental or guardian involvement. Parents may contact us to review or update a minor\'s profile information.' },
-        { title: '7. Your Rights', content: 'You may request access to, correction of, or deletion of your personal data by contacting info@dreammantra.in. We will respond within reasonable time as required by applicable law.' },
-        { title: '8. Contact', content: 'For privacy questions: info@dreammantra.in · 9680102276 · Dream Mantra, Jaipur, Rajasthan, India.' },
+        {
+          title: '1. How We Collect and Use Your Personal Information',
+          paragraphs: [
+            'To provide the Services, we collect personal information about you from a variety of sources, as set out below. The information that we collect and use varies depending on how you interact with us.',
+            'In addition to the specific uses set out below, we may use information we collect about you to communicate with you, provide or improve the Services, comply with any applicable legal obligations, enforce any applicable terms of service, and to protect or defend the Services, our rights, and the rights of our users or others.',
+          ],
+        },
+        {
+          title: '2. What Personal Information We Collect',
+          paragraphs: [
+            'The types of personal information we obtain about you depends on how you interact with our Site and use our Services. When we use the term "personal information", we are referring to information that identifies, relates to, describes or can be associated with you. The following sections describe the categories and specific types of personal information we collect.',
+          ],
+        },
+        {
+          title: '3. Information We Collect Directly from You',
+          paragraphs: [
+            'Information that you directly submit to us through our Services may include:',
+          ],
+          items: [
+            'Contact details including your name, address, phone number, and email.',
+            'Order information including your name, billing address, shipping address, payment confirmation, email address, and phone number.',
+            'Account information including your username, password, security questions and other information used for account security purposes.',
+            'Customer support information including the information you choose to include in communications with us, for example, when sending a message through the Services.',
+          ],
+        },
+        {
+          title: '3A. Optional Features',
+          paragraphs: [
+            'Some features of the Services may require you to directly provide us with certain information about yourself. You may elect not to provide this information, but doing so may prevent you from using or accessing these features.',
+          ],
+        },
+        {
+          title: '4. Information We Collect about Your Usage',
+          paragraphs: [
+            'We may also automatically collect certain information about your interaction with the Services ("Usage Data"). To do this, we may use cookies, pixels and similar technologies ("Cookies"). Usage Data may include information about how you access and use our Site and your account, including device information, browser information, information about your network connection, your IP address and other information regarding your interaction with the Services.',
+          ],
+        },
+        {
+          title: '5. Information We Obtain from Third Parties',
+          paragraphs: [
+            'Finally, we may obtain information about you from third parties, including from vendors and service providers who may collect information on our behalf, such as:',
+          ],
+          items: [
+            'Companies who support our Site and Services, such as website hosting, analytics, email, and messaging providers.',
+            'Our payment processors, who collect payment information (e.g., bank account, credit or debit card information, billing address) to process your payment in order to fulfill your orders and provide you with products or services you have requested, in order to perform our contract with you.',
+          ],
+        },
+        {
+          title: '5A. Online Tracking',
+          paragraphs: [
+            'When you visit our Site, open or click on emails we send you, or interact with our Services or advertisements, we, or third parties we work with, may automatically collect certain information using online tracking technologies such as pixels, web beacons, software developer kits, third-party libraries, and cookies.',
+            'Any information we obtain from third parties will be treated in accordance with this Privacy Policy. Also see the section below, Third Party Websites and Links.',
+          ],
+        },
+        {
+          title: '6. How We Use Your Personal Information',
+          subsections: [
+            {
+              title: 'Providing Products and Services',
+              paragraphs: [
+                'We use your personal information to provide you with the Services in order to perform our contract with you, including to process your payments, fulfill your orders, to send notifications to you related to your account, purchases, returns, and other transactions, to create, maintain and otherwise manage your account, to arrange for shipping, facilitate any returns and other features and functionalities related to your account.',
+              ],
+            },
+            {
+              title: 'Marketing and Advertising',
+              paragraphs: [
+                'We may use your personal information for marketing and promotional purposes, such as to send marketing, advertising and promotional communications by email, text message or postal mail, and to show you advertisements for products or services. This may include using your personal information to better tailor the Services and advertising on our Site and other websites.',
+              ],
+            },
+            {
+              title: 'Security and Fraud Prevention',
+              paragraphs: [
+                'We use your personal information to detect, investigate or take action regarding possible fraudulent, illegal or malicious activity. If you choose to use the Services and register an account, you are responsible for keeping your account credentials safe. We highly recommend that you do not share your username, password, or other access details with anyone else. If you believe your account has been compromised, please contact us immediately.',
+              ],
+            },
+            {
+              title: 'Refund Policy',
+              paragraphs: [
+                'As per company policy, Dream Mantra does not provide any refund. All payments for assessments, programmes, counselling, and related services are final and non-refundable. In exceptional cases where a refund is specially approved by management, any approved amount will be processed and credited within 10–15 business days to the original payment method.',
+              ],
+            },
+            {
+              title: 'Communicating with You and Service Improvement',
+              paragraphs: [
+                'We use your personal information to provide you with customer support and improve our Services. This is in our legitimate interests in order to be responsive to you, to provide effective services to you, and to maintain our business relationship with you.',
+              ],
+            },
+          ],
+        },
+        {
+          title: '7. Cookies',
+          paragraphs: [
+            'Like many websites, we use Cookies on our Site. We use Cookies to power and improve our Site and our Services (including to remember your actions and preferences), to run analytics and better understand user interaction with the Services (in our legitimate interests to administer, improve and optimize the Services). We may also permit third parties and service providers to use Cookies on our Site to better tailor the services, products and advertising on our Site and other websites.',
+          ],
+        },
+        {
+          title: '8. Third Party Websites and Links',
+          paragraphs: [
+            'Our Site may include links to other websites, apps, and services operated by third parties. We are not responsible for the privacy practices of those third parties. We encourage you to review their privacy policies before sharing personal information with them.',
+          ],
+        },
+        {
+          title: '9. Children & Parental Consent',
+          paragraphs: [
+            'Services for students under 18 require parental or guardian involvement. Parents may contact us to review or update a minor\'s profile information.',
+          ],
+        },
+        {
+          title: '10. Your Rights',
+          paragraphs: [
+            'You may request access to, correction of, or deletion of your personal data by contacting info@dreammantra.in. We will respond within a reasonable time as required by applicable law.',
+          ],
+        },
+        {
+          title: '11. Changes to This Privacy Policy',
+          paragraphs: [
+            'We may update this Privacy Policy from time to time, including to reflect changes to our practices or for other operational, legal, or regulatory reasons. We will post the revised Privacy Policy on the Site, update the "Last Updated" date (January 29, 2025, or the date of any later revision) and take any other steps required by applicable law.',
+          ],
+        },
+        {
+          title: '12. Contact',
+          paragraphs: [
+            'For privacy questions: info@dreammantra.in · 9680102276 · Dream Mantra, Jaipur, Rajasthan, India.',
+          ],
+        },
       ],
+      operator: 'Dream Mantra — Owned & Operated by Tibrewal Enterprises',
       lastUpdated: 'Last Updated:',
+      lastUpdatedDate: 'January 29, 2025',
     },
   },
 

@@ -1987,27 +1987,30 @@ export const siteHi = {
     terms: {
       title: 'नियम और शर्तें',
       subtitle: 'कृपया हमारी complete policies और terms carefully पढ़ें',
-      intro: 'Dream Mantra में welcome। ये Terms & Conditions हमारी website, assessments, consultations और सभी services के access और use को govern करते हैं। Dream Mantra use करके आप legally bound agree करते हैं। अगर agree नहीं हैं, कृपया services use न करें।',
+      intro: 'Dream Mantra में welcome। ये Terms & Conditions हमारी website, assessments, consultations और सभी services के access और use को govern करते हैं। Dream Mantra use करके आप legally bound agree करते हैं। अगर agree नहीं हैं, कृपया services use न करें। Dream Mantra Tibrewal Enterprises द्वारा owned और operated है।',
       sections: [
         { title: '1. Terms की Acceptance', content: 'Dream Mantra website और services access और use करके, आप इस agreement की terms से bound agree करते हैं। ऊपर abide नहीं करना चाहते तो service use न करें।' },
         { title: '2. Assessment Services', content: 'सभी assessment results (Mind Mapping, Skill Mapping, AI Career Launchpad) advisory nature के हैं। Personality, aptitude और career preferences में scientific insights provide करते हैं। Final career decisions solely students, parents और guardians के पास रहते हैं। Dream Mantra assessment recommendations पर outcomes के लिए responsible नहीं है।' },
         { title: '3. Consultations और Counselling', content: 'Free consultations counsellor availability पर offered। Booked sessions 24 hours notice से reschedule करें। 24 hours पहले unfilled slots पर Dream Mantra cancel कर सकता है। सभी guidance professional advice है — educational या career outcomes की liability accept नहीं।' },
-        { title: '4. Refund Policy', content: 'Refund requests purchase के 7 days में submit करें। 10-15 business days में original payment method पर process। Non-refundable: free assessments, demo sessions, promotional offers। Terms violated होने पर refund refuse कर सकते हैं।' },
+        { title: '4. Refund Policy', content: 'Company policy के अनुसार Dream Mantra किसी भी assessment, counselling, program, AI Career Launchpad या अन्य paid services पर कोई refund provide नहीं करता। सभी payments final और non-refundable हैं। Exceptional cases में अगर management द्वारा refund specially approve हो, तो approved amount 10–15 business days में original payment method पर process और credit होगा।' },
         { title: '5. User Responsibilities', content: 'Registration और assessments में accurate personal information provide करें। Account credentials confidential रखना आपकी responsibility। Unauthorized use immediately Dream Mantra support को report करें।' },
-        { title: '6. Intellectual Property', content: 'Dream Mantra पर सभी content (assessments, materials, articles, videos, designs) Dream Mantra या licensed partners के owned है। Written permission के बिना reproduction, distribution या transmission prohibited।' },
-        { title: '7. Data Privacy', content: 'Personal data applicable laws के अनुसार process। Services, updates और user experience improve के लिए use। Explicit consent के बिना third parties के साथ share नहीं, law required हो तो except।' },
+        { title: '6. Intellectual Property', content: 'Dream Mantra पर सभी content (assessments, materials, articles, videos, designs) Dream Mantra / Tibrewal Enterprises या licensed partners के owned है। Written permission के बिना reproduction, distribution या transmission prohibited।' },
+        { title: '7. Data Privacy', content: 'Personal data applicable laws और हमारी Privacy Policy के अनुसार process। Services, updates और user experience improve के लिए use। Explicit consent के बिना third parties के साथ share नहीं, law required हो तो except।' },
         { title: '8. Limitation of Liability', content: 'Dream Mantra services "as is" without warranties provide करता है। Indirect, incidental या consequential damages liable नहीं। Total liability past 12 months में paid fees तक limited।' },
         { title: '9. Age Restrictions', content: '18 से कम users को parental/guardian consent चाहिए। Parents/guardians minors के platform use supervise करने responsible।' },
         { title: '10. Terms Modification', content: 'Dream Mantra terms modify करने का right reserve। Modifications के बाद continued use updated terms acceptance। Changes posting पर immediately effective।' },
         { title: '11. Governing Law', content: 'Terms India के laws governed। Disputes Jaipur, Rajasthan courts की exclusive jurisdiction।' },
-        { title: '12. Contact Us', content: 'Terms questions/concerns: info@dreammantra.in या 9680102276 call करें। Office hours: Mon-Sat, 11am-7pm।' },
+        { title: '12. Brand Ownership', content: 'Dream Mantra Tibrewal Enterprises द्वारा owned और operated है। Dream Mantra से संबंधित सभी brand names, logos और trademarks Tibrewal Enterprises और authorised partners की property हैं।' },
+        { title: '13. Contact Us', content: 'Terms questions/concerns: info@dreammantra.in या 9680102276 call करें। Office hours: Mon-Sat, 11am-7pm।' },
       ],
       disclaimer: {
         title: '⚠️ Important Disclaimer',
         p1: 'Dream Mantra educational और career guidance services provide करता है। Assessments और recommendations decision-making aid tools हैं, professional medical, psychological या legal advice substitutes नहीं।',
         p2: 'Students और parents को अपने research, family discussions और institutional counselling के साथ guidance use करने की सलाह। Dream Mantra job placement या institution admission guarantee नहीं करता।',
       },
+      operator: 'Dream Mantra — Owned & Operated by Tibrewal Enterprises',
       lastUpdated: 'Last Updated:',
+      lastUpdatedDate: 'January 29, 2025',
       lastUpdatedNote: 'Latest version के लिए website regularly visit करें।',
       contactTitle: 'Terms के बारे में Questions?',
       contactDesc: 'Clarifications या concerns के लिए support team contact करें।',
@@ -2017,6 +2020,138 @@ export const siteHi = {
       hoursValue: 'Monday to Saturday, 11:00 AM - 7:00 PM',
       locationLabel: 'Location:',
       locationValue: 'Jaipur, Rajasthan, India',
+    },
+
+    privacy: {
+      title: 'Privacy Policy',
+      subtitle: 'हम आपकी जानकारी कैसे collect, use और protect करते हैं',
+      intro: 'Dream Mantra ("हम"), जो Tibrewal Enterprises द्वारा owned और operated है, आपकी privacy का सम्मान करता है। यह policy बताती है कि website, dashboards, assessments और counselling services use करते समय हम कौन-सी personal information collect करते हैं और इसे कैसे सुरक्षित रखते हैं।',
+      sections: [
+        {
+          title: '1. How We Collect and Use Your Personal Information',
+          paragraphs: [
+            'Services provide करने के लिए हम कई sources से आपकी personal information collect करते हैं। Information इस बात पर depend करती है कि आप हमसे कैसे interact करते हैं।',
+            'नीचे दी गई uses के अलावा, हम आपकी information से communicate कर सकते हैं, Services improve कर सकते हैं, legal obligations पूरा कर सकते हैं, terms enforce कर सकते हैं, और Services / users के अधिकारों की रक्षा कर सकते हैं।',
+          ],
+        },
+        {
+          title: '2. What Personal Information We Collect',
+          paragraphs: [
+            '"Personal information" वह जानकारी है जो आपको identify, describe या associate कर सकती है। नीचे categories बताई गई हैं।',
+          ],
+        },
+        {
+          title: '3. Information We Collect Directly from You',
+          paragraphs: ['आप हमें सीधे submit कर सकते हैं:'],
+          items: [
+            'Contact details: name, address, phone, email।',
+            'Order information: name, billing/shipping address, payment confirmation, email, phone।',
+            'Account information: username, password, security details।',
+            'Customer support messages में दी गई information।',
+          ],
+        },
+        {
+          title: '3A. Optional Features',
+          paragraphs: [
+            'कुछ features के लिए information जरूरी हो सकती है। Information न दें तो उन features का access सीमित हो सकता है।',
+          ],
+        },
+        {
+          title: '4. Information We Collect about Your Usage',
+          paragraphs: [
+            'हम Cookies, pixels और similar technologies से Usage Data automatically collect कर सकते हैं — device, browser, network, IP address और Site interaction की जानकारी।',
+          ],
+        },
+        {
+          title: '5. Information We Obtain from Third Parties',
+          paragraphs: ['Third parties / vendors से भी जानकारी मिल सकती है, जैसे:'],
+          items: [
+            'Website और Services support करने वाली companies (hosting, analytics, email, messaging)।',
+            'Payment processors जो payment information collect करके orders fulfill करते हैं।',
+          ],
+        },
+        {
+          title: '5A. Online Tracking',
+          paragraphs: [
+            'Site visit, emails open/click, या ads interact करते समय pixels, web beacons, SDKs, libraries और cookies से जानकारी collect हो सकती है।',
+            'Third parties से मिली जानकारी इस Privacy Policy के अनुसार treat होगी।',
+          ],
+        },
+        {
+          title: '6. How We Use Your Personal Information',
+          subsections: [
+            {
+              title: 'Providing Products and Services',
+              paragraphs: [
+                'Payments process, orders fulfill, account notifications, account manage और related features के लिए personal information use करते हैं।',
+              ],
+            },
+            {
+              title: 'Marketing and Advertising',
+              paragraphs: [
+                'Email, SMS या postal mail से marketing/promotional communications और tailored advertising के लिए use कर सकते हैं।',
+              ],
+            },
+            {
+              title: 'Security and Fraud Prevention',
+              paragraphs: [
+                'Fraudulent, illegal या malicious activity detect/investigate करने के लिए use। Account credentials सुरक्षित रखें; share न करें। Compromise लगे तो तुरंत संपर्क करें।',
+              ],
+            },
+            {
+              title: 'Refund Policy',
+              paragraphs: [
+                'Company policy: Dream Mantra कोई refund provide नहीं करता। Payments final और non-refundable हैं। Exceptional approved cases में amount 10–15 business days में original method पर credit हो सकता है।',
+              ],
+            },
+            {
+              title: 'Communicating with You and Service Improvement',
+              paragraphs: [
+                'Customer support और Services improve करने के लिए personal information use करते हैं।',
+              ],
+            },
+          ],
+        },
+        {
+          title: '7. Cookies',
+          paragraphs: [
+            'हम Site और Services power/improve करने, preferences याद रखने, analytics चलाने और advertising tailor करने के लिए Cookies use करते हैं। Third parties को भी Cookies permit कर सकते हैं।',
+          ],
+        },
+        {
+          title: '8. Third Party Websites and Links',
+          paragraphs: [
+            'Site पर third-party links हो सकते हैं। उनके privacy practices के लिए हम responsible नहीं। Personal information share करने से पहले उनकी policies पढ़ें।',
+          ],
+        },
+        {
+          title: '9. Children & Parental Consent',
+          paragraphs: [
+            '18 से कम students के लिए parental/guardian involvement जरूरी। Parents minor की profile review/update के लिए संपर्क कर सकते हैं।',
+          ],
+        },
+        {
+          title: '10. Your Rights',
+          paragraphs: [
+            'अपनी personal data access, correction या deletion के लिए info@dreammantra.in पर लिखें। Applicable law के अनुसार reasonable time में जवाब देंगे।',
+          ],
+        },
+        {
+          title: '11. Changes to This Privacy Policy',
+          paragraphs: [
+            'हम इस Privacy Policy को समय-समय पर update कर सकते हैं — practices, operational, legal या regulatory reasons के लिए। Revised policy Site पर post करेंगे, Last Updated date (January 29, 2025 या बाद की revision) update करेंगे और law के अनुसार अन्य steps लेंगे।',
+          ],
+        },
+        {
+          title: '12. Contact',
+          paragraphs: [
+            'Privacy questions: info@dreammantra.in · 9680102276 · Dream Mantra, Jaipur, Rajasthan, India.',
+          ],
+        },
+      ],
+      operator: 'Dream Mantra — Owned & Operated by Tibrewal Enterprises',
+      lastUpdated: 'Last Updated:',
+      lastUpdatedDate: 'January 29, 2025',
     },
   },
 

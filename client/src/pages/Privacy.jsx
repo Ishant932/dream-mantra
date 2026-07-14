@@ -3,6 +3,46 @@ import PageHero from '../components/PageHero';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
 
+function SectionBody({ section }) {
+  if (section.paragraphs?.length || section.items?.length || section.subsections?.length) {
+    return (
+      <div className="space-y-4">
+        {section.paragraphs?.map((p, i) => (
+          <p key={`${section.title}-p-${i}`} className="text-sand-600 leading-relaxed">
+            {p}
+          </p>
+        ))}
+        {section.items?.length > 0 && (
+          <ul className="list-disc pl-5 space-y-2 text-sand-600 leading-relaxed">
+            {section.items.map((item, i) => (
+              <li key={`${section.title}-item-${i}`}>{item}</li>
+            ))}
+          </ul>
+        )}
+        {section.subsections?.map((sub) => (
+          <div key={sub.title} className="mt-4">
+            <h3 className="font-display font-semibold text-base text-brand-700 mb-2">{sub.title}</h3>
+            {sub.paragraphs?.map((p, i) => (
+              <p key={`${sub.title}-p-${i}`} className="text-sand-600 leading-relaxed mb-2">
+                {p}
+              </p>
+            ))}
+            {sub.items?.length > 0 && (
+              <ul className="list-disc pl-5 space-y-2 text-sand-600 leading-relaxed">
+                {sub.items.map((item, i) => (
+                  <li key={`${sub.title}-item-${i}`}>{item}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return <p className="text-sand-600 leading-relaxed">{section.content}</p>;
+}
+
 export default function Privacy() {
   const { d } = useLang();
   const page = d('pages.privacy');
@@ -26,16 +66,26 @@ export default function Privacy() {
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.04 }}
+                transition={{ delay: Math.min(i * 0.03, 0.2) }}
                 className="glass-card p-8"
               >
                 <h2 className="font-display font-bold text-xl text-brand-700 mb-4">{section.title}</h2>
-                <p className="text-sand-600 leading-relaxed">{section.content}</p>
+                <SectionBody section={section} />
               </motion.div>
             ))}
           </div>
-          <p className="text-sm text-sand-500 mt-10 text-center">
-            {page.lastUpdated} {new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+          {page.operator && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              className="mt-10 text-center text-sand-700 font-semibold"
+            >
+              {page.operator}
+            </motion.p>
+          )}
+          <p className="text-sm text-sand-500 mt-6 text-center">
+            {page.lastUpdated} {page.lastUpdatedDate || 'January 29, 2025'}
           </p>
         </div>
       </section>

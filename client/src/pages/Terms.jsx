@@ -58,6 +58,12 @@ export default function Terms() {
             </p>
           </motion.div>
 
+          {page.operator && (
+            <p className="mt-10 text-center text-sand-700 font-semibold">{page.operator}</p>
+          )}
+          <p className="text-sm text-sand-500 mt-4 text-center">
+            {page.lastUpdated} {page.lastUpdatedDate || 'January 29, 2025'}
+          </p>
         </div>
       </section>
 
