@@ -3,21 +3,53 @@ import PageHero from '../components/PageHero';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
 
+function SectionBody({ section }) {
+  if (section.paragraphs?.length || section.items?.length || section.subsections?.length) {
+    return (
+      <div className="space-y-4">
+        {section.paragraphs?.map((p, i) => (
+          <p key={`${section.title}-p-${i}`} className="text-sand-600 leading-relaxed">
+            {p}
+          </p>
+        ))}
+        {section.items?.length > 0 && (
+          <ul className="list-disc pl-5 space-y-2 text-sand-600 leading-relaxed">
+            {section.items.map((item, i) => (
+              <li key={`${section.title}-item-${i}`}>{item}</li>
+            ))}
+          </ul>
+        )}
+        {section.subsections?.map((sub) => (
+          <div key={sub.title} className="mt-4">
+            <h3 className="font-display font-semibold text-base text-brand-700 mb-2">{sub.title}</h3>
+            {sub.paragraphs?.map((p, i) => (
+              <p key={`${sub.title}-p-${i}`} className="text-sand-600 leading-relaxed mb-2">
+                {p}
+              </p>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return <p className="text-sand-600 leading-relaxed">{section.content}</p>;
+}
+
 export default function Terms() {
   const { d } = useLang();
   const page = d('pages.terms');
 
   return (
     <>
-      <PageHero 
-        title={page.title} 
-        subtitle={page.subtitle} 
+      <PageHero
+        title={page.title}
+        subtitle={page.subtitle}
         image={IMAGES.counselling}
       />
-      
+
       <section className="py-16 bg-[var(--bg-elevated)]">
         <div className="max-w-4xl mx-auto px-4">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="prose prose-amber max-w-none mb-12"
@@ -30,15 +62,15 @@ export default function Terms() {
           <div className="space-y-8">
             {page.sections.map((section, i) => (
               <motion.div
-                key={i}
+                key={section.title || i}
                 initial={{ opacity: 0, y: 15 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ delay: Math.min(i * 0.03, 0.2) }}
                 className="glass-card p-8 hover:shadow-lg transition-shadow"
               >
                 <h2 className="font-display font-bold text-xl text-brand-700 mb-4">{section.title}</h2>
-                <p className="text-sand-600 leading-relaxed">{section.content}</p>
+                <SectionBody section={section} />
               </motion.div>
             ))}
           </div>

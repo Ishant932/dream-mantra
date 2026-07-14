@@ -1995,17 +1995,123 @@ export const siteHi = {
         { title: '1. Terms की Acceptance', content: 'Dream Mantra website और services access और use करके, आप इस agreement की terms से bound agree करते हैं। ऊपर abide नहीं करना चाहते तो service use न करें।' },
         { title: '2. Assessment Services', content: 'सभी assessment results (Mind Mapping, Skill Mapping, AI Career Launchpad) advisory nature के हैं। Personality, aptitude और career preferences में scientific insights provide करते हैं। Final career decisions solely students, parents और guardians के पास रहते हैं। Dream Mantra assessment recommendations पर outcomes के लिए responsible नहीं है।' },
         { title: '3. Consultations और Counselling', content: 'Free consultations counsellor availability पर offered। Booked sessions 24 hours notice से reschedule करें। 24 hours पहले unfilled slots पर Dream Mantra cancel कर सकता है। सभी guidance professional advice है — educational या career outcomes की liability accept नहीं।' },
-        { title: '4. Refund Policy', content: 'Company policy के अनुसार Dream Mantra किसी भी assessment, counselling, program, AI Career Launchpad या अन्य paid services पर कोई refund provide नहीं करता। सभी payments final और non-refundable हैं। Exceptional cases में अगर management द्वारा refund specially approve हो, तो approved amount 10–15 business days में original payment method पर process और credit होगा।' },
+        { title: '4. Refund Policy', content: 'As our company policy we are not providing any refund. All payments made for assessments, counselling sessions, programs, AI Career Launchpad, or any other paid services are final and non-refundable.' },
         { title: '5. User Responsibilities', content: 'Registration और assessments में accurate personal information provide करें। Account credentials confidential रखना आपकी responsibility। Unauthorized use immediately Dream Mantra support को report करें।' },
         { title: '6. Intellectual Property', content: 'Dream Mantra पर सभी content (assessments, materials, articles, videos, designs) Dream Mantra / Tibrewal Enterprises या licensed partners के owned है। Written permission के बिना reproduction, distribution या transmission prohibited।' },
-        { title: '7. Data Privacy', content: 'Personal data applicable laws और हमारी Privacy Policy के अनुसार process। Services, updates और user experience improve के लिए use। Explicit consent के बिना third parties के साथ share नहीं, law required हो तो except।' },
-        { title: '8. Limitation of Liability', content: 'Dream Mantra services "as is" without warranties provide करता है। Indirect, incidental या consequential damages liable नहीं। Total liability past 12 months में paid fees तक limited।' },
-        { title: '9. Age Restrictions', content: '18 से कम users को parental/guardian consent चाहिए। Parents/guardians minors के platform use supervise करने responsible।' },
-        { title: '10. Terms Modification', content: 'Dream Mantra terms modify करने का right reserve। Modifications के बाद continued use updated terms acceptance। Changes posting पर immediately effective।' },
-        { title: '11. Governing Law', content: 'Terms India के laws governed। Disputes Jaipur, Rajasthan courts की exclusive jurisdiction।' },
-        { title: '12. Brand Ownership', content: 'Dream Mantra Tibrewal Enterprises द्वारा owned और operated है। Dream Mantra से संबंधित सभी brand names, logos और trademarks Tibrewal Enterprises और authorised partners की property हैं।' },
-        { title: '13. GST Details', content: 'GSTIN: 08CDYPT7241R1Z4. GST registered address: C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, District Jaipur, Rajasthan — 302004, India.' },
-        { title: '14. Contact Us', content: 'Terms questions/concerns: info@dreammantra.in या 9680102276 call करें। Office hours: Mon-Sat, 11am-7pm। GST address: C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, Rajasthan — 302004.' },
+        { title: '7. Limitation of Liability', content: 'Dream Mantra services "as is" without warranties provide करता है। Indirect, incidental या consequential damages liable नहीं। Total liability past 12 months में paid fees तक limited।' },
+        { title: '8. Age Restrictions', content: '18 से कम users को parental/guardian consent चाहिए। Parents/guardians minors के platform use supervise करने responsible।' },
+        { title: '9. Terms Modification', content: 'Dream Mantra terms modify करने का right reserve। Modifications के बाद continued use updated terms acceptance। Changes posting पर immediately effective।' },
+        { title: '10. Governing Law', content: 'Terms India के laws governed। Disputes Jaipur, Rajasthan courts की exclusive jurisdiction।' },
+        { title: '11. Brand Ownership', content: 'Dream Mantra Tibrewal Enterprises द्वारा owned और operated है। Dream Mantra से संबंधित सभी brand names, logos और trademarks Tibrewal Enterprises और authorised partners की property हैं।' },
+        { title: '12. GST Details', content: 'GSTIN: 08CDYPT7241R1Z4. GST registered address: C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, District Jaipur, Rajasthan — 302004, India.' },
+        {
+          title: 'Changes to This Privacy Policy',
+          paragraphs: [
+            'We may update this Privacy Policy from time to time, including to reflect changes to our practices or for other operational, legal, or regulatory reasons. We will post the revised Privacy Policy on the Site, update the January 29, 2025 and take any other steps required by applicable law.',
+          ],
+        },
+        {
+          title: 'How We Collect and Use Your Personal Information',
+          paragraphs: [
+            'To provide the Services, we collect personal information about you from a variety of sources, as set out below. The information that we collect and use varies depending on how you interact with us.',
+            'In addition to the specific uses set out below, we may use information we collect about you to communicate with you, provide or improve or improve the Services, comply with any applicable legal obligations, enforce any applicable terms of service, and to protect or defend the Services, our rights, and the rights of our users or others.',
+          ],
+        },
+        {
+          title: 'What Personal Information We Collect',
+          paragraphs: [
+            'The types of personal information we obtain about you depends on how you interact with our Site and use our Services. When we use the term "personal information", we are referring to information that identifies, relates to, describes or can be associated with you. The following sections describe the categories and specific types of personal information we collect.',
+          ],
+        },
+        {
+          title: 'Information We Collect Directly from You',
+          paragraphs: [
+            'Information that you directly submit to us through our Services may include:',
+          ],
+          items: [
+            'Contact details including your name, address, phone number, and email.',
+            'Order information including your name, billing address, shipping address, payment confirmation, email address, and phone number.',
+            'Account information including your username, password, security questions and other information used for account security purposes.',
+            'Customer support information including the information you choose to include in communications with us, for example, when sending a message through the Services.',
+          ],
+        },
+        {
+          title: 'Optional Features',
+          paragraphs: [
+            'Some features of the Services may require you to directly provide us with certain information about yourself. You may elect not to provide this information, but doing so may prevent you from using or accessing these features.',
+          ],
+        },
+        {
+          title: 'Information We Collect about Your Usage',
+          paragraphs: [
+            'We may also automatically collect certain information about your interaction with the Services ("Usage Data"). To do this, we may use cookies, pixels and similar technologies ("Cookies"). Usage Data may include information about how you access and use our Site and your account, including device information, browser information, information about your network connection, your IP address and other information regarding your interaction with the Services.',
+          ],
+        },
+        {
+          title: 'Information We Obtain from Third Parties',
+          paragraphs: [
+            'Finally, we may obtain information about you from third parties, including from vendors and service providers who may collect information on our behalf, such as:',
+          ],
+          items: [
+            'Companies who support our Site and Services, such as website',
+            'Our payment processors, who collect payment information (e.g., bank account, credit or debit card information, billing address) to process your payment in order to fulfill your orders and provide you with products or services you have requested, in order to perform our contract with you.',
+          ],
+        },
+        {
+          title: 'Online Tracking Technologies',
+          paragraphs: [
+            'When you visit our Site, open or click on emails we send you, or interact with our Services or advertisements, we, or third parties we work with, may automatically collect certain information using online tracking technologies such as pixels, web beacons, software developer kits, third-party libraries, and cookies.',
+            'Any information we obtain from third parties will be treated in accordance with this Privacy Policy. Also see the section below, Third Party Websites and Links.',
+          ],
+        },
+        {
+          title: 'How We Use Your Personal Information',
+          subsections: [
+            {
+              title: 'Providing Products and Services',
+              paragraphs: [
+                'We use your personal information to provide you with the Services in order to perform our contract with you, including to process your payments, fulfill your orders, to send notifications to you related to your account, purchases, returns, other transactions, to create, maintain and otherwise manage your account, to arrange for shipping, facilitate any returns and other features and functionalities related to your account.',
+              ],
+            },
+            {
+              title: 'Marketing and Advertising',
+              paragraphs: [
+                'We may use your personal information for marketing and promotional purposes, such as to send marketing, advertising and promotional communications by email, text message or postal mail, and to show you advertisements for products or services. This may include using your personal information to better tailor the Services and advertising on our Site and other websites.',
+              ],
+            },
+            {
+              title: 'Security and Fraud Prevention',
+              paragraphs: [
+                'We use your personal information to detect, investigate or take action regarding possible fraudulent, illegal or malicious activity. If you choose to use the Services and register an account, you are responsible for keeping your account credentials safe. We highly recommend that you do not share your username, password, or other access details with anyone else. If you believe your account has been compromised, please contact us immediately.',
+              ],
+            },
+            {
+              title: 'Refund Policy',
+              paragraphs: [
+                'Refund policy as our company policy we not providing any refund.',
+              ],
+            },
+            {
+              title: 'Communicating with You and Service Improvement',
+              paragraphs: [
+                'We use your personal information to provide you with customer support and improve our Services. This is in our legitimate interests in order to be responsive to you, to provide effective services to you, and to maintain our business relationship with you.',
+              ],
+            },
+          ],
+        },
+        {
+          title: 'Cookies',
+          paragraphs: [
+            'Like many websites, we use Cookies on our Site. For specific information about the Cookies that we use related to powering our website see We use Cookies to power and improve our Site and our Services (including to remember your actions and preferences), to run analytics and better understand user interaction with the Services (in our legitimate interests to administer, improve and optimize the Services). We may also permit third parties and services providers to use Cookies on our Site to better tailor the services, products and advertising on our Site and other websites.',
+          ],
+        },
+        {
+          title: 'Third Party Websites and Links',
+          paragraphs: [
+            'Our Site may include links to other websites, apps, and services operated by third parties. We are not responsible for the privacy practices of those third parties. We encourage you to review their privacy policies before sharing personal information with them.',
+          ],
+        },
+        { title: 'Contact Us', content: 'Terms questions/concerns: info@dreammantra.in या 9680102276 call करें। Office hours: Mon-Sat, 11am-7pm। GST address: C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, Rajasthan — 302004.' },
       ],
       disclaimer: {
         title: '⚠️ Important Disclaimer',
