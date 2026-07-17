@@ -1,199 +1,322 @@
-import { Link } from 'react-router-dom';
-import PageHero from '../components/PageHero';
-import SubTabs from '../components/SubTabs';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLang } from '../context/LanguageContext';
-import { IMAGES } from '../data/content';
+import { programs as programImages } from '../data/content';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import BookSessionSection from '../components/BookSessionSection';
-import AgePathwaysSection from '../components/AgePathwaysSection';
+import { useEffect, useMemo } from 'react';
+import AgePathwaysSection, { InstitutionsPathways } from '../components/AgePathwaysSection';
+import HomeHowDreamzWorks from '../components/HomeHowDreamzWorks';
+import HomeWhyCounselling from '../components/HomeWhyCounselling';
 import { animations } from '../utils/animations';
-import { ArrowRight, CheckCircle2 } from 'lucide-react';
+import WhyCounsellingPanel from '../components/WhyCounsellingPanel';
+import DMITPage from './DMITPage';
+import PsychometricPage from './PsychometricPage';
+import DMPsychometricPage from './DMPsychometricPage';
+import {
+  ArrowRight,
+  BookOpenCheck,
+  Brain,
+  Briefcase,
+  Building2,
+  Calendar,
+  Compass,
+  Fingerprint,
+  GraduationCap,
+  HeartHandshake,
+  LayoutGrid,
+  Layers,
+  LogIn,
+  ShieldCheck,
+  Target,
+  TrendingUp,
+  User,
+} from 'lucide-react';
 
-const { tabFadeUp, tabFadeLeft } = animations;
+const { tabFadeUp } = animations;
 
-function CounsellingTypeCard({ type, delay = 0 }) {
-  return (
-    <motion.div
-      {...tabFadeUp}
-      transition={{ delay, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="counselling-type-card infigon-card glow-card p-7 lg:p-8 h-full"
-    >
-      <span className="text-3xl mb-4 block" aria-hidden>{type.icon}</span>
-      <h3 className="text-xl font-bold mb-3 text-[#013220] dark:text-emerald-50">{type.title}</h3>
-      <p className="text-sand-600 dark:text-sand-300 text-base leading-relaxed mb-5">{type.desc}</p>
-      <ul className="space-y-2.5">
-        {(type.points || []).map((point) => (
-          <li key={point} className="flex gap-2.5 text-sm text-sand-700 dark:text-sand-200 leading-relaxed">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-            <span>{point}</span>
-          </li>
-        ))}
-      </ul>
-    </motion.div>
-  );
+function splitCounsellingTitle(title) {
+  const raw = (title || 'Counselling').trim();
+  if (/\s&\s/.test(raw)) {
+    const parts = raw.split(/\s*&\s*/);
+    return { lead: `${parts[0]} &`, accent: parts.slice(1).join(' & ') };
+  }
+  const words = raw.split(/\s+/);
+  if (words.length < 2) return { lead: '', accent: raw };
+  return { lead: words.slice(0, -1).join(' '), accent: words[words.length - 1] };
 }
 
-function MappingShowcase({ block, image, variant }) {
-  return (
-    <motion.div
-      {...tabFadeUp}
-      transition={{ delay: 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className={`mapping-showcase mapping-showcase--${variant}`}
-    >
-      <div className="mapping-showcase__grid">
-        <div className="mapping-showcase__visual">
-          <div className="mapping-showcase__glow" aria-hidden />
-          <img src={image} alt="" className="mapping-showcase__img" loading="lazy" />
-        </div>
-        <div className="mapping-showcase__body">
-          <span className="mapping-showcase__badge">{block.badge}</span>
-          <h3 className="mapping-showcase__title">{block.title}</h3>
-          <p className="mapping-showcase__desc">{block.desc}</p>
-          <ul className="mapping-showcase__points">
-            {(block.points || []).map((point) => (
-              <li key={point}>{point}</li>
-            ))}
-          </ul>
-          <Link to={block.link} className="btn-primary inline-flex items-center gap-2 mt-6">
-            {block.cta} <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
+const TAB_ICONS = {
+  overview: LayoutGrid,
+  why: HeartHandshake,
+  dmit: Fingerprint,
+  psychometric: Brain,
+  combo: Layers,
+  programs: GraduationCap,
+  institutions: Building2,
+};
+
+const PROCESS_STEP_ICONS = [Fingerprint, Brain, BookOpenCheck, TrendingUp, ShieldCheck];
+const PROCESS_STEP_TONES = ['red', 'purple', 'green', 'blue', 'orange'];
+
+const AGE_CARD_STYLES = [
+  { Icon: GraduationCap, tone: 'emerald' },
+  { Icon: Brain, tone: 'pink' },
+  { Icon: Target, tone: 'blue' },
+  { Icon: Compass, tone: 'orange' },
+  { Icon: User, tone: 'teal' },
+  { Icon: Briefcase, tone: 'purple' },
+];
 
 export default function CounsellingHub() {
   const { t, d } = useLang();
+  const fg = d('freeGuidance') || {};
   const counsellingTabs = d('data.counsellingTabs');
   const processSteps = d('data.processSteps');
   const counsellingPage = d('pages.counselling');
   const tabs = counsellingPage.tabs;
   const overview = tabs.overview;
-  const [processIdx, setProcessIdx] = useState(0);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const params = new URLSearchParams(location.search);
+  const tab = params.get('tab') || 'overview';
+
+  const ages = useMemo(
+    () => d('programs').map((p, i) => ({ ...programImages[i], ...p })),
+    [d],
+  );
+
+  useEffect(() => {
+    const p = new URLSearchParams(location.search);
+    if (p.get('pathway') === 'institutions') {
+      navigate({ pathname: '/counselling', search: '?tab=institutions' }, { replace: true, preventScrollReset: true });
+      return;
+    }
+    if (p.get('tab') === 'process') {
+      navigate({ pathname: '/counselling', search: '?tab=overview' }, { replace: true, preventScrollReset: true });
+      return;
+    }
+    if (p.get('tab') === 'book') {
+      navigate('/contact#guidance', { replace: true });
+    }
+  }, [location.search, navigate]);
+
+  const setTab = (tabId) => {
+    navigate(
+      { pathname: '/counselling', search: `?tab=${tabId}` },
+      { replace: true, preventScrollReset: true },
+    );
+  };
+
+  const counsellingTitle = splitCounsellingTitle(counsellingPage.title);
+  const nextStepTitle = counsellingPage.nextStepTitle || 'Ready for personal guidance?';
+  const nextStepDesc =
+    counsellingPage.nextStepDesc ||
+    'Talk to a counsellor — no commitment. We’ll help you choose the right next step.';
+  const processSection = (
+    <motion.section {...tabFadeUp} className="counselling-overview__process">
+      <div className="counselling-overview__process-head">
+        <h2 className="home-headline home-headline--oneline mb-2">
+          How <span className="gradient-text text-pop">counselling</span> works
+        </h2>
+      </div>
+      <ol className="counselling-overview__timeline">
+        {(processSteps || []).map((step, i) => {
+          const StepIcon = PROCESS_STEP_ICONS[i] || Fingerprint;
+          const stepTone = PROCESS_STEP_TONES[i % PROCESS_STEP_TONES.length];
+          return (
+            <motion.li
+              key={step.title}
+              className={`counselling-overview__timeline-step counselling-overview__timeline-step--${stepTone}`}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: i * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="counselling-overview__timeline-node" aria-hidden>
+                <span className="counselling-overview__timeline-icon">
+                  <StepIcon className="w-5 h-5" />
+                </span>
+                <span className="counselling-overview__timeline-num">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+              </div>
+              <div className="counselling-overview__timeline-copy">
+                <h3 className="counselling-overview__timeline-title">{step.title}</h3>
+                {step.points?.length > 0 ? (
+                  <ul className="counselling-overview__timeline-points">
+                    {step.points.map((point) => (
+                      <li key={point}>{point}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  step.desc && (
+                    <p className="counselling-overview__timeline-desc">{step.desc}</p>
+                  )
+                )}
+              </div>
+            </motion.li>
+          );
+        })}
+      </ol>
+    </motion.section>
+  );
 
   return (
-    <>
-      <PageHero
-        title={counsellingPage.title}
-        subtitle={counsellingPage.subtitle}
-        image={IMAGES.counselling}
-        cta={counsellingPage.cta}
-        ctaLink="/counselling?tab=book"
-      />
+    <div className="counselling-hub-page counselling-hub-page--tight no-reveal">
+      <header className="counselling-masthead">
+        <div className="counselling-masthead__overlay" aria-hidden />
+        <motion.div {...tabFadeUp} className="counselling-masthead__inner">
+          <div className="counselling-masthead__copy">
+            <h1 className="counselling-masthead__title font-accent">
+              {counsellingTitle.lead}
+              {counsellingTitle.lead ? ' ' : null}
+              {counsellingTitle.accent ? (
+                <span className="counselling-masthead__title-accent">{counsellingTitle.accent}</span>
+              ) : null}
+            </h1>
+            <p className="counselling-masthead__subtitle">{counsellingPage.subtitle}</p>
+            <div className="counselling-masthead__actions">
+              <Link to="/contact#guidance" className="counselling-masthead__btn counselling-masthead__btn--primary">
+                <Calendar className="w-4 h-4" aria-hidden />
+                {counsellingPage.cta}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link to="/signup" className="counselling-masthead__btn counselling-masthead__btn--ghost">
+                <LogIn className="w-4 h-4" aria-hidden />
+                {fg.login || 'Sign in to know more'}
+              </Link>
+            </div>
+          </div>
+        </motion.div>
+      </header>
 
-      <section className="py-20 lg:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 no-reveal">
-        <SubTabs tabs={counsellingTabs} defaultTab="overview" id="counselling">
-          {(tab) => (
-            <>
-              {tab === 'overview' && (
-                <div className="space-y-14 lg:space-y-16">
-                  <div>
-                    <motion.h2 {...tabFadeUp} className="section-title mb-4">
-                      {overview.sectionTitle}
-                    </motion.h2>
-                    <motion.p
-                      {...tabFadeUp}
-                      transition={{ delay: 0.05, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                      className="text-sand-600 text-lg max-w-3xl leading-relaxed mb-8 lg:mb-10"
-                    >
-                      {overview.sectionDesc}
-                    </motion.p>
-                    <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-                      {(overview.types || []).map((type, i) => (
-                        <CounsellingTypeCard key={type.id} type={type} delay={i * 0.08} />
-                      ))}
-                    </div>
-                  </div>
+      <div className="counselling-hub-page__body max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="counselling-shell counselling-shell--guide">
+        <nav className="counselling-tabs" aria-label="Counselling sections" role="tablist">
+          {counsellingTabs.map((item) => {
+            const Icon = TAB_ICONS[item.id] || LayoutGrid;
+            const active = tab === item.id;
+            const featured = ['dmit', 'psychometric', 'combo', 'why'].includes(item.id);
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                className={`counselling-tabs__item counselling-tabs__item--${item.id}${featured ? ' counselling-tabs__item--featured' : ''}${active ? ' is-active' : ''}`}
+                onClick={() => setTab(item.id)}
+              >
+                <span className="counselling-tabs__icon" aria-hidden>
+                  <Icon className="w-4 h-4" />
+                </span>
+                <span className="counselling-tabs__label">{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
 
-                  <MappingShowcase
-                    block={overview.mindMapping}
-                    image={IMAGES.dmit}
-                    variant="mind"
-                  />
+        <div className="counselling-shell__panel" role="tabpanel">
+          {tab === 'overview' && (
+            <div className="counselling-overview space-y-12 lg:space-y-16">
+              <section className="counselling-overview__why-home">
+                <HomeWhyCounselling />
+              </section>
 
-                  <MappingShowcase
-                    block={overview.skillMapping}
-                    image={IMAGES.psychometric}
-                    variant="skill"
-                  />
-                </div>
-              )}
+              {processSection}
 
-              {tab === 'dmit' && (
-                <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
-                  <motion.img {...tabFadeUp} src={IMAGES.dmit} className="rounded-3xl shadow-xl" alt="Mind Mapping" />
-                  <motion.div {...tabFadeUp} transition={{ delay: 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}>
-                    <h2 className="text-2xl font-bold mb-5">{tabs.dmit.title}</h2>
-                    <p className="text-sand-600 mb-6 text-lg leading-relaxed">{tabs.dmit.desc}</p>
-                    <Link to="/assessments/dmit" className="btn-primary">{t('common.knowMore')}</Link>
-                  </motion.div>
-                </div>
-              )}
-
-              {tab === 'psychometric' && (
-                <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-center">
-                  <motion.img {...tabFadeUp} src={IMAGES.psychometric} className="rounded-3xl shadow-xl" alt="" />
-                  <motion.div {...tabFadeUp} transition={{ delay: 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}>
-                    <h2 className="text-2xl font-bold mb-5">{tabs.psychometric.title}</h2>
-                    <p className="text-sand-600 mb-6 text-lg leading-relaxed">{tabs.psychometric.desc}</p>
-                    <Link to="/assessments/psychometric" className="btn-primary">{tabs.psychometric.takeAssessment}</Link>
-                  </motion.div>
-                </div>
-              )}
-
-              {tab === 'process' && (
-                <div className="grid lg:grid-cols-[300px_1fr] gap-10 lg:gap-14">
-                  <div className="space-y-2">
-                    {processSteps.map((s, i) => (
-                      <motion.button
-                        key={i}
-                        {...tabFadeLeft}
-                        transition={{ delay: i * 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                        whileHover={{ x: 4 }}
-                        onClick={() => setProcessIdx(i)}
-                        className={`w-full text-left px-5 py-4 rounded-2xl text-sm font-semibold transition-all duration-300 ${
-                          processIdx === i
-                            ? 'bg-[#013220] text-[#FAFAF7] shadow-lg shadow-[rgba(1,50,32,0.25)]'
-                            : 'hover:bg-[rgba(201,168,76,0.12)] text-sand-700 border border-sand-200'
-                        }`}
-                      >
-                        {i + 1}. {s.title}
-                      </motion.button>
-                    ))}
-                  </div>
-                  <motion.div
-                    key={processIdx}
-                    initial={{ opacity: 0, x: 24, scale: 0.98 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-                    className="infigon-card p-10 lg:p-12 glow-card"
-                  >
-                    <span className="text-6xl font-display font-bold text-[rgba(201,168,76,0.35)]">
-                      {String(processIdx + 1).padStart(2, '0')}
-                    </span>
-                    <h3 className="text-2xl font-bold mt-3 mb-5">{processSteps[processIdx].title}</h3>
-                    <p className="text-body-theme text-lg leading-relaxed">{processSteps[processIdx].desc}</p>
-                    <Link to="/contact" className="btn-primary mt-8 inline-flex">{tabs.process.bookSession}</Link>
-                  </motion.div>
-                </div>
-              )}
-
-              {tab === 'programs' && <AgePathwaysSection />}
-
-              {tab === 'book' && (
-                <BookSessionSection
-                  title={tabs.book.title}
-                  hours={tabs.book.hours}
-                  createAccountLabel={tabs.book.createAccount}
-                  bookNowLabel={t('common.bookNow')}
+              <section className="counselling-overview__products counselling-overview__how">
+                <HomeHowDreamzWorks
+                  headingTitle="Counselling"
+                  headingHighlight="Process"
+                  pathwayToggle={false}
+                  showSubtitle={false}
+                  showGroupSubtitle={false}
+                  layout="counselling"
                 />
-              )}
-            </>
+              </section>
+
+              <motion.section
+                {...tabFadeUp}
+                transition={{ delay: 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="counselling-overview__ages"
+              >
+                <div className="counselling-overview__head">
+                  <div>
+                    <p className="counselling-overview__eyebrow">
+                      {overview.agesEyebrow || 'Who we counsel'}
+                    </p>
+                    <h2 className="section-title mb-2">
+                      {overview.agesTitle || 'Ages we do counselling for'}
+                    </h2>
+                    <p className="text-sand-600 text-base sm:text-lg max-w-2xl leading-relaxed">
+                      {overview.agesDesc || 'From Class 1 to working professionals — pick your stage.'}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="counselling-overview__more"
+                    onClick={() => setTab('programs')}
+                  >
+                    {overview.exploreMore || t('common.knowMore')} <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="counselling-overview__age-grid" role="list">
+                  {ages.map((age, i) => {
+                    const style = AGE_CARD_STYLES[i % AGE_CARD_STYLES.length];
+                    const AgeIcon = style.Icon;
+                    return (
+                      <Link
+                        key={age.slug}
+                        role="listitem"
+                        to={`/counselling?tab=programs&age=${age.slug}`}
+                        preventScrollReset
+                        className={`counselling-overview__age-card counselling-overview__age-card--${style.tone}`}
+                      >
+                        <span className="counselling-overview__age-icon" aria-hidden>
+                          <AgeIcon className="w-5 h-5" />
+                        </span>
+                        <span className="counselling-overview__age-title">{age.title}</span>
+                        <span className="counselling-overview__age-sub">{age.subtitle}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </motion.section>
+
+              <motion.aside
+                {...tabFadeUp}
+                transition={{ delay: 0.12, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                className="counselling-next"
+              >
+                <div className="counselling-next__copy">
+                  <p className="counselling-next__eyebrow">
+                    {counsellingPage.nextStepEyebrow || 'Your next step'}
+                  </p>
+                  <h2 className="counselling-next__title">{nextStepTitle}</h2>
+                  <p className="counselling-next__desc">{nextStepDesc}</p>
+                </div>
+                <Link to="/contact#guidance" className="btn-primary counselling-next__cta">
+                  {counsellingPage.cta}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </motion.aside>
+            </div>
           )}
-        </SubTabs>
-      </section>
-    </>
+
+          {tab === 'why' && <WhyCounsellingPanel compact />}
+
+          {tab === 'dmit' && <DMITPage compact />}
+
+          {tab === 'psychometric' && <PsychometricPage compact />}
+
+          {tab === 'combo' && <DMPsychometricPage compact />}
+
+          {tab === 'programs' && <AgePathwaysSection />}
+
+          {tab === 'institutions' && <InstitutionsPathways />}
+        </div>
+      </div>
+      </div>
+    </div>
   );
 }

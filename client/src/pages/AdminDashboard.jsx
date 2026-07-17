@@ -211,7 +211,10 @@ export default function AdminDashboard() {
   ] : [];
 
   const goTab = useCallback((tabId) => {
-    navigate({ pathname: location.pathname, search: `?tab=${tabId}` }, { replace: true });
+    navigate(
+      { pathname: location.pathname, search: `?tab=${tabId}` },
+      { replace: true, preventScrollReset: true },
+    );
   }, [navigate, location.pathname]);
 
   const nextStep = useMemo(() => {

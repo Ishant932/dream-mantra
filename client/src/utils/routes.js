@@ -1,13 +1,22 @@
-const DEDICATED_ASSESSMENT_ROUTES = {
-  dmit: '/assessments/dmit',
-  psychometric: '/assessments/psychometric',
-  'dmit-psychometric': '/assessments/dmit-psychometric',
-  'why-dreams-mantra': '/assessments/why-dreams-mantra',
+const COUNSELLING_ASSESSMENT_TABS = {
+  dmit: 'dmit',
+  psychometric: 'psychometric',
+  'dmit-psychometric': 'combo',
+  combo: 'combo',
+  'why-dreams-mantra': 'why',
+  why: 'why',
 };
 
+/** Maps assessment slugs to in-hub counselling tabs */
+export function counsellingAssessmentPath(slug) {
+  const tab = COUNSELLING_ASSESSMENT_TABS[slug];
+  if (!tab) return null;
+  return `/counselling?tab=${tab}`;
+}
+
 export function assessmentPath(slug) {
-  if (!slug) return '/assessments';
-  return DEDICATED_ASSESSMENT_ROUTES[slug] || `/assessments/${slug}`;
+  if (!slug) return '/counselling';
+  return counsellingAssessmentPath(slug) || `/assessments/${slug}`;
 }
 
 export function programPath(slug) {

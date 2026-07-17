@@ -36,14 +36,14 @@ export const whyCards = [
 export const audienceCards = [
   {
     title: 'Students & Parents',
-    services: ['Career Library', 'AI Corner', 'Skill Mapping', 'Mind Mapping', 'Roadmap', '7 Pillars', 'AI Career Launchpad'],
+    services: ['Career Library', 'Skill Mapping', 'Brain Mapping', 'Roadmap', '5 Pillars', 'AI Career Launchpad'],
     desc: 'Expert guidance for subject selection, course planning, college mapping, and choosing the right career path at the right time.',
     image: IMAGES.students,
     link: '/counselling?tab=programs',
   },
   {
     title: 'Working Professionals',
-    services: ['Career Library', 'AI Corner', 'Skill Mapping', 'Mind Mapping', 'Roadmap', 'AI Career Launchpad', 'Career Switch'],
+    services: ['Career Library', 'Skill Mapping', 'Brain Mapping', 'Roadmap', 'AI Career Launchpad', 'Career Switch'],
     desc: 'Feeling stuck or planning a career shift? Get clarity on direction, skills you need, and opportunities that fit your goals.',
     image: IMAGES.professional,
     link: '/programs/working-professionals',
@@ -53,19 +53,32 @@ export const audienceCards = [
 
 export const toolkitServices = [
   { title: 'Career Library', desc: 'Explore 1000+ careers with skills, salaries, education paths, and growth.', icon: '📚', link: '/careers', image: IMAGES.library },
-  { title: 'AI Corner', desc: 'AI-powered skill plans and career roadmaps within seconds.', icon: '🤖', link: '/marketplace?tab=ai', image: IMAGES.aiTech },
-  { title: 'Skill Mapping', desc: '5-dimensional AI-driven assessment for personality and career fit.', icon: '🧠', link: '/assessments/psychometric', image: IMAGES.psychometric },
-  { title: 'Career Roadmap', desc: 'Step-by-step roadmap for every stage to your dream career.', icon: '🗺️', link: '/counselling?tab=process', image: IMAGES.career },
+  { title: 'Marketplace', desc: 'Counselling assessments and Training & Placement programs in one place.', icon: '🛒', link: '/marketplace?tab=counselling', image: IMAGES.aiTech },
+  { title: 'Skill Mapping', desc: '5-dimensional AI-driven assessment for personality and career fit.', icon: '🧠', link: '/counselling?tab=psychometric', image: IMAGES.psychometric },
+  { title: 'Career Roadmap', desc: 'Step-by-step roadmap for every stage to your dream career.', icon: '🗺️', link: '/counselling?tab=overview', image: IMAGES.career },
 ];
 
 export const processSteps = [
-  { title: 'Understanding Your Journey', desc: 'We begin by understanding your goals, background, interests, and challenges.' },
-  { title: '5-Dimensional Skill Mapping', desc: 'Scientific assessment across personality, aptitude, and interests.' },
-  { title: 'Tailored Career Shortlisting', desc: 'Shortlist careers aligned with strengths, demand, and aspirations.' },
-  { title: 'Country, University & Course', desc: 'Pick the right geography, institution, and programme.' },
-  { title: 'Best Admissions Provider', desc: 'Connect with trusted partners for applications and documentation.' },
-  { title: 'End-to-End Admissions', desc: 'Handholding through applications, interviews, visas, and enrolment.' },
-  { title: 'Ancillary Services', desc: 'Loans, accommodation, travel, and post-admission support.' },
+  {
+    title: 'Inborn Talent (Brain Mapping)',
+    points: ['Learning style & natural strengths', 'No exams or pressure'],
+  },
+  {
+    title: 'Acquired Talent (Skill Mapping)',
+    points: ['Personality, interests & behaviour', 'Fit for stream & career choices'],
+  },
+  {
+    title: 'What You Have Learned',
+    points: ['Subjects, grades & projects audited', 'Academics aligned to real paths'],
+  },
+  {
+    title: 'Market Trend',
+    points: ['Growing careers matched to you', 'Demand, salary & opportunity data'],
+  },
+  {
+    title: 'AI Proof Career',
+    points: ['Roles that stay human-strong', 'Built for long-term employability'],
+  },
 ];
 
 export const premiumServices = [
@@ -95,7 +108,7 @@ export const advisors = [
 export const faqs = [
   { q: 'What is career counselling and why is it important?', a: 'Career counselling helps you understand strengths, interests, and opportunities to make informed education and career decisions.' },
   { q: 'How does career counselling benefit students?', a: 'Students gain clarity on streams, courses, colleges, and careers aligned with aptitude — avoiding costly wrong choices.' },
-  { q: 'What does a career counsellor do?', a: 'Assesses your profile, interprets Skill Mapping/Mind Mapping results, shortlists careers and institutions, and guides admissions.' },
+  { q: 'What does a career counsellor do?', a: 'Assesses your profile, interprets Skill Mapping/Brain Mapping results, shortlists careers and institutions, and guides admissions.' },
   { q: 'How accurate is Skill Mapping?', a: 'When scientifically designed and expert-interpreted, they offer reliable personality and aptitude insights.' },
   { q: 'Who needs career counselling?', a: 'Students Class 8–12, college students, parents, and working professionals considering shifts or upskilling.' },
   { q: 'How does AI help in career counselling?', a: 'AI powers career libraries, roadmaps, and faster analysis while counsellors ensure empathy and accountability.' },
@@ -105,11 +118,13 @@ export const faqs = [
 
 export const counsellingTabs = [
   { id: 'overview', label: 'Overview' },
-  { id: 'dmit', label: 'Mind Mapping' },
+  { id: 'why', label: 'Why Career Counselling' },
+  { id: 'dmit', label: 'Brain Mapping' },
   { id: 'psychometric', label: 'Skill Mapping' },
-  { id: 'process', label: '7-Step Process' },
-  { id: 'programs', label: 'Programs' },
+  { id: 'combo', label: 'Brain + Skill Mapping' },
+  { id: 'programs', label: 'Age Pathways' },
   { id: 'book', label: 'Book Session' },
+  { id: 'institutions', label: 'Institutions' },
 ];
 
 export const counsellorsTabs = [
@@ -128,9 +143,6 @@ export const studyAbroadTabs = [
 ];
 
 export const marketplaceTabs = [
-  { id: 'tests', label: 'Tests' },
-  { id: 'library', label: 'Career Library' },
-  { id: 'ai', label: 'AI Corner' },
-  { id: 'stream', label: 'Stream Selector' },
-  { id: 'degree', label: 'Degree Selector' },
+  { id: 'counselling', label: 'Counselling' },
+  { id: 'training', label: 'Training & Placement' },
 ];

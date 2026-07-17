@@ -6,7 +6,6 @@ import {
 import { DashCard } from './DashboardUI';
 import CopyableUserId from './CopyableUserId';
 import JourneyProgressBox from './JourneyProgressBox';
-import WelcomeOfferBanner from './WelcomeOfferBanner';
 import ProfileDetailsCard from './ProfileDetailsCard';
 import { dedupeAssessmentsBySlug, getAssessmentDisplayTitle } from '../utils/assessmentHelpers';
 import { getConfirmedPaidAssessments, isAssessmentUnlocked } from '../utils/moduleAccess';
@@ -110,7 +109,7 @@ export default function DashboardOverview({
             <div className="flex-1">
               <h3 className="font-bold text-sm">Counselling sessions are locked</h3>
               <p className="text-sm dash-card-meta mt-1">
-                Book 1-on-1 sessions after you purchase a module with counselling — add the counselling add-on at checkout, or choose Mind Mapping + Skill Mapping (counselling included).
+                Book 1-on-1 sessions after you purchase a module with counselling — add the counselling add-on at checkout, or choose Brain Mapping + Skill Mapping (counselling included).
               </p>
               <button type="button" onClick={onBookModule} className="btn-primary mt-3 !py-2 !px-4 text-sm">
                 Browse modules with counselling
@@ -137,8 +136,6 @@ export default function DashboardOverview({
           </button>
         </motion.div>
       )}
-
-      <WelcomeOfferBanner compact />
 
       <ProfileDetailsCard
         user={displayUser}

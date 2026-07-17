@@ -14,11 +14,16 @@ export default function Signup() {
   const navigate = useNavigate();
   const location = useLocation();
   const slotId = new URLSearchParams(location.search).get('slot_id');
+  const returnTo = typeof location.state?.from === 'string' ? location.state.from : '';
+  const postAuthPath = () => {
+    if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) return returnTo;
+    return slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard';
+  };
 
   useEffect(() => {
     if (authLoading || !user) return;
-    navigate(slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard', { replace: true });
-  }, [authLoading, user, navigate, slotId]);
+    navigate(postAuthPath(), { replace: true });
+  }, [authLoading, user, navigate, slotId, returnTo]);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -70,10 +75,10 @@ export default function Signup() {
         }
       }
 
-      navigate(
-        slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard',
-        { state: { welcomeUid: data.user?.user_uid || data.user_uid } }
-      );
+      navigate(postAuthPath(), {
+        state: { welcomeUid: data.user?.user_uid || data.user_uid },
+        replace: true,
+      });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -118,7 +123,7 @@ export default function Signup() {
           >
             {[
               'Instant access to dashboard & career library',
-              'Book Mind Mapping & Skill Mapping assessments',
+              'Book Brain Mapping & Skill Mapping assessments',
               'Enable 2FA anytime from Security settings',
             ].map((item) => (
               <li key={item} className="flex items-start gap-3 text-amber-100">
@@ -222,7 +227,11 @@ export default function Signup() {
 
             <p className="text-center mt-8 text-sm text-sand-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-amber-600 font-semibold hover:underline">
+              <Link
+                to="/login"
+                state={returnTo ? { from: returnTo } : undefined}
+                className="text-amber-600 font-semibold hover:underline"
+              >
                 Sign in
               </Link>
             </p>

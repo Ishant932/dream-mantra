@@ -13,14 +13,14 @@ export default function HomeBlogTeaser() {
   if (!posts.length) return null;
 
   return (
-    <section className="py-12 sm:py-16 px-4">
-      <div className="max-w-6xl mx-auto">
+    <section className="home-section home-section--yellow home-blog-teaser">
+      <div className="home-section__inner max-w-6xl mx-auto px-4">
         <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
           <div>
             <p className="text-xs font-bold uppercase tracking-wide text-amber-600 mb-2 inline-flex items-center gap-1.5">
               <BookOpen className="w-4 h-4" /> From our blog
             </p>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold">Latest career insights</h2>
+            <h2 className="home-headline">Latest <span className="gradient-text text-pop">Insights</span></h2>
           </div>
           <Link to="/blog" className="text-sm font-bold text-amber-700 inline-flex items-center gap-1 hover:gap-2 transition-all">
             View all articles <ArrowRight className="w-4 h-4" />

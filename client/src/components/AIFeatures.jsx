@@ -181,7 +181,7 @@ export default function AIFeatures() {
                         {content.quiz.retake}
                       </button>
                       <Link
-                        to="/assessments/psychometric"
+                        to="/counselling?tab=psychometric"
                         className="btn-primary w-full inline-flex items-center justify-center"
                       >
                         {content.quiz.getAssessment} <ArrowRight className="w-4 h-4 ml-2" />

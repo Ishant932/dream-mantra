@@ -410,7 +410,7 @@ export default function CareerDetailPage() {
 
             <Link to="/contact" className="btn-primary w-full mt-6 text-center block">Book Counselling</Link>
 
-            <Link to="/assessments/dmit-psychometric" className="btn-outline w-full mt-3 text-center block">Take Mind Mapping + Skill Mapping</Link>
+            <Link to="/counselling?tab=combo" className="btn-outline w-full mt-3 text-center block">Take Brain Mapping + Skill Mapping</Link>
 
           </div>
 

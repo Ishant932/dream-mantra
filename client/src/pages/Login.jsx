@@ -16,9 +16,11 @@ export default function Login() {
   const slotId = new URLSearchParams(location.search).get('slot_id');
   const prefilledEmail = location.state?.email || '';
   const loginNotice = location.state?.notice || '';
+  const returnTo = typeof location.state?.from === 'string' ? location.state.from : '';
   const postAuthPath = (role) => {
     if (role === 'admin') return '/admin';
     if (role === 'counsellor') return '/counsellor';
+    if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) return returnTo;
     return slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard';
   };
 
@@ -29,7 +31,7 @@ export default function Login() {
   useEffect(() => {
     if (authLoading || !user) return;
     navigate(postAuthPath(user.role), { replace: true });
-  }, [authLoading, user, navigate, slotId]);
+  }, [authLoading, user, navigate, slotId, returnTo]);
 
   const [step, setStep] = useState('credentials');
   const [identifier, setIdentifier] = useState(prefilledEmail);
@@ -194,7 +196,7 @@ export default function Login() {
             transition={{ delay: 0.5 }}
             className="mt-10 space-y-3"
           >
-            {['1000+ Career Opportunities', 'AI Career Advisor (Esh)', 'Mind Mapping & Skill Mapping access'].map((item) => (
+            {['1000+ Career Opportunities', 'AI Career Advisor (Esh)', 'Brain Mapping & Skill Mapping access'].map((item) => (
               <div key={item} className="flex items-center gap-3 text-amber-100">
                 <Sparkles className="w-5 h-5 text-amber-400 shrink-0" />
                 <span>{item}</span>
@@ -273,7 +275,11 @@ export default function Login() {
 
                 <p className="text-center mt-4 text-sm text-[var(--text-secondary)]">
                   New here?{' '}
-                  <Link to="/signup" className="text-amber-600 font-semibold hover:underline">
+                  <Link
+                    to="/signup"
+                    state={returnTo ? { from: returnTo } : undefined}
+                    className="text-amber-600 font-semibold hover:underline"
+                  >
                     Create an account
                   </Link>
                 </p>

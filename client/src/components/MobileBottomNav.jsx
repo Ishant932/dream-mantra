@@ -26,7 +26,7 @@ const ITEMS = [
     id: 'crp',
     icon: Briefcase,
     labelKey: 'mobileNav.tests',
-    getTo: () => '/crp/explore',
+    getTo: () => '/crp?tab=launchpad',
     isActive: (path) => path.startsWith('/crp'),
   },
   {

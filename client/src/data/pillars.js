@@ -1,29 +1,12 @@
 export const pillars = [
   {
     id: 1,
-    title: 'Counselling',
-    subtitle: 'Expert human guidance',
-    icon: '🎯',
-    color: 'from-amber-600 to-orange-500',
-    description:
-      'One-on-one sessions with certified career counsellors who understand your unique story. We listen without judgment and guide with science and empathy — from Class 1 to your first job.',
-    features: [
-      'Certified counsellors (Govt of India aligned)',
-      'Parent-student joint sessions',
-      'Stream, course & college mapping',
-      '7-step structured counselling framework',
-      'Jaipur centres + pan-India online',
-    ],
-    link: '/counselling',
-  },
-  {
-    id: 2,
-    title: 'Inborn Talent (Mind Mapping)',
+    title: 'Inborn Talent (Brain Mapping)',
     subtitle: 'Fingerprint science',
     icon: '🔬',
     color: 'from-amber-600 to-yellow-500',
     description:
-      'Mind Mapping maps your inborn potential through fingerprint analysis — validated in 30+ countries. Reveals learning style, memory patterns, and intelligence types without exams or pressure.',
+      'Brain Mapping maps your inborn potential through fingerprint analysis — validated in 30+ countries. Reveals learning style, memory patterns, and intelligence types without exams or pressure.',
     features: [
       'Scientific fingerprint scanning',
       'Learning style & memory mapping',
@@ -31,10 +14,10 @@ export const pillars = [
       'Ideal for early discovery (Class 1+)',
       'Rooted in neuroscience & genetics',
     ],
-    link: '/assessments/dmit',
+    link: '/counselling?tab=dmit',
   },
   {
-    id: 3,
+    id: 2,
     title: 'Acquired Talent (Skill Mapping)',
     subtitle: '7 assessment frameworks',
     icon: '📊',
@@ -46,12 +29,12 @@ export const pillars = [
       'Personality-career alignment',
       'Best for Class 9–12 & college',
       'AI-assisted interpretation',
-      'Complements Mind Mapping for full profile',
+      'Complements Brain Mapping for full profile',
     ],
-    link: '/assessments/psychometric',
+    link: '/counselling?tab=psychometric',
   },
   {
-    id: 4,
+    id: 3,
     title: 'What You Have Learned',
     subtitle: 'Academic & skill audit',
     icon: '📚',
@@ -68,7 +51,7 @@ export const pillars = [
     link: '/programs/class-11-12',
   },
   {
-    id: 5,
+    id: 4,
     title: 'Market Trend',
     subtitle: 'Industry intelligence',
     icon: '📈',
@@ -85,8 +68,8 @@ export const pillars = [
     link: '/careers',
   },
   {
-    id: 6,
-    title: 'Future AI Proof',
+    id: 5,
+    title: 'AI Proof Career',
     subtitle: 'Tomorrow-ready careers',
     icon: '🤖',
     color: 'from-orange-600 to-amber-600',
@@ -101,28 +84,94 @@ export const pillars = [
     ],
     link: '/careers',
   },
+];
+
+export const trainingSessions = [
   {
-    id: 7,
-    title: 'Career Ready',
-    subtitle: 'Job-market preparation',
-    icon: '✅',
-    color: 'from-amber-600 to-amber-500',
+    number: 1,
+    title: 'Career Discovery',
+    subtitle: 'Clarity & direction',
+    icon: '🧭',
+    color: 'from-amber-500 to-orange-500',
     description:
-      'The final pillar — making you employable. Resume, interviews, branding, and corporate readiness so you move from campus to career with confidence.',
+      'Discover your strengths, interests, personality, and ideal career path with complete career clarity.',
     features: [
-      'Resume & cover letter mastery',
-      'Mock interviews & GD practice',
-      'LinkedIn & job portal strategy',
-      'Salary negotiation skills',
-      'AI Career Launchpad for college & freshers',
+      'Strengths & interest discovery',
+      'Personality-career fit',
+      'Ideal path shortlisting',
+      'Complete career clarity',
+      'Personalised direction plan',
     ],
-    link: '/crp/explore',
+  },
+  {
+    number: 2,
+    title: 'Personal Branding',
+    subtitle: 'Stand out professionally',
+    icon: '✨',
+    color: 'from-orange-500 to-red-400',
+    description:
+      'Build an ATS-friendly resume, optimized LinkedIn profile, and a professional brand that stands out.',
+    features: [
+      'ATS-friendly resume',
+      'LinkedIn optimization',
+      'Professional brand story',
+      'First-impression polish',
+      'Portfolio & presence tips',
+    ],
+  },
+  {
+    number: 3,
+    title: 'AI-Powered Job Search',
+    subtitle: 'Smarter applications',
+    icon: '🤖',
+    color: 'from-amber-400 to-yellow-500',
+    description:
+      'Use AI to optimize your resume, find opportunities, network effectively, and accelerate your job search.',
+    features: [
+      'AI resume optimization',
+      'Opportunity discovery',
+      'Smart networking tactics',
+      'Faster job-search loops',
+      'Role targeting strategy',
+    ],
+  },
+  {
+    number: 4,
+    title: 'Interview Mastery',
+    subtitle: 'Confident conversations',
+    icon: '🎤',
+    color: 'from-orange-600 to-amber-500',
+    description:
+      'Crack HR, technical, and panel interviews with confidence, communication skills, and proven strategies.',
+    features: [
+      'HR interview frameworks',
+      'Technical interview prep',
+      'Panel interview practice',
+      'Communication confidence',
+      'Proven response strategies',
+    ],
+  },
+  {
+    number: 5,
+    title: 'Career Launch',
+    subtitle: 'Offer-ready growth',
+    icon: '🚀',
+    color: 'from-red-400 to-orange-500',
+    description:
+      'Learn job application strategies, salary negotiation, corporate readiness, and long-term career growth.',
+    features: [
+      'Application strategies',
+      'Salary negotiation',
+      'Corporate readiness',
+      'Offer evaluation tips',
+      'Long-term growth roadmap',
+    ],
   },
 ];
 
 export const seventhPillar = {
-  title: 'AI Career Launchpad — Job-Ready Accelerator',
-  subtitle: '7th Pillar for College Students, Freshers & Working Professionals',
-  tagline: 'College Students & Freshers — become job-ready in 5 AI-powered sessions',
+  title: '5 Sessions for Training & Placement',
+  subtitle: 'AI Career Launchpad — Job-Ready Accelerator',
+  tagline: 'College Students & Freshers — become job-ready in 5 focused sessions',
   link: '/crp/explore',
 };

@@ -41,3 +41,16 @@ export function getMongoStatus() {
     ready: mongoose.connection.readyState === 1,
   };
 }
+
+/** Lightweight Atlas connectivity check for /api/health */
+export async function pingMongo() {
+  if (!isMongoConfigured()) {
+    return { ok: false, skipped: true, reason: 'MONGODB_URI not set' };
+  }
+  if (mongoose.connection.readyState !== 1) {
+    return { ok: false, reason: 'not connected' };
+  }
+  const start = Date.now();
+  await mongoose.connection.db.admin().ping();
+  return { ok: true, latencyMs: Date.now() - start };
+}

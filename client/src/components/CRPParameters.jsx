@@ -29,7 +29,7 @@ const detailVariants = {
   },
 };
 
-export default function CRPParameters() {
+export default function CRPParameters({ compact = false }) {
   const { d } = useLang();
   const params = d('pages.crp.parameters');
   const crpParameters = d('data.crpParameters');
@@ -51,56 +51,69 @@ export default function CRPParameters() {
   };
 
   return (
-    <section id="parameters" className="relative py-12 lg:py-20 scroll-mt-28 overflow-hidden border-t border-amber-200/60">
-      <div className="crp-params-bg" aria-hidden="true">
-        <motion.span
-          className="crp-orb crp-orb-1"
-          animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.08, 1] }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.span
-          className="crp-orb crp-orb-2"
-          animate={{ x: [0, -24, 0], y: [0, 18, 0], scale: [1, 1.12, 1] }}
-          transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <motion.span
-          className="crp-orb crp-orb-3"
-          animate={{ rotate: [0, 360] }}
-          transition={{ duration: 48, repeat: Infinity, ease: 'linear' }}
-        />
-        {[...Array(6)].map((_, i) => (
+    <section
+      id="parameters"
+      className={compact
+        ? 'crp-params-studio relative scroll-mt-28 overflow-hidden'
+        : 'relative scroll-mt-28 overflow-hidden border-t border-amber-200/60 py-12 lg:py-20'}
+    >
+      {!compact && (
+        <div className="crp-params-bg" aria-hidden="true">
           <motion.span
-            key={i}
-            className="crp-float-dot"
-            style={{ left: `${12 + i * 14}%`, top: `${20 + (i % 3) * 22}%` }}
-            animate={{ y: [0, -12, 0], opacity: [0.2, 0.55, 0.2] }}
-            transition={{ duration: 3 + i * 0.4, repeat: Infinity, delay: i * 0.3 }}
+            className="crp-orb crp-orb-1"
+            animate={{ x: [0, 30, 0], y: [0, -20, 0], scale: [1, 1.08, 1] }}
+            transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
           />
-        ))}
-      </div>
+          <motion.span
+            className="crp-orb crp-orb-2"
+            animate={{ x: [0, -24, 0], y: [0, 18, 0], scale: [1, 1.12, 1] }}
+            transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.span
+            className="crp-orb crp-orb-3"
+            animate={{ rotate: [0, 360] }}
+            transition={{ duration: 48, repeat: Infinity, ease: 'linear' }}
+          />
+          {[...Array(6)].map((_, i) => (
+            <motion.span
+              key={i}
+              className="crp-float-dot"
+              style={{ left: `${12 + i * 14}%`, top: `${20 + (i % 3) * 22}%` }}
+              animate={{ y: [0, -12, 0], opacity: [0.2, 0.55, 0.2] }}
+              transition={{ duration: 3 + i * 0.4, repeat: Infinity, delay: i * 0.3 }}
+            />
+          ))}
+        </div>
+      )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-0 sm:px-0 lg:px-0 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.55 }}
-          className="text-center max-w-3xl mx-auto mb-10"
+          className={`text-center max-w-3xl mx-auto ${compact ? 'mb-5' : 'mb-10'}`}
         >
-          <motion.span
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-amber-100 text-amber-800 text-sm font-bold mb-5"
-            animate={{ boxShadow: ['0 0 0 rgba(245,158,11,0)', '0 0 24px rgba(245,158,11,0.35)', '0 0 0 rgba(245,158,11,0)'] }}
-            transition={{ duration: 2.8, repeat: Infinity }}
-          >
-            {params.badge}
-          </motion.span>
-          <h2 className="section-title mb-4">
-            {params.title}{' '}
-            <span className="gradient-text">{params.titleHighlight}</span>
-          </h2>
-          <p className="text-sand-600 text-lg leading-relaxed">
-            {params.subtitle}
-          </p>
+          {params.badge ? (
+            <motion.span
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-amber-100 text-amber-800 text-sm font-bold mb-5"
+              animate={{ boxShadow: ['0 0 0 rgba(245,158,11,0)', '0 0 24px rgba(245,158,11,0.35)', '0 0 0 rgba(245,158,11,0)'] }}
+              transition={{ duration: 2.8, repeat: Infinity }}
+            >
+              {params.badge}
+            </motion.span>
+          ) : null}
+          <div className={compact ? 'crp-launchpad__section-head' : ''}>
+            <h2 className={compact ? 'crp-launchpad__section-title' : 'section-title mb-4'}>
+              {params.title}{' '}
+              <span className="gradient-text">{params.titleHighlight}</span>
+            </h2>
+          </div>
+          {params.subtitle ? (
+            <p className="text-sand-600 text-lg leading-relaxed">
+              {params.subtitle}
+            </p>
+          ) : null}
         </motion.div>
 
         <motion.div

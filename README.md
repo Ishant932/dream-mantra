@@ -23,7 +23,7 @@ dreams-mantra/
 - **1000+ Career Library** with roadmaps, salary, skills
 - **AI Career Advisor** — Esh chatbot (Gemini) + dashboard guidance
 - **User & Admin dashboards** — reports, bookings, assessments, payments
-- **Mind Mapping, Skill Mapping, CRP** programmes
+- **Brain Mapping, Skill Mapping, CRP** programmes
 
 ## Quick start
 

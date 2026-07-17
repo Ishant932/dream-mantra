@@ -4,31 +4,23 @@ import { CheckCircle, ArrowRight } from 'lucide-react';
 import PageHero from '../components/PageHero';
 import { assessments } from '../data/content';
 import { useLang } from '../context/LanguageContext';
-import { assessmentPath } from '../utils/routes';
+import { assessmentPath, counsellingAssessmentPath } from '../utils/routes';
 
 export default function AssessmentPage() {
   const { slug } = useParams();
   const { t, lang } = useLang();
   const item = assessments.find((a) => a.slug === slug);
 
-  if (slug === 'why-dreams-mantra') {
-    return <Navigate to="/assessments/why-dreams-mantra" replace />;
-  }
-
-  const dedicatedRoutes = {
-    dmit: '/assessments/dmit',
-    psychometric: '/assessments/psychometric',
-    'dmit-psychometric': '/assessments/dmit-psychometric',
-  };
-  if (dedicatedRoutes[slug]) {
-    return <Navigate to={dedicatedRoutes[slug]} replace />;
+  const hubPath = counsellingAssessmentPath(slug);
+  if (hubPath) {
+    return <Navigate to={hubPath} replace />;
   }
 
   if (!item) {
     return (
       <div className="pt-32 text-center py-20">
         <h1 className="text-2xl font-bold">Assessment not found</h1>
-        <Link to="/assessments" className="text-brand-600 mt-4 inline-block">View all assessments</Link>
+        <Link to="/counselling" className="text-brand-600 mt-4 inline-block">View counselling</Link>
       </div>
     );
   }

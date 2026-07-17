@@ -146,7 +146,12 @@ function persist() {
 let data = structuredClone(defaultData);
 
 export async function initDatabase() {
+  const isProd = process.env.NODE_ENV === 'production';
+
   if (!isMongoConfigured()) {
+    if (isProd) {
+      throw new Error('MONGODB_URI must be set in production (see MONGODB_SETUP.md). File storage is not persistent on Render.');
+    }
     data = loadFromFile();
     dbMode = 'file';
     console.log('Database: local data.json (set MONGODB_URI for MongoDB Atlas)');
@@ -156,7 +161,6 @@ export async function initDatabase() {
   try {
     await connectMongo();
   } catch (err) {
-    const isProd = process.env.NODE_ENV === 'production';
     if (isProd) {
       throw err;
     }
@@ -209,9 +213,19 @@ export function getDbMode() {
 }
 
 export function getDbStatus() {
+  let dataFile = { exists: false, sizeBytes: 0 };
+  try {
+    if (fs.existsSync(DB_PATH)) {
+      const st = fs.statSync(DB_PATH);
+      dataFile = { exists: true, sizeBytes: st.size };
+    }
+  } catch {
+    // Best-effort only; health endpoint shouldn't fail.
+  }
   return {
     mode: dbMode,
     mongo: getMongoStatus(),
+    dataFile,
   };
 }
 

@@ -7,9 +7,9 @@ export const siteHi = {
     assessments: {
       title: 'मूल्यांकन',
       links: [
-        { label: 'Mind Mapping', desc: 'फिंगरप्रिंट से प्रतिभा मैपिंग' },
+        { label: 'Brain Mapping', desc: 'फिंगरप्रिंट से प्रतिभा मैपिंग' },
         { label: 'Skill Mapping', desc: '7-फ्रेमवर्क व्यक्तित्व सूट' },
-        { label: 'Mind Mapping + Skill Mapping', desc: 'पूर्ण प्रोफाइल कॉम्बो' },
+        { label: 'Brain Mapping + Skill Mapping', desc: 'पूर्ण प्रोफाइल कॉम्बो' },
         { label: 'करियर counselling क्यों?', desc: 'विज्ञान-आधारित मार्गदर्शन' },
       ],
     },
@@ -22,17 +22,22 @@ export const siteHi = {
         { label: 'कक्षा 11-12', desc: 'करियर दिशा' },
         { label: 'कॉलेज छात्र', desc: 'डिग्री और नौकरी की स्पष्टता' },
         { label: 'वर्किंग प्रोफेशनल', desc: 'स्विच और विकास' },
+      ],
+    },
+    common: {
+      title: 'साझा',
+      links: [
         { label: 'संस्थान', desc: 'Schools, colleges और partners' },
       ],
     },
     crp: {
       title: 'Training and placement',
       links: [
-        { label: 'AI Career Launchpad', desc: 'Blueprint · Sprints · Highlights · Parameters' },
+        { label: 'AI Career Launchpad', desc: 'Blueprint · Sessions · Highlights · Parameters' },
       ],
     },
     crpPrograms: {
-      title: 'कार्यक्रम',
+      title: 'Age Pathway',
       links: [
         { label: 'कॉलेज छात्र', desc: 'डिग्री और पहली नौकरी की तैयारी' },
         { label: 'Freshers', desc: 'AI से पहली नौकरी पाएं' },
@@ -41,10 +46,34 @@ export const siteHi = {
     },
   },
 
+  freeGuidance: {
+    cta: 'मुफ़्त guidance call बुक करें',
+    login: 'Sign in to know more',
+    badge: 'मुफ़्त guidance call',
+    bookIntro:
+      'अपनी class या goal बताएं। हम कॉल बैक करेंगे — पहली बातचीत के लिए payment नहीं।',
+    formTitle: 'मुफ़्त guidance call बुक करें',
+    formSubtitle: 'अपनी details दें। Dream Mantra counsellor आपको कॉल करेगा।',
+    intentLabel: 'आपको क्या चाहिए?',
+    intents: [
+      { id: 'counselling', label: 'Counselling' },
+      { id: 'training', label: 'Training & Placement' },
+      { id: 'partner', label: 'Partner / Institution' },
+      { id: 'other', label: 'अभी तय नहीं' },
+    ],
+    messagePlaceholder: 'आपकी class / goal / सवाल (कम से कम 10 अक्षर)',
+    submit: 'मुफ़्त call request करें',
+    sending: 'भेज रहे हैं…',
+    thankYou: 'धन्यवाद! हम जल्द मुफ़्त guidance conversation के लिए कॉल करेंगे।',
+    error: 'संदेश नहीं भेज सके। कृपया फिर कोशिश करें।',
+    alreadyClient: '',
+    authCta: 'Sign in to know more',
+    newHere: 'नए हैं? Overview देखें, फिर मुफ़्त guidance call बुक करें।',
+  },
+
   quickLinks: {
     title: 'त्वरित लिंक',
     links: [
-      { to: '/pillars', label: '7 स्तंभ फ्रेमवर्क' },
       { to: '/#certifications', label: 'Certifications' },
       { to: '/about', label: 'हमारे बारे में' },
       { to: '/blog', label: 'ब्लॉग' },
@@ -59,18 +88,18 @@ export const siteHi = {
       {
         title: 'खोजें',
         links: [
-          { to: '/marketplace', label: 'मार्केटप्लेस', desc: 'टेस्ट, करियर और AI टूल्स', icon: '🛒' },
-          { to: '/pillars', label: '7 स्तंभ फ्रेमवर्क', desc: 'समग्र करियर मॉडल', icon: '🏛️' },
-          { to: '/#certifications', label: 'Certifications', desc: 'विश्वसनीय प्रमाणित credentials', icon: '🏅' },
+          { to: '/marketplace', label: 'मार्केटप्लेस', icon: '🛒' },
+          { to: '/counselling?tab=institutions', label: 'संस्थान', icon: '🏛️' },
+          { to: '/#certifications', label: 'Certifications', icon: '🏅' },
         ],
       },
       {
         title: 'जुड़ें',
         links: [
-          { to: '/counselling?tab=book', label: 'सत्र बुक करें', desc: 'मुफ्त परामर्श', icon: '📅' },
-          { to: '/about', label: 'हमारे बारे में', desc: 'हमारी कहानी और संस्थापक', icon: '✨' },
-          { to: '/blog', label: 'ब्लॉग', desc: 'करियर टिप्स और लेख', icon: '📝' },
-          { to: '/terms', label: 'नियम और शर्तें', desc: 'नीतियां और दिशानिर्देश', icon: '📄' },
+          { to: '/contact#guidance', label: 'मुफ़्त guidance call बुक करें', icon: '📅' },
+          { to: '/contact', label: 'संपर्क', icon: '📞' },
+          { to: '/about', label: 'हमारे बारे में', icon: '✨' },
+          { to: '/blog', label: 'ब्लॉग', icon: '📝' },
         ],
       },
     ],
@@ -85,8 +114,8 @@ export const siteHi = {
     careers: 'करियर',
     call: 'कॉल',
     modules: 'मॉड्यूल',
-    pillars: '7 स्तंभ',
-    book: 'मुफ्त बुक',
+    pillars: '5 स्तंभ',
+    book: 'मुफ़्त कॉल',
     faq: 'FAQ',
     signup: 'साइन अप',
     jumpLabel: 'जल्दी जाएँ',
@@ -103,7 +132,8 @@ export const siteHi = {
     gstAddress: 'C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, Rajasthan — 302004',
     gstLabel: 'GSTIN',
     agePathways: 'आयु मार्ग',
-    counsellingOverview: 'Counselling Overview',
+    counsellingOverview: '',
+    exploreTitle: 'Explore',
     quickLinks: 'Quick Links',
     locationsBlock: {
       title: 'हमारे Centres',
@@ -112,17 +142,17 @@ export const siteHi = {
     },
     footerQuickLinks: [
       { to: '/', label: 'होम' },
+      { to: '/marketplace', label: 'मार्केटप्लेस' },
+      { to: '/counselling', label: 'Counselling' },
+      { to: '/crp?tab=launchpad', label: 'Training & Placement' },
       { to: '/about', label: 'हमारे बारे में' },
-      { to: '/blog', label: 'ब्लॉग' },
-      { to: '/contact', label: 'संपर्क' },
+      { to: '/contact#guidance', label: 'मुफ़्त guidance call बुक करें' },
       { to: '/terms', label: 'नियम और शर्तें' },
     ],
     footerCounsellingOverview: {
       links: [
-        { to: '/assessments/dmit', label: 'Explore Mind Mapping' },
-        { to: '/assessments/psychometric', label: 'Explore Skill Mapping' },
-        { to: '/crp/explore', label: 'AI Career Launchpad' },
-        { to: '/counselling?tab=book', label: 'सत्र बुक करें' },
+        { to: '/counselling', label: 'Explore Counselling' },
+        { to: '/crp?tab=launchpad', label: 'Explore Training & Placement' },
       ],
     },
     footerAgePathways: [
@@ -132,23 +162,34 @@ export const siteHi = {
       { to: '/programs/class-11-12', label: 'कक्षा 11-12' },
       { to: '/programs/college-students', label: 'कॉलेज' },
       { to: '/programs/working-professionals', label: 'प्रोफेशनल' },
-      { to: '/counselling?tab=programs&pathway=institutions', label: 'संस्थान' },
+    ],
+    footerQuickColumn: [
+      { to: '/contact#guidance', label: 'मुफ़्त guidance call बुक करें' },
+      { to: '/counselling?tab=institutions', label: 'Institutions' },
+      { to: '/marketplace', label: 'Marketplace' },
+      { to: '/#certifications', label: 'Certifications' },
+      { to: '/about', label: 'हमारे बारे में' },
+      { to: '/blog', label: 'Blog' },
+      { to: '/contact', label: 'संपर्क' },
+      { to: '/terms', label: 'नियम और शर्तें' },
     ],
     footerQuickSections: [
       {
         title: 'खोजें',
         links: [
-      { to: '/marketplace', label: 'Marketplace' },
-          { to: '/pillars', label: '7 Pillars Framework' },
+          { to: '/marketplace', label: 'Marketplace' },
+          { to: '/counselling?tab=institutions', label: 'Institutions' },
           { to: '/#certifications', label: 'Certifications' },
         ],
       },
       {
         title: 'जुड़ें',
         links: [
+          { to: '/contact#guidance', label: 'मुफ़्त guidance call बुक करें' },
           { to: '/about', label: 'हमारे बारे में' },
-      { to: '/contact', label: 'संपर्क' },
-      { to: '/terms', label: 'नियम और शर्तें' },
+          { to: '/blog', label: 'Blog' },
+          { to: '/contact', label: 'संपर्क' },
+          { to: '/terms', label: 'नियम और शर्तें' },
         ],
       },
     ],
@@ -159,43 +200,63 @@ export const siteHi = {
       { to: '/programs/class-11-12', label: 'कक्षा 11-12' },
       { to: '/programs/college-students', label: 'कॉलेज छात्र' },
       { to: '/programs/working-professionals', label: 'वर्किंग प्रोफेशनल' },
-      { to: '/assessments/dmit', label: 'Mind Mapping' },
-      { to: '/assessments/psychometric', label: 'Skill Mapping' },
-      { to: '/assessments/dmit-psychometric', label: 'Mind Mapping + Skill Mapping' },
-      { to: '/assessments/why-dreams-mantra', label: 'करियर counselling क्यों?' },
+      { to: '/counselling?tab=dmit', label: 'Brain Mapping' },
+      { to: '/counselling?tab=psychometric', label: 'Skill Mapping' },
+      { to: '/counselling?tab=combo', label: 'Brain Mapping + Skill Mapping' },
+      { to: '/counselling?tab=why', label: 'करियर counselling क्यों?' },
       { to: '/crp', label: 'AI Career Launchpad' },
-      { to: '/counsellors', label: 'काउंसलर के रूप में जुड़ें' },
     ],
   },
 
   home: {
     modulesIntro: {
-      label: 'हमारे Modules',
+      label: 'हमारे Verticals',
       title: 'हमारे',
-      titleHighlight: 'Modules',
-      subtitle: 'तीन science-backed pathways — शुरू करने से पहले जानें कौन सा module आपके लिए है।',
+      titleHighlight: 'Verticals',
+      subtitle: '',
       learnMore: 'और जानें',
-      modules: [
+      groups: [
         {
-          slug: 'dmit',
-          icon: '🧬',
-          title: 'Mind Mapping',
-          desc: 'Fingerprint-based inborn talent mapping — learning styles, memory patterns और natural aptitudes।',
-          link: '/assessments/dmit',
+          id: 'counselling',
+          label: 'Counselling',
+          subtitle: '',
+          modules: [
+            {
+              slug: 'dmit',
+              icon: '🧬',
+              title: 'Brain Mapping',
+              desc: 'Fingerprint-based guidance.',
+              link: '/counselling?tab=dmit',
+            },
+            {
+              slug: 'psychometric',
+              icon: '🧠',
+              title: 'Skill Mapping',
+              desc: 'Psychometric-based.',
+              link: '/counselling?tab=psychometric',
+            },
+            {
+              slug: 'dmit-psychometric',
+              icon: '✨',
+              title: 'Brain + Skill Mapping',
+              desc: 'Fingerprint + psychometric guidance, together.',
+              link: '/counselling?tab=combo',
+            },
+          ],
         },
         {
-          slug: 'psychometric',
-          icon: '🧠',
-          title: 'Skill Mapping',
-          desc: 'MBTI, DISC, RIASEC, Big 5 और अन्य — personality, interests और career fit।',
-          link: '/assessments/psychometric',
-        },
-        {
-          slug: 'crp',
-          icon: '🚀',
-          title: 'AI Career Launchpad',
-          desc: 'College students और freshers के लिए 5 live sessions — LinkedIn, resume, interviews और recruiter connections।',
-          link: '/crp/explore',
+          id: 'training',
+          label: 'Training & Placement',
+          subtitle: '',
+          modules: [
+            {
+              slug: 'crp',
+              icon: '🚀',
+              title: 'AI Career Launchpad',
+              desc: '5 sessions away from your next job.',
+              link: '/crp/explore',
+            },
+          ],
         },
       ],
     },
@@ -205,6 +266,11 @@ export const siteHi = {
       subtitle: 'पहले assessment से personalised roadmap तक — science-backed counselling journey।',
       processesLabel: 'Processes',
       counsellingLabel: 'Counselling Process',
+      counsellingGroupLabel: 'Counselling',
+      counsellingGroupSubtitle: 'Brain Mapping, Skill Mapping और पूरा Brain + Skill profile।',
+      trainingGroupLabel: 'Training & Placement',
+      trainingGroupSubtitle: 'Students और freshers के लिए AI-powered job readiness.',
+      choosePathwayLabel: 'अपना path चुनें',
       modulesLabel: 'Module Processes',
       stepLabel: 'STEP',
       exploreModule: 'Module देखें',
@@ -213,7 +279,7 @@ export const siteHi = {
           step: 1,
           icon: '📊',
           title: 'ASSESS',
-          desc: 'Scientific DMIT fingerprint scanning + Psychometric tests',
+          desc: 'Scientific Brain Mapping fingerprint scanning + Psychometric tests',
         },
         {
           step: 2,
@@ -231,20 +297,31 @@ export const siteHi = {
       moduleProcesses: [
         {
           id: 'dmit',
-          title: 'Mind Mapping',
+          group: 'counselling',
+          title: 'Brain Mapping',
           icon: '🧬',
-          link: '/assessments/dmit',
+          link: '/counselling?tab=dmit',
           steps: ['Register और payment confirm', 'Fingerprint collection', 'Report analysis (3–7 days)', 'Counselling session'],
         },
         {
           id: 'psychometric',
+          group: 'counselling',
           title: 'Skill Mapping',
           icon: '🧠',
-          link: '/assessments/psychometric',
+          link: '/counselling?tab=psychometric',
           steps: ['Register और payment confirm', 'Online test complete करें', 'Expert report review', 'Counsellor session'],
         },
         {
+          id: 'dmit-psychometric',
+          group: 'counselling',
+          title: 'Brain + Skill Mapping',
+          icon: '✨',
+          link: '/counselling?tab=combo',
+          steps: ['Register और payment confirm', 'Fingerprint + online test', 'Combined report analysis', 'Expert counselling session'],
+        },
+        {
           id: 'crp',
+          group: 'training',
           title: 'AI Career Launchpad',
           icon: '🚀',
           link: '/crp/explore',
@@ -270,7 +347,7 @@ export const siteHi = {
       titleHighlight: 'अब क्यों ज़रूरी है?',
       hook: 'गलत stream. गलत college. गलत career. एक गलत फैसला सालों की कीमत लगा सकता है।',
       knowMore: 'और जानें',
-      knowMoreLink: '/assessments/why-dreams-mantra',
+      knowMoreLink: '/counselling?tab=why',
       problems: [
         {
           stat: '90%',
@@ -290,16 +367,16 @@ export const siteHi = {
       ],
       solutionTitle: 'Dream Mantra का तरीका',
       solutionDesc:
-        'अंदाज़ा लगाना बंद करें। Mind Mapping, Skill Mapping और certified counsellors से science-backed clarity पाएं — बिना दबाव, बिना comparison।',
+        'अंदाज़ा लगाना बंद करें। Brain Mapping, Skill Mapping और certified counsellors से science-backed clarity पाएं — बिना दबाव, बिना comparison।',
       solutionPoints: [
-        'DMIT fingerprint science — 30+ देशों में validated',
+        'Brain Mapping fingerprint science — 30+ देशों में validated',
         'Skill Mapping में 7 psychometric frameworks',
         '1000+ career library — live market data के साथ',
         'Certified counsellors के साथ 1-on-1 sessions',
       ],
     },
     trustBar: {
-      tagline: 'India भर में trusted science-backed career guidance',
+      tagline: 'India भर में trusted science-backed guidance',
       items: [
         { type: 'badge', label: '360° Analysis', icon: '🔬' },
         { type: 'badge', label: 'Internationally Certified', icon: '🌍' },
@@ -314,22 +391,25 @@ export const siteHi = {
     whoWeGuide: {
       title: 'हम किसे',
       titleHighlight: 'मार्गदर्शन देते हैं',
-      subtitle:
-        'स्कूल के शुरुआती वर्षों से कॉलेज और कार्य जीवन तक — अपने चरण के अनुसार कार्यक्रम चुनें।',
+      subtitle: '',
       viewProgram: 'कार्यक्रम देखें',
       seeAllPrograms: 'आयु मार्ग देखें',
     },
     pillars: {
-      title: 'हमारा',
-      titleHighlight: '7 स्तंभ',
-      titleSuffix: 'फ्रेमवर्क',
-      subtitle:
-        'छह विज्ञान-आधारित स्तंभ और AI Career Launchpad — खोज से नौकरी की तैयारी तक का पूर्ण मॉडल।',
+      title: 'Counselling के',
+      titleHighlight: '5 स्तंभ',
+      titleSuffix: '',
+      subtitle: '',
       pillarLabel: 'स्तंभ',
       explore: 'और देखें',
-      seventhPillarLabel: '7वां स्तंभ',
+      counsellingLabel: 'Counselling',
+      trainingLabel: '5 Sessions —',
+      trainingLabelHighlight: 'Training & Placement',
+      trainingSubtitle: '',
+      seventhPillarLabel: 'Training & Placement',
       viewCrp: 'AI Career Launchpad देखें',
-      viewFullPage: 'पूरा 7 स्तंभ पेज देखें',
+      viewFullPage: 'पूरा framework पेज देखें',
+      sessionLabel: 'Session',
     },
     aiToolkit: {
       title: 'आपका AI-संचालित',
@@ -343,7 +423,7 @@ export const siteHi = {
     },
     process: {
       title: 'हमारी',
-      titleHighlight: '7-चरण',
+      titleHighlight: '5-चरण',
       titleSuffix: 'Counselling प्रक्रिया',
       subtitle: 'भ्रम से स्पष्टता तक — हर कदम पर विशेषज्ञ मार्गदर्शन',
       bookSession: 'सत्र बुक करें',
@@ -356,10 +436,8 @@ export const siteHi = {
     partnerJoin: {
       title: 'साझेदारी और',
       titleHighlight: 'जुड़ें',
-      subtitle:
-        'स्कूल, काउंसलर, शिक्षक और संस्थान — Dream Mantra के विज्ञान-आधारित करियर मार्गदर्शन नेटवर्क के साथ बढ़ें।',
-      becomeCounsellor: 'काउंसलर बनें',
-      joinNetwork: 'Counsellor Network में जुड़ें',
+      subtitle: '',
+      contactCta: 'संपर्क करें',
     },
     partnersMarquee: {
       title: 'हम आपको जोड़ते हैं',
@@ -368,16 +446,16 @@ export const siteHi = {
     },
     managementTeam: {
       label: 'प्रबंधन टीम से मिलें',
-      title: 'Leadership That Cares',
-      subtitle: 'HR, technology और counselling में deep expertise — हर Dream Mantra journey का मार्गदर्शन।',
+      title: 'Leadership',
+      titleHighlight: 'That Cares',
+      subtitle: '',
       readFullStory: 'पूरी कहानी पढ़ें',
     },
     certifications: {
-      label: 'हमारे प्रमाणपत्र',
+      label: '',
       title: 'विश्वसनीय और',
       titleHighlight: 'प्रमाणित',
-      subtitle:
-        'सरकार-संरेखित, अंतरराष्ट्रीय स्तर पर मान्यता प्राप्त credentials — वही certifications जो हर Dream Mantra counselling session को शक्ति देते हैं।',
+      subtitle: '',
       viewFull: 'प्रमाणपत्र देखें',
       closeLightbox: 'बंद करें',
       tabs: {
@@ -387,13 +465,12 @@ export const siteHi = {
         nlp: 'NLP',
         iit: 'IIT Madras',
         reliance: 'Reliance Foundation',
-        dmit: 'Mind Mapping',
       },
     },
     faq: {
       title: 'सवाल हैं?',
       titleHighlight: 'जवाब पाएं!',
-      subtitle: 'Modules और counselling process के बारे में quick answers।',
+      subtitle: '',
       contactUs: 'संपर्क करें',
     },
     cta: {
@@ -406,7 +483,7 @@ export const siteHi = {
   },
 
   hero: {
-    badges: ['Neuroscience Based', '7 Pillars Framework', '7000+ Clients'],
+    badges: ['Neuroscience Based', '5 Pillars Framework', '7000+ Clients'],
     aiPowered: '✨ AI-Powered',
   },
 
@@ -420,32 +497,24 @@ export const siteHi = {
   data: {
     processSteps: [
       {
-        title: 'आपकी यात्रा को समझना',
-        desc: 'हम आपके लक्ष्य, पृष्ठभूमि, रुचियों और चुनौतियों को समझकर शुरुआत करते हैं।',
+        title: 'Inborn Talent (Brain Mapping)',
+        points: ['Learning style & natural strengths', 'Bina exam pressure ke'],
       },
       {
-        title: '5-आयामी Skill Mapping',
-        desc: 'व्यक्तित्व, योग्यता और रुचियों पर वैज्ञानिक assessment।',
+        title: 'Acquired Talent (Skill Mapping)',
+        points: ['Personality, interests & behaviour', 'Stream & career ke liye fit'],
       },
       {
-        title: 'अनुकूलित करियर शॉर्टलिस्ट',
-        desc: 'ताकत, मांग और aspirations के अनुरूप करियर शॉर्टलिस्ट करें।',
+        title: 'What You Have Learned',
+        points: ['Subjects, grades & projects audit', 'Academics real paths se align'],
       },
       {
-        title: 'देश, विश्वविद्यालय और कोर्स',
-        desc: 'सही geography, institution और programme चुनें।',
+        title: 'Market Trend',
+        points: ['Growing careers se match', 'Demand, salary & opportunity data'],
       },
       {
-        title: 'सर्वश्रेष्ठ Admissions Provider',
-        desc: 'आवेदन और documentation के लिए विश्वसनीय partners से जुड़ें।',
-      },
-      {
-        title: 'End-to-End Admissions',
-        desc: 'आवेदन, interview, visa और enrolment तक पूर्ण सहायता।',
-      },
-      {
-        title: 'सहायक सेवाएं',
-        desc: 'Loans, accommodation, travel और post-admission support।',
+        title: 'AI Proof Career',
+        points: ['Human-strong roles shortlist', 'Long-term employability ke liye'],
       },
     ],
 
@@ -460,7 +529,7 @@ export const siteHi = {
       },
       {
         q: 'करियर counsellor क्या करता है?',
-        a: 'आपकी profile assess करता है, Skill Mapping/Mind Mapping परिणाम interpret करता है, careers और institutions shortlist करता है, और admissions में मार्गदर्शन देता है।',
+        a: 'आपकी profile assess करता है, Skill Mapping/Brain Mapping परिणाम interpret करता है, careers और institutions shortlist करता है, और admissions में मार्गदर्शन देता है।',
       },
       {
         q: 'Skill Mapping कितने accurate हैं?',
@@ -513,7 +582,7 @@ export const siteHi = {
       },
       {
         title: 'Modules',
-        desc: 'Mind Mapping, Skill Mapping और combo modules — खरीदें और progress track करें।',
+        desc: 'Brain Mapping, Skill Mapping और combo modules — खरीदें और progress track करें।',
       },
       {
         title: 'Book Session',
@@ -545,34 +614,40 @@ export const siteHi = {
     ],
 
     whoWeGuide: [
-      { title: 'कक्षा 1-5', subtitle: 'प्रतिभा खोज', icon: '🌟', desc: 'Natural gifts और learning style early uncover करें' },
-      { title: 'कक्षा 6-8', subtitle: 'आत्म-खोज', icon: '🔍', desc: 'Self-awareness से confidence build करें' },
-      { title: 'कक्षा 9-10', subtitle: 'स्ट्रीम चयन', icon: '🎯', desc: 'Science, Commerce या Arts — clarity के साथ' },
-      { title: 'कक्षा 11-12', subtitle: 'करियर दिशा', icon: '🚀', desc: 'College, exams और career planning' },
-      { title: 'कॉलेज छात्र', subtitle: 'डिग्री और करियर स्पष्टता', icon: '🎓', desc: 'Field confirm करें, placements prepare करें' },
-      { title: 'वर्किंग प्रोफेशनल', subtitle: 'करियर स्विच और विकास', icon: '💼', desc: 'Role alignment, switch या leadership' },
+      { title: 'कक्षा 1-5', subtitle: 'प्रतिभा खोज', icon: '🌟' },
+      { title: 'कक्षा 6-8', subtitle: 'आत्म-खोज', icon: '🔍' },
+      { title: 'कक्षा 9-10', subtitle: 'स्ट्रीम चयन', icon: '🎯' },
+      { title: 'कक्षा 11-12', subtitle: 'करियर दिशा', icon: '🚀' },
+      { title: 'कॉलेज छात्र', subtitle: 'डिग्री और करियर स्पष्टता', icon: '🎓' },
+      { title: 'वर्किंग प्रोफेशनल', subtitle: 'करियर स्विच और विकास', icon: '💼' },
     ],
 
     counsellingTabs: [
       { id: 'overview', label: 'अवलोकन' },
-      { id: 'dmit', label: 'Mind Mapping' },
+      { id: 'why', label: 'करियर counselling क्यों?' },
+      { id: 'dmit', label: 'Brain Mapping' },
       { id: 'psychometric', label: 'Skill Mapping' },
-      { id: 'process', label: '7-चरण प्रक्रिया' },
+      { id: 'combo', label: 'Brain + Skill Mapping' },
       { id: 'programs', label: 'आयु मार्ग' },
-      { id: 'book', label: 'सत्र बुक करें' },
+      { id: 'institutions', label: 'संस्थान' },
+    ],
+
+    crpTabs: [
+      { id: 'pathways', label: 'आयु मार्ग' },
+      { id: 'launchpad', label: 'AI Career Launchpad' },
     ],
 
     assessmentTabs: [
-      { id: 'dmit', label: 'Mind Mapping' },
+      { id: 'dmit', label: 'Brain Mapping' },
       { id: 'psychometric', label: 'Skill Mapping' },
-      { id: 'dmit-psychometric', label: 'Mind Mapping + Skill Mapping' },
+      { id: 'dmit-psychometric', label: 'Brain Mapping + Skill Mapping' },
       { id: 'why-dreams-mantra', label: 'करियर counselling क्यों?' },
     ],
 
     assessments: [
       {
         slug: 'dmit',
-        title: 'Mind Mapping',
+        title: 'Brain Mapping',
         subtitle: 'फिंगरप्रिंट विश्लेषण, जन्मजात क्षमता मैपिंग',
         points: [
           '30+ देशों में validated',
@@ -594,10 +669,10 @@ export const siteHi = {
       },
       {
         slug: 'dmit-psychometric',
-        title: 'Mind Mapping + Skill Mapping',
+        title: 'Brain Mapping + Skill Mapping',
         subtitle: 'पूर्ण Inborn + Acquired Talent Profile — दोनों का सर्वश्रेष्ठ',
         points: [
-          'Inborn intelligence और learning style के लिए Mind Mapping fingerprint analysis',
+          'Inborn intelligence और learning style के लिए Brain Mapping fingerprint analysis',
           'Personality, interests और behaviour के लिए Skill Mapping suite',
           'Career decisions के लिए nature + nurture का holistic profile',
           'Class 6+ stream और career selection के लिए recommended',
@@ -610,7 +685,7 @@ export const siteHi = {
         subtitle: 'वैज्ञानिक करियर मार्गदर्शन — कोई दबाव नहीं। कोई तुलना नहीं। बस स्पष्टता।',
         points: [
           'Dream Mantra Promise — हर बच्चे में untapped brilliance है',
-          '30+ देशों में validated Mind Mapping + 7 Skill Mapping frameworks',
+          '30+ देशों में validated Brain Mapping + 7 Skill Mapping frameworks',
           'Assess → Analyze → Guide: कक्षा 1 से First Job तक',
           'Founder Esha Lohiya — Govt of India, IIT Madras, NLP certified',
           'Jaipur centres + Pan-India online · 9680102276',
@@ -619,7 +694,7 @@ export const siteHi = {
     ],
 
     products: [
-      { slug: 'dmit', title: 'Mind Mapping', description: 'Fingerprint-based inborn talent mapping' },
+      { slug: 'dmit', title: 'Brain Mapping', description: 'Fingerprint-based inborn talent mapping' },
       { slug: 'psychometric', title: 'Skill Mapping', description: 'MBTI, DISC, RIASEC और 7 frameworks' },
       { slug: 'crp-test', title: 'AI Career Launchpad Training', description: 'College और freshers के लिए job readiness' },
     ],
@@ -634,11 +709,8 @@ export const siteHi = {
     ],
 
     marketplaceTabs: [
-      { id: 'tests', label: 'Tests' },
-      { id: 'library', label: 'Career Library' },
-      { id: 'ai', label: 'AI Corner' },
-      { id: 'stream', label: 'Stream Selector' },
-      { id: 'degree', label: 'Degree Selector' },
+      { id: 'counselling', label: 'Counselling' },
+      { id: 'training', label: 'Training & Placement' },
     ],
 
     studyAbroadTabs: [
@@ -686,7 +758,7 @@ export const siteHi = {
       {
         name: 'प्रिया',
         role: 'कक्षा 11 — Commerce',
-        text: 'Commerce और Science के बीच confused थी। Mind Mapping ने logical-mathematical thinking में मेरी natural strength दिखाई। Commerce with Math लिया और अब CA कर रही हूँ — best decision!',
+        text: 'Commerce और Science के बीच confused थी। Brain Mapping ने logical-mathematical thinking में मेरी natural strength दिखाई। Commerce with Math लिया और अब CA कर रही हूँ — best decision!',
         stars: 5,
       },
       {
@@ -704,13 +776,13 @@ export const siteHi = {
       {
         name: 'कबीर के माता-पिता',
         role: 'कक्षा 5',
-        text: 'Mind Mapping report eye-opening थी — जो हम observe करते थे उससे बिल्कुल match। Skill Mapping analysis ने बेटे के current personality को समझने में मदद की। combination powerful है।',
+        text: 'Brain Mapping report eye-opening थी — जो हम observe करते थे उससे बिल्कुल match। Skill Mapping analysis ने बेटे के current personality को समझने में मदद की। combination powerful है।',
         stars: 5,
       },
       {
         name: 'College Student',
         role: 'B.Tech 2nd Year',
-        text: 'Esha ma\'am ने समझाया कि natural strengths (Mind Mapping), current interests (Skill Mapping) और market demand कैसे align होते हैं। पहली बार clear path forward मिला।',
+        text: 'Esha ma\'am ने समझाया कि natural strengths (Brain Mapping), current interests (Skill Mapping) और market demand कैसे align होते हैं। पहली बार clear path forward मिला।',
         stars: 5,
       },
       {
@@ -722,7 +794,7 @@ export const siteHi = {
       {
         name: 'Working Professional',
         role: 'Career Switch Success',
-        text: 'fingerprint analysis पर skeptical था, लेकिन Mind Mapping के science ने convince किया। Skill Mapping के साथ मिलकर complete picture मिली — मैं कौन हूँ और आगे क्या करूँ।',
+        text: 'fingerprint analysis पर skeptical था, लेकिन Brain Mapping के science ने convince किया। Skill Mapping के साथ मिलकर complete picture मिली — मैं कौन हूँ और आगे क्या करूँ।',
         stars: 5,
       },
     ],
@@ -730,7 +802,7 @@ export const siteHi = {
     dashboardTabs: [
       { id: 'overview', label: 'अवलोकन', desc: 'Profile, stats और activity' },
       { id: 'careers', label: 'Career Library', desc: '1000+ career paths explore करें' },
-      { id: 'assess', label: 'Modules', desc: 'Mind Mapping और Skill Mapping modules' },
+      { id: 'assess', label: 'Modules', desc: 'Brain Mapping और Skill Mapping modules' },
       { id: 'process-guides', label: 'Process & Take test', desc: 'Guides, steps और skill mapping forms' },
       { id: 'reports', label: 'My Reports', desc: 'Assessment reports और deliverables' },
       { id: 'messages', label: 'Messages', desc: 'Admin से direct messages' },
@@ -756,38 +828,38 @@ export const siteHi = {
     certifications: [
       {
         id: 'iccc',
-        title: 'अंतरराष्ट्रीय प्रमाणित Coach',
-        issuer: 'Mindler · ICCC Foundation Level',
+        title: 'International Certified Career Coach',
+        issuer: 'Mindler',
       },
       {
         id: 'govt',
-        title: 'सरकारी प्रमाणित Coach',
-        issuer: 'Reliance Foundation · Skill India · NSDC',
+        title: 'Government Certified Coach',
+        issuer: 'Reliance Foundation',
       },
       {
         id: 'nlp-practitioner',
         title: 'NLP Practitioner Certification',
-        issuer: 'NLP Workshop Training · Batch Jul\'24',
+        issuer: 'NLP Workshop Training',
       },
       {
         id: 'nlp-advanced',
         title: 'NLP Advanced Certified Coach',
-        issuer: 'WiseMonk · Advanced NLP Techniques',
+        issuer: 'WiseMonk',
+      },
+      {
+        id: 'nlp-hindi',
+        title: 'NLP Practitioner Certified Coach',
+        issuer: 'WiseMonk',
       },
       {
         id: 'iit',
         title: 'IIT Madras Certified Coach',
-        issuer: 'IITM Pravartak · BodhBridge · Grade A',
+        issuer: 'IIT Madras',
       },
       {
         id: 'reliance',
         title: 'Reliance Foundation Certified Coach',
-        issuer: 'Reliance Foundation Skilling Academy',
-      },
-      {
-        id: 'dmit',
-        title: 'Mind Mapping & Mid Brain Activation Coach',
-        issuer: 'MindTech International · ISO 9001:2015',
+        issuer: 'Reliance Foundation',
       },
     ],
 
@@ -795,27 +867,53 @@ export const siteHi = {
       mission: 'भ्रम, दबाव और अनुमान को clarity, awareness और सूचित निर्णय से बदलना — हर व्यक्ति के लिए।',
       vision: 'हर व्यक्ति — खासकर बच्चों और युवाओं — को वैज्ञानिक self-awareness के माध्यम से अपनी असली potential discover करने और confidence, clarity और purpose वाले जीवन की ओर guide करना।',
       purpose: 'शिक्षा, natural intelligence और career alignment के बीच gap को पाटना — students को direction के साथ आगे बढ़ने, informed parents और empowered institutions के साथ।',
-      philosophy: 'हम सभी unique keys हैं, अलग-अलग दरवाज़े खोलने के लिए। Dream Mantra में हम लोगों को boxes में fit नहीं करते — Mind Mapping और Skill Mapping science से वह path discover करने में मदद करते हैं जिसमें वे naturally belong करते हैं।',
+      philosophy: 'हम सभी unique keys हैं, अलग-अलग दरवाज़े खोलने के लिए। Dream Mantra में हम लोगों को boxes में fit नहीं करते — Brain Mapping और Skill Mapping science से वह path discover करने में मदद करते हैं जिसमें वे naturally belong करते हैं।',
     },
 
     founder: {
       role: 'Founder & Chief Counsellor',
       quote: 'हर बच्चा एक unique key है, अलग-अलग दरवाज़े खोलने के लिए। Dream Mantra में हम label या judge नहीं करते — हम वह brilliance reveal करते हैं जो पहले से मौजूद है। science, heart और lifelong value के साथ।',
-      longNote: 'Naukri.com में मेरे वर्षों में, मैंने हज़ारों professionals को ऐसी jobs में फंसे देखा जिन्हें वे hate करते थे। Bright, capable लोग जिन्होंने गलत path चुना — pressure, confusion या guidance की कमी के कारण। हमेशा mismatch रहता था — क्या पढ़ा, natural strengths क्या थीं, और job market को क्या चाहिए था। इसलिए हम Mind Mapping — 30+ देशों में validated — और 7 frameworks वाले Skill Mapping assessments use करते हैं complete picture के लिए। हम सिर्फ fingerprints decode नहीं कर रहे — futures unlock कर रहे हैं।',
-      certs: ['Government of India', 'International Certified Career Counselling', 'Mind Mapping', 'NLP', 'Reliance Foundation', 'IIT Madras'],
+      longNote: 'Naukri.com में मेरे वर्षों में, मैंने हज़ारों professionals को ऐसी jobs में फंसे देखा जिन्हें वे hate करते थे। Bright, capable लोग जिन्होंने गलत path चुना — pressure, confusion या guidance की कमी के कारण। हमेशा mismatch रहता था — क्या पढ़ा, natural strengths क्या थीं, और job market को क्या चाहिए था। इसलिए हम Brain Mapping — 30+ देशों में validated — और 7 frameworks वाले Skill Mapping assessments use करते हैं complete picture के लिए। हम सिर्फ fingerprints decode नहीं कर रहे — futures unlock कर रहे हैं।',
+      certs: ['Government of India', 'International Certified Career Counselling', 'Brain Mapping', 'NLP', 'Reliance Foundation', 'IIT Madras'],
     },
 
     crpProgram: {
       fullName: 'AI Career Launchpad — Job-Ready Accelerator',
       duration: '5 Sessions × 1.5 hours = 7.5 hours total',
-      description:
-        'AI Career Launchpad academic achievement को employability में बदलता है। Dream Mantra experts की अगुवाई में, यह AI-powered accelerator personal branding, digital job search, interview mastery, corporate etiquette और Jaipur में direct recruiter connections cover करता है।',
+      description: '',
       outcomes: [
-        'Job-ready resume, LinkedIn और portfolio',
-        'Interviews और group discussions में confident',
-        'Salary negotiate करना आता है',
-        'Jaipur में direct recruiter contacts',
-        'Stand out करने वाला personal brand',
+        {
+          title: 'Job-ready resume, LinkedIn और portfolio',
+          desc: 'ATS optimized, recruiter friendly और impressive',
+        },
+        {
+          title: 'Interviews और group discussions में confident',
+          desc: 'Practice-backed delivery with clear feedback',
+        },
+        {
+          title: 'Salary negotiate करना आता है',
+          desc: 'Ask with clarity and close stronger offers',
+        },
+        {
+          title: 'Jaipur में direct recruiter contacts',
+          desc: 'Local network access when you need it',
+        },
+        {
+          title: 'Stand out करने वाला personal brand',
+          desc: 'A memorable first impression every time',
+        },
+        {
+          title: 'ATS-friendly job applications',
+          desc: 'Tailored submissions that pass screening',
+        },
+        {
+          title: 'Clear 30-day action plan',
+          desc: 'Know exactly what to do next',
+        },
+        {
+          title: 'Workplace etiquette & first-week confidence',
+          desc: 'Enter corporate life prepared',
+        },
       ],
       sessions: [
         {
@@ -927,15 +1025,14 @@ export const siteHi = {
     ],
 
     crpAdditionalParameters: [
-      { label: '5 Sessions × 1.5 Hours', desc: '7.5 hours focused, job-ready training — no filler, सिर्फ employability skills।', icon: '⏱️' },
-      { label: 'Online & Offline (Jaipur)', desc: 'कहीं से भी join करें या Raja Park, Shastri Nagar, Nirman Nagar centres पर attend करें।', icon: '🌐' },
-      { label: 'Small Batch Cohorts', desc: 'Limited seats — हर participant को personalised feedback और mock practice।', icon: '👥' },
-      { label: 'English & Hindi Delivery', desc: 'Sessions उस language में जिसमें आप most comfortable हैं।', icon: '🗣️' },
-      { label: 'Completion Certificate', desc: 'Dream Mantra certificate — AI Career Launchpad training validate करता है।', icon: '🏅' },
-      { label: 'Certified Expert Facilitators', desc: 'Govt-aligned counsellors — real hiring और HR experience के साथ।', icon: '✅' },
-      { label: 'College Students & Freshers', desc: 'Class 12 pass-outs, college students और first-job seekers के लिए ideal।', icon: '🎓' },
-      { label: 'Working Professionals Welcome', desc: 'Career switchers और early professionals — stronger job-search toolkit बनाएं।', icon: '💼' },
-      { label: 'Free Initial Consultation', desc: 'Enroll से पहले Dream Mantra से बात करें — 9680102276 पर call करें, Mon–Sat 11am–7pm।', icon: '📞' },
+      { label: '5 Sessions × 1.5 Hours', desc: '7.5 hours of practical learning', icon: '⏱️' },
+      { label: 'Online & Offline (Jaipur)', desc: 'Flexible learning options', icon: '🌐' },
+      { label: 'Small Batch Cohorts', desc: 'Personal attention every session', icon: '👥' },
+      { label: 'English & Hindi Delivery', desc: 'Learn in the language you prefer', icon: '🗣️' },
+      { label: 'Completion Certificate', desc: 'Recognized program credential', icon: '🏅' },
+      { label: 'Certified Expert Facilitators', desc: 'Industry-ready mentoring', icon: '✅' },
+      { label: 'College Students & Freshers', desc: 'Built for first-job readiness', icon: '🎓' },
+      { label: 'Book a Free Guidance Call', desc: 'Speak to our experts before you start', icon: '📞' },
     ],
 
     programDetails: programPathwaysHi,
@@ -944,7 +1041,7 @@ export const siteHi = {
       dreamzPromise: {
         title: 'Dream Mantra Promise',
         text: 'Dream Mantra (Dream Mantra) में हम मानते हैं कि हर बच्चे में अनदेखी प्रतिभा है। दबाव और तुलना की दुनिया में, हम कुछ दुर्लभ देते हैं: clarity, confidence और direction।',
-        subtext: 'हम Mind Mapping और Skill Mapping का उपयोग करते हैं — fingerprint analysis से brain potential map करने की globally trusted scientific method।',
+        subtext: 'हम Brain Mapping और Skill Mapping का उपयोग करते हैं — fingerprint analysis से brain potential map करने की globally trusted scientific method।',
         benefits: [
           '30+ देशों में validated',
           'Learning styles, memory patterns, intelligence types और behavioural traits reveal करता है',
@@ -953,17 +1050,17 @@ export const siteHi = {
         ],
       },
       howDreamzWorks: [
-        { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Mind Mapping fingerprint scanning + Skill Mapping (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)' },
+        { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Brain Mapping fingerprint scanning + Skill Mapping (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)' },
         { step: 2, icon: '🔬', title: 'ANALYZE', desc: 'Certified counsellors द्वारा neuroscience-backed analysis — Govt of India aligned, NLP trained' },
         { step: 3, icon: '🎯', title: 'GUIDE', desc: 'Academics, career और life success के लिए personalised roadmap — Class 1 से First Job तक' },
       ],
       featuredAssessments: [
-        { title: 'Mind Mapping', desc: 'Fingerprint Analysis, Inborn Potential Mapping', link: '/assessments/dmit', icon: '🔬' },
-        { title: 'Skill Mapping', desc: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', link: '/assessments/psychometric', icon: '📊' },
-        { title: 'Mind Mapping + Skill Mapping', desc: 'Complete inborn + acquired talent profile', link: '/assessments/dmit-psychometric', icon: '🧬' },
+        { title: 'Brain Mapping', desc: 'Fingerprint Analysis, Inborn Potential Mapping', link: '/counselling?tab=dmit', icon: '🔬' },
+        { title: 'Skill Mapping', desc: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', link: '/counselling?tab=psychometric', icon: '📊' },
+        { title: 'Brain Mapping + Skill Mapping', desc: 'Complete inborn + acquired talent profile', link: '/counselling?tab=combo', icon: '🧬' },
       ],
       whyDifferent: [
-        'Science-backed Mind Mapping + 7 Skill Mapping frameworks — guesswork नहीं',
+        'Science-backed Brain Mapping + 7 Skill Mapping frameworks — guesswork नहीं',
         '7-Pillar holistic career model (Counselling → Job Ready + AI Career Launchpad)',
         '1000+ career library detailed roadmaps के साथ',
         'Free consultation — Mon–Sat 11am–7pm',
@@ -974,16 +1071,16 @@ export const siteHi = {
       impactStats: [
         { value: '7,000+', label: 'Counsellings completed' },
         { value: '1000+', label: 'Careers in library' },
-        { value: '30+', label: 'Countries validate DMIT' },
+        { value: '30+', label: 'Countries validate Brain Mapping' },
         { value: '7', label: 'Psychometric frameworks' },
       ],
       locations: ['Raja Park, Jaipur', 'Shastri Nagar, Jaipur', 'Nirman Nagar, Jaipur', 'Pan-India (Online)'],
       comparisons: {
         title: 'Scientific counselling vs guesswork',
-        subtitle: 'Dream Mantra Mind Mapping + Skill Mapping certified counsellors ke saath — jo alternatives parents aur students use karte hain unse compare karein.',
+        subtitle: 'Dream Mantra Brain Mapping + Skill Mapping certified counsellors ke saath — jo alternatives parents aur students use karte hain unse compare karein.',
         tableHeaders: ['Factor', 'Friends / relatives advice', 'Generic online tests', 'Dream Mantra counselling'],
         rows: [
-          ['Scientific basis', 'Personal opinion & social bias', 'Single questionnaire, often unverified', 'DMIT 30+ countries + 7 psychometric frameworks'],
+          ['Scientific basis', 'Personal opinion & social bias', 'Single questionnaire, often unverified', 'Brain Mapping 30+ countries + 7 psychometric frameworks'],
           ['Personalisation', 'Unke experience se one-size advice', 'Generic automated PDF', 'Fingerprint + behaviour profile — 1000+ India careers'],
           ['Pressure & labels', 'Cousins & neighbours se comparison', 'Context ke bina ranking', 'No pressure. No comparison. Clarity only.'],
           ['Counsellor support', 'Career psychology mein trained nahi', 'No human follow-up', 'Govt & IIT Madras certified — 1-on-1 sessions'],
@@ -1001,8 +1098,8 @@ export const siteHi = {
         ],
         milestoneHeaders: ['Stage', 'Typical approach', 'Dream Mantra approach'],
         milestones: [
-          ['Class 6–8', 'Koi guidance nahi — sirf marks', 'Stream pressure se pehle Mind Mapping + interest discovery'],
-          ['Class 9–10', '“Science lo scope zyada hai”', 'DMIT + Skill Mapping + counsellor se stream validation'],
+          ['Class 6–8', 'Koi guidance nahi — sirf marks', 'Stream pressure se pehle Brain Mapping + interest discovery'],
+          ['Class 9–10', '“Science lo scope zyada hai”', 'Brain Mapping + Skill Mapping + counsellor se stream validation'],
           ['Class 11–12', 'Bina clarity coaching shuru', 'Exam strategy specific career & college targets se judi'],
           ['Graduation', 'Random degree; placement panic', 'Internship, skills & job-ready modules year 1 se'],
           ['First job', 'Random applications; kam salary accept', 'Salary negotiation, offer comparison & network support'],
@@ -1023,19 +1120,19 @@ export const siteHi = {
         id: 'rajshree-school',
         shortcode: 'DPBmn_rkbH5',
         title: 'Rajshree Public School — Career Counselling',
-        caption: 'Har bachcha unique hai — Dream Mantra ne Mind Mapping session se students ko unke natural career paths discover karne mein help ki.',
+        caption: 'Har bachcha unique hai — Dream Mantra ne Brain Mapping session se students ko unke natural career paths discover karne mein help ki.',
       },
       {
         id: 'future-ready',
         shortcode: 'DPN_3QekWWa',
         title: 'Future-Ready Students',
-        caption: 'Scientific career guidance se potential unlock karein — DMIT, counselling, aur har student ke liye clarity.',
+        caption: 'Scientific career guidance se potential unlock karein — Brain Mapping, counselling, aur har student ke liye clarity.',
       },
       {
         id: 'dmit-career-guidance',
         shortcode: 'DPN-2HUEVAF',
-        title: 'DMIT & Career Counselling',
-        caption: 'Mind Mapping, child development aur career counselling — students ke liye sahi mindset aur direction.',
+        title: 'Brain Mapping & Career Counselling',
+        caption: 'Brain Mapping, child development aur career counselling — students ke liye sahi mindset aur direction.',
       },
       {
         id: 'class-1-5-guidance',
@@ -1117,17 +1214,17 @@ export const siteHi = {
       },
     ],
     psychoWhy: [
-      { title: 'Mind Mapping से परे', desc: 'Mind Mapping inborn potential reveal करता है; Skill Mapping current personality, interests, behaviour और decision-making style map करता है।' },
-      { title: 'Complete Picture', desc: 'Mind Mapping के साथ Skill Mapping full nature + nurture profile बनाते हैं confident career decisions के लिए।' },
+      { title: 'Brain Mapping से परे', desc: 'Brain Mapping inborn potential reveal करता है; Skill Mapping current personality, interests, behaviour और decision-making style map करता है।' },
+      { title: 'Complete Picture', desc: 'Brain Mapping के साथ Skill Mapping full nature + nurture profile बनाते हैं confident career decisions के लिए।' },
       { title: 'Scientific & Objective', desc: 'Globally researched frameworks — assumptions, peer pressure या guesswork नहीं।' },
       { title: '7 Frameworks, One Profile', desc: 'Multiple dimensions ensure guidance accurate, balanced और practical हो — single test score पर based नहीं।' },
     ],
 
     comboSteps: [
-      { step: '01', title: 'Mind Mapping', desc: 'Fingerprint scanning inborn potential map करती है — learning styles, memory patterns, intelligence types. 30+ countries में validated.', icon: '🔬', link: '/assessments/dmit' },
-      { step: '02', title: 'Skill Mapping', desc: '7 frameworks में online assessment (30–45 min): MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung.', icon: '📊', link: '/assessments/psychometric' },
-      { step: '03', title: 'Combined Report', desc: 'Inborn (Mind Mapping) + acquired (Skill Mapping) insights merge — complete talent profile.', icon: '📋' },
-      { step: '04', title: 'Expert Counselling', desc: 'Certified Dream Mantra counsellor दोनों reports interpret करके personalised career roadmap बनाता है।', icon: '💬', link: '/counselling?tab=book' },
+      { step: '01', title: 'Brain Mapping', desc: 'Fingerprint scanning inborn potential map करती है — learning styles, memory patterns, intelligence types. 30+ countries में validated.', icon: '🔬', link: '/counselling?tab=dmit' },
+      { step: '02', title: 'Skill Mapping', desc: '7 frameworks में online assessment (30–45 min): MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung.', icon: '📊', link: '/counselling?tab=psychometric' },
+      { step: '03', title: 'Combined Report', desc: 'Inborn (Brain Mapping) + acquired (Skill Mapping) insights merge — complete talent profile.', icon: '📋' },
+      { step: '04', title: 'Expert Counselling', desc: 'Certified Dream Mantra counsellor दोनों reports interpret करके personalised career roadmap बनाता है।', icon: '💬', link: '/contact#guidance' },
     ],
     comboCompare: [
       { aspect: 'क्या map करता है', dmit: 'Fingerprints से inborn / genetic potential', psychometric: 'Current personality, interests और behaviour', combo: 'Complete nature + nurture picture' },
@@ -1136,7 +1233,7 @@ export const siteHi = {
       { aspect: 'Output', dmit: '28-page inborn talent report', psychometric: 'Multi-framework personality report', combo: 'Combined report + counsellor interpretation session' },
     ],
     comboBenefits: [
-      { icon: '🧬', title: 'Nature + Nurture', desc: 'Mind Mapping दिखाता है आप किसके लिए born हैं; Skill Mapping दिखाता है आप क्या बन रहे हैं — together, no guesswork.' },
+      { icon: '🧬', title: 'Nature + Nurture', desc: 'Brain Mapping दिखाता है आप किसके लिए born हैं; Skill Mapping दिखाता है आप क्या बन रहे हैं — together, no guesswork.' },
       { icon: '🎯', title: 'Accurate Stream Fit', desc: 'PCM, PCB, Commerce या Arts scientific data से confirm करें — marks या peer pressure alone नहीं।' },
       { icon: '👨‍👩‍👧', title: 'Family-Aligned Guidance', desc: 'Reports parents को objective insight देते हैं — counsellors expectations को child की real strengths से align करते हैं।' },
       { icon: '🗺️', title: 'Personalised Roadmap', desc: 'Post-report counselling session data को step-by-step academic और career plan में convert करता है।' },
@@ -1144,7 +1241,7 @@ export const siteHi = {
       { icon: '🔄', title: 'Follow-Up Support', desc: 'Class 11-12 और college में goals evolve होने पर course correction sessions available।' },
     ],
     comboReportIncludes: [
-      'Mind Mapping inborn potential और brain lobe analysis',
+      'Brain Mapping inborn potential और brain lobe analysis',
       'Learning style (Visual / Auditory / Kinesthetic)',
       'Multiple intelligence mapping',
       'MBTI personality type और preferences',
@@ -1166,7 +1263,7 @@ export const siteHi = {
 
     partners: [
       { slug: 'schools', title: 'Schools', desc: 'Certified counsellors और parent workshops के साथ school curriculum में scientific career guidance integrate करें।' },
-      { slug: 'coaching-centers', title: 'Coaching Centers', desc: 'Competitive exams की तैयारी कर रहे students के लिए Mind Mapping और Skill Mapping assessments value-add के रूप में offer करें।' },
+      { slug: 'coaching-centers', title: 'Coaching Centers', desc: 'Competitive exams की तैयारी कर रहे students के लिए Brain Mapping और Skill Mapping assessments value-add के रूप में offer करें।' },
       { slug: 'colleges', title: 'Colleges', desc: 'Dream Mantra powered campus career cells — placement prep, internships और alumni mentoring।' },
       { slug: 'corporates', title: 'Corporates', desc: 'Employee career wellness programs, team assessments और leadership development workshops।' },
       { slug: 'teachers', title: 'Teachers', desc: 'Certified career guide बनें — training, certification और referral income opportunities।' },
@@ -1182,24 +1279,10 @@ export const siteHi = {
   pillars: [
     {
       id: 1,
-      title: 'Counselling',
-      subtitle: 'विशेषज्ञ human guidance',
-      description:
-        'Certified career counsellors के साथ one-on-one sessions जो आपकी unique story समझते हैं। बिना judgment सुनते हैं और science व empathy से मार्गदर्शन — कक्षा 1 से first job तक।',
-      features: [
-        'Certified counsellors (Govt of India aligned)',
-        'Parent-student joint sessions',
-        'Stream, course और college mapping',
-        '7-step structured counselling framework',
-        'Jaipur centres + pan-India online',
-      ],
-    },
-    {
-      id: 2,
-      title: 'Inborn Talent (Mind Mapping)',
+      title: 'Inborn Talent (Brain Mapping)',
       subtitle: 'Fingerprint science',
       description:
-        'Mind Mapping fingerprint analysis से inborn potential map करता है — 30+ देशों में validated। learning style, memory patterns और intelligence types बिना exams या दबाव के reveal करता है।',
+        'Brain Mapping fingerprint analysis से inborn potential map करता है — 30+ देशों में validated। learning style, memory patterns और intelligence types बिना exams या दबाव के reveal करता है।',
       features: [
         'Scientific fingerprint scanning',
         'Learning style और memory mapping',
@@ -1209,7 +1292,7 @@ export const siteHi = {
       ],
     },
     {
-      id: 3,
+      id: 2,
       title: 'Acquired Talent (Skill Mapping)',
       subtitle: '7 assessment frameworks',
       description:
@@ -1219,11 +1302,11 @@ export const siteHi = {
         'Personality-career alignment',
         'Class 9–12 और college के लिए best',
         'AI-assisted interpretation',
-        'Full profile के लिए Mind Mapping के साथ complement',
+        'Full profile के लिए Brain Mapping के साथ complement',
       ],
     },
     {
-      id: 4,
+      id: 3,
       title: 'What You Have Learned',
       subtitle: 'Academic और skill audit',
       description:
@@ -1237,7 +1320,7 @@ export const siteHi = {
       ],
     },
     {
-      id: 5,
+      id: 4,
       title: 'Market Trend',
       subtitle: 'Industry intelligence',
       description:
@@ -1251,8 +1334,8 @@ export const siteHi = {
       ],
     },
     {
-      id: 6,
-      title: 'Future AI Proof',
+      id: 5,
+      title: 'AI Proof Career',
       subtitle: 'Tomorrow-ready careers',
       description:
         'Automation और AI disruption के प्रति resilient careers identify करें। हम उन roles की ओर guide करते हैं जहाँ human creativity, empathy और complex judgment अपरिवर्तित रहते हैं।',
@@ -1266,11 +1349,84 @@ export const siteHi = {
     },
   ],
 
+  trainingSessions: [
+    {
+      number: 1,
+      title: 'Career Discovery',
+      subtitle: 'Clarity & direction',
+      description:
+        'Discover your strengths, interests, personality, and ideal career path with complete career clarity.',
+      features: [
+        'Strengths & interest discovery',
+        'Personality-career fit',
+        'Ideal path shortlisting',
+        'Complete career clarity',
+        'Personalised direction plan',
+      ],
+    },
+    {
+      number: 2,
+      title: 'Personal Branding',
+      subtitle: 'Stand out professionally',
+      description:
+        'Build an ATS-friendly resume, optimized LinkedIn profile, and a professional brand that stands out.',
+      features: [
+        'ATS-friendly resume',
+        'LinkedIn optimization',
+        'Professional brand story',
+        'First-impression polish',
+        'Portfolio & presence tips',
+      ],
+    },
+    {
+      number: 3,
+      title: 'AI-Powered Job Search',
+      subtitle: 'Smarter applications',
+      description:
+        'Use AI to optimize your resume, find opportunities, network effectively, and accelerate your job search.',
+      features: [
+        'AI resume optimization',
+        'Opportunity discovery',
+        'Smart networking tactics',
+        'Faster job-search loops',
+        'Role targeting strategy',
+      ],
+    },
+    {
+      number: 4,
+      title: 'Interview Mastery',
+      subtitle: 'Confident conversations',
+      description:
+        'Crack HR, technical, and panel interviews with confidence, communication skills, and proven strategies.',
+      features: [
+        'HR interview frameworks',
+        'Technical interview prep',
+        'Panel interview practice',
+        'Communication confidence',
+        'Proven response strategies',
+      ],
+    },
+    {
+      number: 5,
+      title: 'Career Launch',
+      subtitle: 'Offer-ready growth',
+      description:
+        'Learn job application strategies, salary negotiation, corporate readiness, and long-term career growth.',
+      features: [
+        'Application strategies',
+        'Salary negotiation',
+        'Corporate readiness',
+        'Offer evaluation tips',
+        'Long-term growth roadmap',
+      ],
+    },
+  ],
+
   seventhPillar: {
-    title: 'AI Career Launchpad — Job-Ready Accelerator',
-    subtitle: 'College Students, Freshers और Working Professionals के लिए 7वां स्तंभ',
-    tagline: 'College Students और Freshers — 5 AI-powered sessions में job-ready बनें',
-    crpHighlights: ['5 Sessions', '1.5 hrs each', 'Mock Interviews', 'Jaipur Recruiters'],
+    title: 'Training & Placement के 5 Sessions',
+    subtitle: 'AI Career Launchpad — Job-Ready Accelerator',
+    tagline: 'College Students और Freshers — 5 focused sessions में job-ready बनें',
+    crpHighlights: ['Career Discovery', 'Personal Branding', 'AI Job Search', 'Interview Mastery', 'Career Launch'],
   },
 
   partners: {
@@ -1289,65 +1445,58 @@ export const siteHi = {
   pages: {
     counselling: {
       title: 'Counselling के लिए',
-      subtitle: 'India का #1 Career & Education Counselling — Mind Mapping और Skill Mapping powered',
-      cta: 'सत्र बुक करें',
+      subtitle: 'India का #1 Career & Education Counselling — Brain Mapping और Skill Mapping powered',
+      cta: 'मुफ़्त guidance call बुक करें',
+      pathLabel: 'Is page ko kaise use karein',
+      pathSteps: [
+        'Menu se topic choose karein',
+        'Jo aapke liye fit ho, explore karein',
+        'Free guidance call book karein',
+      ],
+      menuHint: 'Section choose karein',
+      nextStepEyebrow: 'Agla step',
+      nextStepTitle: 'Personal guidance ready hain?',
+      nextStepDesc:
+        'Counsellor se baat karein — koi commitment nahi. Hum sahi next step choose karne mein madad karenge.',
       tabs: {
         overview: {
-          sectionTitle: 'हम आपको दो तरीकों से guide करते हैं',
-          sectionDesc: 'Certified Dream Mantra counsellors scientific assessments को human insight के साथ जोड़ते हैं — वह path चुनें जो आज आपकी stage से मेल खाता हो।',
-          types: [
+          exploreMore: 'Explore more',
+          processEyebrow: '5-Step Process',
+          processTitle: 'Counselling kaise kaam karti hai',
+          processDesc:
+            'Paanch science-backed steps — inborn talent se AI-ready career path tak — certified counsellors ke saath.',
+          agesEyebrow: 'Hum kinhe counsel karte hain',
+          agesTitle: 'Jin ages ke liye hum counselling karte hain',
+          agesDesc: 'Apni stage choose karein — har pathway mein problems, benefits, solutions aur Book Now.',
+          assessmentsEyebrow: 'Assessments',
+          assessmentsTitle: 'Brain, Skill aur complete profile',
+          assessmentsDesc: 'Counselling ke peeche scientific tools ki quick glimpses.',
+          assessmentGlimpses: [
             {
-              id: 'academic',
-              title: 'Academic & Stream Counselling',
-              icon: '🎓',
-              desc: 'Boards, streams, subjects और early career direction तय करने वाले students और parents के लिए — pressure और guesswork से पहले।',
-              points: [
-                'Class-wise pathway guidance (Class 6–12)',
-                'Stream selection: Science, Commerce, Arts और vocational options',
-                'Aptitude और goals के अनुसार subject combinations',
-                'Clear visual reports के साथ parent–student sessions',
-              ],
+              id: 'dmit',
+              icon: '🧬',
+              title: 'Brain Mapping',
+              desc: 'Fingerprint-based guidance.',
+              link: '/counselling?tab=dmit',
             },
             {
-              id: 'career',
-              title: 'Career & Admission Counselling',
-              icon: '🧭',
-              desc: 'Careers, courses, colleges और admission steps shortlist करने के लिए — personalised roadmap के साथ।',
-              points: [
-                '1000+ options में से career shortlisting',
-                'Course, college और entrance exam planning',
-                'Admission support और documentation guidance',
-                'Working professionals: switch, growth और role alignment',
-              ],
+              id: 'psychometric',
+              icon: '🧠',
+              title: 'Skill Mapping',
+              desc: 'Psychometric-based.',
+              link: '/counselling?tab=psychometric',
+            },
+            {
+              id: 'combo',
+              icon: '✨',
+              title: 'Brain + Skill Mapping',
+              desc: 'Fingerprint + psychometric guidance, together.',
+              link: '/counselling?tab=combo',
             },
           ],
-          mindMapping: {
-            badge: 'Nature · Inborn potential',
-            title: 'Mind Mapping',
-            desc: 'Fingerprint-based scientific assessment जो inborn intelligence, learning style और brain lobe strengths map करती है — 30+ countries में validated।',
-            points: [
-              'No exams, pressure, या labels',
-              'Natural talents reveal करती है जो parents अक्सर miss करते हैं',
-                'Stream और career decisions की foundation',
-            ],
-            cta: 'Mind Mapping Explore करें',
-            link: '/assessments/dmit',
-          },
-          skillMapping: {
-            badge: 'Nurture · Current profile',
-            title: 'Skill Mapping',
-            desc: 'सात proven frameworks — MBTI, DISC, RIASEC, Big 5, VAK, MIT और Jung — personality, interests और behaviour map करते हैं।',
-            points: [
-              'दिखाता है आप कौन बन रहे हैं, सिर्फ born potential नहीं',
-              'Complete picture के लिए Mind Mapping के साथ pair होता है',
-              'आपकी counselling session में directly feed होता है',
-            ],
-            cta: 'Skill Mapping Explore करें',
-            link: '/assessments/psychometric',
-          },
         },
         dmit: {
-          title: '🔬 Mind Mapping',
+          title: '🔬 Brain Mapping',
           desc: 'Fingerprint analysis inborn potential map करती है — 30+ countries में validated।',
         },
         psychometric: {
@@ -1380,7 +1529,7 @@ export const siteHi = {
           },
         },
         book: {
-          title: 'अपना Free Consultation बुक करें',
+          title: 'मुफ़्त guidance call बुक करें',
           hours: 'Mon–Sat, 11am–7pm | 9680102276',
           createAccount: 'Account बनाएं',
         },
@@ -1388,10 +1537,10 @@ export const siteHi = {
     },
     assessments: {
       title: 'मूल्यांकन',
-      subtitle: 'वैज्ञानिक Mind Mapping और Skill Mapping करियर assessments — 30+ देशों में validated',
+      subtitle: 'वैज्ञानिक Brain Mapping और Skill Mapping करियर assessments — 30+ देशों में validated',
       whyCareerCounselling: {
         title: 'करियर counselling क्यों?',
-        desc: 'हमारा वैज्ञानिक approach जानें — Mind Mapping, Skill Mapping, 7-Pillar model, और कक्षा 1 से First Job तक personalised guidance।',
+        desc: 'हमारा वैज्ञानिक approach जानें — Brain Mapping, Skill Mapping, 7-Pillar model, और कक्षा 1 से First Job तक personalised guidance।',
         cta: 'करियर counselling explore करें',
       },
     },
@@ -1400,14 +1549,14 @@ export const siteHi = {
       subtitle: 'India भर में 1000+ certified career counsellors से जुड़ें',
       become: {
         title: 'Career Counsellor बनें',
-        desc: 'Mind Mapping, Skill Mapping counselling में certified बनें और Dream Mantra के pan-India network से जुड़ें। Training, certification और referral income।',
+        desc: 'Brain Mapping, Skill Mapping counselling में certified बनें और Dream Mantra के pan-India network से जुड़ें। Training, certification और referral income।',
         cta: 'अभी आवेदन करें',
         imageAlt: 'Counsellor training',
       },
       certification: {
         items: [
           'Government of India aligned',
-          'Mind Mapping Practitioner',
+          'Brain Mapping Practitioner',
           'International Career Counselling',
           'NLP Basics',
           'IIT Madras workshops',
@@ -1422,63 +1571,42 @@ export const siteHi = {
     },
     marketplace: {
       title: 'मार्केटप्लेस',
-      subtitle: 'वैज्ञानिक tests, 1000+ careers, AI tools और career readiness — सब एक जगह',
-      cta: 'Tests ब्राउज़ करें',
+      subtitle: 'दो clear paths — counselling से clarity, training से job readiness',
+      cta: 'मुफ़्त guidance call बुक करें',
+      verticals: {
+        counselling: {
+          eyebrow: 'पहले clarity',
+          title: 'Counselling',
+          desc: 'Brain Mapping, Skill Mapping और counselling products.',
+          assessmentsTitle: 'Premium Assessments',
+          assessmentsDesc: 'Brain Mapping, Skill Mapping और Combo — signup के बाद dashboard से book करें।',
+          productsTitle: 'Counselling products',
+        },
+        training: {
+          eyebrow: 'Job readiness',
+          title: 'Training & Placement',
+          desc: 'AI Career Launchpad — skills, interviews और placement-ready outcomes.',
+          programEyebrow: 'AI Career Launchpad',
+          programTitle: 'Structured training से job-ready बनें',
+          programDesc:
+            'पाँच skill sessions — personal brand, resume, interviews और placement support college students, freshers और professionals के लिए।',
+          exploreCta: 'Launchpad देखें',
+          pathwaysCta: 'Age Pathways',
+          productsTitle: 'Training programs',
+          points: [
+            'Job readiness के 5 skill sessions',
+            'Resume, LinkedIn और interview practice',
+            'Placement-focused outcomes',
+          ],
+        },
+      },
       tests: {
         premiumTitle: 'Premium Assessments',
-        premiumDesc: 'Mind Mapping, Skill Mapping और AI Career Launchpad — signup के बाद dashboard से book करें।',
+        premiumDesc: 'Brain Mapping, Skill Mapping और Combo — signup के बाद dashboard से book करें।',
         paidProductsTitle: 'Paid Products',
         viewDetails: 'विवरण देखें',
         signUpToBook: 'Book करने के लिए signup करें →',
         withCode: 'के साथ',
-      },
-      miniTests: [
-        {
-          id: 'stream',
-          title: 'Stream Selector Test',
-          price: 99,
-          desc: 'Class 9–10 के लिए — Science (PCM/PCB), Commerce, या Arts वैज्ञानिक guidance के साथ।',
-          cta: 'Stream Test शुरू करें',
-          priceNote: 'Quick scientific guidance',
-          footer: 'Free consultation available · Mon–Sat 11am–7pm',
-        },
-        {
-          id: 'degree',
-          title: 'Degree Selector Test',
-          price: 99,
-          desc: 'Class 12 के बाद — सही degree, college path और career fit खोजें।',
-          cta: 'Degree Test शुरू करें',
-          priceNote: 'Quick scientific guidance',
-          footer: 'Free consultation available · Mon–Sat 11am–7pm',
-        },
-      ],
-      library: {
-        title: '1000+ Career Library',
-        desc: 'Detailed profiles — education paths, salary benchmarks, skills, entrance exams, roadmaps और AI resilience scores।',
-        cta: 'सभी Careers ब्राउज़ करें',
-        sampleCareers: [
-          'Software Engineer',
-          'Chartered Accountant',
-          'Doctor (MBBS)',
-          'Data Scientist',
-          'IAS Officer',
-          'UX Designer',
-        ],
-      },
-      ai: {
-        title: 'AI Corner',
-        desc: 'Esh से streams, Mind Mapping, careers, programs और booking के बारे में पूछें — या अपने profile के आधार पर personalised advice के लिए dashboard AI use करें।',
-        dashboardCta: 'Dashboard AI Corner',
-        bookCounselling: 'Counselling बुक करें',
-        askEsh: 'Site chatbot या dashboard के माध्यम से Esh से पूछें',
-        prompts: [
-          { q: 'PCM stream के बारे में बताएं', icon: '📐' },
-          { q: 'Mind Mapping क्या है?', icon: '🔬' },
-          { q: 'करियर counselling क्यों?', icon: '💜' },
-          { q: 'Commerce career options', icon: '💼' },
-          { q: 'Class 9-10 stream help', icon: '🎯' },
-          { q: 'AI Career Launchpad', icon: '🚀' },
-        ],
       },
     },
     studyAbroad: {
@@ -1493,15 +1621,20 @@ export const siteHi = {
       },
     },
     pillars: {
-      title: 'Dream Mantra के 7 स्तंभ',
-      subtitle: 'पूर्ण करियर clarity के लिए वैज्ञानिक framework',
+      title: 'Counselling के 5 स्तंभ और Training के 5 Sessions',
+      subtitle: 'पूरा Dream Mantra framework — counselling clarity plus job-ready training',
       cta: 'Consultation बुक करें',
-      intro: 'Dream Mantra में हर career decision छह core pillars और college students व freshers के लिए dedicated 7th pillar — AI Career Launchpad — पर खड़ा है, science, market reality और job readiness को combine करता है।',
-      introCore: 'छह core pillars',
-      introCrp: '7th pillar — AI Career Launchpad',
+      intro: 'Dream Mantra में हर career decision पाँच counselling pillars और AI Career Launchpad के पाँच Training & Placement sessions पर खड़ा है — science, market reality और job readiness को combine करता है।',
+      introCore: 'पाँच counselling pillars',
+      introCrp: 'AI Career Launchpad के पाँच Training & Placement sessions',
       pillarLabel: 'स्तंभ',
       explore: 'Explore करें',
-      seventhPillarLabel: '7वां स्तंभ',
+      counsellingLabel: 'Counselling के 5 स्तंभ',
+      trainingLabel: '5 Sessions —',
+      trainingLabelHighlight: 'Training & Placement',
+      trainingSubtitle: 'AI Career Launchpad — career clarity से offer-ready confidence तक।',
+      sessionLabel: 'Session',
+      seventhPillarLabel: 'Training & Placement',
       viewCrp: 'AI Career Launchpad देखें',
     },
 
@@ -1515,16 +1648,16 @@ export const siteHi = {
         title: 'हर बच्चे में untapped brilliance है',
         paragraph1Before: 'Dream Mantra की शुरुआत Founder ',
         paragraph1After: ' से हुई, जो Rajasthan के लिए Naukri.com में Key Accounts Manager थीं — 15,000+ job seekers और 2,500+ HR professionals के साथ काम किया। एक recurring pattern दिखा — professionals ऐसी jobs में फंसे जिन्हें वे hate करते थे क्योंकि उनका path उनकी असली identity से match नहीं करता था।',
-        paragraph2: 'तीन चीज़ें almost हमेशा misaligned रहती थीं — क्या पढ़ा, natural strengths क्या थीं, और market को actually क्या चाहिए। इस gap ने उन्हें Mind Mapping और Skill Mapping assessments की ओर ले गया — scientific methods जो together inborn potential और current personality reveal करते हैं।',
+        paragraph2: 'तीन चीज़ें almost हमेशा misaligned रहती थीं — क्या पढ़ा, natural strengths क्या थीं, और market को actually क्या चाहिए। इस gap ने उन्हें Brain Mapping और Skill Mapping assessments की ओर ले गया — scientific methods जो together inborn potential और current personality reveal करते हैं।',
         cta: 'हमारे Assessments देखें',
         imageAlt: 'Dream Mantra counselling',
       },
       twoPillars: {
         title: 'हमारे दो वैज्ञानिक',
         titleHighlight: 'स्तंभ',
-        subtitle: '🧩 Mind Mapping + Skill Mapping = Complete Clarity',
+        subtitle: '🧩 Brain Mapping + Skill Mapping = Complete Clarity',
         dmit: {
-          title: '🔬 Mind Mapping — Nature Side',
+          title: '🔬 Brain Mapping — Nature Side',
           desc: 'Fingerprint analysis inborn potential map करती है — 30+ देशों में validated। learning styles, memory patterns और intelligence types बिना exams या pressure के reveal करता है।',
         },
         psychometric: {
@@ -1541,7 +1674,7 @@ export const siteHi = {
         title: 'हमें क्या Unique बनाता है',
         items: [
           { title: 'Clarity', desc: 'Confusion और guesswork को scientific self-awareness और informed decisions से replace करें।' },
-          { title: 'Complete Picture', desc: 'Mind Mapping (nature) + Skill Mapping (nurture) — जहाँ आप excel करते हैं और आप अभी कौन हैं।' },
+          { title: 'Complete Picture', desc: 'Brain Mapping (nature) + Skill Mapping (nurture) — जहाँ आप excel करते हैं और आप अभी कौन हैं।' },
           { title: 'Real-World Alignment', desc: 'क्या पढ़ा × natural strengths × personality × market actually क्या चाहता है।' },
           { title: 'Science Meets Heart', desc: 'Expert counselling insight को strategies में बदलती है — no pressure, no comparison।' },
         ],
@@ -1570,44 +1703,70 @@ export const siteHi = {
       },
       cta: {
         title: 'अपनी complete picture discover करने के लिए ready?',
-        subtitle: 'Free consultation बुक करें — Mon–Sat, 11am–7pm',
-        button: 'Free Consultation बुक करें',
+        subtitle: 'मुफ़्त guidance call बुक करें — Mon–Sat, 11am–7pm',
+        button: 'मुफ़्त guidance call बुक करें',
       },
     },
 
     crp: {
+      hub: {
+        title: 'Training & Placement',
+        subtitle: 'From learning to landing your dream job.',
+        cta: 'मुफ़्त guidance call बुक करें',
+        overviewEyebrow: 'Job readiness',
+        overviewTitle: 'Training & Placement कैसे काम करता है',
+        overviewDesc:
+          'अपना age pathway चुनें, फिर AI Career Launchpad में गहराई से जाएँ — 5 skill sessions, highlights और placement-ready outcomes।',
+        exploreMore: 'और जानें',
+        cards: [
+          {
+            id: 'pathways',
+            icon: '🎯',
+            title: 'आयु मार्ग',
+            desc: 'College students, freshers और working professionals — अपना stage चुनें।',
+          },
+          {
+            id: 'launchpad',
+            icon: '🚀',
+            title: 'AI Career Launchpad',
+            desc: '5 skill sessions, highlights और parameters — job-ready confidence के लिए।',
+          },
+        ],
+      },
       hero: {
-        subtitle: 'College Students · Freshers · Working Professionals · 5 skill sprints × 1.5 hours',
-        cta: 'Enroll Now',
+        subtitle: 'College Students · Freshers · Working Professionals · 5 skill sessions × 1.5 hours',
+        cta: 'मुफ़्त guidance call बुक करें',
       },
       explore: {
         title: 'AI Career Launchpad',
-        subtitle: 'Full program roadmap · 5 AI skill sprints · program highlights · 20 parameters',
-        cta: 'Enroll Now',
-        footerTitle: 'AI Career Launchpad में enroll करने के लिए ready?',
-        footerDesc: 'अपना audience path चुनें और next cohort join करें।',
+        subtitle: 'Full program roadmap · 5 AI skill sessions · program highlights · 20 parameters',
+        cta: 'मुफ़्त guidance call बुक करें',
+        footerTitle: "Your career doesn't happen by chance. It happens by",
+        footerAccent: 'preparation.',
+        footerMeta: '5 Sessions · 30 Days · A lifetime of impact.',
+        footerDesc: '',
         nav: { label: 'AI Career Launchpad' },
       },
       launch: {
         title: 'Launch With AI',
-        subtitle: 'College Students · Freshers · Working Professionals — आज ही cohort enroll करें',
-        cta: 'Enroll Now',
+        subtitle: 'College Students · Freshers · Working Professionals — मुफ़्त guidance call से शुरू करें',
+        cta: 'मुफ़्त guidance call बुक करें',
         exploreLink: 'Full program blueprint देखें',
         nav: { label: 'Launch With AI' },
       },
       statItems: [
-        { label: '5 Sprints', sub: 'Skill modules' },
+        { label: '5 Sessions', sub: 'Skill modules' },
         { label: '7.5 hrs', sub: 'Total training' },
-        { label: '20 Parameters', sub: 'Full clarity' },
-        { label: '7th Pillar', sub: 'Dream Mantra' },
+        { label: '20', sub: 'Parameters' },
+        { label: '100%', sub: 'Practical & industry focused' },
       ],
-      badge: '7th Pillar · AI Career Launchpad',
+      badge: 'Training & Placement · AI Career Launchpad',
       forAudiencePrefix: 'For',
-      exploreSprints: '5 skill sprints explore करें',
+      exploreSprints: '5 skill sessions explore करें',
       sessions: {
         title: '5 AI Skill',
-        titleHighlight: 'Sprints',
-        subtitle: 'हर session पिछले पर build होता है — personal brand से first offer letter तक।',
+        titleHighlight: 'Sessions',
+        subtitle: '',
         sessionLabel: 'SESSION',
         groups: [
           {
@@ -1629,13 +1788,13 @@ export const siteHi = {
       highlights: {
         title: 'Additional',
         titleHighlight: 'Program Highlights',
-        subtitle: '20 core skills से आगे — structure, access और support जो ACL complete बनाते हैं।',
+        subtitle: '',
       },
       parameters: {
-        badge: '20 Core Parameters · Full ACL Curriculum',
+        badge: '',
         title: 'आप क्या सीखेंगे',
         titleHighlight: 'AI Career Launchpad',
-        subtitle: 'Quick explanation के लिए किसी parameter पर tap करें — session से filter कर explore करें।',
+        subtitle: '',
         filterAll: 'All',
         parameterOf: 'Parameter',
         ofTwenty: 'of 20',
@@ -1645,13 +1804,13 @@ export const siteHi = {
         title: 'AI Career Launchpad में सब कुछ covered',
       },
       outcomes: {
-        title: 'Program outcomes',
+        title: 'Program Outcomes',
       },
       ctaCard: {
         title: 'अपना career launch करने के लिए ready?',
-        desc: 'AI Career Launchpad batch बुक करें — limited seats per cohort।',
-        button: 'Enroll Now',
-        seePillars: 'सभी 7 Pillars देखें',
+        desc: '',
+        button: 'मुफ़्त guidance call बुक करें',
+        seePillars: 'सभी 5 Pillars देखें',
       },
     },
 
@@ -1661,10 +1820,10 @@ export const siteHi = {
         titleBefore: 'Fingerprint Analysis से',
         titleHighlight: 'Inborn Potential',
         titleAfter: 'Reveal करें',
-        desc: 'Mind Mapping (DMIT) fingerprint analysis से आपकी inborn brain potential map करता है — बिना exams, pressure या labels। Assam Government, Bombay High Court और 30+ countries में families द्वारा trusted।',
-        bookTest: 'Mind Mapping बुक करें',
+        desc: 'Brain Mapping fingerprint analysis से आपकी inborn brain potential map करता है — बिना exams, pressure या labels। Assam Government, Bombay High Court और 30+ countries में families द्वारा trusted।',
+        bookTest: 'Brain Mapping बुक करें',
         freeConsultation: 'Free Consultation',
-        imageAlt: 'Mind Mapping fingerprint session',
+        imageAlt: 'Brain Mapping fingerprint session',
       },
       trustedBy: {
         label: 'Trusted By',
@@ -1672,14 +1831,14 @@ export const siteHi = {
       },
       whatIs: {
         label: 'Science समझें',
-        title: 'Mind Mapping क्या है?',
+        title: 'Brain Mapping क्या है?',
         paragraphs: [
-          'Mind Mapping (Dermatoglyphics Multiple Intelligence Test) एक scientific assessment है जो fingerprint analysis के through individual की inborn brain potential map करता है।',
+          'Brain Mapping (Dermatoglyphics Multiple Intelligence Test) एक scientific assessment है जो fingerprint analysis के through individual की inborn brain potential map करता है।',
           'Fingerprints गर्भ में 13th से 19th week के बीच बनते हैं और जीवन भर unchanged रहते हैं। इसी phase में brain lobes भी form हो रहे होते हैं — finger ridge patterns और brain development के बीच natural connection बनता है।',
           'इस biological link की वजह से, हर fingerprint specific brain regions से correspond करता है, जिससे experts समझ सकते हैं कि व्यक्ति का brain naturally कैसे wired है।',
-          'Traditional assessments performance, marks या learned skills measure करते हैं — Mind Mapping natural abilities, learning style और hidden potential identify करता है — बिना exams, pressure या labels।',
+          'Traditional assessments performance, marks या learned skills measure करते हैं — Brain Mapping natural abilities, learning style और hidden potential identify करता है — बिना exams, pressure या labels।',
         ],
-        revealsTitle: 'Mind Mapping क्या Reveal करता है',
+        revealsTitle: 'Brain Mapping क्या Reveal करता है',
         reveals: [
           'Natural learning style और information processing patterns',
           'Memory type और cognitive functioning',
@@ -1690,7 +1849,7 @@ export const siteHi = {
           'Suitable skills, streams और career directions की early understanding',
         ],
         scienceTitle: 'Scientific Foundation',
-        scienceIntro: 'Mind Mapping neuroscience, genetics और psychology research पर based है — Howard Gardner\'s Multiple Intelligence Theory के साथ align करता है।',
+        scienceIntro: 'Brain Mapping neuroscience, genetics और psychology research पर based है — Howard Gardner\'s Multiple Intelligence Theory के साथ align करता है।',
         scienceFields: [
           { icon: '🧬', title: 'Genetics', desc: 'Fingerprint patterns genetically inherited और हर individual के unique होते हैं।' },
           { icon: '🧠', title: 'Neuroscience', desc: 'हर finger specific brain lobes और neural functions से correspond करता है।' },
@@ -1712,7 +1871,7 @@ export const siteHi = {
       },
       whoFor: {
         label: 'किसके लिए',
-        title: 'Mind Mapping किसे चाहिए?',
+        title: 'Brain Mapping किसे चाहिए?',
         subtitle: 'Early talent discovery से career confirmation तक — हर life stage को पता होना चाहिए brain naturally कैसे wired है।',
         groups: [
           { icon: '🌟', stage: 'Class 1–5', tag: 'Talent Discovery Stage', points: ['Early talent identification', 'Natural learning style समझें', 'Hidden strengths discover करें', 'Right extracurricular activities', 'Parent guidance'] },
@@ -1750,7 +1909,7 @@ export const siteHi = {
         ],
       },
       comparison: {
-        title: 'Mind Mapping vs Traditional Tests',
+        title: 'Brain Mapping vs Traditional Tests',
         traditional: {
           label: 'Traditional Tests',
           items: [
@@ -1765,7 +1924,7 @@ export const siteHi = {
           ],
         },
         dmit: {
-          label: 'Mind Mapping',
+          label: 'Brain Mapping',
           items: [
             { text: 'Inborn potential measure करता है', bad: false },
             { text: 'Fingerprint patterns पर based', bad: false },
@@ -1783,15 +1942,15 @@ export const siteHi = {
         title: 'Scientific Research & Validation',
         subtitle: 'Neuroscience, genetics और global research backed — government और judiciary endorsed।',
         items: [
-          { icon: '🏛️', title: 'Assam Government Mandates DMIT', desc: 'Bodoland Territorial Council (BTC) ने Assam schools में DMIT introduce किया fingerprint-based intelligence testing के लिए।', source: '— India Today' },
-          { icon: '⚖️', title: 'Bombay High Court Endorsement', desc: 'Bombay High Court के Official Child Psychologist ने child intelligence और personality analyse करने के लिए DMIT recommend किया।' },
+          { icon: '🏛️', title: 'Assam Government Mandates Brain Mapping', desc: 'Bodoland Territorial Council (BTC) ने Assam schools में Brain Mapping introduce किया fingerprint-based intelligence testing के लिए।', source: '— India Today' },
+          { icon: '⚖️', title: 'Bombay High Court Endorsement', desc: 'Bombay High Court के Official Child Psychologist ने child intelligence और personality analyse करने के लिए Brain Mapping recommend किया।' },
           { icon: '🔬', title: 'Scientific Research Foundation', desc: 'Neuroscience, genetics और Howard Gardner\'s Multiple Intelligence Theory — 30+ countries में validated।', bullets: ['Neuroscience — brain lobe relationships', 'Genetics — unique fingerprint patterns', 'Psychology — behavioural interpretation'] },
         ],
         knowMore: 'Validation के बारे में और जानें',
       },
-      whyChooseTitle: 'Dream Mantra Mind Mapping क्यों चुनें?',
+      whyChooseTitle: 'Dream Mantra Brain Mapping क्यों चुनें?',
       whyChoose: [
-        { title: 'Accurate Insights', desc: 'Research-backed Mind Mapping — innate strengths identify करने में precision।' },
+        { title: 'Accurate Insights', desc: 'Research-backed Brain Mapping — innate strengths identify करने में precision।' },
         { title: 'Personalized Guidance', desc: 'Expert counsellors unique fingerprint profile पर tailored recommendations देते हैं।' },
         { title: 'Endless Possibilities', desc: 'Talents को right career path से align करें।' },
         { title: 'Proven Track Record', desc: 'हज़ारों students और professionals ने clarity पाई।' },
@@ -1799,8 +1958,8 @@ export const siteHi = {
       getStarted: 'Get Started Now',
       cta: {
         title: 'अपनी Inborn Potential Unlock करें',
-        desc: 'Mind Mapping आज book करें — Mon–Sat 11am–7pm · 9680102276 · Jaipur & Pan-India (Online)',
-        button: 'Mind Mapping Test बुक करें',
+        desc: 'Brain Mapping आज book करें — Mon–Sat 11am–7pm · 9680102276 · Jaipur & Pan-India (Online)',
+        button: 'Brain Mapping Test बुक करें',
       },
     },
 
@@ -1809,7 +1968,7 @@ export const siteHi = {
         badge: '7 Powerful Frameworks — One Complete Profile',
         titleBefore: 'Skill Mapping',
         titleHighlight: 'Assessment Suite',
-        desc: 'Mind Mapping से परे: scientifically designed assessments के ज़रिए current personality, interests और behaviour समझें।',
+        desc: 'Brain Mapping से परे: scientifically designed assessments के ज़रिए current personality, interests और behaviour समझें।',
         subdesc: 'Internationally researched · Multi-framework analysis · Certified counsellor interpretation',
         bookTest: 'Skill Mapping बुक करें',
         freeConsultation: 'Free Consultation',
@@ -1852,8 +2011,8 @@ export const siteHi = {
       },
       why: {
         title: 'Skill Mapping क्यों?',
-        comboCta: 'Mind Mapping + Skill Mapping Combo',
-        learnDmit: 'Mind Mapping के बारे में जानें',
+        comboCta: 'Brain Mapping + Skill Mapping Combo',
+        learnDmit: 'Brain Mapping के बारे में जानें',
       },
       ageWise: {
         label: 'किसके लिए',
@@ -1880,13 +2039,13 @@ export const siteHi = {
     dmitPsychometric: {
       hero: {
         badge: 'Complete Nature + Nurture Profile',
-        title: 'Mind Mapping + Skill Mapping',
-        desc: 'Dream Mantra में हम Mind Mapping और Skill Mapping दोनों assessments provide करते हैं — फिर combined reports पर certified expert counselling stream, career और life decisions में clarity के लिए।',
-        flow: 'Inborn talent (Mind Mapping) + Current personality (Skill Mapping) → Combined report → Personalised roadmap',
+        title: 'Brain Mapping + Skill Mapping',
+        desc: 'Dream Mantra में हम Brain Mapping और Skill Mapping दोनों assessments provide करते हैं — फिर combined reports पर certified expert counselling stream, career और life decisions में clarity के लिए।',
+        flow: 'Inborn talent (Brain Mapping) + Current personality (Skill Mapping) → Combined report → Personalised roadmap',
         bookCombo: 'Combo Package बुक करें',
         freeConsultation: 'Free Consultation',
         mergeCard: 'Both reports merged → Expert counsellor session → Your personalised career roadmap',
-        dmitAlt: 'Mind Mapping',
+        dmitAlt: 'Brain Mapping',
         psychometricAlt: 'Skill Mapping',
       },
       process: {
@@ -1896,9 +2055,9 @@ export const siteHi = {
         learnMore: 'और जानें',
       },
       compare: {
-        title: 'Mind Mapping vs Skill Mapping vs Combo',
+        title: 'Brain Mapping vs Skill Mapping vs Combo',
         aspect: 'Aspect',
-        dmit: 'Mind Mapping',
+        dmit: 'Brain Mapping',
         psychometric: 'Skill Mapping',
         combo: 'Combo',
       },
@@ -1908,10 +2067,10 @@ export const siteHi = {
       counselling: {
         title: 'Reports + Expert Counselling',
         desc: 'दोनों assessments के बाद certified Dream Mantra counsellor combined report walkthrough करता है — science को clear, actionable career roadmap में translate करता है। Parents welcome।',
-        bookCombo: 'Mind Mapping + Skill Mapping बुक करें',
-        dmitOnly: 'Mind Mapping only →',
+        bookCombo: 'Brain Mapping + Skill Mapping बुक करें',
+        dmitOnly: 'Brain Mapping only →',
         psychometricOnly: 'Skill Mapping only →',
-        processLink: '7-Step Process →',
+        processLink: '5-Step Process →',
       },
     },
 
@@ -1922,7 +2081,7 @@ export const siteHi = {
         tagline: 'अपनी Hidden Brilliance Discover करें — No Pressure. No Comparison. Just Clarity.',
         cta: 'Free Consultation बुक करें',
       },
-      intro: 'India का most trusted scientific career guidance platform Mind Mapping और Skill Mapping assessments के साथ — Class 1 से First Job तक।',
+      intro: 'India का most trusted scientific career guidance platform Brain Mapping और Skill Mapping assessments के साथ — Class 1 से First Job तक।',
       howWorksTitle: 'Career Counselling कैसे काम करती है',
       stepLabel: 'STEP',
       whoWeGuideTitle: 'हम किसे Guide करते हैं',
@@ -1948,8 +2107,14 @@ export const siteHi = {
     program: {
       notFound: 'Program नहीं मिला',
       goHome: 'Home पर जाएं',
+      workspaceLabel: 'Age pathways workspace',
+      ageTabsLabel: 'Age groups',
       problemsLabel: 'India mein real challenges',
-      challengesTitle: 'Common Challenges Faced by Students',
+      challengesTitle: 'Common Challenges',
+      benefitsLabel: 'Benefits',
+      benefitsTitle: 'Aapko kya milta hai',
+      solutionsLabel: 'Solutions offered',
+      solutionsTitle: 'Aage badhne ke liye module choose karein',
       facingSame: 'Kya aap bhi yahi face kar rahe hain?',
       struggleParentPrefix: 'Kya aap chahte hain ki aapka bachcha',
       struggleStudentPrefix: 'Kya aap bhi struggle kar rahe hain',
@@ -1960,23 +2125,37 @@ export const siteHi = {
       bookConsultation: 'Counselling session book karein',
       allPathways: 'Saare age pathways dekhein',
       otherPathways: 'Doosre age pathways explore karein',
+      showMoreProblems: 'Aur challenges dikhayein',
+      showLessProblems: 'Kam dikhayein',
+      bookLoginPay: 'Book Now — Login & Pay',
+      bookContinuePay: 'Book Now — Payment par jaayein',
+      bookSelectHint: 'Book Now enable karne ke liye upar se solution choose karein.',
+      bookSelectedHint: 'Next: login aur payment se yeh module unlock karein.',
+      loginPayNotice: 'Apna selected module pay karne ke liye sign in karein.',
+      whatsNext: 'Agla step',
+      stepperLabel: 'Next steps',
+      stepAge: 'Age choose',
+      stepModule: 'Module choose',
+      stepLogin: 'Login',
+      stepPay: 'Pay',
     },
 
     contact: {
       title: 'संपर्क करें',
-      subtitle: 'हम बस एक कॉल दूर हैं',
+      subtitle: 'बताएं कहाँ stuck हैं — counselling या Training & Placement। हम कॉल बैक करेंगे।',
       phone: 'फ़ोन',
       email: 'ईमेल',
       hours: 'समय',
       locations: 'स्थान',
       panIndia: 'Pan-India Online',
-      formTitle: 'संदेश भेजें',
+      followUs: 'हमें फॉलो करें',
+      formTitle: 'मुफ़्त guidance call बुक करें',
       namePlaceholder: 'आपका नाम',
       emailPlaceholder: 'ईमेल',
       phonePlaceholder: 'फ़ोन',
       messagePlaceholder: 'हम कैसे मदद कर सकते हैं?',
-      submit: 'जमा करें',
-      thankYou: 'धन्यवाद! हम जल्द संपर्क करेंगे।',
+      submit: 'मुफ़्त call request करें',
+      thankYou: 'धन्यवाद! हम जल्द मुफ़्त guidance conversation के लिए कॉल करेंगे।',
     },
 
     partner: {
@@ -1993,7 +2172,7 @@ export const siteHi = {
       intro: 'Dream Mantra में welcome। ये Terms & Conditions हमारी website, assessments, consultations और सभी services के access और use को govern करते हैं। Dream Mantra use करके आप legally bound agree करते हैं। अगर agree नहीं हैं, कृपया services use न करें। Dream Mantra Tibrewal Enterprises द्वारा owned और operated है।',
       sections: [
         { title: '1. Terms की Acceptance', content: 'Dream Mantra website और services access और use करके, आप इस agreement की terms से bound agree करते हैं। ऊपर abide नहीं करना चाहते तो service use न करें।' },
-        { title: '2. Assessment Services', content: 'सभी assessment results (Mind Mapping, Skill Mapping, AI Career Launchpad) advisory nature के हैं। Personality, aptitude और career preferences में scientific insights provide करते हैं। Final career decisions solely students, parents और guardians के पास रहते हैं। Dream Mantra assessment recommendations पर outcomes के लिए responsible नहीं है।' },
+        { title: '2. Assessment Services', content: 'सभी assessment results (Brain Mapping, Skill Mapping, AI Career Launchpad) advisory nature के हैं। Personality, aptitude और career preferences में scientific insights provide करते हैं। Final career decisions solely students, parents और guardians के पास रहते हैं। Dream Mantra assessment recommendations पर outcomes के लिए responsible नहीं है।' },
         { title: '3. Consultations और Counselling', content: 'Free consultations counsellor availability पर offered। Booked sessions 24 hours notice से reschedule करें। 24 hours पहले unfilled slots पर Dream Mantra cancel कर सकता है। सभी guidance professional advice है — educational या career outcomes की liability accept नहीं।' },
         { title: '4. Refund Policy', content: 'Dream Mantra provides refunds as per company policy. After your refund request has been approved, the refund amount will be initiated within 2–3 business days. Once initiated, it may take an additional 10–15 business days for the amount to reflect in your original payment method, depending on your bank, card issuer, or payment gateway.' },
         { title: '5. User Responsibilities', content: 'Registration और assessments में accurate personal information provide करें। Account credentials confidential रखना आपकी responsibility। Unauthorized use immediately Dream Mantra support को report करें।' },
@@ -2271,24 +2450,6 @@ export const siteHi = {
     },
   },
 
-  welcomeOffer: {
-    badge: 'Limited Offer',
-    headline: 'पहले Assessment पर 20% OFF',
-    validFor: 'First assessment payment only',
-    trendingNow: 'Trending Now',
-    titleLine1: 'पहली बार यहाँ?',
-    titleHighlight: '20% OFF',
-    titleLine2: 'Assessments पर',
-    desc: 'Sign up करें और first Mind Mapping या Skill Mapping test book करें। Checkout पर coupon apply करें —',
-    claimOffer: 'Offer Claim करें',
-    exploreAssessments: 'Assessments Explore करें',
-    couponLabel: 'Your Coupon Code',
-    discountLine: '20% OFF · Mind Mapping और Skill Mapping पर Save',
-    copyCode: 'Code Copy करें',
-    copied: 'Copied!',
-    copyCoupon: 'Coupon copy करें',
-  },
-
   aiFeatures: {
     title: 'AI-Powered Career Discovery',
     subtitle: 'Guesswork नहीं — science पर based intelligent AI tools से perfect career path discover करें।',
@@ -2355,15 +2516,15 @@ export const siteHi = {
     reportWaiting: 'Report in progress — usually 3–7 days mein ready',
     steps: [
       { id: 'profile', title: 'Profile Complete karein', desc: 'Class, stream, city aur career goal add karein taaki hum aapke liye recommendations personalise kar saken.', actionEdit: 'Edit Profile', actionComplete: 'Profile Complete karein' },
-      { id: 'book', title: 'Module Book karein', desc: 'Apni zaroorat ke hisaab se Mind Mapping, Skill Mapping ya AI Career Launchpad choose karein.', actionLabel: 'Modules dekhein' },
-      { id: 'payment', title: 'Payment Complete karein', desc: 'Secure checkout — pehli assessment par DREAMS20 se 20% off.', actionPay: 'Pay Now', actionBookFirst: 'Pehle Module Book karein' },
+      { id: 'book', title: 'Module Book karein', desc: 'Apni zaroorat ke hisaab se Brain Mapping, Skill Mapping ya AI Career Launchpad choose karein.', actionLabel: 'Modules dekhein' },
+      { id: 'payment', title: 'Payment Complete karein', desc: 'Selected module ke liye secure checkout.', actionPay: 'Pay Now', actionBookFirst: 'Pehle Module Book karein' },
       { id: 'process', title: 'Process samjhein', desc: 'Payment ke baad kya hoga — timeline, deliverables aur expectations.', actionLabel: 'Process dekhein' },
       { id: 'product_action', title: 'Assessment Complete karein', desc: 'Apne module ka agla step — questionnaire, fingerprints, ya community onboarding.', actionLabel: 'Assessment continue karein' },
       { id: 'report', title: 'Report paayein', desc: 'Aapki personalised career report 3–7 business days mein deliver hoti hai.', actionLabel: 'Reports dekhein' },
       { id: 'book_counselling', title: 'Counselling Session Book karein', desc: 'Certified counsellor ke saath apni report review karne ke liye session schedule karein.', actionLabel: 'Session Book karein' },
     ],
     processTitles: {
-      dmit: 'Mind Mapping Process',
+      dmit: 'Brain Mapping Process',
       psychometric: 'Skill Mapping Process',
       'crp-test': 'AI Career Launchpad Process',
     },

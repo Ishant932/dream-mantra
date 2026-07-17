@@ -65,7 +65,7 @@ export default function UserDashboard() {
 
   useEffect(() => {
     if (tabParam === 'ai') {
-      navigate({ pathname: location.pathname, search: '?tab=overview' }, { replace: true });
+      navigate({ pathname: location.pathname, search: '?tab=overview' }, { replace: true, preventScrollReset: true });
     }
   }, [tabParam, navigate, location.pathname]);
   const welcomeUid = location.state?.welcomeUid;
@@ -202,11 +202,11 @@ export default function UserDashboard() {
     const slotId = new URLSearchParams(location.search).get('slot_id');
     if (!slotId || loading) return;
     if (!counsellingAccess) {
-      navigate({ pathname: '/dashboard', search: '?tab=assess' }, { replace: true });
+      navigate({ pathname: '/dashboard', search: '?tab=assess' }, { replace: true, preventScrollReset: true });
       return;
     }
     if (tabParam !== 'book') {
-      navigate({ pathname: '/dashboard', search: `?tab=book&slot_id=${slotId}` }, { replace: true });
+      navigate({ pathname: '/dashboard', search: `?tab=book&slot_id=${slotId}` }, { replace: true, preventScrollReset: true });
       return;
     }
     loadSlots();
@@ -224,7 +224,10 @@ export default function UserDashboard() {
   }, [location.search, slots, counsellingAccess]);
 
   const goTab = (tabId, extraSearch = '') => {
-    navigate({ pathname: '/dashboard', search: `?tab=${tabId}${extraSearch}` });
+    navigate(
+      { pathname: '/dashboard', search: `?tab=${tabId}${extraSearch}` },
+      { preventScrollReset: true },
+    );
   };
 
   const openProfileModal = () => setShowProfileModal(true);
@@ -452,7 +455,7 @@ export default function UserDashboard() {
                     <Calendar className="w-12 h-12 text-amber-500 mx-auto mb-4 opacity-80" />
                     <h3 className="font-bold text-lg mb-2">Book Session — locked</h3>
                     <p className="text-sm opacity-70 mb-4 max-w-md mx-auto">
-                      Purchase Mind Mapping, Skill Mapping, Combo or CRP with counselling access, then return here to pick a slot.
+                      Purchase Brain Mapping, Skill Mapping, Combo or CRP with counselling access, then return here to pick a slot.
                     </p>
                     <button type="button" className="btn-primary" onClick={() => goTab('assess')}>Browse modules</button>
                   </DashCard>
@@ -515,7 +518,7 @@ export default function UserDashboard() {
                       <div>
                         <h2 className="text-2xl font-bold dash-card-title">My Reports</h2>
                         <p className="dash-card-meta mt-1 text-sm max-w-xl">
-                          Personalised Mind Mapping, Skill Mapping and assessment reports — published here after counsellor review.
+                          Personalised Brain Mapping, Skill Mapping and assessment reports — published here after counsellor review.
                         </p>
                         <p className="mt-2 text-sm font-medium text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-800/40 rounded-lg px-3 py-2 max-w-xl">
                           Note: Kindly download your report within 10 days of upload. Reports may be removed from the dashboard after this period.

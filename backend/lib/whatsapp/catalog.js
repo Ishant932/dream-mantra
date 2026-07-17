@@ -35,7 +35,7 @@ Your *Dream Mantra* account is *LIVE* ✅
 
 ${fireBar()}
 *What you can do right now:*
-${bullet('🧠', 'Mind Mapping — discover your strengths')}
+${bullet('🧠', 'Brain Mapping — discover your strengths')}
 ${bullet('🎯', 'Skill Mapping — map skills to careers')}
 ${bullet('💼', '1:1 Career Counselling')}
 ${bullet('🤖', 'AI Career Launchpad community')}
@@ -76,7 +76,7 @@ _Tip:_ Complete profile → unlock tests, reports & counselling booking 🚀`,
 
 Hi *${name}*! Our most-loved career modules:
 
-${priceTag('Mind Mapping', '₹1,999', 'Deep personality + career fit')}
+${priceTag('Brain Mapping', '₹1,999', 'Deep personality + career fit')}
 ${priceTag('Skill Mapping', '₹699', 'Skills → job roles')}
 ${priceTag('Combo + Counselling', '₹2,999', 'Best value — tests + session')}
 ${priceTag('AI Career Launchpad', '₹1,499', 'Community + mentorship')}

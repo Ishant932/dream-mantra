@@ -69,7 +69,7 @@ export default function CounsellingBookingPanel({
               <h2 className="text-xl font-bold mb-2">Book slots after purchase</h2>
               <p className="text-sm dash-card-meta mb-6 max-w-lg mx-auto">
                 Counselling calendar unlocks only after you purchase a module with counselling —
-                add the counselling add-on at checkout, or buy Mind + Skill + Counselling (included).
+                add the counselling add-on at checkout, or buy Brain + Skill Mapping (included).
               </p>
               <motion.button
                 type="button"

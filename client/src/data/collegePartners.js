@@ -1,23 +1,35 @@
-/** College & university partners shown in the home marquee strip */
+/** Colleges and universities shown in the home marquee strip. */
 export const COLLEGE_PARTNERS = [
-  { id: 'manipal', name: 'Manipal University', domain: 'manipal.edu', symbol: '🏛️' },
-  { id: 'amity', name: 'Amity University', domain: 'amity.edu', symbol: '🎓' },
-  { id: 'bits', name: 'BITS Pilani', domain: 'bits-pilani.ac.in', symbol: '⚙️' },
-  { id: 'christ', name: 'Christ University', domain: 'christuniversity.in', symbol: '📚' },
-  { id: 'symbiosis', name: 'Symbiosis International', domain: 'siu.edu.in', symbol: '🌐' },
-  { id: 'lpu', name: 'LPU Punjab', domain: 'lpu.in', symbol: '🦁' },
-  { id: 'nmims', name: 'NMIMS Mumbai', domain: 'nmims.edu', symbol: '💼' },
-  { id: 'poornima', name: 'Poornima University Jaipur', domain: 'poornima.edu.in', symbol: '🏗️' },
-  { id: 'jnu-jaipur', name: 'Jaipur National University', domain: 'jnujaipur.ac.in', symbol: '🎯' },
-  { id: 'maharaja', name: 'Maharaja College Jaipur', domain: 'univraj.org', symbol: '👑' },
-  { id: 'xaviers', name: "St. Xavier's Jaipur", domain: 'stxaviersjaipur.org', symbol: '✨' },
-  { id: 'pan-india', name: 'Pan-India Online', domain: 'dreammantra.in', symbol: '🇮🇳' },
+  {
+    id: 'amity',
+    name: 'Amity University',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/9/91/Amity_University_Mumbai.png',
+  },
+  {
+    id: 'iit-madras',
+    name: 'IIT Madras',
+    logo: 'https://en.wikipedia.org/wiki/Special:Redirect/file/IIT_Madras_Logo.svg',
+  },
+  {
+    id: 'iit-delhi',
+    name: 'IIT Delhi',
+    logo: 'https://en.wikipedia.org/wiki/Special:Redirect/file/Indian_Institute_of_Technology_Delhi_Logo.svg',
+  },
+  {
+    id: 'nmims',
+    name: 'NMIMS Mumbai',
+    logo: 'https://commons.wikimedia.org/wiki/Special:Redirect/file/NMIMS-logo.jpg',
+  },
+  {
+    id: 'iit-kanpur',
+    name: 'IIT Kanpur',
+    logo: 'https://en.wikipedia.org/wiki/Special:Redirect/file/IIT_Kanpur_Logo.svg',
+  },
+  {
+    id: 'iit-kharagpur',
+    name: 'IIT Kharagpur',
+    logo: 'https://en.wikipedia.org/wiki/Special:Redirect/file/IIT_Kharagpur_Logo.svg',
+  },
 ];
-
-/** Official site favicon via Google (falls back to emoji in UI). */
-export function collegeLogoUrl(domain) {
-  if (!domain) return null;
-  return `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=64`;
-}
 
 export const partnerNames = COLLEGE_PARTNERS.map((p) => p.name);

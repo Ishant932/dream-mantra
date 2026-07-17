@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CheckCircle, XCircle, ArrowRight, Fingerprint, Brain, Target, Users, Star,
-  Microscope, Shield, BookOpen,
+  Microscope, Shield, BookOpen, Dna, Globe2,
 } from 'lucide-react';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
@@ -15,22 +15,24 @@ const fade = {
 };
 
 const WHY_ICONS = [Brain, Users, Target, Star];
+const SCIENCE_ICONS = [Dna, Brain, Globe2];
+const SCIENCE_TONES = ['purple', 'orange', 'blue'];
 
 function SectionLabel({ children }) {
   return (
-    <span className="home-eyebrow inline-flex items-center gap-2 mb-4">{children}</span>
+    <span className="home-eyebrow inline-flex items-center gap-2 mb-4 dm-saas__section-label">{children}</span>
   );
 }
 
-export default function DMITPage() {
+export default function DMITPage({ compact = false }) {
   const { d } = useLang();
   const page = d('pages.dmit');
   const hero = page.hero;
 
   return (
-    <div className="overflow-hidden">
+    <div className={`overflow-hidden${compact ? ' counselling-embed dm-saas' : ''}`}>
       {/* Hero */}
-      <section className="relative pt-28 pb-16 lg:pt-32 lg:pb-20 bg-gradient-to-b from-amber-50 to-[var(--bg-base)] dark:from-[#5c6b2e] dark:to-[#523010]">
+      <section className={`relative ${compact ? 'pt-0 pb-8 lg:pb-10' : 'pt-28 pb-16 lg:pt-32 lg:pb-20'} bg-gradient-to-b from-amber-50 to-[var(--bg-base)] dark:from-[#5c6b2e] dark:to-[#523010]`}>
         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-sm font-bold mb-6">
@@ -65,7 +67,7 @@ export default function DMITPage() {
         </div>
       </section>
 
-      {/* 1. What is Mind Mapping */}
+      {/* 1. What is Brain Mapping */}
       <section className="py-20 lg:py-28 bg-[var(--bg-elevated)]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div {...fade} className="text-center max-w-3xl mx-auto mb-14">
@@ -104,19 +106,25 @@ export default function DMITPage() {
             <h3 className="home-headline text-2xl mb-3 text-center">{page.whatIs.scienceTitle}</h3>
             <p className="text-center text-sand-600 dark:text-sand-400 max-w-2xl mx-auto mb-8">{page.whatIs.scienceIntro}</p>
             <div className="grid sm:grid-cols-3 gap-6">
-              {page.whatIs.scienceFields.map((field, i) => (
+              {page.whatIs.scienceFields.map((field, i) => {
+                const SciIcon = SCIENCE_ICONS[i % SCIENCE_ICONS.length];
+                const tone = SCIENCE_TONES[i % SCIENCE_TONES.length];
+                return (
                 <motion.div
                   key={field.title}
                   {...fade}
                   transition={{ delay: i * 0.08 }}
                   whileHover={{ y: -6 }}
-                  className="infigon-card p-6 text-center glow-card"
+                  className={`infigon-card p-6 text-center glow-card dm-saas__science-card dm-saas__science-card--${tone}`}
                 >
-                  <span className="text-4xl mb-3 block">{field.icon}</span>
+                  <span className={`dm-saas__icon-circle dm-saas__icon-circle--${tone}`} aria-hidden>
+                    <SciIcon className="w-6 h-6" />
+                  </span>
                   <h4 className="font-bold mb-2">{field.title}</h4>
                   <p className="text-sm text-sand-600 dark:text-sand-400">{field.desc}</p>
                 </motion.div>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
 
@@ -352,10 +360,17 @@ export default function DMITPage() {
 
       {/* CTA */}
       <section className="py-16 px-4">
-        <motion.div {...fade} className="max-w-3xl mx-auto text-center rounded-3xl bg-gradient-to-r from-amber-600 to-orange-600 p-12 text-amber-50">
-          <h2 className="home-headline text-amber-50 mb-4">{page.cta.title}</h2>
-          <p className="opacity-90 mb-8">{page.cta.desc}</p>
-          <Link to="/signup" className="btn-gold inline-flex gap-2">
+        <motion.div
+          {...fade}
+          className={`max-w-3xl mx-auto text-center rounded-3xl p-12 ${
+            compact
+              ? 'dm-saas__bottom-cta'
+              : 'bg-gradient-to-r from-amber-600 to-orange-600 text-amber-50'
+          }`}
+        >
+          <h2 className={`home-headline mb-4 ${compact ? '' : 'text-amber-50'}`}>{page.cta.title}</h2>
+          <p className={`mb-8 ${compact ? 'text-sand-600' : 'opacity-90'}`}>{page.cta.desc}</p>
+          <Link to="/signup" className={`inline-flex gap-2 ${compact ? 'btn-primary px-8 py-3.5' : 'btn-gold'}`}>
             {page.cta.button} <ArrowRight className="w-5 h-5" />
           </Link>
         </motion.div>

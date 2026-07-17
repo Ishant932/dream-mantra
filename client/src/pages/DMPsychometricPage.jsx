@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CheckCircle, ArrowRight, Sparkles, Phone, GitMerge,
-  Brain, Fingerprint, MessageCircle, FileText, Users,
+  Brain, Fingerprint, MessageCircle, Users, FileText,
+  BarChart3, ClipboardList, Target, TrendingUp, RefreshCw,
 } from 'lucide-react';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
@@ -14,7 +15,12 @@ const fade = {
   transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
 };
 
-export default function DMPsychometricPage() {
+const STEP_ICONS = [Fingerprint, BarChart3, ClipboardList, MessageCircle];
+const STEP_TONES = ['purple', 'blue', 'orange', 'green'];
+const BENEFIT_ICONS = [GitMerge, Target, Users, ClipboardList, TrendingUp, RefreshCw];
+const BENEFIT_TONES = ['orange', 'purple', 'green', 'blue', 'yellow', 'orange'];
+
+export default function DMPsychometricPage({ compact = false }) {
   const { d } = useLang();
   const page = d('pages.dmitPsychometric');
   const hero = page.hero;
@@ -25,8 +31,8 @@ export default function DMPsychometricPage() {
   const who = d('data.comboWho');
 
   return (
-    <div className="overflow-hidden combo-page">
-      <section className="relative pt-28 pb-20 lg:pt-32 lg:pb-28 bg-gradient-to-br from-amber-50/90 via-[var(--bg-base)] to-emerald-50/40 dark:from-[#3d4a22]/30 dark:to-[var(--bg-base)]">
+    <div className={`overflow-hidden combo-page${compact ? ' counselling-embed dm-saas' : ''}`}>
+      <section className={`relative ${compact ? 'pt-0 pb-8 lg:pb-10' : 'pt-28 pb-20 lg:pt-32 lg:pb-28'} bg-gradient-to-br from-amber-50/90 via-[var(--bg-base)] to-emerald-50/40 dark:from-[#3d4a22]/30 dark:to-[var(--bg-base)]`}>
         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }}>
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-200 text-sm font-semibold mb-6">
@@ -56,7 +62,7 @@ export default function DMPsychometricPage() {
                 whileHover={{ scale: 1.03 }}
               >
                 <img src={IMAGES.comboMind || IMAGES.dmit} alt={hero.dmitAlt} className="w-full h-full object-cover" />
-                <span className="absolute bottom-2 left-2 text-xs font-bold px-2 py-1 rounded-lg bg-emerald-900/75 text-amber-50">Mind Mapping</span>
+                <span className="absolute bottom-2 left-2 text-xs font-bold px-2 py-1 rounded-lg bg-emerald-900/75 text-amber-50">Brain Mapping</span>
               </motion.div>
               <motion.div
                 className="relative rounded-2xl overflow-hidden shadow-xl aspect-square"
@@ -92,7 +98,10 @@ export default function DMPsychometricPage() {
             </p>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {steps.map((s, i) => (
+            {steps.map((s, i) => {
+              const StepIcon = STEP_ICONS[i % STEP_ICONS.length];
+              const tone = STEP_TONES[i % STEP_TONES.length];
+              return (
               <motion.div
                 key={s.step}
                 {...fade}
@@ -101,7 +110,9 @@ export default function DMPsychometricPage() {
                 className="glass-card p-6 combo-step-card relative overflow-hidden"
               >
                 <span className="absolute top-3 right-4 text-3xl font-display font-bold text-amber-500/20">{s.step}</span>
-                <span className="text-2xl mb-3 block">{s.icon}</span>
+                <span className={`dm-saas__icon-circle dm-saas__icon-circle--${tone} mb-3`} aria-hidden>
+                  <StepIcon className="w-5 h-5" />
+                </span>
                 <h3 className="font-display font-bold mb-2">{s.title}</h3>
                 <p className="text-sm text-sand-600 dark:text-sand-400 leading-relaxed mb-3">{s.desc}</p>
                 {s.link && (
@@ -110,7 +121,8 @@ export default function DMPsychometricPage() {
                   </Link>
                 )}
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -154,13 +166,19 @@ export default function DMPsychometricPage() {
         <div className="max-w-7xl mx-auto px-4">
           <motion.h2 {...fade} className="section-title text-center mb-12">{page.benefitsTitle}</motion.h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {benefits.map((b, i) => (
+            {benefits.map((b, i) => {
+              const BenIcon = BENEFIT_ICONS[i % BENEFIT_ICONS.length];
+              const tone = BENEFIT_TONES[i % BENEFIT_TONES.length];
+              return (
               <motion.div key={b.title} {...fade} transition={{ delay: i * 0.06 }} whileHover={{ scale: 1.02 }} className="glass-card p-6 combo-card-hover">
-                <span className="text-2xl mb-3 block">{b.icon}</span>
+                <span className={`dm-saas__icon-circle dm-saas__icon-circle--${tone} mb-3`} aria-hidden>
+                  <BenIcon className="w-5 h-5" />
+                </span>
                 <h3 className="font-display font-bold mb-2">{b.title}</h3>
                 <p className="text-sm text-sand-600 dark:text-sand-400 leading-relaxed">{b.desc}</p>
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -212,9 +230,9 @@ export default function DMPsychometricPage() {
             </a>
           </div>
           <div className="mt-6 flex flex-wrap justify-center gap-4 text-xs">
-            <Link to="/assessments/dmit" className="text-amber-600 font-semibold hover:underline">{page.counselling.dmitOnly}</Link>
-            <Link to="/assessments/psychometric" className="text-amber-600 font-semibold hover:underline">{page.counselling.psychometricOnly}</Link>
-            <Link to="/counselling?tab=process" className="text-amber-600 font-semibold hover:underline">{page.counselling.processLink}</Link>
+            <Link to="/counselling?tab=dmit" className="text-amber-600 font-semibold hover:underline">{page.counselling.dmitOnly}</Link>
+            <Link to="/counselling?tab=psychometric" className="text-amber-600 font-semibold hover:underline">{page.counselling.psychometricOnly}</Link>
+            <Link to="/counselling?tab=overview" className="text-amber-600 font-semibold hover:underline">{page.counselling.processLink}</Link>
           </div>
         </motion.div>
       </section>

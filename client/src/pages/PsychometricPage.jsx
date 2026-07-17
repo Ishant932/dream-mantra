@@ -2,7 +2,8 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CheckCircle, ArrowRight, Brain, Users, Target, BookOpen,
-  AlertCircle, Sparkles, Phone, ChevronRight,
+  AlertCircle, Sparkles, Phone, ChevronRight, BarChart3, Zap, Eye,
+  Compass, Orbit, Monitor, Microscope, ClipboardList, MessageCircle,
 } from 'lucide-react';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
@@ -27,7 +28,20 @@ const accentMap = {
   gold: 'from-yellow-500/15 to-amber-500/5 border-yellow-200 dark:border-yellow-800',
 };
 
-export default function PsychometricPage() {
+const TEST_ICONS = {
+  mbti: Brain,
+  disc: Zap,
+  big5: BarChart3,
+  vak: Eye,
+  mit: Target,
+  riasec: Compass,
+  jung: Orbit,
+};
+
+const PROCESS_ICONS = [Monitor, Microscope, ClipboardList, MessageCircle];
+const PROCESS_TONES = ['blue', 'purple', 'orange', 'green'];
+
+export default function PsychometricPage({ compact = false }) {
   const { d } = useLang();
   const page = d('pages.psychometric');
   const hero = page.hero;
@@ -40,8 +54,8 @@ export default function PsychometricPage() {
   const whatAre = page.whatAre;
 
   return (
-    <div className="overflow-hidden psycho-page">
-      <section className="relative pt-28 pb-20 lg:pt-32 lg:pb-28 bg-gradient-to-b from-amber-50/80 to-[var(--bg-base)] dark:from-[#3d4a22]/40 dark:to-[var(--bg-base)]">
+    <div className={`overflow-hidden psycho-page${compact ? ' counselling-embed dm-saas' : ''}`}>
+      <section className={`relative ${compact ? 'pt-0 pb-8 lg:pb-10' : 'pt-28 pb-20 lg:pt-32 lg:pb-28'} bg-gradient-to-b from-amber-50/80 to-[var(--bg-base)] dark:from-[#3d4a22]/40 dark:to-[var(--bg-base)]`}>
         <div className="absolute top-20 right-[10%] w-64 h-64 rounded-full blur-3xl opacity-30 animate-blob pointer-events-none" style={{ background: 'rgba(255,107,74,0.2)' }} />
         <div className="absolute bottom-10 left-[5%] w-48 h-48 rounded-full blur-3xl opacity-25 animate-blob-slow pointer-events-none" style={{ background: 'rgba(201,168,76,0.25)' }} />
 
@@ -199,11 +213,15 @@ export default function PsychometricPage() {
               >
                 <div className="flex items-start gap-4 mb-4">
                   <motion.span
-                    className="text-3xl psycho-icon-float"
+                    className={`dm-saas__icon-circle dm-saas__icon-circle--${test.color === 'gold' ? 'yellow' : test.color === 'amber' ? 'orange' : test.color} psycho-icon-float`}
                     animate={{ y: [0, -4, 0] }}
                     transition={{ duration: 3, repeat: Infinity, delay: i * 0.3 }}
+                    aria-hidden
                   >
-                    {test.icon}
+                    {(() => {
+                      const Icon = TEST_ICONS[test.id] || Brain;
+                      return <Icon className="w-5 h-5" />;
+                    })()}
                   </motion.span>
                   <div>
                     <h3 className="font-display font-bold text-lg leading-snug">{test.name}</h3>
@@ -253,10 +271,10 @@ export default function PsychometricPage() {
             ))}
           </div>
           <motion.div {...fade} className="text-center mt-10 flex flex-wrap justify-center gap-4">
-            <Link to="/assessments/dmit-psychometric" className="btn-gold inline-flex items-center gap-2 shadow-lg">
+            <Link to="/counselling?tab=combo" className="btn-gold inline-flex items-center gap-2 shadow-lg">
               {page.why.comboCta} <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link to="/assessments/dmit" className="px-6 py-3 rounded-xl border-2 border-white/70 text-white font-semibold hover:bg-white/15 transition">
+            <Link to="/counselling?tab=dmit" className="px-6 py-3 rounded-xl border-2 border-white/70 text-white font-semibold hover:bg-white/15 transition">
               {page.why.learnDmit}
             </Link>
           </motion.div>
@@ -323,7 +341,10 @@ export default function PsychometricPage() {
             <h2 className="home-headline">{page.process.title}</h2>
           </motion.div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {process.map((s, i) => (
+            {process.map((s, i) => {
+              const StepIcon = PROCESS_ICONS[i % PROCESS_ICONS.length];
+              const tone = PROCESS_TONES[i % PROCESS_TONES.length];
+              return (
               <motion.div
                 key={s.step}
                 {...stagger}
@@ -335,14 +356,17 @@ export default function PsychometricPage() {
                 }`}
               >
                 <span className="absolute top-3 right-4 text-4xl font-display font-bold text-amber-500/15">{s.step}</span>
-                <span className="text-2xl mb-3 block">{s.icon}</span>
+                <span className={`dm-saas__icon-circle dm-saas__icon-circle--${tone} mb-3`} aria-hidden>
+                  <StepIcon className="w-5 h-5" />
+                </span>
                 <h3 className="font-bold mb-2">{s.title}</h3>
                 <p className="text-sm text-sand-600 dark:text-sand-400 leading-relaxed">{s.desc}</p>
                 {i < process.length - 1 && (
                   <div className="hidden lg:block absolute -right-3 top-1/2 w-6 h-0.5 bg-amber-300/50" />
                 )}
               </motion.div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

@@ -207,7 +207,7 @@ User question: ${q}
 
 IMPORTANT INSTRUCTIONS:
 1. If a stream is specified or the question is about a stream, FIRST give detailed advice about that stream — careers, exams, skills, and 2-3 specific options for India.
-2. THEN add a short section promoting Dream Mantra: Mind Mapping + Skill Mapping for scientific stream validation, 7-Step Counselling, 950+ career library, free consultation at 9680102276 or /contact.
+2. THEN add a short section promoting Dream Mantra: Brain Mapping + Skill Mapping for scientific stream validation, 7-Step Counselling, 950+ career library, free consultation at 9680102276 or /contact.
 3. Keep total response under 350 words. Be actionable and warm.`;
 
   let advice = null;
@@ -240,8 +240,8 @@ IMPORTANT INSTRUCTIONS:
 
   if (!advice) {
     advice = `Based on your profile${effectiveStream ? ` (${effectiveStream})` : ''}, explore careers via our 950+ Career Library. `
-      + `For Class ${classLevel || profile.classLevel || '9-12'}, we recommend Mind Mapping + Skill Mapping before stream selection. `
-      + `Book free counselling at 9680102276 or /contact — Dream Mantra's certified counsellors will build your personalised roadmap.`;
+      + `For Class ${classLevel || profile.classLevel || '9-12'}, we recommend Brain Mapping + Skill Mapping before stream selection. `
+      + `Book a free guidance call at 9680102276 or /contact — Dream Mantra's certified counsellors will build your personalised roadmap.`;
   }
 
   res.json({

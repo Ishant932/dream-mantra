@@ -80,8 +80,8 @@ export default function HomeTrustBar() {
   const lite = isMobilePerf();
 
   return (
-    <section className="no-reveal home-trust-strip home-trust-strip--animated" aria-label="Trust indicators">
-      <div className="max-w-7xl mx-auto px-4">
+    <section className="no-reveal home-trust-strip home-trust-strip--on-orange home-trust-strip--animated" aria-label="Trust indicators">
+      <div className="max-w-7xl mx-auto px-4 relative z-[1]">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -94,7 +94,7 @@ export default function HomeTrustBar() {
             transition={{ duration: 2.4, repeat: Infinity, repeatDelay: 4 }}
             className="inline-flex"
           >
-            <Shield className="w-5 h-5 text-amber-600 shrink-0" />
+            <Shield className="w-5 h-5 text-white/95 shrink-0" />
           </motion.span>
           <p className="home-trust-strip__tagline text-sm sm:text-base">{copy.tagline}</p>
         </motion.div>

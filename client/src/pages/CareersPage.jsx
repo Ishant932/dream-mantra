@@ -49,7 +49,7 @@ export default function CareersPage() {
       else p.set(k, String(v));
     });
     const qs = p.toString();
-    navigate({ pathname: location.pathname, search: qs ? `?${qs}` : '' }, { replace: true });
+    navigate({ pathname: location.pathname, search: qs ? `?${qs}` : '' }, { replace: true, preventScrollReset: true });
   };
 
   const handleSearch = (e) => {

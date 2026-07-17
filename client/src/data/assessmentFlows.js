@@ -136,7 +136,7 @@ export function psychometricProcessIntro(classLevel) {
 
 export const PRODUCT_META = {
   dmit: {
-    title: 'Mind Mapping',
+    title: 'Brain Mapping',
     icon: 'fingerprint',
     completeTitle: 'Fingerprint step recorded',
     completeDesc: 'Our team will contact you to schedule your fingerprint scan. Your detailed report will be ready in 3–7 days and appear in My Reports.',
@@ -154,9 +154,9 @@ export const PRODUCT_META = {
     completeDesc: 'You have joined the AI Career Launchpad community. Session details and your training report will be shared within 3–7 days.',
   },
   'dmit-psychometric': {
-    title: 'Mind + Skill + Counselling',
+    title: 'Brain + Skill Mapping',
     icon: 'sparkles',
     completeTitle: 'Assessment steps recorded',
-    completeDesc: 'Mind Mapping fingerprint step is recorded. Complete your Skill Mapping questionnaire from the Take Test tab. Your combined report and counselling session will follow in 3–7 days.',
+    completeDesc: 'Brain Mapping fingerprint step is recorded. Complete your Skill Mapping questionnaire from the Take Test tab. Your combined report and counselling session will follow in 3–7 days.',
   },
 };

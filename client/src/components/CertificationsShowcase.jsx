@@ -1,38 +1,17 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, Expand, X } from 'lucide-react';
 import { useHomeContent } from '../i18n/useSiteContent';
 import MarqueeStrip from './MarqueeStrip';
 
-const TAB_ORDER = ['all', 'international', 'government', 'nlp', 'iit', 'reliance', 'dmit'];
-const TAB_ICONS = {
-  all: '🏆',
-  international: '🌍',
-  government: '🇮🇳',
-  nlp: '🧠',
-  iit: '🎓',
-  reliance: '✨',
-  dmit: '🔬',
-};
-
 export default function CertificationsShowcase() {
   const { home, certifications } = useHomeContent();
   const certCopy = home.certifications;
-  const [activeTab, setActiveTab] = useState('all');
   const [lightbox, setLightbox] = useState(null);
 
-  const filtered = useMemo(() => {
-    if (activeTab === 'all') return certifications;
-    return certifications.filter((c) => c.category === activeTab);
-  }, [activeTab, certifications]);
-
-  const marqueeItems = filtered.length > 0 ? filtered : certifications;
-
   return (
-    <section id="certifications" className="no-reveal py-20 lg:py-28 relative overflow-hidden scroll-mt-28 cert-showcase-section">
-      <div className="absolute inset-0 cert-showcase-bg pointer-events-none" aria-hidden="true" />
-
-      <div className="max-w-7xl mx-auto px-4 relative mb-12">
+    <div id="certifications" className="no-reveal relative overflow-hidden scroll-mt-28 cert-showcase-section">
+      <div className="max-w-7xl mx-auto px-4 relative mb-5 sm:mb-7">
         <motion.div
           initial={{ opacity: 0, y: 32 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -40,51 +19,31 @@ export default function CertificationsShowcase() {
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
           className="text-center"
         >
-          <motion.span
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="section-label inline-flex items-center gap-2"
-          >
-            <Award className="w-4 h-4" /> {certCopy.label}
-          </motion.span>
-          <h2 className="section-title mt-3">
-            {certCopy.title} <span className="gradient-text">{certCopy.titleHighlight}</span>
-          </h2>
-          <p className="mt-4 max-w-2xl mx-auto text-lg text-theme-muted">
-            {certCopy.subtitle}
-          </p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.15, duration: 0.5 }}
-          className="flex gap-2 overflow-x-auto pb-3 mt-10 cert-tabs-scroll scrollbar-hide justify-start md:justify-center"
-        >
-          {TAB_ORDER.map((tab) => (
-            <motion.button
-              key={tab}
-              type="button"
-              onClick={() => setActiveTab(tab)}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className={`cert-tab shrink-0 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all flex items-center gap-2 ${
-                activeTab === tab ? 'cert-tab-active' : 'cert-tab-idle'
-              }`}
+          {certCopy.label ? (
+            <motion.span
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="section-label inline-flex items-center gap-2"
             >
-              <span className="text-base" aria-hidden="true">{TAB_ICONS[tab]}</span>
-              {certCopy.tabs[tab]}
-            </motion.button>
-          ))}
+              <Award className="w-4 h-4" /> {certCopy.label}
+            </motion.span>
+          ) : null}
+          <h2 className="home-headline mt-3">
+            {certCopy.title} <span className="gradient-text text-pop">{certCopy.titleHighlight}</span>
+          </h2>
+          {certCopy.subtitle ? (
+            <p className="cert-showcase-sub">
+              {certCopy.subtitle}
+            </p>
+          ) : null}
         </motion.div>
       </div>
 
-      <div key={activeTab} className="relative cert-marquee-wrap">
+      <div className="relative cert-marquee-wrap">
         <MarqueeStrip speed="55s" gap="gap-6">
-          {marqueeItems.map((cert, i) => (
+          {certifications.map((cert, i) => (
             <CertMarqueeCard
               key={`${cert.id}-${i}`}
               cert={cert}
@@ -120,13 +79,12 @@ export default function CertificationsShowcase() {
               </div>
               <div className="mt-4 text-center">
                 <h3 className="font-display text-xl font-bold text-theme-primary">{lightbox.title}</h3>
-                <p className="text-sm mt-1 text-theme-muted">{lightbox.issuer}</p>
               </div>
             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </section>
+    </div>
   );
 }
 
@@ -140,7 +98,6 @@ function CertMarqueeCard({ cert, onExpand, copy }) {
           <div className="cert-photo-fallback flex flex-col items-center justify-center h-full p-4 text-center">
             <Award className="w-10 h-10 text-amber-600 mb-2" />
             <p className="font-bold text-sm text-theme-primary leading-snug">{cert.title}</p>
-            <p className="text-xs text-theme-muted mt-1">{cert.issuer}</p>
           </div>
         ) : (
           <img
@@ -164,7 +121,6 @@ function CertMarqueeCard({ cert, onExpand, copy }) {
 
       <div className="cert-card-footer p-4">
         <h3 className="font-bold text-sm leading-snug line-clamp-2 text-theme-primary">{cert.title}</h3>
-        <p className="text-xs mt-1.5 line-clamp-2 text-theme-muted">{cert.issuer}</p>
       </div>
     </article>
   );

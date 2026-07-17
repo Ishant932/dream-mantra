@@ -11,15 +11,18 @@ import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLin
 import { useSiteNav } from '../i18n/useSiteContent';
 import { isMobilePerf } from '../utils/mobilePerf';
 
-const buildMainNav = (t, counsellingMega, crpMega) => [
+const buildMainNav = (t, counsellingMega, crpMega, counsellingCommon = [], commonTitle = 'Common') => [
   {
     label: t('nav.counselling'),
     to: '/counselling',
+    highlight: true,
     mega: counsellingMega,
+    common: counsellingCommon,
+    commonTitle,
   },
   {
     label: t('nav.crp'),
-    to: '/crp/explore',
+    to: '/crp?tab=launchpad',
     highlight: true,
     mega: crpMega,
   },
@@ -27,7 +30,7 @@ const buildMainNav = (t, counsellingMega, crpMega) => [
 
 function MegaMenu({ item }) {
   const [open, setOpen] = useState(false);
-  const isCrp = item.highlight;
+  const isCrp = item.to?.includes('/crp');
   const variant = isCrp ? 'crp' : 'counselling';
 
   return (
@@ -35,28 +38,22 @@ function MegaMenu({ item }) {
       <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
         <Link
           to={item.to}
-          className={`flex items-center gap-1.5 py-2 px-3 rounded-full text-sm font-semibold transition ${
-            isCrp
-              ? 'text-white shadow-lg animate-[gradientShift_5s_ease_infinite] bg-[length:200%_auto]'
-              : 'nav-link'
-          }`}
-          style={isCrp ? { background: 'linear-gradient(135deg, #FF6B4A, #E8512E)', boxShadow: '0 8px 24px rgba(255, 107, 74, 0.35)' } : undefined}
+          className="nav-mega-cta flex items-center gap-1.5 py-2 px-3.5 rounded-full text-sm font-semibold transition text-white shadow-lg animate-[gradientShift_5s_ease_infinite] bg-[length:200%_auto]"
+          style={{ background: 'linear-gradient(135deg, #FF6B4A, #E8512E)', boxShadow: '0 8px 24px rgba(255, 107, 74, 0.35)' }}
         >
-          {isCrp && (
-            <motion.span
-              animate={{ rotate: [0, 12, -12, 0], scale: [1, 1.15, 1] }}
-              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <Sparkles className="w-4 h-4 shrink-0" />
-            </motion.span>
-          )}
-          <span className="max-w-[140px] xl:max-w-none truncate">{item.label}</span>
+          <motion.span
+            animate={{ rotate: [0, 12, -12, 0], scale: [1, 1.15, 1] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <Sparkles className="w-4 h-4 shrink-0" />
+          </motion.span>
+          <span className="max-w-[150px] xl:max-w-none truncate">{item.label}</span>
           <ChevronDown className={`w-4 h-4 shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
         </Link>
       </motion.div>
       <AnimatePresence>
         {open && item.mega && (
-          <div className="absolute top-full left-0 pt-4 z-50 nav-mega-dropdown">
+          <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 z-50 nav-mega-dropdown">
             <NavDropdownPanel variant={variant}>
               <NavDropdownColumns>
               {item.mega.map((col, colIdx) => (
@@ -73,70 +70,31 @@ function MegaMenu({ item }) {
                           desc={l.desc}
                           icon={l.icon}
                           index={i}
+                          compact={variant === 'counselling' || variant === 'crp'}
                         />
                       ))}
                 </NavDropdownColumn>
               ))}
               </NavDropdownColumns>
+              {item.common?.length > 0 && (
+                <div className="nav-mega-common" aria-label="Common">
+                  {item.common.map((l, i) => (
+                    <NavDropdownLink
+                      key={l.to + l.label}
+                      to={l.to}
+                      label={l.label}
+                      desc={l.desc}
+                      icon={l.icon}
+                      index={i}
+                      compact={variant === 'counselling' || variant === 'crp'}
+                    />
+                  ))}
+                </div>
+              )}
             </NavDropdownPanel>
           </div>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-function MobileNavLinks({ item, onClose, linkIndexStart = 0 }) {
-  let idx = linkIndexStart;
-  return (
-    <div className="nav-mobile-section">
-      <Link
-        to={item.to}
-        onClick={onClose}
-        className={`nav-mobile-link nav-mobile-link--title ${item.highlight ? 'text-gold' : 'text-brand-700'}`}
-        style={{ '--i': idx++ }}
-      >
-        {item.label}
-      </Link>
-      {item.mega?.map((col) => (
-        <div key={col.title} className="mb-2">
-          <p className="text-xs font-semibold text-royalOrange pl-1 mb-1">{col.title}</p>
-          {col.groups
-            ? col.groups.map((g) => (
-                <div key={g.label} className="mb-2 pl-1">
-                  <p className="text-xs font-bold text-sand-700 pl-2 mb-1">{g.icon} {g.label}</p>
-                  {g.links.map((l) => {
-                    const i = idx++;
-                    return (
-                      <Link
-                        key={l.to + l.label}
-                        to={l.to}
-                        onClick={onClose}
-                        className="nav-mobile-link"
-                        style={{ '--i': i }}
-                      >
-                        {l.icon ? `${l.icon} ` : ''}{l.label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              ))
-            : col.links.map((l) => {
-                const i = idx++;
-                return (
-                  <Link
-                    key={l.to + l.label}
-                    to={l.to}
-                    onClick={onClose}
-                    className="nav-mobile-link"
-                    style={{ '--i': i }}
-                  >
-                    {l.icon ? `${l.icon} ` : ''}{l.label}
-                  </Link>
-                );
-              })}
-        </div>
-      ))}
     </div>
   );
 }
@@ -149,9 +107,10 @@ export default function Navbar({ scrolled = false }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobile, setMobile] = useState(false);
-  const { counsellingMega, crpMega } = useSiteNav();
+  const { counsellingMega, counsellingCommon, crpMega } = useSiteNav();
   const navQuickMenu = d('navQuickMenu');
-  const mainNav = buildMainNav(t, counsellingMega, crpMega);
+  const commonTitle = d('navMega')?.common?.title || 'Common';
+  const mainNav = buildMainNav(t, counsellingMega, crpMega, counsellingCommon, commonTitle);
   const navLite = isMobilePerf();
 
   const closeMobile = () => setMobile(false);
@@ -201,10 +160,10 @@ export default function Navbar({ scrolled = false }) {
       style={{ borderColor: 'var(--border-subtle)' }}
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-4">
-        <div className="nav-header-inner flex items-center gap-2 sm:gap-3 h-14 sm:h-16 min-w-0">
+        <div className="nav-header-inner relative flex items-center gap-2 sm:gap-3 h-14 sm:h-16 min-w-0">
           <Logo size="md" />
 
-          <nav className="hidden xl:flex items-center gap-4 flex-1 justify-center min-w-0">
+          <nav className="hidden xl:flex items-center gap-3 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[5]">
             {mainNav.map((item) => (
               <MegaMenu key={item.label} item={item} />
             ))}
@@ -337,28 +296,42 @@ export default function Navbar({ scrolled = false }) {
                   )}
                 </div>
 
-                {mainNav.map((item) => (
-                  <MobileNavLinks key={item.label} item={item} onClose={closeMobile} />
-                ))}
+                <div className="nav-mobile-pathways">
+                  {mainNav.map((item, i) => (
+                    <Link
+                      key={item.label}
+                      to={item.to}
+                      onClick={closeMobile}
+                      className={`nav-mobile-pathway${i === 0 ? ' nav-mobile-pathway--counselling' : ' nav-mobile-pathway--training'}`}
+                      style={{ '--i': i }}
+                    >
+                      <span className="nav-mobile-pathway__label">{item.label}</span>
+                      <span className="nav-mobile-pathway__go" aria-hidden>→</span>
+                    </Link>
+                  ))}
+                </div>
 
-                <div className="nav-mobile-section nav-mobile-section--discover">
-                  {navQuickMenu.columns.map((col) => (
-                    <div key={col.title} className="mb-2">
-                      <p className="text-xs font-semibold text-royalOrange pl-1 mb-1">{col.title}</p>
+                {(navQuickMenu.columns || []).map((col, colIdx) => (
+                  <div key={col.title} className={`nav-mobile-section nav-mobile-section--${colIdx === 0 ? 'discover' : 'connect'}`}>
+                    <p className="nav-mobile-section-label">{col.title}</p>
+                    <div className="nav-mobile-link-list">
                       {col.links.map((link, i) => (
                         <Link
                           key={link.to}
                           to={link.to}
                           onClick={closeMobile}
                           className="nav-mobile-link"
-                          style={{ '--i': 22 + i }}
+                          style={{ '--i': 4 + colIdx * 6 + i }}
                         >
-                          {link.icon ? `${link.icon} ` : ''}{link.label}
+                          {link.icon ? (
+                            <span className="nav-mobile-link__icon" aria-hidden>{link.icon}</span>
+                          ) : null}
+                          <span className="nav-mobile-link__text">{link.label}</span>
                         </Link>
                       ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
 
               </div>
             </motion.aside>

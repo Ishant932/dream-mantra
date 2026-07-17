@@ -27,37 +27,38 @@ export default function HomeWhoWeGuide() {
 
   return (
     <div className="max-w-7xl mx-auto px-4">
-      <motion.div {...fade} className="text-center mb-14">
+      <motion.div {...fade} className="text-center mb-8 sm:mb-10">
         <h2 className="home-headline">
           {copy.title}{' '}
           <span className="gradient-text text-pop">{copy.titleHighlight}</span>
         </h2>
-        <p className="text-lg mt-4 max-w-2xl mx-auto" style={{ color: 'var(--text-secondary)' }}>
-          {copy.subtitle}
-        </p>
+        {copy.subtitle ? (
+          <p className="home-who-we-guide__subtitle text-base sm:text-lg mt-3 mx-auto px-2">
+            {copy.subtitle}
+          </p>
+        ) : null}
       </motion.div>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 lg:gap-4 home-guide-grid">
         {whoWeGuide.map((w, i) => (
           <motion.div
             key={w.title}
             {...fade}
             transition={{ delay: i * 0.07 }}
-            whileHover={{ y: -10 }}
+            whileHover={{ y: -4 }}
             className="home-guide-card group"
           >
             <Link to={w.link} className="block h-full">
               <div className={`home-guide-card__bar bg-gradient-to-r ${CARD_GRADIENTS[i % CARD_GRADIENTS.length]}`} />
               <div className="home-guide-card__body">
-                <div className="flex items-start justify-between gap-3 mb-4">
+                <div className="flex items-start justify-between gap-1.5 mb-1 sm:mb-2">
                   <span className="home-guide-card__icon">{w.icon}</span>
                   <span className="home-guide-card__num">{String(i + 1).padStart(2, '0')}</span>
                 </div>
                 <h3 className="home-guide-card__title">{w.title}</h3>
                 <p className="home-guide-card__tag">{w.subtitle}</p>
-                {w.desc && <p className="home-guide-card__desc">{w.desc}</p>}
                 <span className="home-guide-card__cta">
-                  {copy.viewProgram} <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  {copy.viewProgram} <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5 group-hover:translate-x-1 transition-transform" />
                 </span>
               </div>
             </Link>
@@ -65,9 +66,9 @@ export default function HomeWhoWeGuide() {
         ))}
       </div>
 
-      <motion.p {...fade} className="text-center mt-12">
-        <Link to="/counselling?tab=programs" className="btn-primary inline-flex items-center gap-2">
-          {copy.seeAllPrograms} <ArrowRight className="w-5 h-5" />
+      <motion.p {...fade} className="text-center mt-5 sm:mt-8">
+        <Link to="/counselling?tab=programs" className="btn-primary inline-flex items-center gap-2 !py-2 !px-4 sm:!py-2.5 sm:!px-5 text-sm">
+          {copy.seeAllPrograms} <ArrowRight className="w-4 h-4" />
         </Link>
       </motion.p>
     </div>

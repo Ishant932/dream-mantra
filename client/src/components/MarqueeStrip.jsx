@@ -1,6 +1,4 @@
 import { Children, cloneElement, useState } from 'react';
-import { collegeLogoUrl } from '../data/collegePartners';
-import { isMobilePerf } from '../utils/mobilePerf';
 
 /**
  * Infinite horizontal scroll strip — two identical sets for a seamless loop.
@@ -45,25 +43,20 @@ export default function MarqueeStrip({
   );
 }
 
-function PartnerMark({ domain, symbol }) {
+function PartnerMark({ logo, name }) {
   const [failed, setFailed] = useState(false);
-  const perf = isMobilePerf();
-  const logo = perf ? null : collegeLogoUrl(domain);
+  if (!logo || failed) return null;
 
   return (
     <span className="marquee-pill__mark" aria-hidden>
-      {!failed && logo ? (
-        <img
-          src={logo}
-          alt=""
-          className="marquee-pill__logo"
-          loading="lazy"
-          decoding="async"
-          onError={() => setFailed(true)}
-        />
-      ) : (
-        <span className="marquee-pill__symbol">{symbol}</span>
-      )}
+      <img
+        src={logo}
+        alt={`${name} logo`}
+        className="marquee-pill__logo"
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+      />
     </span>
   );
 }
@@ -71,8 +64,8 @@ function PartnerMark({ domain, symbol }) {
 /** Partner / logo pill for partner marquee */
 export function MarqueePill({
   children,
-  domain,
-  symbol,
+  logo,
+  name,
   className = '',
 }) {
   return (
@@ -84,7 +77,7 @@ export function MarqueePill({
         color: 'var(--text-secondary)',
       }}
     >
-      {(domain || symbol) && <PartnerMark domain={domain} symbol={symbol || '🎓'} />}
+      {logo && <PartnerMark logo={logo} name={name || String(children)} />}
       <span>{children}</span>
     </span>
   );
@@ -93,7 +86,7 @@ export function MarqueePill({
 /** Pill wired to a college partner record */
 export function CollegePartnerPill({ partner, className = '' }) {
   return (
-    <MarqueePill domain={partner.domain} symbol={partner.symbol} className={className}>
+    <MarqueePill logo={partner.logo} name={partner.name} className={className}>
       {partner.name}
     </MarqueePill>
   );

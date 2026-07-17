@@ -43,7 +43,7 @@ export function getDashboardNextStep({
     step = {
       action: NEXT_STEP_ACTIONS.MODULES,
       title: 'Choose your first module',
-      desc: 'Mind Mapping, Skill Mapping, or the full combo — start your assessment journey.',
+      desc: 'Brain Mapping, Skill Mapping, or the full combo — start your assessment journey.',
       cta: 'Browse modules',
       shortCta: 'Next step',
     };

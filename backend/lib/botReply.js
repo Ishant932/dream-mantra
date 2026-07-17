@@ -9,11 +9,11 @@ import { formatBotReply } from './formatBotReply.js';
 export const BOT_KNOWLEDGE = [
   ...DREAMZ_KNOWLEDGE,
   { keys: ['ai career launchpad', 'career launchpad', 'launchpad', 'crp'], en: '**AI Career Launchpad** — 5 sessions for Class 12+, college & freshers. LinkedIn, resume, interviews. ₹1,499 | dreammantra.in/crp | 9680102276', hi: 'AI Career Launchpad — Class 12+ के लिए। /crp | 9680102276' },
-  { keys: ['what is dmit', 'dmit kya', 'mind mapping'], en: '**Mind Mapping** maps inborn potential via fingerprint analysis. ₹1,999 | dreammantra.in/assessments/dmit | 9680102276', hi: 'Mind Mapping — fingerprint analysis। /assessments/dmit' },
+  { keys: ['what is dmit', 'dmit kya', 'brain mapping'], en: '**Brain Mapping** maps inborn potential via fingerprint analysis. ₹1,999 | dreammantra.in/assessments/dmit | 9680102276', hi: 'Brain Mapping — fingerprint analysis। /assessments/dmit' },
   { keys: ['skill mapping', 'mbti', 'disc', 'riasec'], en: 'Skill Mapping: MBTI, DISC, RIASEC, Big 5, VAK. ₹699 | /assessments/psychometric', hi: 'Skill Mapping: MBTI, DISC, RIASEC।' },
   { keys: ['contact', 'phone', '9680102276'], en: '📞 9680102276 | info@dreammantra.in | Mon-Sat 11am-7pm | Jaipur & Pan-India online', hi: '9680102276 | info@dreammantra.in' },
   { keys: ['book', 'consultation', 'slot'], en: 'Book counselling after payment: Dashboard → Book tab. dreammantra.in/dashboard?tab=book | 9680102276', hi: 'Payment confirm के बाद Book tab। /dashboard?tab=book' },
-  { keys: ['cost', 'price', 'fees', '1999', '699', '2999'], en: 'Mind Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499. Dashboard → Modules.', hi: 'Mind Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999।' },
+  { keys: ['cost', 'price', 'fees', '1999', '699', '2999'], en: 'Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499. Dashboard → Modules.', hi: 'Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999।' },
   { keys: ['dashboard', 'modules'], en: 'Dashboard: dreammantra.in/dashboard — Modules, Book, Take test, Reports, Careers.', hi: 'Dashboard: Modules, Book, Take test। dreammantra.in/dashboard' },
   { keys: ['payment', 'pending payment', 'pay'], en: 'Pay from Dashboard → Modules. Razorpay or upload UPI proof. Pending until admin confirms.', hi: 'Modules से pay करें।' },
 ];
@@ -39,7 +39,7 @@ function getLocalReply(message, lang) {
   if (/hello|hi|hey|namaste|नमस्ते/.test(text)) {
     return {
       reply: lang === 'hi'
-        ? 'नमस्ते! मैं एश, Dream Mantra की AI counsellor। Mind Mapping, Skill Mapping, careers — पूछें!'
+        ? 'नमस्ते! मैं एश, Dream Mantra की AI counsellor। Brain Mapping, Skill Mapping, careers — पूछें!'
         : "Hello! I'm Esh, Dream Mantra's AI counsellor. Ask about modules, pricing, booking, or careers!",
       source: 'greeting',
     };
@@ -84,7 +84,7 @@ async function askGemini(message, history, lang) {
 
 const FALLBACK_EN = `I'm Esh, Dream Mantra's AI counsellor.
 
-• Pricing — Mind Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499
+• Pricing — Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499
 • Dashboard — dreammantra.in/dashboard
 • Book counselling — after payment confirmed
 • Reply MENU for quick options | HELP for human support
@@ -93,7 +93,7 @@ Call 9680102276 | Mon–Sat 11am–7pm`;
 
 const FALLBACK_HI = `मैं एश, Dream Mantra की AI counsellor।
 
-• कीमत — Mind Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999
+• कीमत — Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999
 • Dashboard — dreammantra.in/dashboard
 • MENU — विकल्प | HELP — सपोर्ट
 

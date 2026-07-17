@@ -1,14 +1,34 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles, ArrowUpRight, Zap } from 'lucide-react';
+import { Sparkles, ArrowUpRight } from 'lucide-react';
 import { parseNavTarget, handleHashNavClick } from '../utils/scrollHash';
 import { isMobilePerf } from '../utils/mobilePerf';
 
 const VARIANT_META = {
-  counselling: { label: 'For Counselling', accent: '#013220', glow: 'rgba(1,50,32,0.15)' },
-  crp: { label: 'Training and placement', accent: '#FF6B4A', glow: 'rgba(255,107,74,0.2)' },
-  explore: { label: 'Explore Dream Mantra', accent: '#C9A84C', glow: 'rgba(201,168,76,0.2)' },
-  default: { label: 'Dream Mantra', accent: '#C9A84C', glow: 'rgba(201,168,76,0.15)' },
+  counselling: {
+    label: 'For Counselling',
+    accent: '#FF6B4A',
+    glow: 'rgba(255,107,74,0.2)',
+    to: '/counselling',
+  },
+  crp: {
+    label: 'Training and placement',
+    accent: '#FF6B4A',
+    glow: 'rgba(255,107,74,0.2)',
+    to: '/crp?tab=launchpad',
+  },
+  explore: {
+    label: 'Explore Dream Mantra',
+    accent: '#C9A84C',
+    glow: 'rgba(201,168,76,0.2)',
+    to: '/',
+  },
+  default: {
+    label: 'Dream Mantra',
+    accent: '#C9A84C',
+    glow: 'rgba(201,168,76,0.15)',
+    to: '/',
+  },
 };
 
 const particles = Array.from({ length: 16 }, (_, i) => ({
@@ -19,6 +39,38 @@ const particles = Array.from({ length: 16 }, (_, i) => ({
   delay: i * 0.28,
 }));
 
+function PanelHeader({ meta, lite = false }) {
+  const content = (
+    <>
+      <span className="nav-mega-header-icon">
+        <Sparkles className="w-4 h-4" />
+      </span>
+      <div className="nav-mega-header__text">
+        <p className="nav-mega-header-title">{meta.label}</p>
+      </div>
+      <ArrowUpRight className="nav-mega-header__arrow" aria-hidden />
+    </>
+  );
+
+  if (!meta.to) {
+    return (
+      <div className={`nav-mega-header${lite ? ' nav-mega-header--lite' : ''}`}>
+        {content}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      to={meta.to}
+      className={`nav-mega-header nav-mega-header--link${lite ? ' nav-mega-header--lite' : ''}`}
+      aria-label={`Open ${meta.label}`}
+    >
+      {content}
+    </Link>
+  );
+}
+
 function PanelShell({ lite, variant, className, children }) {
   const meta = VARIANT_META[variant] || VARIANT_META.default;
   const useLite = lite || import.meta.env.PROD;
@@ -27,18 +79,7 @@ function PanelShell({ lite, variant, className, children }) {
   if (useLite) {
     return (
       <div className={panelClass}>
-        <div className="nav-mega-header nav-mega-header--lite">
-          <span className="nav-mega-header-icon">
-            <Sparkles className="w-4 h-4" />
-          </span>
-          <div>
-            <p className="nav-mega-header-title">{meta.label}</p>
-            <p className="nav-mega-header-sub">
-              <Zap className="inline w-3 h-3 mr-1 text-[var(--orange)]" />
-              Tap any option below
-            </p>
-          </div>
-        </div>
+        <PanelHeader meta={meta} lite />
         <div className="relative z-[2] nav-mega-body">{children}</div>
       </div>
     );
@@ -98,27 +139,7 @@ function PanelShell({ lite, variant, className, children }) {
       ))}
       <div className="nav-mega-grid" aria-hidden />
 
-      <div className="nav-mega-header">
-        <motion.div
-          className="nav-mega-header-shine"
-          animate={{ x: ['-100%', '200%'] }}
-          transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
-        />
-        <motion.span
-          className="nav-mega-header-icon"
-          animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.08, 1] }}
-          transition={{ duration: 3, repeat: Infinity }}
-        >
-          <Sparkles className="w-4 h-4" />
-        </motion.span>
-        <div>
-          <p className="nav-mega-header-title">{meta.label}</p>
-          <p className="nav-mega-header-sub">
-            <Zap className="inline w-3 h-3 mr-1 text-[var(--orange)]" />
-            AI-powered · Tap any option
-          </p>
-        </div>
-      </div>
+      <PanelHeader meta={meta} />
 
       <div className="relative z-[2] nav-mega-body">{children}</div>
     </motion.div>

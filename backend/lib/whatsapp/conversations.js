@@ -109,8 +109,8 @@ function menuSelection(num, user, lang) {
   switch (num) {
     case '1':
       return lang === 'hi'
-        ? `${banner('Modules & Pricing', '💎', '🔥')}\n\n${priceTag('Mind Mapping', '₹1,999')}\n${priceTag('Skill Mapping', '₹699')}\n${priceTag('Combo + Counselling', '₹2,999')}\n${priceTag('AI Career Launchpad', '₹1,499')}\n\n${cta('खरीदें', `${base}/dashboard?tab=assess`)}`
-        : `${banner('Modules & Pricing', '💎', '🔥')}\n\n${priceTag('Mind Mapping', '₹1,999', 'Personality + career fit')}\n${priceTag('Skill Mapping', '₹699', 'Skills → roles')}\n${priceTag('Combo + Counselling', '₹2,999', 'Best value')}\n${priceTag('AI Career Launchpad', '₹1,499', 'Community access')}\n\n${cta('Browse & pay', `${base}/dashboard?tab=assess`)}\n${cta('All programs', `${base}/programs`)}`;
+        ? `${banner('Modules & Pricing', '💎', '🔥')}\n\n${priceTag('Brain Mapping', '₹1,999')}\n${priceTag('Skill Mapping', '₹699')}\n${priceTag('Combo + Counselling', '₹2,999')}\n${priceTag('AI Career Launchpad', '₹1,499')}\n\n${cta('खरीदें', `${base}/dashboard?tab=assess`)}`
+        : `${banner('Modules & Pricing', '💎', '🔥')}\n\n${priceTag('Brain Mapping', '₹1,999', 'Personality + career fit')}\n${priceTag('Skill Mapping', '₹699', 'Skills → roles')}\n${priceTag('Combo + Counselling', '₹2,999', 'Best value')}\n${priceTag('AI Career Launchpad', '₹1,499', 'Community access')}\n\n${cta('Browse & pay', `${base}/dashboard?tab=assess`)}\n${cta('All programs', `${base}/programs`)}`;
     case '2':
       return lang === 'hi'
         ? `${banner('Counselling', '📅', '✨')}\n\nPayment confirm के बाद Book tab से बुक करें:\n${cta('Book session', `${base}/dashboard?tab=book`)}`

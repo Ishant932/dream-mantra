@@ -49,6 +49,8 @@ export const IMAGES = {
   internship: u('photo-1517694712202-14dd9538aa97'),
   skills: u('photo-1517694712202-14dd9538aa97'),
   profile: u('photo-1586281380349-632531db7ed4'),
+  /** Marketplace hero — modern career workspace / laptop desk */
+  marketplace: u('photo-1486312338219-ce68d2c6f44d', 1200),
   mentorship: u('photo-1556761175-b413da4baf72'),
   handholding: u('photo-1522202176988-66273c2fd55f'),
   promise: u('photo-1427504494785-3a9ca7044f45'),
@@ -72,8 +74,8 @@ export const PORTRAITS = {
 export const assessments = [
   {
     slug: 'dmit',
-    title: 'Mind Mapping',
-    titleHi: 'Mind Mapping',
+    title: 'Brain Mapping',
+    titleHi: 'Brain Mapping',
     icon: '🔬',
     subtitle: 'Fingerprint Analysis, Inborn Potential Mapping',
     image: IMAGES.dmit,
@@ -100,13 +102,13 @@ export const assessments = [
   },
   {
     slug: 'dmit-psychometric',
-    title: 'Mind Mapping + Skill Mapping',
-    titleHi: 'Mind Mapping + Skill Mapping',
+    title: 'Brain Mapping + Skill Mapping',
+    titleHi: 'Brain Mapping + Skill Mapping',
     icon: '🧬',
     subtitle: 'Complete Inborn + Acquired Talent Profile — Best of Both',
     image: IMAGES.science,
     points: [
-      'Mind Mapping fingerprint analysis for inborn intelligence & learning style',
+      'Brain Mapping fingerprint analysis for inborn intelligence & learning style',
       'Skill Mapping suite for personality, interests & behaviour',
       'Holistic profile combining nature + nurture for career decisions',
       'Recommended for Class 6+ stream and career selection',
@@ -122,7 +124,7 @@ export const assessments = [
     image: IMAGES.counsellingSession,
     points: [
       'The Dream Mantra Promise — every child holds untapped brilliance',
-      'Mind Mapping validated in 30+ countries + 7 Skill Mapping frameworks',
+      'Brain Mapping validated in 30+ countries + 7 Skill Mapping frameworks',
       'Assess → Analyze → Guide: from Class 1 to First Job',
       'Founder Esha Lohiya — Govt of India, IIT Madras, NLP certified',
       'Jaipur centres + Pan-India online · 9680102276',
@@ -160,7 +162,7 @@ export const testimonials = [
     name: 'Priya',
     role: 'Class 11 — Commerce',
     image: PORTRAITS.student2,
-    text: 'I was confused between Commerce and Science. The Mind Mapping showed my natural strength in logical-mathematical thinking. I took Commerce with Math and now I\'m pursuing CA. Best decision ever!',
+    text: 'I was confused between Commerce and Science. The Brain Mapping showed my natural strength in logical-mathematical thinking. I took Commerce with Math and now I\'m pursuing CA. Best decision ever!',
     stars: 5,
   },
   {
@@ -181,14 +183,14 @@ export const testimonials = [
     name: 'Parent of Kabir',
     role: 'Class 5',
     image: PORTRAITS.parent1,
-    text: 'The Mind Mapping report was eye-opening — it matched exactly with what we observed but gave us the scientific backing. And the Skill Mapping analysis helped us understand our son\'s current personality. The combination is powerful.',
+    text: 'The Brain Mapping report was eye-opening — it matched exactly with what we observed but gave us the scientific backing. And the Skill Mapping analysis helped us understand our son\'s current personality. The combination is powerful.',
     stars: 5,
   },
   {
     name: 'College Student',
     role: 'B.Tech 2nd Year',
     image: PORTRAITS.student1,
-    text: 'Esha ma\'am explained how my natural strengths (from Mind Mapping) align with my current interests (from Skill Mapping) and what the market actually needs. For the first time, I have a clear path forward.',
+    text: 'Esha ma\'am explained how my natural strengths (from Brain Mapping) align with my current interests (from Skill Mapping) and what the market actually needs. For the first time, I have a clear path forward.',
     stars: 5,
   },
   {
@@ -202,20 +204,20 @@ export const testimonials = [
     name: 'Working Professional',
     role: 'Career Switch Success',
     image: PORTRAITS.professional1,
-    text: 'I was skeptical about fingerprint analysis, but the science behind Mind Mapping convinced me. Combined with Skill Mapping, I got a complete picture of who I am and what I should do next.',
+    text: 'I was skeptical about fingerprint analysis, but the science behind Brain Mapping convinced me. Combined with Skill Mapping, I got a complete picture of who I am and what I should do next.',
     stars: 5,
   },
 ];
 
-/** Certification images — real photos from Dreamz Google Sites */
+/** Certification images — current credentials for Our Certifications showcase */
 export const certifications = [
-  { id: 'iccc', category: 'international', image: '/certifications/cert-1.jpg' },
-  { id: 'govt', category: 'government', image: '/certifications/cert-2.jpg' },
-  { id: 'nlp-practitioner', category: 'nlp', image: '/certifications/cert-3.jpg' },
-  { id: 'nlp-advanced', category: 'nlp', image: '/certifications/cert-4.jpg' },
-  { id: 'iit', category: 'iit', image: '/certifications/cert-5.jpg' },
-  { id: 'reliance', category: 'reliance', image: '/certifications/cert-6.jpg' },
-  { id: 'dmit', category: 'dmit', image: '/certifications/cert-7.jpg' },
+  { id: 'iccc', category: 'international', image: '/certifications/cert-iccc.png' },
+  { id: 'govt', category: 'government', image: '/certifications/cert-govt.png' },
+  { id: 'nlp-practitioner', category: 'nlp', image: '/certifications/cert-nlp-practitioner.png' },
+  { id: 'nlp-advanced', category: 'nlp', image: '/certifications/cert-nlp-advanced.png' },
+  { id: 'nlp-hindi', category: 'nlp', image: '/certifications/cert-nlp-hindi.png' },
+  { id: 'iit', category: 'iit', image: '/certifications/cert-iit.png' },
+  { id: 'reliance', category: 'reliance', image: '/certifications/cert-reliance.png' },
 ];
 
 export const managementTeam = [
@@ -235,12 +237,12 @@ export const managementTeam = [
     insight: 'Through her recruitment experience, Esha saw that most career problems start early — students choose streams without understanding their natural strengths, and end up as unhappy professionals. The solution isn\'t fixing careers later — it\'s getting the foundation right from school itself.',
     vision: 'To unlock every child\'s unique potential — before they face career struggles.',
     responsibilities: [
-      'Specializes in Mind Mapping counselling and child development insights',
+      'Specializes in Brain Mapping counselling and child development insights',
       'Expert in Skill Mapping assessment interpretation',
-      'Aligns what the child studies × natural strengths (Mind Mapping) × current personality (Skill Mapping) × market demands',
+      'Aligns what the child studies × natural strengths (Brain Mapping) × current personality (Skill Mapping) × market demands',
       'Turns scientific insight into real-life strategies with simplified visuals for parents and students',
     ],
-    certs: ['Government of India', 'International Certified Career Counselling', 'Mind Mapping', 'NLP', 'Reliance Foundation', 'IIT Madras'],
+    certs: ['Government of India', 'International Certified Career Counselling', 'Brain Mapping', 'NLP', 'Reliance Foundation', 'IIT Madras'],
   },
   {
     name: 'Shivam Lohiya',
@@ -271,8 +273,8 @@ export const founder = {
   name: 'Esha Tibrewal',
   role: 'Founder & CEO',
   quote: 'Every child is a unique key, meant to unlock different doors. At Dream Mantra, we don\'t label or judge — we simply reveal the brilliance that already exists. With science, heart, and lifelong value.',
-  longNote: 'In my years at Naukri.com, I saw thousands of professionals stuck in jobs they hated. Bright, capable people who chose the wrong path because of pressure, confusion, or lack of guidance. There was always a mismatch between what they studied, what they were naturally good at, and what the job market actually needed. That\'s why we use Mind Mapping — validated in 30+ countries — and Skill Mapping assessments with 7 frameworks to create the complete picture. We\'re not just decoding fingerprints — we\'re unlocking futures.',
-  certs: ['Government of India', 'International Certified Career Counselling', 'Mind Mapping', 'NLP', 'Reliance Foundation', 'IIT Madras'],
+  longNote: 'In my years at Naukri.com, I saw thousands of professionals stuck in jobs they hated. Bright, capable people who chose the wrong path because of pressure, confusion, or lack of guidance. There was always a mismatch between what they studied, what they were naturally good at, and what the job market actually needed. That\'s why we use Brain Mapping — validated in 30+ countries — and Skill Mapping assessments with 7 frameworks to create the complete picture. We\'re not just decoding fingerprints — we\'re unlocking futures.',
+  certs: ['Government of India', 'International Certified Career Counselling', 'Brain Mapping', 'NLP', 'Reliance Foundation', 'IIT Madras'],
   email: 'info@dreammantra.in',
   phone: '9680102276',
 };
@@ -281,21 +283,21 @@ export const missionVision = {
   mission: 'To replace confusion, pressure, and guesswork with clarity, awareness, and informed decision-making — for every individual.',
   vision: 'To empower every individual—especially children and youth—to discover their true potential through scientific self-awareness, and guide them toward a life of confidence, clarity, and purpose.',
   purpose: 'To bridge the gap between education, natural intelligence, and career alignment — enabling students to progress with direction, supported by informed parents and empowered institutions.',
-  philosophy: 'We are all unique keys, meant to unlock different doors. At Dream Mantra, we don\'t try to fit people into boxes — we use Mind Mapping and Skill Mapping science to help them discover which path they naturally belong in.',
+  philosophy: 'We are all unique keys, meant to unlock different doors. At Dream Mantra, we don\'t try to fit people into boxes — we use Brain Mapping and Skill Mapping science to help them discover which path they naturally belong in.',
 };
 
 export const programDetails = {
   'class-1-5': {
     desc: 'Early talent discovery through playful, scientific assessment. Identify learning styles before academic pressure builds.',
-    features: ['Mind Mapping for young learners', 'Parent counselling session', 'Learning style report', 'Activity-based recommendations'],
+    features: ['Brain Mapping for young learners', 'Parent counselling session', 'Learning style report', 'Activity-based recommendations'],
   },
   'class-6-8': {
     desc: 'Self-discovery phase — build confidence and awareness before critical stream decisions in Class 9.',
-    features: ['Skill Mapping + Mind Mapping combo', 'Interest mapping', 'Subject affinity analysis', 'Parent-student joint session'],
+    features: ['Skill Mapping + Brain Mapping combo', 'Interest mapping', 'Subject affinity analysis', 'Parent-student joint session'],
   },
   'class-9-10': {
     desc: 'Stream selection backed by science — Science, Commerce, Arts with clarity on boards and future careers.',
-    features: ['Stream selector test', 'Career library access', 'Board strategy', '2 follow-up sessions'],
+    features: ['Brain Mapping + Skill Mapping for stream clarity', 'Career library access', 'Board strategy', '2 follow-up sessions'],
   },
   'class-11-12': {
     desc: 'Career direction before board exams — courses, colleges, entrance exams, and backup plans.',
@@ -313,7 +315,7 @@ export const programDetails = {
 
 export const partnerDetails = {
   schools: { desc: 'Integrate scientific career guidance into your school curriculum with certified counsellors and parent workshops.' },
-  'coaching-centers': { desc: 'Offer Mind Mapping & Skill Mapping assessments as value-add for your students preparing for competitive exams.' },
+  'coaching-centers': { desc: 'Offer Brain Mapping & Skill Mapping assessments as value-add for your students preparing for competitive exams.' },
   colleges: { desc: 'Campus career cells powered by Dream Mantra — placement prep, internships, and alumni mentoring.' },
   corporates: { desc: 'Employee career wellness programs, team assessments, and leadership development workshops.' },
   teachers: { desc: 'Become a certified career guide — training, certification, and referral income opportunities.' },

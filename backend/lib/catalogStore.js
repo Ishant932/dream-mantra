@@ -14,7 +14,7 @@ export const DEFAULT_COUNSELLING_ADDON = {
 export const BASE_MODULE_CATALOG = [
   {
     slug: 'dmit',
-    title: 'Mind Mapping',
+    title: 'Brain Mapping',
     price: 1999,
     optionalCounselling: true,
     icon: '🧬',
@@ -32,7 +32,7 @@ export const BASE_MODULE_CATALOG = [
   },
   {
     slug: 'dmit-psychometric',
-    title: 'Mind + Skill + Counselling',
+    title: 'Brain + Skill Mapping',
     price: 2999,
     optionalCounselling: false,
     includesCounselling: true,

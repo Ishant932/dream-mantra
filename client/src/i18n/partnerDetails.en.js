@@ -2,10 +2,10 @@
 export const partnerDetailsEn = {
   schools: {
     tagline: 'Bring scientific career guidance into your school ecosystem',
-    intro: 'At Dream Mantra Education & Career Counselling, we collaborate with schools that want to help students discover their true potential and make the right career choices — from Class 1 through Class 12. We integrate Mind Mapping, Skill Mapping, and structured counselling into your school ecosystem so students, parents, and teachers move forward with clarity — not confusion.',
+    intro: 'At Dream Mantra Education & Career Counselling, we collaborate with schools that want to help students discover their true potential and make the right career choices — from Class 1 through Class 12. We integrate Brain Mapping, Skill Mapping, and structured counselling into your school ecosystem so students, parents, and teachers move forward with clarity — not confusion.',
     benefits: [
       'Certified career counsellors for campus workshops & parent sessions',
-      'Mind Mapping & Skill Mapping assessments at group rates for entire grades',
+      'Brain Mapping & Skill Mapping assessments at group rates for entire grades',
       'Stream selection support for Class 9–10 students before board decisions',
       'Teacher orientation on career guidance basics and report interpretation',
       'Co-branded reports and parent communication templates in English & Hindi',
@@ -47,7 +47,7 @@ export const partnerDetailsEn = {
   },
   'coaching-centers': {
     tagline: 'Differentiate your institute with scientific career assessments',
-    intro: 'Coaching institutes preparing students for boards and competitive exams can partner with Dream Mantra to offer Mind Mapping & Skill Mapping as a premium value-add — helping students choose the right stream and career before they invest years in the wrong path. Stand out from competitors with science-backed guidance, not guesswork.',
+    intro: 'Coaching institutes preparing students for boards and competitive exams can partner with Dream Mantra to offer Brain Mapping & Skill Mapping as a premium value-add — helping students choose the right stream and career before they invest years in the wrong path. Stand out from competitors with science-backed guidance, not guesswork.',
     benefits: [
       'White-label assessment packages branded for your institute',
       'Referral commissions on module bookings from your student base',
@@ -170,11 +170,11 @@ export const partnerDetailsEn = {
   },
   teachers: {
     tagline: 'Become a certified career guide in your community',
-    intro: 'Teachers and educators join Dream Mantra to upskill in career counselling, earn referral income, and guide students with Mind Mapping & Skill Mapping science — without leaving their teaching profession. Turn your classroom influence into meaningful career impact for every student you touch.',
+    intro: 'Teachers and educators join Dream Mantra to upskill in career counselling, earn referral income, and guide students with Brain Mapping & Skill Mapping science — without leaving their teaching profession. Turn your classroom influence into meaningful career impact for every student you touch.',
     benefits: [
       'Career counsellor certification pathway with Dream Mantra credentials',
       'Referral income on every successful student enrollment',
-      'Training on Mind Mapping & Skill Mapping report interpretation',
+      'Training on Brain Mapping & Skill Mapping report interpretation',
       'Access to 1000+ career library for classroom and parent discussions',
       'Dedicated partner support manager via WhatsApp',
       'Marketing kit for parent outreach — posters, scripts, FAQs',
@@ -203,7 +203,7 @@ export const partnerDetailsEn = {
       'Start referring students and earning commissions',
     ],
     focusAreas: [
-      'Interpreting Mind Mapping reports for parents',
+      'Interpreting Brain Mapping reports for parents',
       'Guiding stream selection conversations in Class 9–10',
       'Building a local referral network among parents',
       'Supplementing teaching income with ethical referrals',
@@ -291,30 +291,6 @@ export const leadershipEn = {
       location: 'Jaipur, Rajasthan',
       image: '/team/ishant-goyal.jpg',
       bio: 'Ishant Goyal leads the planning, development, optimization, and management of web platforms to ensure high performance and exceptional user experiences. He architects full-stack ecosystems — responsive frontends, secure APIs, payment flows, admin dashboards, and multilingual systems — and integrates AI for automation, personalization, and operational efficiency across Dream Mantra and partner brands.',
-      highlights: [
-        'End-to-end web platform architecture & production deployments',
-        'Digital transformation — booking flows, dashboards & multilingual UX',
-        'AI integration, smart workflows & content automation',
-        'Performance tuning, SEO-ready structures & secure authentication',
-      ],
-      skills: [
-        'Next.js & React',
-        'TypeScript',
-        'Node.js',
-        'MongoDB',
-        'AI Integration',
-        'UI/UX Design',
-        'Performance',
-        'DevOps',
-        'Automation',
-        'Cloud Deploy',
-      ],
-      contact: {
-        phone: '+91 6367010131',
-        email: 'ishantgoyal932@gmail.com',
-        whatsapp: 'https://wa.me/916367010131',
-        github: 'https://github.com/Ishant932',
-      },
     },
     {
       name: 'Mahak Singhal',

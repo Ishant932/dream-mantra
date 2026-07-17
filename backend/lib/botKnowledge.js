@@ -3,18 +3,18 @@
  */
 
 export const MODULE_PRICING = {
-  dmit: { title: 'Mind Mapping', price: 1999, counsellingAddon: 699 },
+  dmit: { title: 'Brain Mapping', price: 1999, counsellingAddon: 699 },
   psychometric: { title: 'Skill Mapping', price: 699, counsellingAddon: 699 },
-  'dmit-psychometric': { title: 'Mind + Skill + Counselling (Combo)', price: 2999, includesCounselling: true },
+  'dmit-psychometric': { title: 'Brain + Skill Mapping (Combo)', price: 2999, includesCounselling: true },
   'crp-test': { title: 'AI Career Launchpad', price: 1499 },
   'counselling-topup': { title: 'Additional Counselling Session', price: 999 },
 };
 
 const PRICING_REPLY_EN = `MODULE PRICING (Dream Mantra Dashboard)
 
-• Mind Mapping — ₹1,999 (+ optional counselling add-on ₹699)
+• Brain Mapping — ₹1,999 (+ optional counselling add-on ₹699)
 • Skill Mapping — ₹699 (+ optional counselling add-on ₹699)
-• Mind + Skill + Counselling (Combo) — ₹2,999 (counselling included)
+• Brain + Skill Mapping (Combo) — ₹2,999 (counselling included)
 • AI Career Launchpad (CRP) — ₹1,499
 • Additional Counselling Session (follow-up) — ₹999
 
@@ -24,15 +24,13 @@ HOW TO PURCHASE
 3. Pay via Razorpay or submit payment proof for admin verification
 4. After confirmation → module shows Active → Take test / Book counselling
 
-Coupon: DREAMS20 — 20% off first assessment (if eligible)
-
 Contact: 9680102276 | info@dreammantra.in | Mon–Sat 11am–7pm`;
 
 const BOOK_COUNSELLING_REPLY_EN = `BOOK COUNSELLING SESSION
 
 Counselling slot booking unlocks after you purchase a module with counselling access:
-• Mind + Skill + Counselling Combo — ₹2,999 (counselling included)
-• Mind Mapping or Skill Mapping + counselling add-on — ₹699
+• Brain + Skill Mapping Combo — ₹2,999 (counselling included)
+• Brain Mapping or Skill Mapping + counselling add-on — ₹699
 • AI Career Launchpad (CRP) — ₹1,499 (includes session booking)
 • Additional Counselling Session (follow-up top-up) — ₹999
 
@@ -48,7 +46,7 @@ Phone: 9680102276 | Mon–Sat 11am–7pm | /contact`;
 
 const MULTI_MODULE_REPLY_EN = `MULTIPLE MODULES — SAME ACCOUNT
 
-You can purchase different modules on one Dream Mantra ID (e.g. Mind Mapping first, then Skill Mapping later).
+You can purchase different modules on one Dream Mantra ID (e.g. Brain Mapping first, then Skill Mapping later).
 
 AFTER PURCHASE
 • Each paid module stays in "My Purchased Modules" (Active) separately
@@ -72,7 +70,7 @@ const TAKE_TEST_REPLY_EN = `TAKE SKILL MAPPING / ASSESSMENT TEST
 
 Use only your Dream Mantra registration ID — not personal Gmail.
 
-Mind Mapping (fingerprint) is done at Jaipur centres or as guided — online Skill Mapping tests appear after payment confirmation.
+Brain Mapping (fingerprint) is done at Jaipur centres or as guided — online Skill Mapping tests appear after payment confirmation.
 
 Help: 9680102276`;
 
@@ -89,24 +87,24 @@ export const EXACT_QA = [
   {
     patterns: [
       'how much is skill mapping',
-      'how much is mind mapping',
-      'how much does mind mapping cost',
+      'how much is brain mapping',
+      'how much does brain mapping cost',
       'how much does skill mapping cost',
       'module price',
       'module prices',
       'price list',
       'kitna paisa',
-      'cost of mind mapping',
+      'cost of brain mapping',
       'cost of skill mapping',
       'price of skill mapping',
-      'price of mind mapping',
+      'price of brain mapping',
       'combo price',
       'crp price',
       'what is the price',
       'what are the fees',
     ],
     en: PRICING_REPLY_EN,
-    hi: 'मूल्य: Mind Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999, CRP ₹1499, Extra counselling ₹999। Dashboard → Modules से खरीदें। 9680102276',
+    hi: 'मूल्य: Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999, CRP ₹1499, Extra counselling ₹999। Dashboard → Modules से खरीदें। 9680102276',
   },
   {
     patterns: ['buy second module', 'another module', 'multiple modules', 'two modules', 'second module', 'first module pending', 'module disappeared', 'module removed', 'paid module pending', 'active module pending'],
@@ -178,13 +176,13 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['tell me about pcm stream', 'pcm stream', 'about pcm', 'what is pcm'],
-    en: 'Science (PCM) — Physics, Chemistry, Mathematics\n\nOpens: Engineering (JEE/BITS), Architecture, B.Sc, NDA, Pilot, Data Science & AI\n\nKey exams: JEE Main/Advanced, BITSAT, state CETs, NDA, CUET\n\nWe recommend confirming fit with Mind Mapping (inborn aptitude) + Skill Mapping (personality) before committing.\n\nModules: /dashboard?tab=assess | Call 9680102276',
-    hi: 'PCM — Engineering (JEE), Architecture, B.Sc, NDA। Mind Mapping + Skill Mapping से confirm करें। 9680102276',
+    en: 'Science (PCM) — Physics, Chemistry, Mathematics\n\nOpens: Engineering (JEE/BITS), Architecture, B.Sc, NDA, Pilot, Data Science & AI\n\nKey exams: JEE Main/Advanced, BITSAT, state CETs, NDA, CUET\n\nWe recommend confirming fit with Brain Mapping (inborn aptitude) + Skill Mapping (personality) before committing.\n\nModules: /dashboard?tab=assess | Call 9680102276',
+    hi: 'PCM — Engineering (JEE), Architecture, B.Sc, NDA। Brain Mapping + Skill Mapping से confirm करें। 9680102276',
   },
   {
-    patterns: ['what is dmit', 'dmit kya hai', 'dmit kya', 'about dmit', 'mind mapping'],
-    en: 'Mind Mapping — fingerprint-based inborn talent analysis (validated in 30+ countries)\n\nReveals: learning styles, memory patterns, intelligence types, natural aptitudes — no exams or pressure\n\nPrice: ₹1,999 (+ optional counselling ₹699)\n\nPurchase: Dashboard → Modules → Mind Mapping\n\nDetails: /assessments/dmit | 9680102276',
-    hi: 'Mind Mapping — fingerprint से जन्मजात प्रतिभा। ₹1999। /assessments/dmit | 9680102276',
+    patterns: ['what is dmit', 'dmit kya hai', 'dmit kya', 'about dmit', 'brain mapping'],
+    en: 'Brain Mapping — fingerprint-based inborn talent analysis (validated in 30+ countries)\n\nReveals: learning styles, memory patterns, intelligence types, natural aptitudes — no exams or pressure\n\nPrice: ₹1,999 (+ optional counselling ₹699)\n\nPurchase: Dashboard → Modules → Brain Mapping\n\nDetails: /assessments/dmit | 9680102276',
+    hi: 'Brain Mapping — fingerprint से जन्मजात प्रतिभा। ₹1999। /assessments/dmit | 9680102276',
   },
   {
     patterns: ['what is skill mapping', 'skill mapping', 'skill mapping kya hai', 'about skill mapping', 'psychometric'],
@@ -193,7 +191,7 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['dmit + skill mapping', 'dmit and skill mapping', 'combo', 'dmit vs skill mapping', 'difference dmit skill mapping'],
-    en: 'Mind Mapping + Skill Mapping Combo — ₹2,999 (counselling included)\n\n• Mind Mapping = INBORN talent (fingerprints)\n• Skill Mapping = CURRENT personality & interests (7 frameworks)\n• Together = complete nature + nurture profile\n• Includes expert counselling session\n\nProcess:\n1. Purchase combo from Dashboard → Modules\n2. Mind Mapping at centre / guided process\n3. Skill Mapping tests online (verify ID first)\n4. Counselling booking unlocks in Book tab\n\n/assessments/dmit-psychometric | 9680102276',
+    en: 'Brain Mapping + Skill Mapping Combo — ₹2,999 (counselling included)\n\n• Brain Mapping = INBORN talent (fingerprints)\n• Skill Mapping = CURRENT personality & interests (7 frameworks)\n• Together = complete nature + nurture profile\n• Includes expert counselling session\n\nProcess:\n1. Purchase combo from Dashboard → Modules\n2. Brain Mapping at centre / guided process\n3. Skill Mapping tests online (verify ID first)\n4. Counselling booking unlocks in Book tab\n\n/assessments/dmit-psychometric | 9680102276',
     hi: 'Combo ₹2999 — Mind + Skill + counselling। /assessments/dmit-psychometric',
   },
   {
@@ -203,13 +201,13 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['why career counselling', 'why counselling', 'why counseling', 'career counselling kyun'],
-    en: 'Why Career Counselling?\n\nCareer choices shape 40+ years — yet most decide on marks, peer pressure, or parent expectations alone.\n\nDream Mantra uses Mind Mapping (inborn) + 7 Skill Mapping frameworks for scientific, bias-free clarity.\n\nPurchase a module with counselling → book slot in Dashboard → Book tab.\n\n/assessments/why-dreams-mantra | 9680102276',
-    hi: 'Career counselling — Mind Mapping + Skill Mapping से scientific decision। Modules से purchase करें।',
+    en: 'Why Career Counselling?\n\nCareer choices shape 40+ years — yet most decide on marks, peer pressure, or parent expectations alone.\n\nDream Mantra uses Brain Mapping (inborn) + 7 Skill Mapping frameworks for scientific, bias-free clarity.\n\nPurchase a module with counselling → book slot in Dashboard → Book tab.\n\n/assessments/why-dreams-mantra | 9680102276',
+    hi: 'Career counselling — Brain Mapping + Skill Mapping से scientific decision। Modules से purchase करें।',
   },
   {
     patterns: ['certifications', 'certificates', 'credentials', 'certified counsellor', 'iit madras certificate'],
-    en: 'Dream Mantra Certifications:\n• Government of India — Career Counselling\n• International Certified Career Counselling\n• Mind Mapping Certification\n• NLP Practitioner\n• Reliance Foundation\n• IIT Madras\n\nView: /#certifications\nFounder Esha Lohiya — Chief Counsellor\n9680102276',
-    hi: 'Certifications: Govt of India, International, Mind Mapping, NLP, IIT Madras। /#certifications',
+    en: 'Dream Mantra Certifications:\n• Government of India — Career Counselling\n• International Certified Career Counselling\n• Brain Mapping Certification\n• NLP Practitioner\n• Reliance Foundation\n• IIT Madras\n\nView: /#certifications\nFounder Esha Lohiya — Chief Counsellor\n9680102276',
+    hi: 'Certifications: Govt of India, International, Brain Mapping, NLP, IIT Madras। /#certifications',
   },
   {
     patterns: ['programs for class 11-12', 'class 11-12', 'class 11 12 program', 'after 10th career'],
@@ -218,8 +216,8 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['how does counselling work', 'counselling process', '7 step', 'after report'],
-    en: 'Dream Mantra Counselling Process:\n1. Purchase module with counselling access\n2. Mind Mapping assessment\n3. Skill Mapping testing\n4. Academic audit & market trend review\n5. Expert counselling session (Book tab)\n6. Personalised roadmap\n7. Follow-up sessions (top-up ₹999 if needed)\n\n/counselling?tab=process | /dashboard?tab=book | 9680102276',
-    hi: '7-Step: purchase → Mind Mapping → Skill Mapping → report → Book tab से counselling → roadmap।',
+    en: 'Dream Mantra Counselling Process:\n1. Purchase module with counselling access\n2. Brain Mapping assessment\n3. Skill Mapping testing\n4. Academic audit & market trend review\n5. Expert counselling session (Book tab)\n6. Personalised roadmap\n7. Follow-up sessions (top-up ₹999 if needed)\n\n/counselling?tab=process | /dashboard?tab=book | 9680102276',
+    hi: '7-Step: purchase → Brain Mapping → Skill Mapping → report → Book tab से counselling → roadmap।',
   },
   {
     patterns: ['contact', 'phone number', '9680102276', 'email address', 'whatsapp'],
@@ -228,18 +226,18 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['software engineer', 'software developer', 'become software engineer', 'coding career', 'it career'],
-    en: 'Software Engineer — strong growth in Engineering & Technology.\n\nTypical path: PCM stream → B.Tech/B.E (CS/IT) → internships → product/IT roles\nIndia salary: roughly ₹3.7–11.1 LPA starting (varies by college & skills)\nDemand: Very High | Stream: Science (PCM)\n\nExplore full roadmap, skills & exams: /careers/software-engineer\n\nConfirm fit with Skill Mapping (₹699) + Mind Mapping (₹1,999) before committing.\n\n9680102276',
+    en: 'Software Engineer — strong growth in Engineering & Technology.\n\nTypical path: PCM stream → B.Tech/B.E (CS/IT) → internships → product/IT roles\nIndia salary: roughly ₹3.7–11.1 LPA starting (varies by college & skills)\nDemand: Very High | Stream: Science (PCM)\n\nExplore full roadmap, skills & exams: /careers/software-engineer\n\nConfirm fit with Skill Mapping (₹699) + Brain Mapping (₹1,999) before committing.\n\n9680102276',
     hi: 'Software Engineer — PCM, B.Tech, high demand। /careers/software-engineer | Skill Mapping ₹699। 9680102276',
   },
   {
     patterns: ['neet', 'mbbs', 'become doctor', 'medical career', 'doctor career'],
-    en: 'Medical careers (MBBS/BDS) require PCB stream + NEET.\n\nPath: Class 11–12 PCB → NEET → MBBS/BDS → internship → specialization optional\nStarting salary varies by hospital/govt vs private (often ₹4–8 LPA early career, grows with experience)\n\nUse Skill Mapping + Mind Mapping to check if medical field matches your aptitude — not just marks.\n\n/programs/class-11-12 | /careers | 9680102276',
-    hi: 'Doctor/MBBS — PCB + NEET। Aptitude check: Mind Mapping + Skill Mapping। 9680102276',
+    en: 'Medical careers (MBBS/BDS) require PCB stream + NEET.\n\nPath: Class 11–12 PCB → NEET → MBBS/BDS → internship → specialization optional\nStarting salary varies by hospital/govt vs private (often ₹4–8 LPA early career, grows with experience)\n\nUse Skill Mapping + Brain Mapping to check if medical field matches your aptitude — not just marks.\n\n/programs/class-11-12 | /careers | 9680102276',
+    hi: 'Doctor/MBBS — PCB + NEET। Aptitude check: Brain Mapping + Skill Mapping। 9680102276',
   },
   {
     patterns: ['jee', 'iit', 'engineering entrance', 'bitsat', 'become engineer'],
-    en: 'Engineering (IIT/BITS/state colleges) — PCM stream + JEE Main/Advanced or state CETs.\n\nEarly planning from Class 9–10 recommended.\nDream Mantra: Mind Mapping (inborn aptitude) + Skill Mapping (personality fit) before choosing PCM.\n\nPrograms: /programs/class-11-12 | Assessments: /dashboard?tab=assess | 9680102276',
-    hi: 'Engineering — PCM + JEE। Class 9 से planning। Mind Mapping + Skill Mapping लें। 9680102276',
+    en: 'Engineering (IIT/BITS/state colleges) — PCM stream + JEE Main/Advanced or state CETs.\n\nEarly planning from Class 9–10 recommended.\nDream Mantra: Brain Mapping (inborn aptitude) + Skill Mapping (personality fit) before choosing PCM.\n\nPrograms: /programs/class-11-12 | Assessments: /dashboard?tab=assess | 9680102276',
+    hi: 'Engineering — PCM + JEE। Class 9 से planning। Brain Mapping + Skill Mapping लें। 9680102276',
   },
   {
     patterns: ['cancel order', 'cancel payment', 'cancel module', 'refund', 'pending order cancel'],
@@ -273,13 +271,13 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['coupon', 'discount', 'dreams20', 'offer', 'promo code'],
-    en: 'COUPON: DREAMS20 — 20% off your first assessment (if eligible)\n\nApply at checkout in Dashboard → Modules.\n\nModule prices:\nMind Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499 | Extra counselling ₹999\n\n9680102276',
-    hi: 'Coupon DREAMS20 — पहले assessment पर 20% off (eligible हो तो)। Modules checkout पर।',
+    en: 'Module prices:\nBrain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499 | Extra counselling ₹999\n\nFor any special pricing, call 9680102276 or email info@dreammantra.in.\n\nCheckout: Dashboard → Modules',
+    hi: 'Module prices — Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499। Special pricing के लिए 9680102276 पर कॉल करें।',
   },
   {
     patterns: ['pcb', 'what is pcb', 'pcb stream', 'medical stream'],
-    en: 'Science (PCB) — Physics, Chemistry, Biology\n\nOpens: MBBS/BDS (NEET), Pharmacy, Nursing, Biotechnology, Psychology, Life Sciences\n\nKey exams: NEET, CUET, state medical entrances\n\nConfirm fit with Mind Mapping + Skill Mapping before choosing PCB.\n\n/dashboard?tab=assess | 9680102276',
-    hi: 'PCB — NEET, medical, pharmacy, biotech। Mind Mapping + Skill Mapping से confirm। 9680102276',
+    en: 'Science (PCB) — Physics, Chemistry, Biology\n\nOpens: MBBS/BDS (NEET), Pharmacy, Nursing, Biotechnology, Psychology, Life Sciences\n\nKey exams: NEET, CUET, state medical entrances\n\nConfirm fit with Brain Mapping + Skill Mapping before choosing PCB.\n\n/dashboard?tab=assess | 9680102276',
+    hi: 'PCB — NEET, medical, pharmacy, biotech। Brain Mapping + Skill Mapping से confirm। 9680102276',
   },
   {
     patterns: ['commerce stream', 'what is commerce', 'ca career', 'chartered accountant'],
@@ -288,8 +286,8 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['thank you', 'thanks', 'dhanyavad', 'shukriya'],
-    en: "You're welcome! I'm Esh — ask anytime about Mind Mapping, Skill Mapping, careers, booking, or your Dashboard.\n\n9680102276 | dreammantra.in",
-    hi: 'आपका स्वागत है! Mind Mapping, Skill Mapping, careers, booking — कुछ भी पूछें। 9680102276',
+    en: "You're welcome! I'm Esh — ask anytime about Brain Mapping, Skill Mapping, careers, booking, or your Dashboard.\n\n9680102276 | dreammantra.in",
+    hi: 'आपका स्वागत है! Brain Mapping, Skill Mapping, careers, booking — कुछ भी पूछें। 9680102276',
   },
   {
     patterns: ['forgot password', 'reset password', 'change password login', 'lost password'],
@@ -303,7 +301,7 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['dashboard tabs', 'user dashboard', 'what is in dashboard', 'security tab'],
-    en: 'USER DASHBOARD TABS\n\n• Overview — profile, Dreams ID, stats\n• Career Library — 950+ careers\n• AI Corner — ask Esh for guidance\n• Modules — buy Mind Mapping, Skill Mapping, CRP\n• Process & Take test — guides + Skill Mapping tests (after payment)\n• My Reports — published assessment reports\n• Book Session — counselling slots (after counselling module)\n• Security — change password, 2FA\n\nLogin: dreammantra.in/login',
+    en: 'USER DASHBOARD TABS\n\n• Overview — profile, Dreams ID, stats\n• Career Library — 950+ careers\n• AI Corner — ask Esh for guidance\n• Modules — buy Brain Mapping, Skill Mapping, CRP\n• Process & Take test — guides + Skill Mapping tests (after payment)\n• My Reports — published assessment reports\n• Book Session — counselling slots (after counselling module)\n• Security — change password, 2FA\n\nLogin: dreammantra.in/login',
     hi: 'Dashboard tabs: Overview, Careers, AI, Modules, Process, Reports, Book, Security। dreammantra.in/login',
   },
   {

@@ -44,20 +44,16 @@ const PAGE_ENTRIES = [
   { path: '/about', priority: '0.85', changefreq: 'monthly' },
   { path: '/contact', priority: '0.85', changefreq: 'monthly' },
   { path: '/counselling', priority: '0.95', changefreq: 'weekly' },
-  { path: '/counsellors', priority: '0.8', changefreq: 'monthly' },
-  { path: '/pillars', priority: '0.85', changefreq: 'monthly' },
   { path: '/crp', priority: '0.85', changefreq: 'monthly' },
   { path: '/crp/explore', priority: '0.8', changefreq: 'monthly' },
   { path: '/crp/launch', priority: '0.8', changefreq: 'monthly' },
   { path: '/careers', priority: '0.9', changefreq: 'weekly' },
   { path: '/marketplace', priority: '0.8', changefreq: 'weekly' },
-  { path: '/study-abroad', priority: '0.75', changefreq: 'monthly' },
   { path: '/assessments', priority: '0.95', changefreq: 'weekly' },
   { path: '/signup', priority: '0.7', changefreq: 'monthly' },
   { path: '/login', priority: '0.6', changefreq: 'monthly' },
   { path: '/forgot-password', priority: '0.4', changefreq: 'yearly' },
   { path: '/terms', priority: '0.3', changefreq: 'yearly' },
-  { path: '/privacy', priority: '0.3', changefreq: 'yearly' },
 ];
 
 function escapeXml(str) {

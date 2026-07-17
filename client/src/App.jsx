@@ -13,25 +13,17 @@ const Home = lazyWithRetry(() => import('./pages/Home'));
 const About = lazyWithRetry(() => import('./pages/About'));
 const Contact = lazyWithRetry(() => import('./pages/Contact'));
 const Terms = lazyWithRetry(() => import('./pages/Terms'));
-const Privacy = lazyWithRetry(() => import('./pages/Privacy'));
 const Login = lazyWithRetry(() => import('./pages/Login'));
 const Signup = lazyWithRetry(() => import('./pages/Signup'));
 const AssessmentsHub = lazyWithRetry(() => import('./pages/AssessmentsHub'));
 const AssessmentPage = lazyWithRetry(() => import('./pages/AssessmentPage'));
-const WhyDreamsMantraPage = lazyWithRetry(() => import('./pages/WhyDreamsMantraPage'));
-const DMITPage = lazyWithRetry(() => import('./pages/DMITPage'));
-const PsychometricPage = lazyWithRetry(() => import('./pages/PsychometricPage'));
-const DMPsychometricPage = lazyWithRetry(() => import('./pages/DMPsychometricPage'));
 const ProgramPage = lazyWithRetry(() => import('./pages/ProgramPage'));
 const PartnerPage = lazyWithRetry(() => import('./pages/PartnerPage'));
 const CounsellingHub = lazyWithRetry(() => import('./pages/CounsellingHub'));
-const CounsellorsHub = lazyWithRetry(() => import('./pages/CounsellorsHub'));
 const CareersPage = lazyWithRetry(() => import('./pages/CareersPage'));
 const DegreePathwaysPage = lazyWithRetry(() => import('./pages/DegreePathwaysPage'));
-const PillarsPage = lazyWithRetry(() => import('./pages/PillarsPage'));
-const CRPExplorePage = lazyWithRetry(() => import('./pages/CRPExplorePage'));
-const CRPLaunchPage = lazyWithRetry(() => import('./pages/CRPLaunchPage'));
 const CRPPage = lazyWithRetry(() => import('./pages/CRPPage'));
+const CRPLaunchRedirect = lazyWithRetry(() => import('./pages/CRPLaunchRedirect'));
 const CareerDetailPage = lazyWithRetry(() => import('./pages/CareerDetailPage'));
 const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
 const BlogPostPage = lazyWithRetry(() => import('./pages/BlogPostPage'));
@@ -42,7 +34,6 @@ const PaymentPage = lazyWithRetry(() => import('./pages/PaymentPage'));
 const TestPage = lazyWithRetry(() => import('./pages/TestPage'));
 const ForgotPassword = lazyWithRetry(() => import('./pages/ForgotPassword'));
 const MarketplaceHub = lazyWithRetry(() => import('./pages/MarketplaceHub'));
-const StudyAbroadHub = lazyWithRetry(() => import('./pages/StudyAbroadHub'));
 const NotFound = lazyWithRetry(() => import('./pages/NotFound'));
 
 function AuthPage({ children }) {
@@ -73,27 +64,27 @@ export default function App() {
             <Route element={<Layout />}>
               <Route index element={<Home />} />
               <Route path="counselling" element={<CounsellingHub />} />
-              <Route path="counsellors" element={<CounsellorsHub />} />
-              <Route path="pillars" element={<PillarsPage />} />
+              <Route path="counsellors" element={<Navigate to="/" replace />} />
+              <Route path="pillars" element={<Navigate to="/" replace />} />
               <Route path="crp" element={<CRPPage />} />
-              <Route path="crp/explore" element={<CRPExplorePage />} />
-              <Route path="crp/launch" element={<CRPLaunchPage />} />
+              <Route path="crp/explore" element={<Navigate to="/crp?tab=launchpad" replace />} />
+              <Route path="crp/launch" element={<CRPLaunchRedirect />} />
               <Route path="careers" element={<CareersPage />} />
               <Route path="careers/pathways" element={<DegreePathwaysPage />} />
               <Route path="careers/:slug" element={<CareerDetailPage />} />
               <Route path="blog" element={<BlogPage />} />
               <Route path="blog/:slug" element={<BlogPostPage />} />
               <Route path="marketplace" element={<MarketplaceHub />} />
-              <Route path="study-abroad" element={<StudyAbroadHub />} />
+              <Route path="study-abroad" element={<Navigate to="/" replace />} />
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />
               <Route path="terms" element={<Terms />} />
-              <Route path="privacy" element={<Privacy />} />
+              <Route path="privacy" element={<Navigate to="/" replace />} />
               <Route path="assessments" element={<AssessmentsHub />} />
-              <Route path="assessments/dmit" element={<DMITPage />} />
-              <Route path="assessments/psychometric" element={<PsychometricPage />} />
-              <Route path="assessments/dmit-psychometric" element={<DMPsychometricPage />} />
-              <Route path="assessments/why-dreams-mantra" element={<WhyDreamsMantraPage />} />
+              <Route path="assessments/dmit" element={<Navigate to="/counselling?tab=dmit" replace />} />
+              <Route path="assessments/psychometric" element={<Navigate to="/counselling?tab=psychometric" replace />} />
+              <Route path="assessments/dmit-psychometric" element={<Navigate to="/counselling?tab=combo" replace />} />
+              <Route path="assessments/why-dreams-mantra" element={<Navigate to="/counselling?tab=why" replace />} />
               <Route path="assessments/:slug" element={<AssessmentPage />} />
               <Route path="programs/:slug" element={<ProgramPage />} />
               <Route path="partner/:slug" element={<PartnerPage />} />

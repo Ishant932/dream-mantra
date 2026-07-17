@@ -4,7 +4,7 @@ export const COUNSELLING_ADDON_PRICE = 699;
 export const PRODUCTS = {
   dmit: {
     slug: 'dmit',
-    title: 'Mind Mapping',
+    title: 'Brain Mapping',
     price: 1999,
     optionalCounselling: true,
     testPath: '/dashboard/test/dmit',
@@ -20,7 +20,7 @@ export const PRODUCTS = {
   },
   'dmit-psychometric': {
     slug: 'dmit-psychometric',
-    title: 'Mind + Skill + Counselling',
+    title: 'Brain + Skill Mapping',
     price: 2999,
     includesCounselling: true,
     testPath: '/dashboard/test/dmit-psychometric',

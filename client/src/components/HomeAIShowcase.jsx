@@ -14,7 +14,7 @@ const nodes = [
 const cards = [
   { icon: Brain, title: 'AI Career Matcher', desc: '10-question quiz → personalised paths', color: 'from-amber-500/20 to-orange-500/10' },
   { icon: TrendingUp, title: 'Stream Predictor', desc: 'PCM · PCB · Commerce · Arts insights', color: 'from-green-600/15 to-emerald-500/10' },
-  { icon: Rocket, title: 'AI Career Launchpad', desc: '5 skill sprints to first job', color: 'from-orange-500/20 to-red-500/10' },
+  { icon: Rocket, title: 'AI Career Launchpad', desc: '5 skill sessions to first job', color: 'from-orange-500/20 to-red-500/10' },
 ];
 
 const typingLines = [
@@ -61,7 +61,7 @@ export default function HomeAIShowcase() {
               Meet <span className="gradient-text">Esh</span> — Your AI Career Partner
             </h2>
             <p className="text-secondary-theme text-lg leading-relaxed mb-8 max-w-lg">
-              Stream advice, Mind Mapping insights, AI Career Launchpad, dashboard tools &amp; 1000+ careers — all in one intelligent experience.
+              Stream advice, Brain Mapping insights, AI Career Launchpad, dashboard tools &amp; 1000+ careers — all in one intelligent experience.
             </p>
             <div className="flex flex-wrap gap-3">
               <Link to="/signup" className="btn-primary">
@@ -119,7 +119,7 @@ export default function HomeAIShowcase() {
                 transition={{ delay: 1.1 }}
               >
                 <Zap className="w-4 h-4 shrink-0 text-[var(--gold)]" />
-                PCM + Design tech paths score 92% — book free counselling to confirm.
+                PCM + Design tech paths score 92% — book a free guidance call to confirm.
               </motion.div>
             </div>
           </motion.div>

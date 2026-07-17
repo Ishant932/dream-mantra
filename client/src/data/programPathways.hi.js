@@ -2,9 +2,11 @@
 
 const mindMapping = {
   id: 'dmit',
-  name: 'Mind Mapping',
+  name: 'Brain Mapping',
   tagline: 'Fingerprint-based inborn talent mapping — learning style, intelligence type aur natural strengths.',
-  link: '/assessments/dmit',
+  link: '/counselling?tab=dmit',
+  productSlug: 'dmit',
+  purchasePath: '/dashboard?tab=assess&shop=dmit',
   icon: '🔬',
 };
 
@@ -12,7 +14,9 @@ const skillMapping = {
   id: 'psychometric',
   name: 'Skill Mapping',
   tagline: 'MBTI, DISC, RIASEC, Big 5, VAK, MIT & more — personality, interests aur career fit.',
-  link: '/assessments/psychometric',
+  link: '/counselling?tab=psychometric',
+  productSlug: 'psychometric',
+  purchasePath: '/dashboard?tab=assess&shop=psychometric',
   icon: '📊',
 };
 
@@ -20,7 +24,9 @@ const counselling = {
   id: 'counselling',
   name: 'Expert Counselling',
   tagline: 'Certified counsellor session — reports ko clear, personalised action plan mein translate karein.',
-  link: '/contact',
+  link: '/contact#guidance',
+  productSlug: null,
+  purchasePath: '/contact#guidance',
   icon: '💬',
   optional: true,
 };
@@ -30,6 +36,8 @@ const aiLaunchpad = {
   name: 'AI Career Launchpad',
   tagline: '5 AI-powered sessions — resume, interviews, LinkedIn aur job-ready skills.',
   link: '/crp/explore',
+  productSlug: 'crp-test',
+  purchasePath: '/dashboard?tab=assess&shop=crp-test',
   icon: '🚀',
 };
 
@@ -62,6 +70,14 @@ export const programPathwaysHi = {
       'scientifically samjhein — creative hai, logical hai, physical hai ya people-oriented?',
       'generic report card ke bajay clear parent-friendly roadmap paayein?',
     ],
+    benefits: [
+      'Tuition overload se pehle bachche ka natural learning style jaanein',
+      'Homework battles kam karein — unke learning style ke hisaab se roadmap',
+      'Peers aur relatives se compare kiye bina confidence build karein',
+      'Inborn strengths se match karte hobbies choose karein — trends se nahi',
+      'Scientifically jaanein — creative, logical, physical ya people-oriented',
+      'Generic report card ke bajay clear parent-friendly plan paayein',
+    ],
     modules: [mindMapping, counselling],
   },
 
@@ -92,6 +108,14 @@ export const programPathwaysHi = {
       'parent expectations aur bachche ki natural personality align hon?',
       'exam anxiety kam ho — learning strategy jo actually fit kare?',
       'premature labelling ke bina stream planning ka head start mile?',
+    ],
+    benefits: [
+      'Class 9 stream decision se pehle true strengths samjhein',
+      'Peer pressure se nahi — science se subjects aur activities choose karein',
+      'Kota factory mindset ke bina self-confidence build karein',
+      'Parent expectations aur bachche ki personality align karein',
+      'Exam anxiety kam karein — fit learning strategy ke saath',
+      'Premature labelling ke bina early stream planning shuru karein',
     ],
     modules: [mindMapping, skillMapping],
   },
@@ -124,6 +148,14 @@ export const programPathwaysHi = {
       'boards se pehle Plan A aur Plan B banana?',
       'natural learning style se smarter study — sirf harder nahi?',
     ],
+    benefits: [
+      'Science, Commerce ya Arts confidently choose karein — baad mein regret nahi',
+      'Parents ko data-backed reasons dikhao career direction ke liye',
+      'Board aur subject combination personality se match karein',
+      'Sirf Doctor–Engineer ke alawa 1000+ real options explore karein',
+      'Boards se pehle Plan A aur Plan B ready rakhein',
+      'Natural learning style se smarter padhein — sirf harder nahi',
+    ],
     modules: [mindMapping, skillMapping],
   },
 
@@ -154,6 +186,14 @@ export const programPathwaysHi = {
       'sirf marks ke alawa standout profile banana?',
       'degree choice personality aur long-term fit se align karna?',
       'family decisions fear se nahi, science se hon?',
+    ],
+    benefits: [
+      'Board stress peak hone se pehle courses aur colleges shortlist karein',
+      'Realistic entrance strategy with clear backup options banaein',
+      'Competitive pressure ke saath mental health balance karein',
+      'Sirf marks ke alawa standout profile build karein',
+      'Degree choice personality aur long-term career fit se align karein',
+      'Family decisions fear se nahi — science se lein',
     ],
     modules: [mindMapping, skillMapping],
   },
@@ -186,6 +226,14 @@ export const programPathwaysHi = {
       'batchmates se peeche feel karte hue career roadmap banana?',
       'family expectations aur apne goals align karne ke liye expert support?',
     ],
+    benefits: [
+      'Degree aur branch personality se truly fit hai validate karein',
+      'Meaningful internships paayein — sirf resume certificate nahi',
+      'Placement season se pehle job-ready skills build karein',
+      'Higher studies, MBA ya job start clearly decide karein',
+      'Batchmates se peeche feel karte hue bhi career roadmap banayein',
+      'Family expectations aur apne goals expert support se align karein',
+    ],
     modules: [mindMapping, skillMapping, counselling],
   },
 
@@ -216,6 +264,14 @@ export const programPathwaysHi = {
       'burnout se aise role mein jahan actually grow ho?',
       'saalon ke ek job ke baad interview confidence aur personal brand?',
       'mid-career pivot ke liye expert guidance jo family support kar sake?',
+    ],
+    benefits: [
+      'Personality se match karta career paayein — sirf resume se nahi',
+      'Financial stability lose kiye bina industry/role switch karein',
+      'AI-era jobs ke liye structured, practical upskilling plan',
+      'Burnout se aise role mein move karein jahan actually grow ho',
+      'Saalon ke ek job ke baad interview confidence aur brand rebuild karein',
+      'Family-supported mid-career pivot — expert guidance ke saath',
     ],
     modules: [mindMapping, skillMapping, aiLaunchpad, counselling],
   },

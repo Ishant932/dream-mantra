@@ -6,7 +6,7 @@ export const WHATSAPP_LINK = 'https://api.whatsapp.com/send/?phone=919680102276&
 export const PROCESS_GUIDES = {
   dmit: {
     id: 'dmit',
-    title: 'Mind Mapping Process',
+    title: 'Brain Mapping Process',
     icon: '🧬',
     sourceUrl: 'https://sites.google.com/view/dreamz-roadmap/process/dmit',
     intro:
@@ -21,7 +21,7 @@ export const PROCESS_GUIDES = {
           'Ensure your child is present on fingerprint day, or visit the Dream Mantra centre if both school dates are missed',
           'Attend the counselling session on time',
           'Stay active on your registered WhatsApp number',
-          'Read the Mind Mapping Process & Guidelines carefully',
+          'Read the Brain Mapping Process & Guidelines carefully',
         ],
       },
       {
@@ -239,8 +239,7 @@ export const PROCESS_GUIDES = {
     title: 'AI Career Launchpad Process',
     icon: '🚀',
     sourceUrl: '/crp/launch',
-    intro:
-      'AI Career Launchpad transforms academic achievement into employability — 5 live sessions covering personal branding, digital job search, interview mastery, and recruiter connections.',
+    intro: '',
     sections: [
       {
         title: 'Program overview',

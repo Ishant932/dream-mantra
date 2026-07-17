@@ -8,7 +8,7 @@ import { fileURLToPath } from 'url';
 import { getUploadsDir } from './lib/paymentProof.js';
 import { getMessageUploadsDir } from './lib/messageAttachments.js';
 import { seedAdmin, seedCounsellors, initDatabase, flushDatabase, getDbStatus } from './db.js';
-import { disconnectMongo } from './lib/mongo.js';
+import { disconnectMongo, pingMongo } from './lib/mongo.js';
 import { APP_VERSION } from './version.js';
 import { seedSampleSlots, getAvailableSlots } from './lib/slots.js';
 import { migrateLegacyPayments, handleRazorpayWebhook } from './lib/paymentService.js';
@@ -83,17 +83,66 @@ app.use(express.json({ limit: '12mb' }));
 app.use('/api/uploads/payment-proofs', express.static(getUploadsDir(), { maxAge: isProd ? '7d' : 0 }));
 app.use('/api/uploads/message-files', express.static(getMessageUploadsDir(), { maxAge: isProd ? '7d' : 0 }));
 
-app.get('/api/health', (_, res) => {
-  res.set('Cache-Control', 'no-store');
-  res.json({
-    ok: true,
+async function buildHealthPayload() {
+  const dbStatus = getDbStatus();
+  let mongoPing = null;
+  if (dbStatus.mongo.configured) {
+    try {
+      mongoPing = await pingMongo();
+    } catch (e) {
+      mongoPing = { ok: false, error: e?.message || 'MongoDB ping failed' };
+    }
+  }
+
+  const launch = {
+    jwtConfigured: Boolean(process.env.JWT_SECRET?.trim()),
+    mongoConfigured: dbStatus.mongo.configured,
+    mongoConnected: dbStatus.mode === 'mongodb' && dbStatus.mongo.ready === true,
+    clientBuilt: hasBuiltClient,
+    /** Production must use MongoDB — file mode loses data on redeploy */
+    productionDatabaseOk: !isProd || dbStatus.mode === 'mongodb',
+  };
+
+  const issues = [];
+  if (isProd && !launch.jwtConfigured) issues.push('JWT_SECRET missing');
+  if (isProd && !launch.mongoConfigured) issues.push('MONGODB_URI missing');
+  if (isProd && launch.mongoConfigured && !launch.mongoConnected) issues.push('MongoDB not connected');
+  if (isProd && dbStatus.mode === 'file') issues.push('Using file database in production');
+
+  const ok = issues.length === 0;
+
+  return {
+    ok,
+    ready: ok,
     ts: Date.now(),
     version: process.env.RENDER_GIT_COMMIT?.slice(0, 7) || APP_VERSION,
-    db: getDbStatus(),
+    env: isProd ? 'production' : 'development',
+    db: {
+      ...dbStatus,
+      mongo: { ...dbStatus.mongo, ping: mongoPing },
+    },
     payments: getGatewayPublicConfig(),
     email: { configured: isEmailConfigured() },
     whatsapp: getWhatsAppPublicConfig(),
-  });
+    launch,
+    issues,
+  };
+}
+
+app.get('/api/health', async (_, res) => {
+  res.set('Cache-Control', 'no-store');
+  try {
+    const health = await buildHealthPayload();
+    res.status(health.ok ? 200 : 503).json(health);
+  } catch (e) {
+    res.status(503).json({
+      ok: false,
+      ready: false,
+      ts: Date.now(),
+      version: process.env.RENDER_GIT_COMMIT?.slice(0, 7) || APP_VERSION,
+      error: e?.message || 'Health check failed',
+    });
+  }
 });
 
 app.get('/api/warmup', (_, res) => {
@@ -152,7 +201,12 @@ app.use((req, res, next) => {
 
   return next();
 });
-  
+
+/** Unmatched API routes return JSON 404 (not SPA index.html) */
+app.use('/api', (req, res) => {
+  res.status(404).json({ ok: false, message: 'API route not found', path: req.path });
+});
+
 if (hasBuiltClient) {
   app.use(
     express.static(clientDist, {
@@ -179,6 +233,18 @@ if (hasBuiltClient) {
     res.sendFile(path.join(clientDist, 'index.html'));
   });
 }
+
+app.use((err, req, res, _next) => {
+  console.error('Unhandled error:', err);
+  if (req.path?.startsWith('/api')) {
+    return res.status(500).json({
+      ok: false,
+      message: 'Internal Server Error',
+      error: isProd ? undefined : (err?.message || String(err)),
+    });
+  }
+  res.status(500).send('Internal Server Error');
+});
 
 async function startServer() {
   try {

@@ -2,7 +2,7 @@
 
 const PROMOTE_EN = `
 ✨ **How Dream Mantra helps with stream decisions:**
-• **Mind Mapping** maps your inborn learning style & aptitude (validated in 30+ countries)
+• **Brain Mapping** maps your inborn learning style & aptitude (validated in 30+ countries)
 • **Skill Mapping** (MBTI, DISC, RIASEC + 4 more) confirms stream fit scientifically
 • **7-Step Counselling Process** — from assessment to personalised roadmap
 • **950+ Career Library** with salary, skills & step-by-step roadmaps
@@ -10,7 +10,7 @@ const PROMOTE_EN = `
 
 const PROMOTE_HI = `
 ✨ **Dream Mantra कैसे मदद करता है:**
-• **Mind Mapping** — जन्मजात प्रतिभा और learning style
+• **Brain Mapping** — जन्मजात प्रतिभा और learning style
 • **Skill Mapping** — MBTI, DISC, RIASEC से stream fit
 • **7-Step Counselling** — assessment से roadmap तक
 • **950+ Career Library** — salary, skills, roadmap

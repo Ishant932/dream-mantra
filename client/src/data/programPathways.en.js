@@ -2,9 +2,11 @@
 
 const mindMapping = {
   id: 'dmit',
-  name: 'Mind Mapping',
+  name: 'Brain Mapping',
   tagline: 'Fingerprint-based inborn talent mapping — learning style, intelligence type & natural strengths.',
-  link: '/assessments/dmit',
+  link: '/counselling?tab=dmit',
+  productSlug: 'dmit',
+  purchasePath: '/dashboard?tab=assess&shop=dmit',
   icon: '🔬',
 };
 
@@ -12,7 +14,9 @@ const skillMapping = {
   id: 'psychometric',
   name: 'Skill Mapping',
   tagline: 'MBTI, DISC, RIASEC, Big 5, VAK, MIT & more — personality, interests & career fit.',
-  link: '/assessments/psychometric',
+  link: '/counselling?tab=psychometric',
+  productSlug: 'psychometric',
+  purchasePath: '/dashboard?tab=assess&shop=psychometric',
   icon: '📊',
 };
 
@@ -20,7 +24,9 @@ const counselling = {
   id: 'counselling',
   name: 'Expert Counselling',
   tagline: 'Certified counsellor session to translate reports into a clear, personalised action plan.',
-  link: '/contact',
+  link: '/contact#guidance',
+  productSlug: null,
+  purchasePath: '/contact#guidance',
   icon: '💬',
   optional: true,
 };
@@ -30,6 +36,8 @@ const aiLaunchpad = {
   name: 'AI Career Launchpad',
   tagline: '5 AI-powered sessions — resume, interviews, LinkedIn & job-ready skills for today\'s market.',
   link: '/crp/explore',
+  productSlug: 'crp-test',
+  purchasePath: '/dashboard?tab=assess&shop=crp-test',
   icon: '🚀',
 };
 
@@ -62,6 +70,14 @@ export const programPathwaysEn = {
       'understand whether they are creative, logical, physical, or people-oriented — scientifically?',
       'get a clear parent-friendly roadmap instead of generic school report cards?',
     ],
+    benefits: [
+      'Spot your child’s natural learning style before tuition overload begins',
+      'Reduce homework battles with a roadmap that matches how they learn',
+      'Build confidence without constant comparison to peers or relatives',
+      'Choose hobbies and activities that fit inborn strengths — not trends',
+      'Know scientifically if they lean creative, logical, physical, or people-oriented',
+      'Get a clear parent-friendly plan instead of generic school report cards',
+    ],
     modules: [mindMapping, counselling],
   },
 
@@ -92,6 +108,14 @@ export const programPathwaysEn = {
       'align parent expectations with the child\'s natural personality and interests?',
       'reduce exam anxiety with a clear learning strategy that actually fits them?',
       'get a head start on stream planning without premature labelling?',
+    ],
+    benefits: [
+      'Understand true strengths before the Class 9 stream decision',
+      'Choose subjects and activities based on science — not peer pressure',
+      'Build self-confidence without the Kota-coaching factory mindset',
+      'Align parent expectations with the child’s personality and interests',
+      'Reduce exam anxiety with a learning strategy that fits them',
+      'Start stream planning early — without premature labelling',
     ],
     modules: [mindMapping, skillMapping],
   },
@@ -124,6 +148,14 @@ export const programPathwaysEn = {
       'building a Plan A and Plan B before boards begin?',
       'studying smarter using your natural learning style — not just harder?',
     ],
+    benefits: [
+      'Choose Science, Commerce, or Arts with confidence — not regret later',
+      'Show parents data-backed reasons for your career direction',
+      'Match board and subject combinations to your personality',
+      'Explore 1000+ real options beyond only Doctor–Engineer paths',
+      'Build Plan A and Plan B before boards begin',
+      'Study smarter using your natural learning style — not just harder',
+    ],
     modules: [mindMapping, skillMapping],
   },
 
@@ -154,6 +186,14 @@ export const programPathwaysEn = {
       'building a profile that stands out — not just marks on a report card?',
       'aligning your degree choice with your personality and long-term career fit?',
       'getting expert guidance so family decisions are based on science, not fear?',
+    ],
+    benefits: [
+      'Shortlist the right courses and colleges before board stress peaks',
+      'Create a realistic entrance strategy with clear backup options',
+      'Balance mental health with competitive exam pressure',
+      'Build a profile that stands out — not just marks on a report card',
+      'Align degree choice with personality and long-term career fit',
+      'Help family decisions with science — not fear or social pressure',
     ],
     modules: [mindMapping, skillMapping],
   },
@@ -186,6 +226,14 @@ export const programPathwaysEn = {
       'creating a career roadmap when you feel behind your batchmates?',
       'getting expert support to align family expectations with your goals?',
     ],
+    benefits: [
+      'Validate whether your degree and branch truly fit your personality',
+      'Land meaningful internships — not just any resume certificate',
+      'Build job-ready skills before placement season hits',
+      'Decide clearly between higher studies, MBA, and starting work',
+      'Get a career roadmap when you feel behind your batchmates',
+      'Align family expectations with your goals — with expert support',
+    ],
     modules: [mindMapping, skillMapping, counselling],
   },
 
@@ -216,6 +264,14 @@ export const programPathwaysEn = {
       'moving from burnout to a role where you actually grow?',
       'building interview confidence and a personal brand after years in one job?',
       'getting expert guidance for a mid-career pivot your family can support?',
+    ],
+    benefits: [
+      'Find a career that matches your personality — not just your resume',
+      'Switch industries or roles without losing financial stability',
+      'Upskill for AI-era jobs with a structured, practical plan',
+      'Move from burnout to a role where you actually grow',
+      'Rebuild interview confidence and personal brand after years in one job',
+      'Plan a mid-career pivot your family can support — with expert guidance',
     ],
     modules: [mindMapping, skillMapping, aiLaunchpad, counselling],
   },

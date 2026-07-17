@@ -121,8 +121,8 @@ export const PSYCHO_AGE_MAP = [
 ];
 
 export const PSYCHO_WHY = [
-  { title: 'Beyond Mind Mapping', desc: 'While Mind Mapping reveals inborn potential, Skill Mapping maps your current personality, interests, behaviour, and decision-making style.' },
-  { title: 'Complete Picture', desc: 'Together with Mind Mapping, Skill Mapping creates the full nature + nurture profile for confident career decisions.' },
+  { title: 'Beyond Brain Mapping', desc: 'While Brain Mapping reveals inborn potential, Skill Mapping maps your current personality, interests, behaviour, and decision-making style.' },
+  { title: 'Complete Picture', desc: 'Together with Brain Mapping, Skill Mapping creates the full nature + nurture profile for confident career decisions.' },
   { title: 'Scientific & Objective', desc: 'Globally researched frameworks — not assumptions, peer pressure, or guesswork.' },
   { title: '7 Frameworks, One Profile', desc: 'Multiple dimensions ensure guidance is accurate, balanced, and practical — not based on a single test score.' },
 ];

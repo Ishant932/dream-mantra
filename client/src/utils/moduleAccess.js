@@ -17,7 +17,7 @@ export function resolveAssessmentSlug(assessment) {
   if (assessment.product_slug) return assessment.product_slug;
   const t = (assessment.type || '').toLowerCase();
   if (t.includes('mind') && t.includes('skill')) return 'dmit-psychometric';
-  if (t.includes('mind mapping') || t.includes('dmit')) return 'dmit';
+  if (t.includes('brain mapping') || t.includes('dmit')) return 'dmit';
   if (t.includes('skill mapping') || t.includes('psychometric')) return 'psychometric';
   if (t.includes('launchpad') || t.includes('crp') || t.includes('ai career')) return 'crp-test';
   if (t.includes('counselling') && t.includes('additional')) return 'counselling-topup';
@@ -52,7 +52,7 @@ export function getBlockedCatalogSlugs(assessments = []) {
     }
     if (a.status === 'pending_payment') slugs.add(slug);
   }
-  // Combo not offered if user already has Mind Mapping or Skill Mapping
+  // Combo not offered if user already has Brain Mapping or Skill Mapping
   const hasSingleModule = ['dmit', 'psychometric'].some((s) => slugs.has(s));
   if (hasSingleModule) slugs.add('dmit-psychometric');
   const hasPendingTopup = assessments.some(
@@ -154,7 +154,7 @@ export function hasSkillMappingAccess(assessments = []) {
   );
 }
 
-/** Skill Mapping modules only — hide Take test for Mind Mapping & AI Career Launchpad */
+/** Skill Mapping modules only — hide Take test for Brain Mapping & AI Career Launchpad */
 export function moduleHasTakeTest(slug) {
   return hasSkillMappingTests(slug);
 }

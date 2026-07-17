@@ -20,19 +20,19 @@ function WhatsAppIcon({ className }) {
 const STREAM_PROMPTS = {
   en: [
     'Tell me about PCM stream',
-    'What is Mind Mapping?',
+    'What is Brain Mapping?',
     'Why Career Counselling?',
     'What is AI Career Launchpad?',
-    'Mind Mapping + Skill Mapping combo?',
+    'Brain Mapping + Skill Mapping combo?',
     'Book free consultation',
     'Programs for Class 11-12',
   ],
   hi: [
     'PCM stream के बारे में बताएं',
-    'Mind Mapping क्या है?',
+    'Brain Mapping क्या है?',
     'Career counselling क्यों?',
     'AI Career Launchpad क्या है?',
-    'Mind Mapping + Skill Mapping combo?',
+    'Brain Mapping + Skill Mapping combo?',
     'मुफ्त consultation बुक करें',
     'Class 11-12 programmes',
   ],
@@ -59,8 +59,8 @@ export default function Chatbot() {
         role: 'bot',
         text:
           lang === 'hi'
-            ? `नमस्ते! मैं ${BOT_NAME} हूँ — Dream Mantra की AI काउंसलर। Streams, Mind Mapping, careers और counselling — कुछ भी पूछें!`
-            : `Hi! I'm ${BOT_NAME}, your AI career counsellor at Dream Mantra. Ask about streams, Mind Mapping, careers, AI Launchpad, or book a free session!`,
+            ? `नमस्ते! मैं ${BOT_NAME} हूँ — Dream Mantra की AI काउंसलर। Streams, Brain Mapping, careers और counselling — कुछ भी पूछें!`
+            : `Hi! I'm ${BOT_NAME}, your AI career counsellor at Dream Mantra. Ask about streams, Brain Mapping, careers, AI Launchpad, or book a free session!`,
       },
     ]);
   }, [lang]);

@@ -1,26 +1,44 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { scrollPageToTop } from '../utils/scrollToTop';
 
-/** Simple tab bar — scrolls to top when the active tab changes */
-export default function SubTabs({ tabs, defaultTab, children, id = 'tabs' }) {
+/** Tab bar — horizontal by default, or vertical sidebar when orientation="vertical" */
+export default function SubTabs({
+  tabs,
+  defaultTab,
+  children,
+  id = 'tabs',
+  orientation = 'horizontal',
+  paramName = 'tab',
+  scrollOnChange = false,
+}) {
   const location = useLocation();
   const navigate = useNavigate();
   const rootRef = useRef(null);
   const params = new URLSearchParams(location.search);
-  const active = params.get('tab') || defaultTab || tabs[0]?.id;
+  const active = params.get(paramName) || defaultTab || tabs[0]?.id;
+  const isVertical = orientation === 'vertical';
 
   const setTab = (tabId) => {
-    navigate({ pathname: location.pathname, search: `?tab=${tabId}` }, { replace: true });
+    const next = new URLSearchParams(location.search);
+    next.set(paramName, tabId);
+    navigate(
+      { pathname: location.pathname, search: `?${next.toString()}` },
+      { replace: true, preventScrollReset: true },
+    );
   };
 
-  useEffect(() => {
-    scrollPageToTop('instant');
-  }, [active]);
-
   return (
-    <div className="no-reveal subtab-root" ref={rootRef}>
-      <div className="subtab-track" role="tablist" aria-label="Section tabs">
+    <div
+      className={`no-reveal subtab-root${isVertical ? ' subtab-root--vertical' : ''}`}
+      ref={rootRef}
+      id={id}
+    >
+      <div
+        className={`subtab-track${isVertical ? ' subtab-track--vertical' : ''}`}
+        role="tablist"
+        aria-label="Section tabs"
+        aria-orientation={isVertical ? 'vertical' : 'horizontal'}
+      >
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -28,7 +46,7 @@ export default function SubTabs({ tabs, defaultTab, children, id = 'tabs' }) {
             role="tab"
             aria-selected={active === tab.id}
             onClick={() => setTab(tab.id)}
-            className={`subtab-btn ${active === tab.id ? 'active' : ''}`}
+            className={`subtab-btn${isVertical ? ' subtab-btn--vertical' : ''} ${active === tab.id ? 'active' : ''}`}
           >
             {tab.label}
           </button>

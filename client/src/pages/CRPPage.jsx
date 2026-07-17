@@ -1,9 +1,6 @@
-import { Navigate, useLocation } from 'react-router-dom';
+import CRPHub from './CRPHub';
 
-/** Legacy /crp and hash links → explore or launch */
+/** Training & Placement hub — Overview · Age Pathways · AI Career Launchpad */
 export default function CRPPage() {
-  const { hash } = useLocation();
-  const target = hash === '#programs' ? '/crp/launch' : '/crp/explore';
-  const suffix = hash && hash !== '#programs' ? hash : '';
-  return <Navigate to={`${target}${suffix}`} replace />;
+  return <CRPHub />;
 }

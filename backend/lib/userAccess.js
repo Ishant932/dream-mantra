@@ -7,7 +7,7 @@ function resolveAssessmentSlug(assessment) {
   if (assessment.product_slug) return assessment.product_slug;
   const t = (assessment.type || '').toLowerCase();
   if (t.includes('mind') && t.includes('skill')) return 'dmit-psychometric';
-  if (t.includes('mind mapping') || t.includes('dmit')) return 'dmit';
+  if (t.includes('brain mapping') || t.includes('dmit')) return 'dmit';
   if (t.includes('skill mapping') || t.includes('psychometric')) return 'psychometric';
   if (t.includes('launchpad') || t.includes('crp') || t.includes('ai career')) return 'crp-test';
   if (t.includes('counselling') && t.includes('additional')) return 'counselling-topup';

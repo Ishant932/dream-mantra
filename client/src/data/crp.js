@@ -5,18 +5,44 @@ export const crpProgram = {
   tagline: 'Class 11-12 · College Students · Freshers · Working Professionals',
   duration: '5 Sessions × 1.5 hours = 7.5 hours total',
   audience: [
-    { label: 'College Students', link: '/crp/launch?tab=college-students', tab: 'college-students' },
-    { label: 'Freshers', link: '/crp/launch?tab=freshers', tab: 'freshers' },
-    { label: 'Working Professionals', link: '/crp/launch?tab=working-professionals', tab: 'working-professionals' },
+    { label: 'College Students', link: '/crp?tab=pathways&audience=college-students', tab: 'college-students' },
+    { label: 'Freshers', link: '/crp?tab=pathways&audience=freshers', tab: 'freshers' },
+    { label: 'Working Professionals', link: '/crp?tab=pathways&audience=working-professionals', tab: 'working-professionals' },
   ],
-  description:
-    'AI Career Launchpad transforms academic achievement into employability. Led by Dream Mantra experts, this AI-powered accelerator covers personal branding, digital job search, interview mastery, corporate etiquette, and direct recruiter connections in Jaipur.',
+  description: '',
   outcomes: [
-    'Job-ready resume, LinkedIn & portfolio',
-    'Confident in interviews & group discussions',
-    'Know how to negotiate salary',
-    'Direct recruiter contacts in Jaipur',
-    'Personal brand that stands out',
+    {
+      title: 'Job-ready resume, LinkedIn & portfolio',
+      desc: 'ATS optimized, recruiter friendly & impressive',
+    },
+    {
+      title: 'Confident in interviews & group discussions',
+      desc: 'Practice-backed delivery with clear feedback',
+    },
+    {
+      title: 'Know how to negotiate salary',
+      desc: 'Ask with clarity and close stronger offers',
+    },
+    {
+      title: 'Direct recruiter contacts in Jaipur',
+      desc: 'Local network access when you need it',
+    },
+    {
+      title: 'Personal brand that stands out',
+      desc: 'A memorable first impression every time',
+    },
+    {
+      title: 'ATS-friendly job applications',
+      desc: 'Tailored submissions that pass screening',
+    },
+    {
+      title: 'Clear 30-day action plan',
+      desc: 'Know exactly what to do next',
+    },
+    {
+      title: 'Workplace etiquette & first-week confidence',
+      desc: 'Enter corporate life prepared',
+    },
   ],
   sessions: [
     {
@@ -272,47 +298,42 @@ export const crpParameters = [
 export const crpAdditionalParameters = [
   {
     label: '5 Sessions × 1.5 Hours',
-    desc: '7.5 hours of focused, job-ready training — no filler, only employability skills.',
+    desc: '7.5 hours of practical learning',
     icon: '⏱️',
   },
   {
     label: 'Online & Offline (Jaipur)',
-    desc: 'Join from anywhere or attend at Raja Park, Shastri Nagar, or Nirman Nagar centres.',
+    desc: 'Flexible learning options',
     icon: '🌐',
   },
   {
     label: 'Small Batch Cohorts',
-    desc: 'Limited seats so every participant gets personalised feedback and mock practice.',
+    desc: 'Personal attention every session',
     icon: '👥',
   },
   {
     label: 'English & Hindi Delivery',
-    desc: 'Sessions in the language you are most comfortable with.',
+    desc: 'Learn in the language you prefer',
     icon: '🗣️',
   },
   {
     label: 'Completion Certificate',
-    desc: 'Dream Mantra certificate validating your AI Career Launchpad training.',
+    desc: 'Recognized program credential',
     icon: '🏅',
   },
   {
     label: 'Certified Expert Facilitators',
-    desc: 'Led by Govt-aligned counsellors with real hiring and HR experience.',
+    desc: 'Industry-ready mentoring',
     icon: '✅',
   },
   {
     label: 'College Students & Freshers',
-    desc: 'Ideal for Class 12 pass-outs, college students, and first-job seekers.',
+    desc: 'Built for first-job readiness',
     icon: '🎓',
   },
   {
-    label: 'Working Professionals Welcome',
-    desc: 'Career switchers and early professionals building a stronger job-search toolkit.',
-    icon: '💼',
-  },
-  {
-    label: 'Free Initial Consultation',
-    desc: 'Speak with Dream Mantra before enrolling — call 9680102276, Mon–Sat 11am–7pm.',
+    label: 'Book a Free Guidance Call',
+    desc: 'Speak to our experts before you start',
     icon: '📞',
   },
 ];

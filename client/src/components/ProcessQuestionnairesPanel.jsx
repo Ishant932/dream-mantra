@@ -62,7 +62,7 @@ function ProcessGuideView({ guide }) {
       className="space-y-5"
     >
       <div className="process-guide-intro">
-        <p>{guide.intro}</p>
+        {guide.intro ? <p>{guide.intro}</p> : null}
         {guide.alert && (
           <p className="process-guide-alert">
             <MessageCircle className="w-4 h-4 shrink-0" />

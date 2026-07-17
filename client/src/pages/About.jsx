@@ -8,6 +8,7 @@ import LeadershipGrid from '../components/LeadershipGrid';
 import PersonPhoto from '../components/PersonPhoto';
 import AboutCertifications from '../components/AboutCertifications';
 import { useAboutContent } from '../i18n/useSiteContent';
+import { useLang } from '../context/LanguageContext';
 
 const fade = {
   initial: { opacity: 0, y: 28 },
@@ -20,6 +21,8 @@ const valueIcons = [Target, Users, Zap, Heart];
 
 export default function About() {
   const { about, missionVision, founder, managementTeam, leadership, homeLeadership } = useAboutContent();
+  const { d } = useLang();
+  const fg = d('freeGuidance') || {};
   const values = about.values.items.map((item, i) => ({
     ...item,
     icon: valueIcons[i],
@@ -37,6 +40,8 @@ export default function About() {
         title={about.hero.title}
         subtitle={about.hero.subtitle}
         image={IMAGES.counselling}
+        cta={fg.cta || about.cta?.button}
+        ctaLink="/contact#guidance"
       />
 
       {/* Story */}
@@ -56,7 +61,7 @@ export default function About() {
             <p className="leading-relaxed mb-4 text-sm italic border-l-4 pl-4" style={{ color: 'var(--text-body)', borderColor: 'var(--gold)' }}>
               {missionVision.philosophy}
             </p>
-            <Link to="/assessments/dmit" className="btn-primary">{about.story.cta}</Link>
+            <Link to="/counselling?tab=dmit" className="btn-primary">{about.story.cta}</Link>
           </motion.div>
           <motion.img
             {...fade}
@@ -225,7 +230,7 @@ export default function About() {
         <motion.div {...fade} className="max-w-4xl mx-auto rounded-3xl dm-spectrum-bg p-12 md:p-16 text-center shadow-2xl" style={{ color: 'var(--hero-text)' }}>
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">{about.cta.title}</h2>
           <p className="text-lg opacity-90 mb-8">{about.cta.subtitle}</p>
-          <Link to="/counselling?tab=book" className="btn-gold text-lg px-10">{about.cta.button}</Link>
+          <Link to="/contact#guidance" className="btn-gold text-lg px-10">{about.cta.button}</Link>
         </motion.div>
       </section>
     </>

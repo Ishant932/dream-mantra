@@ -6,10 +6,9 @@ import { useLang } from '../context/LanguageContext';
 export default function PromoBar() {
   const { t } = useLang();
   const promos = [
-    { label: t('promo.crp'), price: t('promo.explore'), to: '/crp/explore' },
-    { label: t('promo.pillars'), price: t('promo.explore'), to: '/pillars' },
+    { label: t('promo.crp'), price: t('promo.explore'), to: '/crp?tab=launchpad' },
     { label: t('promo.careers'), price: t('promo.browse'), to: '/careers' },
-    { label: t('promo.free'), price: t('promo.book'), to: '/contact' },
+    { label: t('promo.free'), price: t('promo.book'), to: '/contact#guidance' },
   ];
 
   return (

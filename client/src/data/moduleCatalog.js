@@ -22,7 +22,7 @@ export function resolveCounsellingAddon(mod) {
 export const MODULE_CATALOG = [
   {
     slug: 'dmit',
-    title: 'Mind Mapping',
+    title: 'Brain Mapping',
     price: 1999,
     optionalCounselling: true,
     description: 'Fingerprint-based inborn talent mapping — learning styles, memory patterns & natural aptitudes.',
@@ -38,7 +38,7 @@ export const MODULE_CATALOG = [
   },
   {
     slug: 'dmit-psychometric',
-    title: 'Mind + Skill + Counselling',
+    title: 'Brain + Skill Mapping',
     price: 2999,
     optionalCounselling: false,
     includesCounselling: true,

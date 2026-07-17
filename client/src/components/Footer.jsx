@@ -5,7 +5,6 @@ import { useLang } from '../context/LanguageContext';
 import Logo from './Logo';
 import FooterLocations from './FooterLocations';
 import { footerSocial } from '../data/siteLinks';
-import { useWhatsAppAgentLink } from '../hooks/useWhatsAppAgentLink';
 import { isMobilePerf } from '../utils/mobilePerf';
 
 function WhatsAppIcon({ className }) {
@@ -42,23 +41,57 @@ function FooterColumn({ title, links, index = 0 }) {
   );
 }
 
-function FooterCounsellingOverview({ title, links = [], index = 0 }) {
+function FooterExplore({ title, links = [], index = 0 }) {
   const lite = isMobilePerf();
   const FadeBox = lite ? 'div' : motion.div;
-  const motionProps = lite ? {} : {
-    initial: { opacity: 0, y: 16 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-  };
+  const motionProps = lite
+    ? {}
+    : {
+        initial: { opacity: 0, y: 16 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true },
+        transition: { delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+      };
 
   return (
-    <FadeBox className="footer-col footer-col--counselling" {...motionProps}>
+    <FadeBox className="footer-col footer-col--explore" {...motionProps}>
+      {title ? <h4 className="footer-col__title">{title}</h4> : null}
+      <div className="footer-col__cta-stack">
+        {links.map(({ to, label }, i) => (
+          <Link
+            key={to + label}
+            to={to}
+            className={`footer-col__cta${i === 0 ? ' footer-col__cta--primary' : ''}`}
+          >
+            {label}
+          </Link>
+        ))}
+      </div>
+    </FadeBox>
+  );
+}
+
+function FooterQuickLinks({ title, links = [], index = 0 }) {
+  const lite = isMobilePerf();
+  const FadeBox = lite ? 'div' : motion.div;
+  const motionProps = lite
+    ? {}
+    : {
+        initial: { opacity: 0, y: 16 },
+        whileInView: { opacity: 1, y: 0 },
+        viewport: { once: true },
+        transition: { delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+      };
+
+  return (
+    <FadeBox className="footer-col footer-col--quick" {...motionProps}>
       <h4 className="footer-col__title">{title}</h4>
-      <ul className="footer-col__list footer-col__list--cta">
+      <ul className="footer-col__list">
         {links.map(({ to, label }) => (
           <li key={to + label}>
-            <Link to={to} className="footer-col__link footer-col__link--cta">{label}</Link>
+            <Link to={to} className="footer-col__link">
+              {label}
+            </Link>
           </li>
         ))}
       </ul>
@@ -66,44 +99,9 @@ function FooterCounsellingOverview({ title, links = [], index = 0 }) {
   );
 }
 
-function FooterQuickSections({ title, sections = [], index = 0 }) {
-  const lite = isMobilePerf();
-  const FadeBox = lite ? 'div' : motion.div;
-  const motionProps = lite ? {} : {
-    initial: { opacity: 0, y: 16 },
-    whileInView: { opacity: 1, y: 0 },
-    viewport: { once: true },
-    transition: { delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] },
-  };
-
-  return (
-    <FadeBox className="footer-col footer-col--quick" {...motionProps}>
-      <h4 className="footer-col__title">{title}</h4>
-      <div className="footer-col__split">
-        {sections.map((section, i) => (
-          <div
-            key={section.title}
-            className={`footer-col__group ${i === 0 ? 'footer-col__group--discover' : 'footer-col__group--connect'}`}
-          >
-            <p className="footer-col__subtitle">{section.title}</p>
-            <ul className="footer-col__list">
-              {section.links.map(({ to, label }) => (
-                <li key={to + label}>
-                  <Link to={to} className="footer-col__link">{label}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </FadeBox>
-  );
-}
-
 export default function Footer() {
   const { t, d } = useLang();
   const footer = d('footer');
-  const waHref = useWhatsAppAgentLink();
   const lite = isMobilePerf();
   const FadeBox = lite ? 'div' : motion.div;
   const topMotion = lite ? {} : {
@@ -146,21 +144,11 @@ export default function Footer() {
             </ul>
             <p className="footer-pro__hours">{t('footer.hours')}</p>
 
-            <a
-              href={waHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-pro__wa-cta"
-            >
-              <WhatsAppIcon className="w-5 h-5 shrink-0" />
-              <span>Chat with Esh on WhatsApp</span>
-            </a>
-
             <div className="footer-pro__social">
               <span className="footer-pro__social-label">{footer.followUs}</span>
               <div className="footer-pro__social-icons">
                 {[
-                  { href: waHref, icon: WhatsAppIcon, label: 'WhatsApp AI counsellor' },
+                  { href: footerSocial.whatsapp, icon: WhatsAppIcon, label: 'WhatsApp' },
                   { href: footerSocial.instagram, icon: Instagram, label: 'Instagram' },
                   { href: footerSocial.linkedin, icon: Linkedin, label: 'LinkedIn' },
                   { href: footerSocial.facebook, icon: Facebook, label: 'Facebook' },
@@ -181,13 +169,19 @@ export default function Footer() {
           </div>
 
           <div className="footer-pro__columns">
-            <FooterCounsellingOverview
-              title={footer.counsellingOverview}
+            <FooterExplore
               links={footer.footerCounsellingOverview?.links}
               index={0}
             />
             <FooterColumn title={footer.agePathways} links={footer.footerAgePathways} index={1} />
-            <FooterQuickSections title={footer.quickLinks} sections={footer.footerQuickSections} index={2} />
+            {(footer.footerQuickSections || []).map((section, i) => (
+              <FooterQuickLinks
+                key={section.title}
+                title={section.title}
+                links={section.links || []}
+                index={2 + i}
+              />
+            ))}
           </div>
         </FadeBox>
 
@@ -198,28 +192,11 @@ export default function Footer() {
           </h4>
           <FooterLocations />
         </FadeBox>
-
-        <div className="footer-pro__bottom">
-          <nav className="footer-pro__quick-nav" aria-label="Footer quick links">
-            {footer.footerQuickLinks.map(({ to, label }, i) => (
-              <span key={to} className="footer-pro__quick-item">
-                {i > 0 && <span className="footer-pro__quick-sep" aria-hidden="true">·</span>}
-                <Link to={to} className="footer-pro__quick-link">{label}</Link>
-              </span>
-            ))}
-          </nav>
-        </div>
       </div>
 
       <div className="footer-pro__copyright">
-        <div className="footer-pro__container footer-pro__copyright-inner">
+        <div className="footer-pro__copyright-inner">
           <p>© {new Date().getFullYear()} {footer.copyright}</p>
-          {(footer.gstNumber || footer.gstAddress) && (
-            <p className="footer-pro__gst mt-2 text-xs opacity-90">
-              {footer.gstLabel || 'GSTIN'}: {footer.gstNumber}
-              {footer.gstAddress ? ` · ${footer.gstAddress}` : ''}
-            </p>
-          )}
         </div>
       </div>
     </footer>

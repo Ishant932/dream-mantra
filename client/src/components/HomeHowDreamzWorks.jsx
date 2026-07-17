@@ -1,122 +1,298 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, GraduationCap, Rocket } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { isMobilePerf } from '../utils/mobilePerf';
 
-export default function HomeHowDreamzWorks() {
+const AUTO_ROTATE_MS = 4200;
+
+const easeSoft = [0.22, 1, 0.36, 1];
+
+function ProcessPanel({ mod, exploreLabel, lite = false }) {
+  if (!mod) return null;
+
+  const stepList = {
+    hidden: {},
+    show: {
+      transition: { staggerChildren: lite ? 0 : 0.045, delayChildren: lite ? 0 : 0.04 },
+    },
+  };
+  const stepItem = {
+    hidden: lite ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.32, ease: easeSoft },
+    },
+  };
+
+  return (
+    <div className="home-processes__module-card home-processes__module-card--panel">
+      <div className="home-processes__module-head">
+        <span className="home-processes__module-icon" aria-hidden>{mod.icon}</span>
+        <h3 className="home-processes__module-title">{mod.title}</h3>
+      </div>
+      <motion.ol
+        className="home-processes__module-steps"
+        variants={stepList}
+        initial="hidden"
+        animate="show"
+      >
+        {mod.steps.map((label, i) => (
+          <motion.li key={label} className="home-processes__module-step" variants={stepItem}>
+            <span className="home-processes__module-step-num" aria-hidden>
+              {i + 1}
+            </span>
+            <span>{label}</span>
+          </motion.li>
+        ))}
+      </motion.ol>
+      <Link to={mod.link} className="home-processes__link inline-flex items-center gap-2">
+        {exploreLabel} <ArrowRight className="w-4 h-4" />
+      </Link>
+    </div>
+  );
+}
+
+export default function HomeHowDreamzWorks({
+  heading,
+  headingTitle,
+  headingHighlight,
+  pathwayToggle = true,
+  showSubtitle = true,
+  showGroupSubtitle = true,
+  layout = 'default',
+}) {
   const { d } = useLang();
   const copy = d('home.howDreamzWorks');
   const mobile = isMobilePerf();
+  const isCounsellingLayout = layout === 'counselling';
 
-  const processes = useMemo(() => [
-    {
-      id: 'counselling',
-      label: copy.counsellingLabel,
-      icon: '🎯',
-      type: 'counselling',
-    },
-    ...copy.moduleProcesses.map((mod) => ({
-      id: mod.id,
-      label: mod.title,
-      icon: mod.icon,
-      type: 'module',
-      module: mod,
-    })),
-  ], [copy]);
+  const counsellingMods = (copy.moduleProcesses || []).filter((m) => m.group !== 'training');
+  const trainingMods = (copy.moduleProcesses || []).filter((m) => m.group === 'training');
 
+  const [pathway, setPathway] = useState('counselling');
   const [activeIdx, setActiveIdx] = useState(0);
-  const active = processes[activeIdx];
+  const [paused, setPaused] = useState(false);
 
-  const headerMotion = mobile
-    ? { initial: { opacity: 1, y: 0 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true } }
-    : { initial: { opacity: 0, y: 28 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: true, margin: '-60px' }, transition: { duration: 0.55 } };
+  const modules = pathway === 'counselling' ? counsellingMods : trainingMods;
+  const active = modules[Math.min(activeIdx, Math.max(0, modules.length - 1))] || modules[0];
+  const subtitle =
+    pathway === 'counselling'
+      ? copy.counsellingGroupSubtitle
+      : copy.trainingGroupSubtitle;
+
+  useEffect(() => {
+    setActiveIdx(0);
+    setPaused(false);
+  }, [pathway]);
+
+  useEffect(() => {
+    if (paused || modules.length < 2) return undefined;
+    const id = window.setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % modules.length);
+    }, AUTO_ROTATE_MS);
+    return () => window.clearInterval(id);
+  }, [paused, modules.length, pathway]);
+
+  const panelTransition = mobile
+    ? { duration: 0.22, ease: 'easeOut' }
+    : { duration: 0.38, ease: easeSoft };
+
+  const panelEnter = mobile
+    ? { opacity: 0 }
+    : { opacity: 0, scale: 0.985 };
+  const panelCenter = mobile
+    ? { opacity: 1 }
+    : { opacity: 1, scale: 1 };
+  const panelExit = mobile
+    ? { opacity: 0 }
+    : { opacity: 0, scale: 0.99 };
 
   return (
-    <div className="home-how-dreamz relative overflow-hidden no-reveal">
+    <div className={`home-how-dreamz relative overflow-hidden no-reveal${isCounsellingLayout ? ' home-how-dreamz--counselling' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 relative">
-        <motion.div {...headerMotion} className="text-center max-w-2xl mx-auto mb-8 lg:mb-10">
-          <h2 className="home-headline mb-3">
-            {copy.title} <span className="gradient-text text-pop">{copy.titleHighlight}</span>
+        <div className={`text-center max-w-4xl mx-auto${isCounsellingLayout ? ' mb-5 lg:mb-6' : ' mb-6 lg:mb-8'}`}>
+          <h2 className="home-headline home-headline--oneline mb-3">
+            {headingTitle || headingHighlight ? (
+              <>
+                {headingTitle}
+                {headingHighlight ? (
+                  <>
+                    {headingTitle ? ' ' : null}
+                    <span className="gradient-text text-pop">{headingHighlight}</span>
+                  </>
+                ) : null}
+              </>
+            ) : heading ? (
+              heading
+            ) : (
+              <>
+                {copy.title}
+                {copy.titleHighlight ? (
+                  <>
+                    {' '}
+                    <span className="gradient-text text-pop">{copy.titleHighlight}</span>
+                  </>
+                ) : null}
+              </>
+            )}
           </h2>
-          <p className="text-secondary-theme text-base sm:text-lg">{copy.subtitle}</p>
-        </motion.div>
+          {showSubtitle ? (
+            <p className="text-secondary-theme text-base sm:text-lg max-w-3xl mx-auto leading-relaxed">{copy.subtitle}</p>
+          ) : null}
+        </div>
 
-        <motion.div
-          initial={mobile ? false : { opacity: 0, y: 24 }}
-          whileInView={mobile ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-40px' }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="home-processes"
-        >
-          <div className="home-processes__header">
-            <span className="home-processes__title">{copy.processesLabel || 'Processes'}</span>
-          </div>
-
-          <div className="home-processes__tabs" role="tablist" aria-label={copy.processesLabel || 'Processes'}>
-            {processes.map((proc, i) => (
+        <div className={`home-processes home-processes--chooser${isCounsellingLayout ? ' home-processes--counselling' : ''}`}>
+          {pathwayToggle ? (
+            <div
+              className="home-processes__segment"
+              role="tablist"
+              aria-label={copy.choosePathwayLabel || 'Choose your path'}
+            >
               <button
-                key={proc.id}
                 type="button"
                 role="tab"
-                aria-selected={activeIdx === i}
-                onClick={() => setActiveIdx(i)}
-                className={`home-processes__tab${activeIdx === i ? ' home-processes__tab--active' : ''}`}
+                aria-selected={pathway === 'counselling'}
+                className={`home-processes__segment-btn${pathway === 'counselling' ? ' is-active' : ''}`}
+                onClick={() => setPathway('counselling')}
               >
-                <span className="home-processes__tab-icon" aria-hidden>{proc.icon}</span>
-                <span className="home-processes__tab-label">{proc.label}</span>
+                <GraduationCap className="w-4 h-4" aria-hidden />
+                <span>{copy.counsellingGroupLabel || 'Counselling'}</span>
               </button>
-            ))}
-          </div>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={pathway === 'training'}
+                className={`home-processes__segment-btn${pathway === 'training' ? ' is-active' : ''}`}
+                onClick={() => setPathway('training')}
+              >
+                <Rocket className="w-4 h-4" aria-hidden />
+                <span>{copy.trainingGroupLabel || 'Training & Placement'}</span>
+              </button>
+            </div>
+          ) : null}
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active.id}
-              role="tabpanel"
-              initial={mobile ? false : { opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={mobile ? undefined : { opacity: 0, y: -8 }}
-              transition={{ duration: 0.28 }}
-              className="home-processes__panel"
-            >
-              {active.type === 'counselling' ? (
-                <ol className="home-processes__steps">
-                  {copy.steps.map((step) => (
-                    <li key={step.step} className="home-processes__step">
-                      <span className="home-processes__step-num">{copy.stepLabel} {step.step}</span>
-                      <div className="home-processes__step-body">
-                        <span className="home-processes__step-icon" aria-hidden>{step.icon}</span>
-                        <div>
-                          <p className="home-processes__step-title">{step.title}</p>
-                          <p className="home-processes__step-desc">{step.desc}</p>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              ) : (
-                <>
-                  <div className="home-processes__module-head">
-                    <span className="text-3xl" aria-hidden>{active.module.icon}</span>
-                    <h3 className="font-display text-xl font-bold">{active.module.title}</h3>
-                  </div>
-                  <ol className="home-processes__module-steps">
-                    {active.module.steps.map((label, i) => (
-                      <li key={label} className="home-processes__module-step">
-                        <span className="home-processes__module-step-num">{i + 1}</span>
-                        <span>{label}</span>
-                      </li>
+          {showGroupSubtitle ? (
+            <div className="home-processes__chooser-sub-wrap">
+              <AnimatePresence mode="wait">
+                {subtitle ? (
+                  <motion.p
+                    key={pathway}
+                    className="home-processes__chooser-sub"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.25, ease: 'easeOut' }}
+                  >
+                    {subtitle}
+                  </motion.p>
+                ) : null}
+              </AnimatePresence>
+            </div>
+          ) : null}
+
+          <div
+            className={`home-processes__chooser-body${modules.length > 1 ? ' home-processes__chooser-body--with-nav' : ''}`}
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
+          >
+            {modules.length > 1 ? (
+              isCounsellingLayout ? (
+                <div className="home-processes__nav-col">
+                  <div
+                    className="home-processes__tabs"
+                    role="tablist"
+                    aria-label={
+                      pathway === 'counselling'
+                        ? copy.counsellingGroupLabel || 'Counselling'
+                        : copy.trainingGroupLabel || 'Training & Placement'
+                    }
+                  >
+                    {modules.map((mod, i) => (
+                      <button
+                        key={mod.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={activeIdx === i}
+                        onClick={() => {
+                          setActiveIdx(i);
+                          setPaused(true);
+                        }}
+                        className={`home-processes__tab${activeIdx === i ? ' home-processes__tab--active' : ''}`}
+                      >
+                        <span className="home-processes__tab-icon" aria-hidden>{mod.icon}</span>
+                        <span className="home-processes__tab-label">{mod.title}</span>
+                      </button>
                     ))}
-                  </ol>
-                  <Link to={active.module.link} className="home-processes__link inline-flex items-center gap-2 mt-5">
-                    {copy.exploreModule} <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </motion.div>
+                  </div>
+                  <div className="home-processes__dots" aria-hidden>
+                    {modules.map((mod, i) => (
+                      <span
+                        key={mod.id}
+                        className={`home-processes__dot${activeIdx === i ? ' home-processes__dot--active' : ''}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div
+                  className="home-processes__tabs"
+                  role="tablist"
+                  aria-label={
+                    pathway === 'counselling'
+                      ? copy.counsellingGroupLabel || 'Counselling'
+                      : copy.trainingGroupLabel || 'Training & Placement'
+                  }
+                >
+                  {modules.map((mod, i) => (
+                    <button
+                      key={mod.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={activeIdx === i}
+                      onClick={() => {
+                        setActiveIdx(i);
+                        setPaused(true);
+                      }}
+                      className={`home-processes__tab${activeIdx === i ? ' home-processes__tab--active' : ''}`}
+                    >
+                      <span className="home-processes__tab-icon" aria-hidden>{mod.icon}</span>
+                      <span className="home-processes__tab-label">{mod.title}</span>
+                    </button>
+                  ))}
+                </div>
+              )
+            ) : null}
+
+            <div className="home-processes__panel" role="tabpanel">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={`${pathway}-${active?.id || activeIdx}`}
+                  className="home-processes__panel-anim"
+                  initial={panelEnter}
+                  animate={panelCenter}
+                  exit={panelExit}
+                  transition={panelTransition}
+                >
+                  <ProcessPanel mod={active} exploreLabel={copy.exploreModule} lite={mobile} />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            {!isCounsellingLayout && modules.length > 1 ? (
+              <div className="home-processes__dots" aria-hidden>
+                {modules.map((mod, i) => (
+                  <span
+                    key={mod.id}
+                    className={`home-processes__dot${activeIdx === i ? ' home-processes__dot--active' : ''}`}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </div>
+        </div>
       </div>
     </div>
   );

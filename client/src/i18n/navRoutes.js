@@ -1,9 +1,9 @@
 /** Static routes/icons for nav mega menus — labels come from locale */
 export const navAssessmentRoutes = [
-  '/assessments/dmit',
-  '/assessments/psychometric',
-  '/assessments/dmit-psychometric',
-  '/assessments/why-dreams-mantra',
+  '/counselling?tab=dmit',
+  '/counselling?tab=psychometric',
+  '/counselling?tab=combo',
+  '/counselling?tab=why',
 ];
 export const navAssessmentIcons = ['🔬', '📊', '🧬', '💜'];
 
@@ -14,17 +14,19 @@ export const navProgramRoutes = [
   '/programs/class-11-12',
   '/programs/college-students',
   '/programs/working-professionals',
-  '/counselling?tab=programs&pathway=institutions',
 ];
-export const navProgramIcons = ['🌱', '🎯', '📚', '🎓', '🏫', '💼', '🤝'];
+export const navProgramIcons = ['🌱', '🎯', '📚', '🎓', '🏫', '💼'];
 
-export const navCrpRoutes = ['/crp/explore'];
+export const navCommonRoutes = ['/counselling?tab=institutions'];
+export const navCommonIcons = ['🤝'];
+
+export const navCrpRoutes = ['/crp?tab=launchpad'];
 export const navCrpIcons = ['🚀'];
 
 export const navCrpProgramRoutes = [
-  '/crp/launch?tab=college-students',
-  '/crp/launch?tab=freshers',
-  '/crp/launch?tab=working-professionals',
+  '/crp?tab=pathways&audience=college-students',
+  '/crp?tab=pathways&audience=freshers',
+  '/crp?tab=pathways&audience=working-professionals',
 ];
 export const navCrpProgramIcons = ['🏫', '🚀', '💼'];
 

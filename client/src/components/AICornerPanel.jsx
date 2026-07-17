@@ -6,10 +6,10 @@ import { useLang } from '../context/LanguageContext';
 
 const QUICK_PROMPTS = {
   en: [
-    'What is Mind Mapping?',
+    'What is Brain Mapping?',
     'Tell me about PCM stream',
     'Why Career Counselling?',
-    'Mind Mapping vs Skill Mapping',
+    'Brain Mapping vs Skill Mapping',
     'Book free consultation',
     'What is AI Career Launchpad?',
     'Commerce career options',
@@ -18,10 +18,10 @@ const QUICK_PROMPTS = {
     'Jaipur centre locations',
   ],
   hi: [
-    'Mind Mapping क्या है?',
+    'Brain Mapping क्या है?',
     'PCM stream के बारे में',
     'Career counselling क्यों?',
-    'Mind Mapping vs Skill Mapping',
+    'Brain Mapping vs Skill Mapping',
     'मुफ्त consultation',
     'AI Career Launchpad',
     'Commerce careers',
@@ -47,8 +47,8 @@ export default function AICornerPanel({ profile = {}, userName = 'there' }) {
         role: 'bot',
         text:
           lang === 'hi'
-            ? `नमस्ते ${userName}! मैं Esh हूँ — Dream Mantra का AI career counsellor।${ctx} Streams, Mind Mapping, careers, programs, booking — कुछ भी पूछें!`
-            : `Hi ${userName}! I'm Esh, your AI career counsellor at Dream Mantra.${ctx} Ask about streams, Mind Mapping, careers, programs, booking — anything!`,
+            ? `नमस्ते ${userName}! मैं Esh हूँ — Dream Mantra का AI career counsellor।${ctx} Streams, Brain Mapping, careers, programs, booking — कुछ भी पूछें!`
+            : `Hi ${userName}! I'm Esh, your AI career counsellor at Dream Mantra.${ctx} Ask about streams, Brain Mapping, careers, programs, booking — anything!`,
       },
     ]);
   }, [lang, userName, profile.stream, profile.classLevel]);
@@ -119,7 +119,7 @@ export default function AICornerPanel({ profile = {}, userName = 'there' }) {
               AI Corner <Sparkles className="w-5 h-5 text-amber-300" />
             </h2>
             <p className="text-amber-100 mt-1 text-sm">
-              Full-powered Esh AI — streams, Mind Mapping, careers, programs, booking &amp; more. Same intelligence as our site chatbot.
+              Full-powered Esh AI — streams, Brain Mapping, careers, programs, booking &amp; more. Same intelligence as our site chatbot.
             </p>
             {profile.stream && (
               <span className="inline-flex items-center gap-1 mt-2 text-xs bg-[var(--bg-elevated)]/15 px-3 py-1 rounded-full">
@@ -191,7 +191,7 @@ export default function AICornerPanel({ profile = {}, userName = 'there' }) {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder={lang === 'hi' ? 'कुछ भी पूछें — stream, Mind Mapping, career...' : 'Ask anything — streams, Mind Mapping, careers, booking...'}
+              placeholder={lang === 'hi' ? 'कुछ भी पूछें — stream, Brain Mapping, career...' : 'Ask anything — streams, Brain Mapping, careers, booking...'}
               className="flex-1 input-field !py-2.5 !text-sm !rounded-xl"
             />
             <motion.button

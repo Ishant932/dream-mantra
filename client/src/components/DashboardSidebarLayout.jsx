@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -20,7 +20,6 @@ import CopyableUserId from './CopyableUserId';
 import DashboardMobileDeck from './DashboardMobileDeck';
 import NotificationBell from './NotificationBell';
 import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
-import { scrollPageToTop } from '../utils/scrollToTop';
 
 const TAB_ICONS = {
   overview: LayoutGrid,
@@ -73,12 +72,11 @@ export default function DashboardSidebarLayout({
 
   const setTab = (tabId) => {
     if (tabId === active) return;
-    navigate({ pathname: location.pathname, search: `?tab=${tabId}` }, { replace: true });
+    navigate(
+      { pathname: location.pathname, search: `?tab=${tabId}` },
+      { replace: true, preventScrollReset: true },
+    );
   };
-
-  useEffect(() => {
-    scrollPageToTop('instant');
-  }, [panelTab]);
 
   return (
     <div className={`dash-sidebar-layout dash-b2b-layout no-reveal${phone ? ' dash-b2b-layout--mobile-deck' : ''}`}>

@@ -513,7 +513,7 @@ function buildRoadmap(title, category, id, stream, tier = 'entry') {
   }
 
   return [
-    { step: 1, title: 'Self Discovery (Class 6–8)', description: `Take DMIT & Psychometric at Dreams Mantra to map aptitude for ${base}`, duration: 'Age 11–14', milestone: 'Learning style & interest profile' },
+    { step: 1, title: 'Self Discovery (Class 6–8)', description: `Take Brain Mapping & Skill Mapping at Dreams Mantra to map aptitude for ${base}`, duration: 'Age 11–14', milestone: 'Learning style & interest profile' },
     { step: 2, title: 'Stream Selection (Class 9–10)', description: `Choose PCM, PCB, Commerce, or Arts aligned with ${category} careers`, duration: 'Class 9–10', milestone: 'Board exams + stream locked' },
     { step: 3, title: 'Undergraduate Education', description: ug, duration: '3–5 years', milestone: 'Degree + internships' },
     { step: 4, title: 'Entrance Exams & Admissions', description: id % 2 === 0 ? 'Prepare for JEE/NEET/CUET/CAT as applicable' : 'Domain-specific entrance tests & college applications', duration: '1–2 years prep', milestone: 'College admission secured' },

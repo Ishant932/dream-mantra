@@ -133,9 +133,9 @@ export default function NavQuickMenu() {
                           key={link.to}
                           to={link.to}
                           label={link.label}
-                          desc={link.desc}
                           icon={link.icon}
                           index={i}
+                          compact
                           onClick={() => setOpen(false)}
                         />
                       ))}

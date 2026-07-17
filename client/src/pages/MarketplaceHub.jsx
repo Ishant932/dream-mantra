@@ -1,19 +1,16 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  FlaskConical, Brain, Sparkles,
-  ArrowRight, Tag, Zap, MessageCircle, Quote,
+  ArrowRight, Tag, Quote,
 } from 'lucide-react';
 import PageHero from '../components/PageHero';
 import SubTabs from '../components/SubTabs';
-import WelcomeOfferBanner from '../components/WelcomeOfferBanner';
-import { assessments, IMAGES } from '../data/content';
+import { IMAGES } from '../data/content';
 import { PRODUCTS } from '../data/products';
 import { applyVoucherPrice } from '../data/promotions';
 import { useLang } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
-import { assessmentPath } from '../utils/routes';
 import { paymentsApi } from '../api';
 import { useUserVouchers } from '../hooks/useUserVouchers';
 
@@ -23,17 +20,26 @@ const fade = {
   transition: { duration: 0.45 },
 };
 
+const TRAINING_PRODUCT_SLUGS = new Set(['crp-test']);
+const LEGACY_TO_VERTICAL = {
+  tests: 'counselling',
+  ai: 'counselling',
+  library: 'counselling',
+  stream: 'counselling',
+  degree: 'counselling',
+  launchpad: 'training',
+  crp: 'training',
+};
+
 export default function MarketplaceHub() {
   const { t, d } = useLang();
   const { token } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
   const [liveProducts, setLiveProducts] = useState([]);
   const { vouchers: liveVouchers } = useUserVouchers(token);
   const marketplacePage = d('pages.marketplace');
   const marketplaceTabs = d('data.marketplaceTabs');
-  const localizedAssessments = d('data.assessments').map((loc, i) => ({
-    ...assessments[i],
-    ...loc,
-  }));
 
   useEffect(() => {
     paymentsApi.products()
@@ -42,6 +48,15 @@ export default function MarketplaceHub() {
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const raw = params.get('tab');
+    if (raw && LEGACY_TO_VERTICAL[raw]) {
+      params.set('tab', LEGACY_TO_VERTICAL[raw]);
+      navigate({ pathname: location.pathname, search: `?${params.toString()}` }, { replace: true, preventScrollReset: true });
+    }
+  }, [location.pathname, location.search, navigate]);
 
   const localizedProducts = useMemo(() => {
     const base = d('data.products').map((loc) => {
@@ -68,22 +83,62 @@ export default function MarketplaceHub() {
     return [...base, ...extras];
   }, [d, liveProducts]);
 
+  const counsellingProducts = localizedProducts.filter((p) => !TRAINING_PRODUCT_SLUGS.has(p.slug));
+  const trainingProducts = localizedProducts.filter((p) => TRAINING_PRODUCT_SLUGS.has(p.slug));
+
   const promoCode = liveVouchers[0]?.code || null;
   const promoCoupon = liveVouchers[0] || null;
+  const verticals = marketplacePage.verticals || {};
+  const counsellingCopy = verticals.counselling || {};
+  const trainingCopy = verticals.training || {};
+
+  const renderProductGrid = (products) => (
+    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {products.map((p, i) => (
+        <motion.div
+          key={p.slug}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15 + i * 0.06 }}
+          className="infigon-card p-5 border-l-4 border-amber-500"
+        >
+          <p className="font-bold text-theme-primary">{p.title}</p>
+          <p className="text-xs text-theme-muted mt-1">{p.description}</p>
+          <div className="mt-3 flex items-baseline gap-2 flex-wrap">
+            <span className="text-lg font-bold text-amber-700">
+              ₹{Number(p.price || 0).toLocaleString('en-IN')}
+            </span>
+            {promoCoupon && promoCode && (
+              <span className="text-xs text-amber-600 font-semibold">
+                ₹{applyVoucherPrice(p.price, promoCoupon).final.toLocaleString('en-IN')}{' '}
+                {marketplacePage.tests?.withCode} {promoCode}
+              </span>
+            )}
+          </div>
+          <div className="mt-3 flex flex-wrap gap-3 text-sm">
+            <Link to="/contact#guidance" className="text-amber-700 font-semibold hover:underline">
+              {d('freeGuidance')?.cta || 'Book a free guidance call'}
+            </Link>
+            <Link to="/signup" className="text-theme-muted font-semibold hover:underline">
+              {d('freeGuidance')?.authCta || 'Sign in to know more'}
+            </Link>
+          </div>
+        </motion.div>
+      ))}
+    </div>
+  );
 
   return (
     <>
       <PageHero
         title={marketplacePage.title}
         subtitle={marketplacePage.subtitle}
-        image={IMAGES.skillMapping || IMAGES.psychometric}
-        cta={t('common.browseTests')}
-        ctaLink="/marketplace?tab=tests"
+        image={IMAGES.marketplace || IMAGES.skills || IMAGES.professional}
+        cta={marketplacePage.cta || d('freeGuidance')?.cta}
+        ctaLink="/contact#guidance"
       />
 
       <section className="py-12 max-w-7xl mx-auto px-4 no-reveal">
-        <WelcomeOfferBanner compact />
-
         {marketplacePage.quote && (
           <motion.blockquote
             {...fade}
@@ -94,119 +149,70 @@ export default function MarketplaceHub() {
           </motion.blockquote>
         )}
 
-        <SubTabs tabs={marketplaceTabs} defaultTab="tests" id="marketplace">
+        <SubTabs tabs={marketplaceTabs} defaultTab="counselling" id="marketplace">
           {(tab) => (
             <>
-              {tab === 'tests' && (
+              {tab === 'counselling' && (
                 <div className="space-y-10">
-                  <motion.div {...fade}>
-                    <h2 className="text-2xl font-bold mb-2 flex items-center gap-2 text-theme-primary">
-                      <FlaskConical className="w-7 h-7 text-amber-600" /> {marketplacePage.tests.premiumTitle}
-                    </h2>
-                    <p className="text-theme-muted mb-6">{marketplacePage.tests.premiumDesc}</p>
-                  </motion.div>
-
-                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {localizedAssessments.filter((a) => a.slug !== 'why-dreams-mantra').map((a, i) => (
-                      <motion.div
-                        key={a.slug}
-                        initial={{ opacity: 0, y: 24 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.08 }}
-                        whileHover={{ y: -6 }}
-                      >
-                        <Link
-                          to={assessmentPath(a.slug)}
-                          className="block infigon-card p-6 h-full hover:border-amber-400 hover:shadow-xl transition-all group"
-                        >
-                          <span className="text-4xl">{a.icon}</span>
-                          <h3 className="font-bold mt-3 group-hover:text-amber-700 text-theme-primary">{a.title}</h3>
-                          <p className="text-sm text-theme-muted mt-2 line-clamp-2">{a.subtitle}</p>
-                          <span className="inline-flex items-center gap-1 text-sm text-amber-600 font-semibold mt-4 group-hover:gap-2 transition-all">
-                            {t('common.viewDetails')} <ArrowRight className="w-4 h-4" />
-                          </span>
-                        </Link>
-                      </motion.div>
-                    ))}
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold mb-4 flex items-center gap-2 text-theme-primary">
-                      <Tag className="w-5 h-5 text-amber-500" /> {marketplacePage.tests.paidProductsTitle}
-                    </h3>
-                    <div className="grid sm:grid-cols-3 gap-4">
-                      {localizedProducts.map((p, i) => (
-                        <motion.div
-                          key={p.slug}
-                          initial={{ opacity: 0, scale: 0.96 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.2 + i * 0.06 }}
-                          className="infigon-card p-5 border-l-4 border-amber-500"
-                        >
-                          <p className="font-bold text-theme-primary">{p.title}</p>
-                          <p className="text-xs text-theme-muted mt-1">{p.description}</p>
-                          <div className="mt-3 flex items-baseline gap-2">
-                            <span className="text-lg font-bold text-amber-700">₹{p.price.toLocaleString('en-IN')}</span>
-                            {promoCoupon && promoCode && (
-                              <span className="text-xs text-amber-600 font-semibold">
-                                ₹{applyVoucherPrice(p.price, promoCoupon).final.toLocaleString('en-IN')} {marketplacePage.tests.withCode} {promoCode}
-                              </span>
-                            )}
-                          </div>
-                          <Link to="/signup" className="text-sm text-amber-600 font-semibold mt-3 inline-block hover:underline">
-                            {t('common.signUpToBook')}
-                          </Link>
-                        </motion.div>
-                      ))}
+                  {counsellingProducts.length > 0 && (
+                    <div>
+                      <h3 className="font-bold mb-4 flex items-center gap-2 text-theme-primary">
+                        <Tag className="w-5 h-5 text-amber-500" />{' '}
+                        {counsellingCopy.productsTitle || marketplacePage.tests?.paidProductsTitle}
+                      </h3>
+                      {renderProductGrid(counsellingProducts)}
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 
-              {tab === 'ai' && (
-                <motion.div {...fade} className="space-y-6">
-                  <div className="infigon-card p-8 bg-gradient-to-br from-amber-50/90 to-orange-50/80 dark:from-amber-900/25 dark:to-orange-900/20">
-                    <div className="flex flex-col md:flex-row gap-6 items-start">
-                      <motion.span
-                        animate={{ rotate: [0, 8, -8, 0] }}
-                        transition={{ duration: 4, repeat: Infinity }}
-                        className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-600 to-orange-600 flex items-center justify-center text-amber-50 shadow-lg shrink-0"
-                      >
-                        <Brain className="w-8 h-8" />
-                      </motion.span>
-                      <div className="flex-1">
-                        <h2 className="text-2xl font-bold mb-2 flex items-center gap-2 text-theme-primary">
-                          {marketplacePage.ai.title} <Sparkles className="w-5 h-5 text-amber-500" />
-                        </h2>
-                        <p className="text-theme-muted mb-4 leading-relaxed">{marketplacePage.ai.desc}</p>
-                        <div className="flex flex-wrap gap-3">
-                          <Link to="/signup" className="btn-primary inline-flex items-center gap-2">
-                            <Zap className="w-4 h-4" /> {marketplacePage.ai.dashboardCta}
-                          </Link>
-                          <Link to="/contact" className="btn-outline inline-flex items-center gap-2">
-                            <MessageCircle className="w-4 h-4" /> {marketplacePage.ai.bookCounselling}
-                          </Link>
-                        </div>
+              {tab === 'training' && (
+                <div className="space-y-8">
+                  <motion.div {...fade} className="marketplace-training-hero">
+                    <div className="marketplace-training-hero__copy">
+                      <p className="marketplace-training-hero__eyebrow">
+                        {trainingCopy.programEyebrow || 'AI Career Launchpad'}
+                      </p>
+                      <h2 className="text-2xl sm:text-3xl font-bold text-theme-primary mb-3">
+                        {trainingCopy.programTitle || 'Training & Placement'}
+                      </h2>
+                      <p className="text-theme-muted leading-relaxed max-w-2xl">
+                        {trainingCopy.programDesc ||
+                          'Job-ready skill sessions, interviews, resume and placement support for college students, freshers, and professionals.'}
+                      </p>
+                      <div className="flex flex-wrap gap-3 mt-6">
+                        <Link to="/contact#guidance" className="btn-primary inline-flex items-center gap-2">
+                          {d('freeGuidance')?.cta || 'Book a free guidance call'} <ArrowRight className="w-4 h-4" />
+                        </Link>
+                        <Link to="/crp?tab=launchpad" className="btn-outline inline-flex items-center gap-2">
+                          {trainingCopy.exploreCta || 'Explore Launchpad'}
+                        </Link>
+                        <Link to="/signup" className="page-next-step__auth inline-flex items-center gap-2">
+                          {d('freeGuidance')?.authCta || 'Sign in to know more'}
+                        </Link>
                       </div>
                     </div>
-                  </div>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {marketplacePage.ai.prompts.map((item, i) => (
-                      <motion.div
-                        key={item.q}
-                        initial={{ opacity: 0, y: 12 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.05 }}
-                        whileHover={{ scale: 1.02 }}
-                        className="infigon-card p-4 text-sm"
-                      >
-                        <span className="text-2xl">{item.icon}</span>
-                        <p className="font-semibold mt-2 text-theme-body">{item.q}</p>
-                        <p className="text-xs text-theme-muted mt-1">{marketplacePage.ai.askEsh}</p>
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
+                    <ul className="marketplace-training-hero__points">
+                      {(trainingCopy.points || [
+                        '5 skill sessions for job readiness',
+                        'Resume, LinkedIn & interview practice',
+                        'Placement-focused outcomes',
+                      ]).map((point) => (
+                        <li key={point}>{point}</li>
+                      ))}
+                    </ul>
+                  </motion.div>
+
+                  {trainingProducts.length > 0 && (
+                    <div>
+                      <h3 className="font-bold mb-4 flex items-center gap-2 text-theme-primary">
+                        <Tag className="w-5 h-5 text-orange-500" />{' '}
+                        {trainingCopy.productsTitle || 'Training programs'}
+                      </h3>
+                      {renderProductGrid(trainingProducts)}
+                    </div>
+                  )}
+                </div>
               )}
             </>
           )}

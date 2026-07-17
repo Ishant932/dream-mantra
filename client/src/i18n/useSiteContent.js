@@ -1,11 +1,13 @@
 import { useLang } from '../context/LanguageContext';
-import { pillars as pillarMeta } from '../data/pillars';
+import { pillars as pillarMeta, trainingSessions as trainingSessionMeta } from '../data/pillars';
 import { IMAGES, managementTeam as mgmtBase, founder as founderBase, certifications as certBase } from '../data/content';
 import {
   navAssessmentRoutes,
   navAssessmentIcons,
   navProgramRoutes,
   navProgramIcons,
+  navCommonRoutes,
+  navCommonIcons,
   navCrpRoutes,
   navCrpIcons,
   navCrpProgramRoutes,
@@ -29,6 +31,11 @@ export function useSiteNav() {
         links: zipNavLinks(mega.programs.links, navProgramRoutes, navProgramIcons),
       },
     ],
+    counsellingCommon: zipNavLinks(
+      mega.common?.links || [],
+      navCommonRoutes,
+      navCommonIcons,
+    ),
     crpMega: [
       {
         title: mega.crp.title,
@@ -52,18 +59,34 @@ export function useHomeContent() {
     { value: 7000, suffix: '+', label: statsLabels.clientsServed },
     { value: 1000, suffix: '+', label: statsLabels.careersMapped },
     { value: 30, suffix: '+', label: statsLabels.countriesValidated },
-    { value: 7, suffix: '', label: statsLabels.pillarFramework },
+    { value: 5, suffix: '', label: statsLabels.pillarFramework },
   ];
 
   const pillarIcons = pillarMeta.map((p) => ({ icon: p.icon, color: p.color, link: p.link }));
   const localizedPillars = d('pillars').map((p, i) => ({ ...pillarIcons[i], ...p }));
 
-  const toolkitIcons = ['📚', '🤖', '🧠', '🗺️'];
-  const toolkitLinks = ['/careers', '/marketplace?tab=ai', '/assessments/psychometric', '/counselling?tab=book'];
+  const sessionMeta = trainingSessionMeta.map((s) => ({
+    icon: s.icon,
+    number: s.number,
+    color: s.color,
+    subtitle: s.subtitle,
+    features: s.features,
+  }));
+  const trainingSessions = d('trainingSessions').map((s, i) => ({
+    ...sessionMeta[i],
+    ...s,
+    icon: sessionMeta[i]?.icon || '📌',
+    color: sessionMeta[i]?.color || 'from-amber-500 to-orange-500',
+    features: s.features || sessionMeta[i]?.features || [],
+    subtitle: s.subtitle || sessionMeta[i]?.subtitle || '',
+  }));
+
+  const toolkitIcons = ['📚', '🛒', '📅'];
+  const toolkitLinks = ['/careers', '/marketplace?tab=counselling', '/contact#guidance'];
   const toolkitServices = d('data.toolkitServices').map((s, i) => ({
     ...s,
-    icon: toolkitIcons[i],
-    link: toolkitLinks[i],
+    icon: toolkitIcons[i] || '✨',
+    link: toolkitLinks[i] || '/marketplace',
   }));
 
   const whoWeGuide = d('data.whoWeGuide').map((w, i) => ({
@@ -111,6 +134,7 @@ export function useHomeContent() {
     home,
     stats,
     pillars: localizedPillars,
+    trainingSessions,
     seventhPillar: { ...d('seventhPillar'), link: '/crp/explore' },
     processSteps: d('data.processSteps'),
     faqs: d('data.faqs').slice(0, 4),

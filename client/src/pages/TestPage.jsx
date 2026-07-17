@@ -230,8 +230,8 @@ export default function TestPage() {
               title={
                 slug === 'dmit' || slug === 'dmit-psychometric'
                   ? slug === 'dmit-psychometric'
-                    ? 'Mind + Skill + Counselling — Your Process'
-                    : 'Mind Mapping — Your Process'
+                    ? 'Brain + Skill Mapping — Your Process'
+                    : 'Brain Mapping — Your Process'
                   : slug === 'crp-test'
                     ? 'AI Career Launchpad — Training Roadmap'
                     : 'Skill Mapping — Your Process'
@@ -240,7 +240,7 @@ export default function TestPage() {
                 slug === 'psychometric'
                   ? psychometricProcessIntro(classLevel)
                   : slug === 'dmit-psychometric'
-                    ? 'Complete Mind Mapping fingerprint scan, Skill Mapping questionnaire, and your included counselling session.'
+                    ? 'Complete Brain Mapping fingerprint scan, Skill Mapping questionnaire, and your included counselling session.'
                     : slug === 'dmit'
                       ? 'Follow these steps for your fingerprint scan, report, and counselling session.'
                       : 'Your 5-session AI-powered career training journey starts here.'

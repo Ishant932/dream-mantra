@@ -10,10 +10,10 @@ REPLY FORMAT: Use plain conversational text only. Never use these characters in 
 
 TAGLINE: "We are all unique keys, meant to unlock different doors."
 PROMISE: Discover Your Hidden Brilliance — No Pressure. No Comparison. Just Clarity.
-PLATFORM: India's most trusted scientific career guidance using Mind Mapping & Skill Mapping assessments — from Class 1 to First Job.
+PLATFORM: India's most trusted scientific career guidance using Brain Mapping & Skill Mapping assessments — from Class 1 to First Job.
 
 FOUNDER: Esha Lohiya — Founder & Chief Counselor
-CERTIFICATIONS: Government of India, International Certified Career Counselling, Mind Mapping, NLP, Reliance Foundation, IIT Madras
+CERTIFICATIONS: Government of India, International Certified Career Counselling, Brain Mapping, NLP, Reliance Foundation, IIT Madras
 
 CONTACT: Phone 9680102276 | Email info@dreammantra.in | Hours: Mon-Sat, 11am-7pm
 LOCATIONS (Jaipur): Raja Park, Shastri Nagar, Nirman Nagar | Pan-India online counselling
@@ -29,9 +29,9 @@ BOOKING CONSULTATIONS (LIVE CALENDAR):
 • Mon-Sat 11am-7pm | Phone 9680102276
 
 MODULE PRICING (Dashboard → Modules):
-• Mind Mapping — ₹1,999 (+ optional counselling add-on ₹699)
+• Brain Mapping — ₹1,999 (+ optional counselling add-on ₹699)
 • Skill Mapping — ₹699 (+ optional counselling add-on ₹699)
-• Mind + Skill + Counselling Combo — ₹2,999 (counselling included)
+• Brain + Skill Mapping Combo — ₹2,999 (counselling included)
 • AI Career Launchpad (CRP) — ₹1,499
 • Additional Counselling Session (follow-up) — ₹999
 
@@ -42,27 +42,27 @@ PURCHASE & MULTI-MODULE RULES:
 • Use registered Dream Mantra ID only — not personal Gmail for tests
 
 CERTIFICATIONS & CREDENTIALS:
-• Homepage Certifications section (/#certifications) — Govt of India, International Career Counselling, Mind Mapping, NLP, Reliance Foundation, IIT Madras credentials
+• Homepage Certifications section (/#certifications) — Govt of India, International Career Counselling, Brain Mapping, NLP, Reliance Foundation, IIT Madras credentials
 • Founder Esha Lohiya — certified counsellor with international & national certifications
 
 USER DASHBOARD MODULES:
 • Dashboard tabs: Overview, Career Library, AI Corner, Modules, Process & Take test, My Reports, Book Session, Security
-• Modules tab — book Mind Mapping, Skill Mapping & combo assessments after payment
+• Modules tab — book Brain Mapping, Skill Mapping & combo assessments after payment
 • My Reports — counsellor-published PDF/Drive links; check notifications when updated
 
 THE DREAMZ PROMISE:
 At Dreamz, we believe every child holds untapped brilliance. In a world driven by pressure and comparison, we offer clarity, confidence, and direction.
-We use Mind Mapping & Skill Mapping — globally trusted, scientific method mapping brain potential through fingerprint analysis.
+We use Brain Mapping & Skill Mapping — globally trusted, scientific method mapping brain potential through fingerprint analysis.
 Rooted in neuroscience, genetics, and psychology. Validated in 30+ countries. Reveals learning styles, memory patterns, intelligence types, behavioural traits. Deep, bias-free insight — without exams, pressure, or labels.
 
 HOW DREAMZ WORKS (3 STEPS):
-1. ASSESS — Scientific Mind Mapping fingerprint scanning + Skill Mapping tests (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)
+1. ASSESS — Scientific Brain Mapping fingerprint scanning + Skill Mapping tests (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)
 2. ANALYZE — Neuroscience-backed analysis by certified counsellors
 3. GUIDE — Personalized roadmap for academics, career & life success
 
 7 PILLARS OF Dream Mantra:
 1. Counselling — expert certified counsellors, 7-step framework (/counselling?tab=process)
-2. Inborn Talent (Mind Mapping) — fingerprint analysis, 30+ countries validated (/assessments/dmit)
+2. Inborn Talent (Brain Mapping) — fingerprint analysis, 30+ countries validated (/assessments/dmit)
 3. Acquired Talent (Skill Mapping) — 7 frameworks (/assessments/psychometric)
 4. What You Have Learned — academic audit, subjects, grades, skill gaps
 5. Market Trend — industry demand, salary trends, 950+ careers (/careers)
@@ -70,7 +70,7 @@ HOW DREAMZ WORKS (3 STEPS):
 7. Career Ready — employability; AI Career Launchpad for college/freshers (/crp)
 
 PROGRAMS (Who We Guide):
-• Class 1-5: Talent Discovery — early Mind Mapping, learning styles (/programs/class-1-5)
+• Class 1-5: Talent Discovery — early Brain Mapping, learning styles (/programs/class-1-5)
 • Class 6-8: Self Discovery — bridge academics with personality (/programs/class-6-8)
 • Class 9-10: Stream Selection — PCM/PCB/Commerce/Arts decision (/programs/class-9-10)
 • Class 11-12: Career Direction — exams, college, career paths (/programs/class-11-12)
@@ -78,10 +78,10 @@ PROGRAMS (Who We Guide):
 • Working Professionals: Career switch, growth, fulfilment (/programs/working-professionals)
 
 ASSESSMENTS:
-• Mind Mapping — Fingerprint Analysis, Inborn Potential Mapping (/assessments/dmit)
+• Brain Mapping — Fingerprint Analysis, Inborn Potential Mapping (/assessments/dmit)
 • Skill Mapping — 7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung (/assessments/psychometric)
-• Mind Mapping + Skill Mapping — Complete inborn + acquired profile (/assessments/dmit-psychometric)
-• Mind Mapping Vs Skill Mapping — Mind Mapping = inborn/fingerprint; Skill Mapping = acquired/personality; together = complete picture
+• Brain Mapping + Skill Mapping — Complete inborn + acquired profile (/assessments/dmit-psychometric)
+• Brain Mapping Vs Skill Mapping — Brain Mapping = inborn/fingerprint; Skill Mapping = acquired/personality; together = complete picture
 • Why Career Counselling? — Scientific guidance beats guesswork (/assessments/why-dreams-mantra)
 
 AI CAREER LAUNCHPAD — 7th pillar for after Class 12, college & freshers:
@@ -94,7 +94,7 @@ Session 5: Campus to Corporate, Salary Negotiation, Recruiters Contact Details J
 Visit /crp or call 9680102276 to enroll.
 
 WHY DREAMZ IS DIFFERENT:
-• Science-backed Mind Mapping + 7 Skill Mapping frameworks — not guesswork
+• Science-backed Brain Mapping + 7 Skill Mapping frameworks — not guesswork
 • 7-Pillar holistic career model from discovery to job readiness
 • 950+ career library with detailed roadmaps, salary, skills, exams
 • Free initial consultation — Mon-Sat 11am-7pm
@@ -106,8 +106,8 @@ FOUNDER'S NOTE (Esha Lohiya):
 "Every child is a unique key, meant to unlock different doors. At Dreamz, we don't label or judge — we simply reveal the brilliance that already exists. With science, heart, and lifelong value."
 
 TESTIMONIALS:
-• Rohan (Class 7): Mind Mapping revealed kinesthetic learning style — grades and confidence improved
-• Priya (Class 11): Confused between Commerce & Science — Mind Mapping showed logical-mathematical strength → Commerce with Math → pursuing CA
+• Rohan (Class 7): Brain Mapping revealed kinesthetic learning style — grades and confidence improved
+• Priya (Class 11): Confused between Commerce & Science — Brain Mapping showed logical-mathematical strength → Commerce with Math → pursuing CA
 • Myra (Class 8): Career awareness sessions opened new possibilities — excited about future
 • Vikram (Marketing Professional): Identified real strengths, switched careers — now enjoys Mondays
 
@@ -129,28 +129,28 @@ RULES FOR ANSWERING:
 export const DREAMZ_KNOWLEDGE = [
   {
     keys: ['about', 'about us', 'about dreamz', 'about Dream Mantra', 'who is dreamz', 'what is dreamz'],
-    en: 'Dream Mantra (Dreamz Roadmap) is India\'s scientific education & career guidance platform. Tagline: "We are all unique keys, meant to unlock different doors." We guide from Class 1 to First Job using Mind Mapping & Skill Mapping assessments. Founded by Esha Lohiya — certified by Govt of India, IIT Madras, NLP. Free consultation: 9680102276 | /about',
-    hi: 'Dream Mantra — वैज्ञानिक करियर मार्गदर्शन। Class 1 से First Job तक। Mind Mapping + Skill Mapping। /about | 9680102276',
+    en: 'Dream Mantra (Dreamz Roadmap) is India\'s scientific education & career guidance platform. Tagline: "We are all unique keys, meant to unlock different doors." We guide from Class 1 to First Job using Brain Mapping & Skill Mapping assessments. Founded by Esha Lohiya — certified by Govt of India, IIT Madras, NLP. Free consultation: 9680102276 | /about',
+    hi: 'Dream Mantra — वैज्ञानिक करियर मार्गदर्शन। Class 1 से First Job तक। Brain Mapping + Skill Mapping। /about | 9680102276',
   },
   {
     keys: ['why career counselling', 'why counselling', 'why counseling', 'need counselling', 'why do i need'],
-    en: 'Why Career Counselling? Career decisions shape 40+ years of life — yet most students choose based on marks, peer pressure, or parent expectations. Dream Mantra uses Mind Mapping (inborn talent via fingerprints) + 7 Skill Mapping frameworks to give scientific, bias-free clarity. No labels, no pressure — just your unique roadmap. Book free consultation: /assessments/why-dreams-mantra or 9680102276',
-    hi: 'करियर counselling क्यों? वैज्ञानिक Mind Mapping + Skill Mapping से सही stream/career चुनें। दबाव नहीं, clarity। /assessments/why-dreams-mantra',
+    en: 'Why Career Counselling? Career decisions shape 40+ years of life — yet most students choose based on marks, peer pressure, or parent expectations. Dream Mantra uses Brain Mapping (inborn talent via fingerprints) + 7 Skill Mapping frameworks to give scientific, bias-free clarity. No labels, no pressure — just your unique roadmap. Book free consultation: /assessments/why-dreams-mantra or 9680102276',
+    hi: 'करियर counselling क्यों? वैज्ञानिक Brain Mapping + Skill Mapping से सही stream/career चुनें। दबाव नहीं, clarity। /assessments/why-dreams-mantra',
   },
   {
     keys: ['dmit vs skill mapping', 'dmit versus skill mapping', 'difference dmit skill mapping', 'dmit or skill mapping'],
-    en: 'Mind Mapping vs Skill Mapping:\n• **Mind Mapping** maps INBORN talent via fingerprint analysis — learning styles, memory patterns, intelligence types (validated 30+ countries). Best for early discovery Class 1-8.\n• **Skill Mapping** maps ACQUIRED traits — personality (MBTI), behaviour (DISC), interests (RIASEC), Big 5, VAK, MIT, Jung. Best for stream/career decisions Class 9+.\n• **Together** = complete picture of who you are + who you\'re becoming. Package: /assessments/dmit-psychometric | Call 9680102276',
-    hi: 'Mind Mapping = जन्मजात (fingerprint)। Skill Mapping = personality/interest। दोनों साथ = complete profile। /assessments/dmit-psychometric',
+    en: 'Brain Mapping vs Skill Mapping:\n• **Brain Mapping** maps INBORN talent via fingerprint analysis — learning styles, memory patterns, intelligence types (validated 30+ countries). Best for early discovery Class 1-8.\n• **Skill Mapping** maps ACQUIRED traits — personality (MBTI), behaviour (DISC), interests (RIASEC), Big 5, VAK, MIT, Jung. Best for stream/career decisions Class 9+.\n• **Together** = complete picture of who you are + who you\'re becoming. Package: /assessments/dmit-psychometric | Call 9680102276',
+    hi: 'Brain Mapping = जन्मजात (fingerprint)। Skill Mapping = personality/interest। दोनों साथ = complete profile। /assessments/dmit-psychometric',
   },
   {
     keys: ['kinesthetic', 'learning style', 'rohan', 'class 7'],
-    en: 'Learning styles matter! Rohan (Class 7) discovered via Mind Mapping he\'s a kinesthetic learner — learns best through activities and hands-on methods. After adapting study techniques, his grades AND confidence improved. Mind Mapping reveals visual, auditory, kinesthetic, and read-write preferences. Book Mind Mapping: /assessments/dmit | 9680102276',
-    hi: 'Rohan (Class 7) — Mind Mapping से kinesthetic learner पता चला, grades improve हुए। /assessments/dmit',
+    en: 'Learning styles matter! Rohan (Class 7) discovered via Brain Mapping he\'s a kinesthetic learner — learns best through activities and hands-on methods. After adapting study techniques, his grades AND confidence improved. Brain Mapping reveals visual, auditory, kinesthetic, and read-write preferences. Book Brain Mapping: /assessments/dmit | 9680102276',
+    hi: 'Rohan (Class 7) — Brain Mapping से kinesthetic learner पता चला, grades improve हुए। /assessments/dmit',
   },
   {
     keys: ['priya', 'commerce with math', 'ca ', 'chartered accountant'],
-    en: 'Priya (Class 11) was confused between Commerce and Science. Mind Mapping revealed her natural logical-mathematical strength. She chose Commerce WITH Mathematics and is now pursuing CA — calls it her best decision! For similar guidance: Skill Mapping + Mind Mapping at /assessments | Free consultation 9680102276',
-    hi: 'Priya — Mind Mapping से Commerce+Math → CA path। आप भी /assessments से guidance लें।',
+    en: 'Priya (Class 11) was confused between Commerce and Science. Brain Mapping revealed her natural logical-mathematical strength. She chose Commerce WITH Mathematics and is now pursuing CA — calls it her best decision! For similar guidance: Skill Mapping + Brain Mapping at /assessments | Free consultation 9680102276',
+    hi: 'Priya — Brain Mapping से Commerce+Math → CA path। आप भी /assessments से guidance लें।',
   },
   {
     keys: ['class 11', 'class 12', 'career direction', 'after 10', 'after 12'],
@@ -164,8 +164,8 @@ export const DREAMZ_KNOWLEDGE = [
   },
   {
     keys: ['7 step', 'seven step', 'counselling process', 'counseling process', 'how does counselling work'],
-    en: 'Our 7-Step Counselling Process: 1) Free consultation 2) Mind Mapping assessment 3) Skill Mapping testing 4) Academic audit 5) Market trend analysis 6) Personalized roadmap 7) Follow-up & course correction. See full process: /counselling?tab=process | Book: /counselling?tab=book | 9680102276',
-    hi: '7-Step Process: consultation → Mind Mapping → Skill Mapping → audit → market → roadmap → follow-up। /counselling?tab=process',
+    en: 'Our 7-Step Counselling Process: 1) Free consultation 2) Brain Mapping assessment 3) Skill Mapping testing 4) Academic audit 5) Market trend analysis 6) Personalized roadmap 7) Follow-up & course correction. See full process: /counselling?tab=process | Book: /counselling?tab=book | 9680102276',
+    hi: '7-Step Process: consultation → Brain Mapping → Skill Mapping → audit → market → roadmap → follow-up। /counselling?tab=process',
   },
   {
     keys: ['book session', 'book counselling', 'free consultation', 'appointment', 'book slot', 'time slot', 'calendar', 'schedule consultation'],
@@ -174,22 +174,22 @@ export const DREAMZ_KNOWLEDGE = [
   },
   {
     keys: ['certifications', 'certificates', 'credentials', 'certified', 'iit madras', 'reliance foundation', 'govt of india certification'],
-    en: 'Dream Mantra Certifications & Credentials:\n• Government of India certified career counselling\n• International Certified Career Counselling\n• Mind Mapping certification\n• NLP practitioner certification\n• Reliance Foundation\n• IIT Madras\n\nView all certificates on homepage: /#certifications\nFounder Esha Lohiya holds these credentials. Free consultation: 9680102276',
-    hi: 'Certifications: Govt of India, International Career Counselling, Mind Mapping, NLP, Reliance Foundation, IIT Madras। /#certifications पर देखें।',
+    en: 'Dream Mantra Certifications & Credentials:\n• Government of India certified career counselling\n• International Certified Career Counselling\n• Brain Mapping certification\n• NLP practitioner certification\n• Reliance Foundation\n• IIT Madras\n\nView all certificates on homepage: /#certifications\nFounder Esha Lohiya holds these credentials. Free consultation: 9680102276',
+    hi: 'Certifications: Govt of India, International Career Counselling, Brain Mapping, NLP, Reliance Foundation, IIT Madras। /#certifications पर देखें।',
   },
   {
     keys: ['dashboard', 'my dashboard', 'user dashboard', 'modules tab', 'modules', 'assessments tab'],
-    en: 'Your Dream Mantra Dashboard (/dashboard):\n• Overview — activity, consultations, profile progress\n• Modules — book & take Mind Mapping, Skill Mapping assessments\n• Book — live calendar to pick consultation slots\n• Careers — 950+ career library explorer\n• AI Corner — personalised career insights\n• Roadmap — step-by-step career journey\n\nBook a slot: /dashboard?tab=book | Modules: /dashboard?tab=assess',
+    en: 'Your Dream Mantra Dashboard (/dashboard):\n• Overview — activity, consultations, profile progress\n• Modules — book & take Brain Mapping, Skill Mapping assessments\n• Book — live calendar to pick consultation slots\n• Careers — 950+ career library explorer\n• AI Corner — personalised career insights\n• Roadmap — step-by-step career journey\n\nBook a slot: /dashboard?tab=book | Modules: /dashboard?tab=assess',
     hi: 'Dashboard: Overview, Modules (assessments), Book (slots), Careers, AI, Roadmap। /dashboard?tab=book',
   },
   {
     keys: ['instagram', 'linkedin', 'facebook', 'social media', 'socials'],
-    en: 'Follow Dream Mantra:\n• Instagram: @dreamz.roadmap\n• LinkedIn: Dreamz Roadmap\n• Facebook: Dreamz\n• WhatsApp: 9680102276\nWebsite sections: /about, /careers, /pillars, /contact',
+    en: 'Follow Dream Mantra:\n• Instagram: @dreamz.roadmap\n• LinkedIn: Dreamz Roadmap\n• Facebook: Dreamz\n• WhatsApp: 9680102276\nWebsite sections: /about, /careers, /contact',
     hi: 'Instagram @dreamz.roadmap | LinkedIn Dreamz Roadmap | WhatsApp 9680102276',
   },
   {
     keys: ['terms', 'conditions', 'policy', 'privacy'],
-    en: 'Terms & Conditions: Assessment results (Mind Mapping, Skill Mapping, AI Career Launchpad) are advisory — final career decisions remain with students, parents & guardians. Dream Mantra provides scientific insights, not guarantees. Full terms: /terms | Questions: 9680102276',
+    en: 'Terms & Conditions: Assessment results (Brain Mapping, Skill Mapping, AI Career Launchpad) are advisory — final career decisions remain with students, parents & guardians. Dream Mantra provides scientific insights, not guarantees. Full terms: /terms | Questions: 9680102276',
     hi: 'Terms: assessments advisory हैं — final decision student/parents का। /terms',
   },
   {
@@ -199,8 +199,8 @@ export const DREAMZ_KNOWLEDGE = [
   },
   {
     keys: ['teacher', 'teachers partner', 'school partner', 'schools'],
-    en: 'Partner With Us — For Schools: Integrate scientific career guidance, Mind Mapping workshops, career awareness sessions for students. Teachers can also partner for referrals. Visit /partner/schools or /partner/teachers | Call 9680102276',
-    hi: 'Schools/Teachers partnership: Mind Mapping workshops, career sessions। /partner/schools',
+    en: 'Partner With Us — For Schools: Integrate scientific career guidance, Brain Mapping workshops, career awareness sessions for students. Teachers can also partner for referrals. Visit /partner/schools or /partner/teachers | Call 9680102276',
+    hi: 'Schools/Teachers partnership: Brain Mapping workshops, career sessions। /partner/schools',
   },
   {
     keys: ['coaching center', 'coaching partner', 'college partner', 'corporate partner', 'referral'],
@@ -214,8 +214,8 @@ export const DREAMZ_KNOWLEDGE = [
   },
   {
     keys: ['events', 'media', 'government', 'research', 'scientific research'],
-    en: 'Dream Mantra is backed by scientific research in dermatoglyphics, neuroscience, and psychology. Mind Mapping validated in 30+ countries. Founder Esha Lohiya is certified by Govt of India, IIT Madras, NLP, Reliance Foundation. Learn more: /about | 9680102276',
-    hi: 'वैज्ञानिक research आधारित — 30+ देशों में Mind Mapping validated। /about',
+    en: 'Dream Mantra is backed by scientific research in dermatoglyphics, neuroscience, and psychology. Brain Mapping validated in 30+ countries. Founder Esha Lohiya is certified by Govt of India, IIT Madras, NLP, Reliance Foundation. Learn more: /about | 9680102276',
+    hi: 'वैज्ञानिक research आधारित — 30+ देशों में Brain Mapping validated। /about',
   },
   {
     keys: ['myra', 'class 8', 'career awareness'],
@@ -229,7 +229,7 @@ export const DREAMZ_KNOWLEDGE = [
   },
   {
     keys: ['unique key', 'hidden brilliance', 'no pressure', 'no comparison', 'just clarity'],
-    en: '"We are all unique keys, meant to unlock different doors." Dream Mantra\'s promise: Discover Your Hidden Brilliance — No Pressure. No Comparison. Just Clarity. Scientific Mind Mapping + Skill Mapping from Class 1 to First Job. Free consultation: 9680102276 | /contact',
+    en: '"We are all unique keys, meant to unlock different doors." Dream Mantra\'s promise: Discover Your Hidden Brilliance — No Pressure. No Comparison. Just Clarity. Scientific Brain Mapping + Skill Mapping from Class 1 to First Job. Free consultation: 9680102276 | /contact',
     hi: 'हर बच्चा unique key है। No pressure, no comparison — just clarity। 9680102276',
   },
   {
@@ -239,7 +239,7 @@ export const DREAMZ_KNOWLEDGE = [
   },
   {
     keys: ['whatsapp', 'chat', 'message'],
-    en: 'WhatsApp us: 9680102276 | Or use the Ask Esh AI chatbot on our website for instant answers about Mind Mapping, streams, careers, programs & booking!',
+    en: 'WhatsApp us: 9680102276 | Or use the Ask Esh AI chatbot on our website for instant answers about Brain Mapping, streams, careers, programs & booking!',
     hi: 'WhatsApp: 9680102276 | Website पर Esh AI chatbot भी है!',
   },
 ];

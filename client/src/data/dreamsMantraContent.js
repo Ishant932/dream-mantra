@@ -4,7 +4,7 @@ import { IMAGES, founder, testimonials } from './content';
 export const dreamzPromise = {
   title: 'The Dreamz Promise',
   text: 'At Dream Mantra (Dreamz Roadmap), we believe every child holds untapped brilliance. In a world driven by pressure and comparison, we offer something rare: clarity, confidence, and direction.',
-  subtext: 'We use Mind Mapping & Skill Mapping — a globally trusted, scientific method that maps brain potential through fingerprint analysis.',
+  subtext: 'We use Brain Mapping & Skill Mapping — a globally trusted, scientific method that maps brain potential through fingerprint analysis.',
   benefits: [
     'Validated in 30+ countries',
     'Reveals learning styles, memory patterns, intelligence types, and behavioural traits',
@@ -14,7 +14,7 @@ export const dreamzPromise = {
 };
 
 export const howDreamzWorks = [
-  { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Mind Mapping fingerprint scanning + Skill Mapping (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)' },
+  { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Brain Mapping fingerprint scanning + Skill Mapping (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)' },
   { step: 2, icon: '🔬', title: 'ANALYZE', desc: 'Neuroscience-backed analysis by certified counsellors — Govt of India aligned, NLP trained' },
   { step: 3, icon: '🎯', title: 'GUIDE', desc: 'Personalized roadmap for academics, career & life success — from Class 1 to First Job' },
 ];
@@ -29,13 +29,13 @@ export const whoWeGuide = [
 ];
 
 export const featuredAssessments = [
-  { title: 'Mind Mapping', desc: 'Fingerprint Analysis, Inborn Potential Mapping', link: '/assessments/dmit', icon: '🔬' },
-  { title: 'Skill Mapping', desc: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', link: '/assessments/psychometric', icon: '📊' },
-  { title: 'Mind Mapping + Skill Mapping', desc: 'Complete inborn + acquired talent profile', link: '/assessments/dmit-psychometric', icon: '🧬' },
+  { title: 'Brain Mapping', desc: 'Fingerprint Analysis, Inborn Potential Mapping', link: '/counselling?tab=dmit', icon: '🔬' },
+  { title: 'Skill Mapping', desc: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', link: '/counselling?tab=psychometric', icon: '📊' },
+  { title: 'Brain Mapping + Skill Mapping', desc: 'Complete inborn + acquired talent profile', link: '/counselling?tab=combo', icon: '🧬' },
 ];
 
 export const whyDifferent = [
-  'Science-backed Mind Mapping + 7 Skill Mapping frameworks — not guesswork',
+  'Science-backed Brain Mapping + 7 Skill Mapping frameworks — not guesswork',
   '7-Pillar holistic career model (Counselling → Job Ready + AI Career Launchpad)',
   '1000+ career library with detailed roadmaps',
   'Free consultation — Mon–Sat 11am–7pm',
