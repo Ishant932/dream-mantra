@@ -21,7 +21,7 @@ const PRICING_REPLY_EN = `MODULE PRICING (Dream Mantra Dashboard)
 HOW TO PURCHASE
 1. Register / log in at dreammantra.in
 2. Dashboard → Modules tab → select module
-3. Pay via Razorpay or submit payment proof for admin verification
+3. Pay via PhonePe or submit payment proof for admin verification
 4. After confirmation → module shows Active → Take test / Book counselling
 
 Contact: 9680102276 | info@dreammantra.in | Mon–Sat 11am–7pm`;
@@ -127,11 +127,11 @@ export const EXACT_QA = [
     hi: 'Dream Mantra ID registration पर मिलता है — Dashboard Overview पर दिखता है। Login और test verify के लिए यही ID।',
   },
   {
-    patterns: ['payment pending', 'payment confirmed', 'admin verification', 'submit proof', 'razorpay', 'how to pay', 'pay module'],
+    patterns: ['payment pending', 'payment confirmed', 'admin verification', 'submit proof', 'phonepe', 'razorpay', 'how to pay', 'pay module'],
     en: `PAYMENT PROCESS
 
 1. Dashboard → Modules → select module → Proceed to payment
-2. Pay online (Razorpay) OR upload payment screenshot for admin verification
+2. Pay online (PhonePe) OR upload payment screenshot for admin verification
 3. Status: Pending until confirmed → then Active with test access
 4. Each module has its own payment — paying for Module B does not affect Module A
 
@@ -256,7 +256,7 @@ Login help: contact 9680102276`,
   },
   {
     patterns: ['where is book tab', 'book tab not showing', 'cannot book', 'booking locked', 'calendar locked'],
-    en: 'BOOK TAB NOT SHOWING?\n\nThe Book tab unlocks only after payment is confirmed for a module that includes counselling:\n• Combo ₹2,999\n• Mind/Skill Mapping + counselling add-on ₹699\n• AI Career Launchpad (CRP) ₹1,499\n• Additional Counselling top-up ₹999\n\nIf payment is still Pending, wait for admin/Razorpay confirmation.\nRefresh Dashboard after confirmation.\n\n9680102276',
+    en: 'BOOK TAB NOT SHOWING?\n\nThe Book tab unlocks only after payment is confirmed for a module that includes counselling:\n• Combo ₹2,999\n• Mind/Skill Mapping + counselling add-on ₹699\n• AI Career Launchpad (CRP) ₹1,499\n• Additional Counselling top-up ₹999\n\nIf payment is still Pending, wait for admin/PhonePe confirmation.\nRefresh Dashboard after confirmation.\n\n9680102276',
     hi: 'Book tab counselling purchase confirm के बाद unlock। Pending payment हो तो wait करें। 9680102276',
   },
   {

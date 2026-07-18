@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import crypto from 'crypto';
 import db, { repo, getData, saveData } from '../lib/database.js';
 import { getProduct } from '../config/products.js';
 import { validateCoupon, applyCouponDiscount } from '../lib/couponService.js';
@@ -17,6 +16,12 @@ import {
   createPendingPaymentForAssessment,
   submitManualPayment,
 } from '../lib/paymentService.js';
+import {
+  buildMerchantOrderId,
+  createPhonePeCheckout,
+  getAppPublicUrl,
+  getPhonePeOrderStatus,
+} from '../lib/phonepeClient.js';
 
 const router = Router();
 
@@ -68,7 +73,8 @@ router.get('/order/:assessmentId', authRequired, (req, res) => {
     payment,
     gatewayEnabled: isGatewayEnabled(),
     gatewayAvailable: isGatewayEnabled(),
-    razorpayKey: isGatewayEnabled() ? process.env.RAZORPAY_KEY_ID : null,
+    gatewayProvider: isGatewayEnabled() ? 'phonepe' : null,
+    razorpayKey: null,
     paymentMode: getGatewayPublicConfig().mode,
   });
 });
@@ -219,7 +225,6 @@ router.post('/create-order', authRequired, async (req, res) => {
     );
   }
 
-  const existingPay = getPaymentForAssessment(assessment.id);
   if (isAssessmentFullyPaid(assessment)) {
     return res.json({ alreadyPaid: true, testLink: assessment.test_link });
   }
@@ -280,19 +285,20 @@ router.post('/create-order', authRequired, async (req, res) => {
     });
   }
 
-  const amountPaise = finalPrice * 100;
+  const amountPaise = Math.round(Number(finalPrice) * 100);
+  if (!Number.isFinite(amountPaise) || amountPaise < 100) {
+    return res.status(400).json({ message: 'Invalid payment amount' });
+  }
 
   try {
-    const Razorpay = (await import('razorpay')).default;
-    const razorpay = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY_ID,
-      key_secret: process.env.RAZORPAY_KEY_SECRET,
-    });
-    const order = await razorpay.orders.create({
-      amount: amountPaise,
-      currency: 'INR',
-      receipt: `asm_${assessment.id}`,
-      notes: { assessmentId: String(assessment.id), userId: String(req.user.id) },
+    const merchantOrderId = buildMerchantOrderId(assessment.id);
+    const redirectUrl = `${getAppPublicUrl()}/payment/${assessment.id}?phonepe=return&orderId=${encodeURIComponent(merchantOrderId)}`;
+
+    const checkout = await createPhonePeCheckout({
+      merchantOrderId,
+      amountPaise,
+      redirectUrl,
+      meta: { assessmentId: assessment.id, userId: req.user.id },
     });
 
     const reusablePay = getAllPaymentsForAssessment(assessment.id).find(
@@ -302,9 +308,9 @@ router.post('/create-order', authRequired, async (req, res) => {
       const data = getData();
       const pay = data.payments.find((p) => p.id === reusablePay.id);
       if (pay) {
-        pay.order_id = order.id;
-        pay.provider = 'razorpay';
-        pay.payment_method = 'razorpay';
+        pay.order_id = merchantOrderId;
+        pay.provider = 'phonepe';
+        pay.payment_method = 'phonepe';
         pay.amount = finalPrice;
         pay.payment_status = 'pending';
         pay.submitted_at = null;
@@ -316,38 +322,46 @@ router.post('/create-order', authRequired, async (req, res) => {
         userId: req.user.id,
         assessmentId: assessment.id,
         amount: finalPrice,
-        orderId: order.id,
-        provider: 'razorpay',
-        paymentMethod: 'razorpay',
+        orderId: merchantOrderId,
+        provider: 'phonepe',
+        paymentMethod: 'phonepe',
       });
     }
+
     res.json({
       manualMode: false,
       mock: false,
-      orderId: order.id,
+      provider: 'phonepe',
+      orderId: merchantOrderId,
+      redirectUrl: checkout.redirectUrl,
       amount: amountPaise,
       currency: 'INR',
-      key: process.env.RAZORPAY_KEY_ID,
       product: { ...product, price: finalPrice },
       pricing,
       assessmentId: assessment.id,
     });
   } catch (e) {
-    console.error('Razorpay error', e);
-    res.status(500).json({ message: 'Payment gateway error' });
+    console.error('PhonePe create-order error', e);
+    res.status(500).json({
+      message: e?.message || 'Payment gateway error',
+    });
   }
 });
 
-router.post('/verify', authRequired, (req, res) => {
+/**
+ * After PhonePe redirect — confirm via order status API (idempotent).
+ * Body: { assessmentId, orderId } where orderId is merchantOrderId.
+ */
+router.post('/verify', authRequired, async (req, res) => {
   if (!isGatewayEnabled()) {
     return res.status(403).json({
       message: 'Automatic payment verification is disabled. Awaiting admin confirmation.',
     });
   }
 
-  const { assessmentId, orderId, paymentId, signature, mock } = req.body;
+  const { assessmentId, orderId } = req.body;
   const assessment = db.prepare('SELECT * FROM assessments WHERE id = ?').get(assessmentId);
-  if (!assessment || assessment.user_id !== req.user.id) {
+  if (!assessment || Number(assessment.user_id) !== Number(req.user.id)) {
     return res.status(404).json({ message: 'Assessment not found' });
   }
 
@@ -357,35 +371,60 @@ router.post('/verify', authRequired, (req, res) => {
     return res.status(400).json({ message: e.message });
   }
 
-  if (mock || orderId?.startsWith('mock_') || orderId?.startsWith('pending_') || orderId?.startsWith('DM-')) {
-    return res.status(403).json({
-      message: 'Payment cannot be auto-confirmed. Awaiting admin manual confirmation.',
+  if (!orderId || orderId.startsWith('mock_') || orderId.startsWith('pending_')) {
+    return res.status(400).json({ message: 'Invalid PhonePe order id' });
+  }
+
+  const match = getAllPaymentsForAssessment(assessment.id).find((p) => p.order_id === orderId);
+  if (!match) {
+    return res.status(400).json({ message: 'Order does not match this assessment' });
+  }
+
+  try {
+    const status = await getPhonePeOrderStatus(orderId);
+    const state = String(status?.state || '').toUpperCase();
+
+    if (state !== 'COMPLETED' && state !== 'SUCCESS') {
+      return res.status(402).json({
+        success: false,
+        state: state || 'PENDING',
+        message:
+          state === 'FAILED' || state === 'ERROR'
+            ? 'Payment failed on PhonePe. Please try again.'
+            : 'Payment not completed yet. If you paid, wait a moment and refresh.',
+      });
+    }
+
+    const paymentId =
+      status?.paymentDetails?.[0]?.transactionId ||
+      status?.transactionId ||
+      status?.orderId ||
+      orderId;
+
+    const result = confirmPayment({
+      orderId,
+      paymentId,
+      source: 'gateway',
+      paymentMethod: 'phonepe',
+      gatewayResponse: {
+        verified_at: new Date().toISOString(),
+        state,
+        status,
+      },
     });
+
+    res.json({
+      success: true,
+      alreadyConfirmed: result.alreadyConfirmed,
+      testLink: result.assessment?.test_link,
+      assessmentId: assessment.id,
+      payment: result.payment,
+      message: 'Payment confirmed',
+    });
+  } catch (e) {
+    console.error('PhonePe verify error', e);
+    res.status(500).json({ message: e?.message || 'Could not verify PhonePe payment' });
   }
-
-  const secret = process.env.RAZORPAY_KEY_SECRET;
-  const body = orderId + '|' + paymentId;
-  const expected = crypto.createHmac('sha256', secret).update(body).digest('hex');
-  if (expected !== signature) {
-    return res.status(400).json({ message: 'Invalid payment signature' });
-  }
-
-  const result = confirmPayment({
-    orderId,
-    paymentId,
-    source: 'gateway',
-    paymentMethod: 'razorpay',
-    gatewayResponse: { verified_at: new Date().toISOString() },
-  });
-
-  res.json({
-    success: true,
-    alreadyConfirmed: result.alreadyConfirmed,
-    testLink: result.assessment?.test_link,
-    assessmentId: assessment.id,
-    payment: result.payment,
-    message: 'Payment confirmed',
-  });
 });
 
 export default router;

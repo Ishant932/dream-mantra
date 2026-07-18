@@ -8,7 +8,7 @@ import path from 'path';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const isWin = process.platform === 'win32';
-const PORTS = [5000, 5173];
+const PORTS = [5001, 5174];
 
 function killPort(port) {
   try {
@@ -42,8 +42,8 @@ for (const port of PORTS) killPort(port);
 
 await new Promise((r) => setTimeout(r, 800));
 
-console.log('\n  Open in browser:  http://localhost:5173/login');
-console.log('  API health:       http://localhost:5000/api/health\n');
+console.log('\n  Open in browser:  http://localhost:5174/login');
+console.log('  API health:       http://localhost:5001/api/health\n');
 
 const child = spawn(isWin ? 'npm.cmd' : 'npm', ['run', 'dev:servers'], {
   cwd: root,

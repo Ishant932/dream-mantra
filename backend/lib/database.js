@@ -473,7 +473,7 @@ export const repo = {
       status: 'pending',
       payment_status: 'pending',
       confirmation_source: null,
-      payment_method: paymentMethod || (prov === 'razorpay' ? 'razorpay' : 'manual'),
+      payment_method: paymentMethod || (prov === 'phonepe' ? 'phonepe' : prov === 'razorpay' ? 'razorpay' : 'manual'),
       transaction_id: null,
       gateway_response: null,
       admin_note: null,

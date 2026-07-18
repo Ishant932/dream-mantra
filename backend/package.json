@@ -7,6 +7,7 @@
     "dev": "node --watch index.js"
   },
   "dependencies": {
+    "@phonepe-pg/pg-sdk-node": "^2.0.6",
     "bcryptjs": "^2.4.3",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
@@ -16,7 +17,6 @@
     "mongoose": "^8.24.0",
     "nodemailer": "^8.0.10",
     "qrcode": "^1.5.4",
-    "razorpay": "^2.9.4",
     "speakeasy": "^2.0.0"
   }
 }

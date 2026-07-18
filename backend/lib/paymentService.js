@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import { getData, saveData, repo } from './database.js';
 import { notifyUser, notifyAdmins } from './notifications.js';
 import { onPaymentConfirmed } from './whatsapp/events.js';
@@ -19,7 +18,10 @@ export function normalizePaymentRow(pay) {
   }
   if (pay.payment_status === 'confirmed' && !pay.confirmation_source) {
     pay.confirmation_source =
-      pay.provider === 'razorpay' && pay.razorpay_payment_id ? 'gateway' : null;
+      (pay.provider === 'phonepe' || pay.provider === 'razorpay') &&
+      (pay.transaction_id || pay.razorpay_payment_id)
+        ? 'gateway'
+        : null;
   }
   if (!pay.transaction_id && pay.razorpay_payment_id) {
     pay.transaction_id = pay.razorpay_payment_id;
@@ -293,8 +295,13 @@ export function confirmPayment({
   pay.status = 'paid';
   pay.confirmation_source = source;
   pay.transaction_id = paymentId || pay.transaction_id || pay.razorpay_payment_id;
-  pay.razorpay_payment_id = paymentId || pay.razorpay_payment_id;
-  pay.payment_method = paymentMethod || pay.payment_method || (source === 'admin_manual' ? 'manual' : pay.provider === 'razorpay' ? 'razorpay' : 'manual');
+  if (paymentId) pay.razorpay_payment_id = paymentId; // legacy field — stores gateway txn id
+  const gatewayMethod =
+    pay.provider === 'phonepe' ? 'phonepe' : pay.provider === 'razorpay' ? 'razorpay' : 'manual';
+  pay.payment_method =
+    paymentMethod ||
+    pay.payment_method ||
+    (source === 'admin_manual' ? 'manual' : gatewayMethod);
   pay.paid_at = now;
   pay.confirmed_at = now;
   if (adminId) {
@@ -499,40 +506,66 @@ export function listPaymentsForUser(userId) {
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 }
 
-export function handleRazorpayWebhook(body, signature, secret, rawBody) {
+/**
+ * PhonePe S2S webhook — body already validated via validateCallback.
+ * Completes payment when order state is COMPLETED.
+ */
+export function handlePhonePeWebhook(callbackResponse) {
   if (!isGatewayEnabled()) {
     return { handled: false, reason: 'Gateway disabled — manual confirmation only' };
   }
-  if (secret && signature) {
-    const payload = typeof rawBody === 'string' ? rawBody : JSON.stringify(body);
-    const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
-    if (expected !== signature) throw new Error('Invalid webhook signature');
+
+  const payload = callbackResponse?.payload || callbackResponse || {};
+  const state = String(payload.state || '').toUpperCase();
+  const orderId =
+    payload.merchantOrderId ||
+    payload.originalMerchantOrderId ||
+    payload.merchant_order_id ||
+    payload.orderId;
+  if (!orderId) {
+    return { handled: false, reason: 'Missing merchant order id' };
   }
 
-  const event = body?.event;
-  const paymentEntity = body?.payload?.payment?.entity;
-  if (event !== 'payment.captured' || !paymentEntity) {
-    return { handled: false, reason: 'Event ignored' };
+  if (state && state !== 'COMPLETED' && state !== 'SUCCESS') {
+    if (state === 'FAILED' || state === 'ERROR') {
+      const data = getData();
+      const pay = data.payments.find((p) => p.order_id === orderId);
+      if (pay && pay.payment_status !== 'confirmed') {
+        pay.payment_status = 'failed';
+        pay.status = 'failed';
+        pay.updated_at = new Date().toISOString();
+        pay.gateway_response = { state, type: callbackResponse?.type || null };
+        saveData();
+      }
+    }
+    return { handled: false, reason: `State ignored: ${state || 'unknown'}` };
   }
 
-  const orderId = paymentEntity.order_id;
-  const paymentId = paymentEntity.id;
-  const method = paymentEntity.method;
+  const paymentId =
+    payload.transactionId ||
+    payload.paymentId ||
+    payload.paymentDetails?.[0]?.transactionId ||
+    orderId;
 
   const result = confirmPayment({
     orderId,
     paymentId,
     source: 'gateway',
-    paymentMethod: method,
+    paymentMethod: 'phonepe',
     gatewayResponse: {
-      event,
+      type: callbackResponse?.type || null,
+      state,
       payment_id: paymentId,
-      method,
-      captured_at: paymentEntity.created_at,
+      raw: payload,
     },
   });
 
   return { handled: true, ...result };
+}
+
+/** @deprecated Razorpay removed — kept as no-op for old deploy hooks */
+export function handleRazorpayWebhook() {
+  return { handled: false, reason: 'Razorpay webhook retired — use PhonePe' };
 }
 
 /** Run once on existing data */

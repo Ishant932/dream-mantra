@@ -11,8 +11,9 @@ import { seedAdmin, seedCounsellors, initDatabase, flushDatabase, getDbStatus } 
 import { disconnectMongo, pingMongo } from './lib/mongo.js';
 import { APP_VERSION } from './version.js';
 import { seedSampleSlots, getAvailableSlots } from './lib/slots.js';
-import { migrateLegacyPayments, handleRazorpayWebhook } from './lib/paymentService.js';
+import { migrateLegacyPayments, handlePhonePeWebhook } from './lib/paymentService.js';
 import { isGatewayEnabled, getGatewayPublicConfig } from './lib/paymentGateway.js';
+import { validatePhonePeCallback } from './lib/phonepeClient.js';
 import { isEmailConfigured } from './utils/mail.js';
 import { loadCareersData } from './lib/careersData.js';
 import authRoutes from './routes/auth.js';
@@ -60,22 +61,30 @@ const corsOrigins = process.env.CORS_ORIGIN
 
 app.use(cors({ origin: corsOrigins, credentials: true }));
 
-/** Razorpay webhook must use raw body for signature verification */
-app.post('/api/payments/webhook/razorpay', express.raw({ type: 'application/json' }), (req, res) => {
+/** PhonePe S2S callback — raw body required for Authorization validation */
+app.post('/api/payments/webhook/phonepe', express.raw({ type: 'application/json' }), (req, res) => {
   try {
     if (!isGatewayEnabled()) {
       return res.status(503).json({ message: 'Payment gateway is disabled. Manual admin confirmation only.' });
     }
-    const signature = req.headers['x-razorpay-signature'];
-    const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
     const rawBody = req.body?.toString?.() || '';
-    const body = rawBody ? JSON.parse(rawBody) : {};
-    const result = handleRazorpayWebhook(body, signature, secret, rawBody);
+    const authorization =
+      req.headers.authorization ||
+      req.headers.Authorization ||
+      req.headers['x-verify'] ||
+      '';
+    const callbackResponse = validatePhonePeCallback(authorization, rawBody);
+    const result = handlePhonePeWebhook(callbackResponse);
     res.json(result);
   } catch (e) {
-    console.error('Webhook error', e);
+    console.error('PhonePe webhook error', e);
     res.status(400).json({ message: e.message || 'Webhook failed' });
   }
+});
+
+/** Legacy Razorpay path — retired */
+app.post('/api/payments/webhook/razorpay', express.json(), (_req, res) => {
+  res.status(410).json({ message: 'Razorpay webhook retired. Use /api/payments/webhook/phonepe' });
 });
 
 app.use(express.json({ limit: '12mb' }));
@@ -275,7 +284,7 @@ async function startServer() {
           seedSampleSlots();
           migrateLegacyPayments();
           const pay = getGatewayPublicConfig();
-          console.log(`  Payments: ${pay.mode}${pay.gatewayEnabled ? ' (Razorpay live)' : ' (manual UPI + admin verify)'}`);
+          console.log(`  Payments: ${pay.mode}${pay.gatewayEnabled ? ' (PhonePe live)' : ' (manual UPI + admin verify)'}`);
           startWhatsAppScheduler();
         } catch (err) {
           console.error('Background startup task failed:', err.message);

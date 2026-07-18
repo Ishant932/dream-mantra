@@ -19,21 +19,6 @@ function formatPrice(n) {
   return `₹${n.toLocaleString('en-IN')}`;
 }
 
-function loadRazorpayScript() {
-  
-  return new Promise((resolve, reject) => {
-    if (window.Razorpay) {
-      resolve();
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.onload = resolve;
-    script.onerror = () => reject(new Error('Could not load payment gateway'));
-    document.body.appendChild(script);
-  });
-}
-
 function downloadUpiQr() {
   fetch(UPI_QR_IMAGE)
     .then((res) => res.blob())
@@ -61,7 +46,7 @@ function downloadUpiQr() {
 
 export default function PaymentPage() {
   const { assessmentId } = useParams();
-  const { token, user } = useAuth();
+  const { token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const navSelection = location.state?.selection;
@@ -116,7 +101,7 @@ export default function PaymentPage() {
 
   useEffect(() => {
     if (order?.gatewayEnabled) {
-      setPaymentMethod('razorpay');
+      setPaymentMethod('phonepe');
     } else {
       setPaymentMethod('admin');
     }
@@ -242,6 +227,58 @@ export default function PaymentPage() {
     return `${base}?id=${id}`;
   };
 
+  /** Return from PhonePe checkout — verify order status and unlock */
+  useEffect(() => {
+    if (!token || !assessmentId || loading) return;
+    const params = new URLSearchParams(location.search);
+    if (params.get('phonepe') !== 'return') return;
+    const orderId = params.get('orderId');
+    if (!orderId) return;
+
+    let cancelled = false;
+    (async () => {
+      setPaying(true);
+      setError('');
+      try {
+        const res = await paymentsApi.verify(token, {
+          assessmentId: Number(assessmentId),
+          orderId,
+        });
+        if (cancelled) return;
+        if (res.success) {
+          navigate(
+            postPayPath(
+              order?.selection?.moduleSlug || order?.assessment?.product_slug,
+              Number(assessmentId),
+              order?.selection?.lineItems
+            ),
+            { replace: true }
+          );
+          return;
+        }
+        setError(res.message || 'Payment not confirmed yet');
+      } catch (e) {
+        if (!cancelled) {
+          setError(
+            e.message ||
+              'Could not verify PhonePe payment. If money was deducted, contact support.'
+          );
+          await loadOrder().catch(() => {});
+        }
+      } finally {
+        if (!cancelled) {
+          setPaying(false);
+          navigate(`/payment/${assessmentId}`, { replace: true });
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on PhonePe return query
+  }, [token, assessmentId, loading, location.search]);
+
   const includesCounselling = purchaseIncludesCounselling({
     slug: checkout?.slug,
     lineItems: checkout?.lineItems,
@@ -324,7 +361,7 @@ export default function PaymentPage() {
 
   const handleGatewayPay = async () => {
     if (!gatewayEnabled) {
-      setError('Online payment via Razorpay is not available yet. Please use admin verification.');
+      setError('Online payment via PhonePe is not available yet. Please use UPI transfer.');
       return;
     }
 
@@ -332,9 +369,10 @@ export default function PaymentPage() {
     setError('');
     try {
       const ok = await ensureSkillBandBeforePay();
-      if (!ok) return;
-
-      await loadRazorpayScript();
+      if (!ok) {
+        setPaying(false);
+        return;
+      }
 
       const created = await paymentsApi.createOrder(
         token,
@@ -348,53 +386,17 @@ export default function PaymentPage() {
         return;
       }
 
-      if (created.manualMode || created.pendingManual) {
-        setError('Online payment is unavailable. Please use admin verification.');
+      if (created.manualMode || created.pendingManual || !created.redirectUrl) {
+        setError('Online payment is unavailable. Please use UPI transfer.');
         await loadOrder();
+        setPaying(false);
         return;
       }
 
-      const options = {
-        key: created.key,
-        amount: created.amount,
-        currency: created.currency,
-        name: 'Dream Mantra',
-        description: checkout?.displayTitle,
-        order_id: created.orderId,
-        prefill: {
-          name: user?.name || '',
-          email: user?.email || '',
-          contact: user?.phone || '',
-        },
-        notes: {
-          assessment_id: String(assessmentId),
-        },
-        handler: async (response) => {
-          try {
-            setPaying(true);
-            await paymentsApi.verify(token, {
-              assessmentId: Number(assessmentId),
-              orderId: response.razorpay_order_id,
-              paymentId: response.razorpay_payment_id,
-              signature: response.razorpay_signature,
-            });
-            navigate(postPayPath(checkout?.slug, Number(assessmentId), checkout?.lineItems));
-          } catch (verifyErr) {
-            setError(verifyErr.message || 'Payment verification failed. Contact support with your payment ID.');
-            setPaying(false);
-          }
-        },
-        modal: {
-          ondismiss: () => setPaying(false),
-        },
-        theme: { color: '#ea580c' },
-      };
-
-      if (!window.Razorpay) throw new Error('Payment gateway loading — try again');
-      new window.Razorpay(options).open();
+      // PhonePe Standard Checkout — full-page redirect
+      window.location.href = created.redirectUrl;
     } catch (e) {
       setError(e.message);
-    } finally {
       setPaying(false);
     }
   };
@@ -676,12 +678,12 @@ export default function PaymentPage() {
                     disabled={!gatewayEnabled}
                     onClick={() => {
                       if (!gatewayEnabled) return;
-                      setPaymentMethod('razorpay');
+                      setPaymentMethod('phonepe');
                       setError('');
                     }}
-                    className={`payment-page__method${paymentMethod === 'razorpay' && gatewayEnabled ? ' payment-page__method--active' : ''}${!gatewayEnabled ? ' payment-page__method--locked' : ''}`}
+                    className={`payment-page__method${paymentMethod === 'phonepe' && gatewayEnabled ? ' payment-page__method--active' : ''}${!gatewayEnabled ? ' payment-page__method--locked' : ''}`}
                     aria-disabled={!gatewayEnabled}
-                    title={gatewayEnabled ? 'Pay with Razorpay' : 'Razorpay — coming soon'}
+                    title={gatewayEnabled ? 'Pay with PhonePe' : 'PhonePe — coming soon'}
                   >
                     <span className="payment-page__method-icon-wrap">
                       <CreditCard className="w-5 h-5 shrink-0" aria-hidden />
@@ -693,15 +695,15 @@ export default function PaymentPage() {
                     </span>
                     <div className="text-left min-w-0 flex-1">
                       <p className="font-bold text-sm flex items-center gap-1.5 flex-wrap">
-                        Pay with Razorpay
+                        Pay with PhonePe
                         {!gatewayEnabled && (
                           <span className="payment-page__method-soon">Locked</span>
                         )}
                       </p>
                       <p className="text-xs text-sand-500 mt-0.5">
                         {gatewayEnabled
-                          ? 'Cards, UPI — instant unlock'
-                          : 'Online gateway — coming soon'}
+                          ? 'UPI, cards, wallets — instant unlock'
+                          : 'Online gateway — set keys to enable'}
                       </p>
                     </div>
                   </button>
@@ -783,10 +785,10 @@ export default function PaymentPage() {
                   </div>
                 )}
 
-                {paymentMethod === 'razorpay' && (
+                {paymentMethod === 'phonepe' && (
                   <p className="payment-page__razorpay-hint">
                     <Shield className="w-4 h-4 shrink-0 text-brand-500" />
-                    Secured by Razorpay — access unlocks immediately after payment.
+                    Secured by PhonePe — you will be redirected to complete payment, then access unlocks.
                   </p>
                 )}
 
@@ -795,8 +797,8 @@ export default function PaymentPage() {
                     <Clock className="w-4 h-4 shrink-0 text-amber-500" />
                     {paymentMethod === 'admin'
                       ? 'Awaiting proof — admin verifies within 24 hours'
-                      : paymentMethod === 'razorpay'
-                        ? 'Instant unlock after successful payment'
+                      : paymentMethod === 'phonepe'
+                        ? 'Instant unlock after successful PhonePe payment'
                         : 'Select a payment method above'}
                   </li>
                 </ul>
@@ -813,8 +815,8 @@ export default function PaymentPage() {
                     ? 'Processing…'
                     : paymentMethod === 'admin'
                       ? `Submit proof · ${formatPrice(finalPrice)}`
-                      : paymentMethod === 'razorpay'
-                        ? `Pay ${formatPrice(finalPrice)}`
+                      : paymentMethod === 'phonepe'
+                        ? `Pay with PhonePe · ${formatPrice(finalPrice)}`
                         : 'Choose payment method'}
                 </button>
 
