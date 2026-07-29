@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { getData, saveData, repo } from './database.js';
 import { notifyUser, notifyAdmins } from './notifications.js';
 import { onPaymentConfirmed } from './whatsapp/events.js';
@@ -507,8 +508,7 @@ export function listPaymentsForUser(userId) {
 }
 
 /**
- * PhonePe S2S webhook — body already validated via validateCallback.
- * Completes payment when order state is COMPLETED.
+ * PhonePe S2S webhook — kept for any in-flight PhonePe orders during migration.
  */
 export function handlePhonePeWebhook(callbackResponse) {
   if (!isGatewayEnabled()) {
@@ -563,9 +563,41 @@ export function handlePhonePeWebhook(callbackResponse) {
   return { handled: true, ...result };
 }
 
-/** @deprecated Razorpay removed — kept as no-op for old deploy hooks */
-export function handleRazorpayWebhook() {
-  return { handled: false, reason: 'Razorpay webhook retired — use PhonePe' };
+/** Razorpay payment.captured webhook — backup confirm if client verify fails */
+export function handleRazorpayWebhook(body, signature, secret, rawBody) {
+  if (!isGatewayEnabled()) {
+    return { handled: false, reason: 'Gateway disabled — manual confirmation only' };
+  }
+  if (secret && signature) {
+    const payload = typeof rawBody === 'string' ? rawBody : JSON.stringify(body);
+    const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+    if (expected !== signature) throw new Error('Invalid webhook signature');
+  }
+
+  const event = body?.event;
+  const paymentEntity = body?.payload?.payment?.entity;
+  if (event !== 'payment.captured' || !paymentEntity) {
+    return { handled: false, reason: 'Event ignored' };
+  }
+
+  const orderId = paymentEntity.order_id;
+  const paymentId = paymentEntity.id;
+  const method = paymentEntity.method || 'razorpay';
+
+  const result = confirmPayment({
+    orderId,
+    paymentId,
+    source: 'gateway',
+    paymentMethod: method,
+    gatewayResponse: {
+      event,
+      payment_id: paymentId,
+      method,
+      captured_at: paymentEntity.created_at,
+    },
+  });
+
+  return { handled: true, ...result };
 }
 
 /** Run once on existing data */

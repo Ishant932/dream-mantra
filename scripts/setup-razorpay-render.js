@@ -73,14 +73,33 @@ async function main() {
   // Remove forced manual-only mode if it was set
   await upsertEnvVar('PAYMENT_GATEWAY_ENABLED', 'true');
 
+  // Clear PhonePe keys so health/config does not stay mixed
+  const phonePeKeys = [
+    'PHONEPE_CLIENT_ID',
+    'PHONEPE_CLIENT_SECRET',
+    'PHONEPE_CLIENT_VERSION',
+    'PHONEPE_ENV',
+    'PHONEPE_WEBHOOK_USERNAME',
+    'PHONEPE_WEBHOOK_PASSWORD',
+  ];
+  for (const key of phonePeKeys) {
+    try {
+      await api(`/services/${SERVICE_ID}/env-vars/${encodeURIComponent(key)}`, { method: 'DELETE' });
+      console.log(`  ✓ removed ${key}`);
+    } catch {
+      /* already absent */
+    }
+  }
+
   console.log('\nTriggering redeploy...');
   await triggerDeploy();
 
-  console.log('\nDone. After deploy (~1 min):');
-  console.log('  • https://dreammantra.in/api/health → payments.gatewayEnabled: true');
-  console.log('  • Dashboard → Modules → Pay → "Pay via Razorpay" should be active');
+  console.log('\nDone. After deploy (~1–5 min):');
+  console.log('  • https://dreammantra.in/api/health → payments.provider: razorpay');
+  console.log('  • Dashboard → Modules → Pay → "Pay with Razorpay" should be active');
   console.log('\nRazorpay webhook URL (register in Razorpay Dashboard):');
-  console.log('  https://dreammantra.in/api/payments/webhook/razorpay\n');
+  console.log('  https://dreammantra.in/api/payments/webhook/razorpay');
+  console.log('  Event: payment.captured\n');
 }
 
 main().catch((err) => {
