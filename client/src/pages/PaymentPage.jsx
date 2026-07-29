@@ -232,6 +232,8 @@ export default function PaymentPage() {
     reader.readAsDataURL(file);
   };
 
+  const DASHBOARD_PATH = '/dashboard';
+
   const postPayPath = (slug, id, items, addCounselling) => {
     if (purchaseIncludesCounselling({ slug, lineItems: items, addCounselling })) {
       return '/dashboard?tab=book';
@@ -346,7 +348,7 @@ export default function PaymentPage() {
       );
 
       if (created.alreadyPaid) {
-        navigate(postPayPath(checkout?.slug, Number(assessmentId), checkout?.lineItems));
+        navigate(DASHBOARD_PATH, { replace: true });
         return;
       }
 
@@ -381,7 +383,7 @@ export default function PaymentPage() {
               paymentId: response.razorpay_payment_id,
               signature: response.razorpay_signature,
             });
-            navigate(postPayPath(checkout?.slug, Number(assessmentId), checkout?.lineItems));
+            navigate(DASHBOARD_PATH, { replace: true });
           } catch (verifyErr) {
             setError(verifyErr.message || 'Payment verification failed. Contact support with your payment ID.');
             setPaying(false);
@@ -466,8 +468,8 @@ export default function PaymentPage() {
                 </Link>
               </>
             ) : (
-              <Link to={postPayPath(slug, Number(assessmentId), lineItems)} className="btn-primary inline-flex">
-                Start assessment
+              <Link to={DASHBOARD_PATH} className="btn-primary inline-flex">
+                Go to dashboard
               </Link>
             )}
           </div>

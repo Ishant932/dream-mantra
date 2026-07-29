@@ -93,6 +93,46 @@ function otpEmailBody({ name, otp, purpose }) {
   return { html, text, subject: `Dream Mantra — ${title} code: ${otp}` };
 }
 
+export async function sendPaymentConfirmationEmail({
+  to,
+  name,
+  moduleTitle,
+  amount,
+  paymentId,
+  dashboardUrl = 'https://dreammantra.in/dashboard',
+}) {
+  if (!to || !isEmailConfigured()) return { skipped: true };
+
+  const safeName = name || 'there';
+  const title = moduleTitle || 'your module';
+  const amountText =
+    amount != null && Number.isFinite(Number(amount))
+      ? `₹${Number(amount).toLocaleString('en-IN')}`
+      : null;
+  const txnLine = paymentId ? `<p style="color:#666;font-size:14px;margin:0 0 16px">Transaction ID: <code style="background:#fef3c7;padding:2px 6px;border-radius:4px">${paymentId}</code></p>` : '';
+
+  const html = `
+    <div style="font-family:Segoe UI,Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;background:#fffdf8;border:1px solid #fde68a;border-radius:16px">
+      <h2 style="color:#b45309;margin:0 0 8px">Dream Mantra</h2>
+      <p style="color:#444;margin:0 0 16px">Hi ${safeName},</p>
+      <p style="color:#444;margin:0 0 16px;font-size:16px"><strong>Your payment is confirmed!</strong> 🎉</p>
+      <p style="color:#444;margin:0 0 8px"><strong>${title}</strong> is now active on your account.${amountText ? ` Amount paid: <strong>${amountText}</strong>.` : ''}</p>
+      ${txnLine}
+      <p style="color:#444;margin:0 0 20px">You can access your module, tests, and counselling from your dashboard.</p>
+      <a href="${dashboardUrl}" style="display:inline-block;background:#ea580c;color:#fff;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:600">Go to Dashboard</a>
+      <p style="color:#999;font-size:12px;margin-top:28px">Questions? Reply to this email or WhatsApp us at 9680102276.</p>
+    </div>`;
+
+  const text = `Dream Mantra — Payment confirmed!\n\nHi ${safeName},\n\nYour payment for ${title} is confirmed.${amountText ? ` Amount: ${amountText}.` : ''}${paymentId ? ` Transaction ID: ${paymentId}.` : ''}\n\nOpen your dashboard: ${dashboardUrl}`;
+
+  return sendNotificationEmail({
+    to,
+    subject: `Payment confirmed — ${title} | Dream Mantra`,
+    html,
+    text,
+  });
+}
+
 export async function sendNotificationEmail({ to, subject, html, text }) {
   if (!to || !isEmailConfigured()) return { skipped: true };
   const payload = {

@@ -2,6 +2,7 @@ import crypto from 'crypto';
 import { getData, saveData, repo } from './database.js';
 import { notifyUser, notifyAdmins } from './notifications.js';
 import { onPaymentConfirmed } from './whatsapp/events.js';
+import { sendPaymentConfirmationEmail } from '../utils/mail.js';
 import { getProduct } from '../config/products.js';
 import { isGatewayEnabled } from './paymentGateway.js';
 import { savePaymentProof } from './paymentProof.js';
@@ -328,11 +329,24 @@ export function confirmPayment({
       type: 'payment',
       title: 'Payment confirmed',
       body: `Your payment for ${assessment.type || 'your module'} is confirmed. Access is now unlocked.`,
-      link: '/dashboard?tab=assess',
+      link: '/dashboard',
       meta: { assessmentId: assessment.id, paymentId: pay.id },
     });
     const user = data.users.find((u) => Number(u.id) === Number(assessment.user_id));
-    if (user) onPaymentConfirmed(user, assessment);
+    if (user) {
+      onPaymentConfirmed(user, assessment);
+      if (source === 'gateway' && user.email) {
+        const siteUrl = (process.env.APP_PUBLIC_URL || 'https://dreammantra.in').replace(/\/$/, '');
+        sendPaymentConfirmationEmail({
+          to: user.email,
+          name: user.name,
+          moduleTitle: assessment.type || assessment.product_slug,
+          amount: pay.amount,
+          paymentId: paymentId || pay.transaction_id || pay.razorpay_payment_id,
+          dashboardUrl: `${siteUrl}/dashboard`,
+        }).catch((err) => console.error('Payment confirmation email failed:', err.message));
+      }
+    }
   }
 
   return { alreadyConfirmed: false, payment: enrichPaymentRow(pay), assessment };
