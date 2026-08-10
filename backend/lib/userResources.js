@@ -7,6 +7,17 @@ export function ensureUserResources() {
   if (!data.nextId.user_resources) data.nextId.user_resources = 1;
 }
 
+function userOwnsProgram(userId, programSlug) {
+  if (!programSlug) return true;
+  const data = getData();
+  const uid = Number(userId);
+  return (data.assessments || []).some(
+    (a) => Number(a.user_id) === uid
+      && a.status === 'paid'
+      && (a.product_slug === programSlug || a.progress?.selection?.moduleSlug === programSlug)
+  );
+}
+
 export function listResourcesForUser(userId) {
   ensureUserResources();
   const uid = Number(userId);
@@ -18,6 +29,7 @@ export function listResourcesForUser(userId) {
       if (r.all_users) {
         if (r.joined_from && joined && joined < r.joined_from) return false;
         if (r.joined_to && joined && joined > r.joined_to) return false;
+        if (r.program_slug && !userOwnsProgram(uid, r.program_slug)) return false;
         return true;
       }
       return (r.user_ids || []).some((id) => Number(id) === uid);
@@ -38,7 +50,7 @@ export function listAllResources() {
   return [...(data.user_resources || [])].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 }
 
-export function createUserResource({ title, url, note, userIds = [], allUsers = false, adminId, joinedFrom = null, joinedTo = null }) {
+export function createUserResource({ title, url, note, userIds = [], allUsers = false, adminId, joinedFrom = null, joinedTo = null, programSlug = null }) {
   ensureUserResources();
   const data = getData();
   const row = {
@@ -50,6 +62,7 @@ export function createUserResource({ title, url, note, userIds = [], allUsers = 
     all_users: !!allUsers,
     joined_from: joinedFrom || null,
     joined_to: joinedTo || null,
+    program_slug: programSlug || null,
     created_by: adminId,
     created_at: new Date().toISOString(),
   };

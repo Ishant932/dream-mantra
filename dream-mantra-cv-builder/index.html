@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CV Builder — ATS Friendly</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo-dot.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600;700&family=Playfair+Display:wght@600;700&family=Lora:wght@400;600&family=Roboto+Slab:wght@500;700&family=PT+Serif:wght@400;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ EDITOR ============ -->
+  <div class="editor" id="editor">
+    <div class="brand"><div class="dot"></div><div><h1>Dream Mantra CV Builder</h1><span>ATS-friendly resume, built your way</span></div></div>
+
+    <div class="section-block" id="atsBlock">
+      <h2><span>ATS Compatibility Score</span></h2>
+      <div id="atsPanel"></div>
+    </div>
+
+    <div class="section-block">
+      <h2><span>Design Settings</span></h2>
+      <label style="font-size:11px;color:var(--muted);display:block;margin-bottom:6px;">Color Theme</label>
+      <div class="theme-swatches" id="themeSwatches"></div>
+      <div class="row2" id="customColorRow" style="display:none;margin-bottom:10px;">
+        <div class="field"><label>Primary Color</label><input type="color" id="customPrimary"></div>
+        <div class="field"><label>Accent Color</label><input type="color" id="customAccent"></div>
+      </div>
+
+      <div class="field"><label>Font Pairing</label><select id="fontSelect"></select></div>
+
+      <div class="field"><label>Line Spacing</label>
+        <div class="slider-row"><input type="range" id="lineSpacing" min="1.2" max="1.9" step="0.05"><span class="val" id="lineSpacingVal"></span></div>
+      </div>
+      <div class="field"><label>Paragraph / Section Spacing</label>
+        <div class="slider-row"><input type="range" id="paraSpacing" min="8" max="28" step="2"><span class="val" id="paraSpacingVal"></span></div>
+      </div>
+      <div class="field"><label>Date Format</label><select id="dateFormatSelect"></select></div>
+    </div>
+
+    <div class="section-block">
+      <h2>Choose a design</h2>
+      <div class="template-grid" id="templateGrid"></div>
+      <p class="hint">Classic / Modern / Minimal / Executive / Compact / Timeline / Bold are single-column and safest for ATS bots. Sidebar looks great for human reviewers but two-column layouts can occasionally confuse older ATS parsers.</p>
+    </div>
+
+    <div class="tabbar" id="tabbar"></div>
+    <div id="formHost"></div>
+
+    <div class="download-bar">
+      <button class="btn-primary" onclick="window.print()">⬇ Download as PDF</button>
+      <p class="hint">Click Download, then choose "Save as PDF" as the destination. Text stays selectable and links stay clickable — exactly what ATS software and recruiters need.</p>
+    </div>
+  </div>
+
+  <!-- ============ PREVIEW ============ -->
+  <div class="preview-wrap">
+    <div class="page" id="page"></div>
+  </div>
+</div>
+
+<script src="js/app.js" defer></script>
+</body>
+</html>

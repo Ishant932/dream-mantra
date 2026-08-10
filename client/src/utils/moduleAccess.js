@@ -93,6 +93,7 @@ export function hasCompletedAllPaidModuleTests(assessments = []) {
 
 /** Show ₹999 counselling top-up in shop / booking banner */
 export function canShowCounsellingTopUp(assessments = [], consultations = []) {
+  if (getConfirmedPaidAssessments(assessments).length > 0) return true;
   return hasPriorCounsellingBooking(consultations) || hasCompletedAllPaidModuleTests(assessments);
 }
 

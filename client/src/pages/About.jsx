@@ -10,6 +10,9 @@ import PersonPhoto from '../components/PersonPhoto';
 import AboutCertifications from '../components/AboutCertifications';
 import { useAboutContent } from '../i18n/useSiteContent';
 import { useLang } from '../context/LanguageContext';
+import { usePageCatalog } from '../hooks/usePageCatalog';
+import CmsFullPage from '../components/CmsFullPage';
+import CmsPageSections from '../components/CmsPageSections';
 
 const fade = {
   initial: { opacity: 0, y: 28 },
@@ -23,6 +26,7 @@ const valueIcons = [Target, Users, Zap, Heart];
 export default function About() {
   const { about, missionVision, founder, managementTeam, leadership, homeLeadership } = useAboutContent();
   const { d } = useLang();
+  const cms = usePageCatalog('about');
   const fg = d('freeGuidance') || {};
   const values = about.values.items.map((item, i) => ({
     ...item,
@@ -35,15 +39,20 @@ export default function About() {
     { title: about.missionVision.purposeTitle, text: missionVision.purpose, icon: '💡' },
   ];
 
+  if (cms?.fullHtml?.trim()) {
+    return <CmsFullPage cms={cms} fallbackImage={IMAGES.counselling} />;
+  }
+
   return (
     <>
       <PageHero
-        title={about.hero.title}
-        subtitle={about.hero.subtitle}
-        image={IMAGES.counselling}
+        title={cms?.heroTitle || about.hero.title}
+        subtitle={cms?.heroSubtitle || about.hero.subtitle}
+        image={cms?.heroImage || IMAGES.counselling}
         cta={fg.cta || about.cta?.button}
         ctaLink="/contact#guidance"
       />
+      <CmsPageSections cms={cms} />
 
       {/* Story */}
       <section className="py-20 lg:py-28">

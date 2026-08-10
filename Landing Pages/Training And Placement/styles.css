@@ -1326,3 +1326,75 @@ h1, h2, h3, h4, .font-heading {
 ::-webkit-scrollbar-thumb:hover {
   background: #f97316;
 }
+
+/* === Mobile responsive (all sections & tables) === */
+@media (max-width: 1024px) {
+  .session-timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+  .session-timeline::before { display: none; }
+}
+
+@media (max-width: 768px) {
+  .flash-timer-bar { padding: 0.4rem 0.5rem; }
+  .flash-timer-inner {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.35rem;
+  }
+  .flash-brand, .flash-logo { display: none; }
+  .flash-timer-center { flex: 1 1 100%; justify-content: center; }
+  .flash-label { font-size: 0.68rem; text-align: center; }
+  .flip-box { width: 1.45rem; height: 1.65rem; font-size: 0.8rem; }
+  .flash-timer-cta { font-size: 0.65rem; padding: 0.35rem 0.55rem; white-space: nowrap; }
+
+  .modern-table-header,
+  .modern-table-row {
+    grid-template-columns: 1fr;
+  }
+  .mt-col { font-size: 0.85rem; padding: 0.75rem 1rem; }
+  .mt-col-outcome { border-top: 1px solid rgba(255,255,255,0.15); }
+  .mt-cell {
+    font-size: 0.75rem;
+    padding: 0.6rem 0.85rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+    word-break: break-word;
+  }
+
+  .session-timeline { grid-template-columns: 1fr; gap: 1.25rem; }
+  .session-timeline::before {
+    display: block;
+    top: 0; bottom: 0; left: 1.75rem; right: auto;
+    width: 3px; height: auto;
+    background: linear-gradient(180deg, #fed7aa, #f97316, #fed7aa);
+  }
+  .session-stop {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    text-align: left;
+  }
+  .session-node { flex-shrink: 0; margin: 0; }
+
+  #what-you-get-grid { grid-template-columns: 1fr; }
+  .quick-stat { padding: 0.65rem 0.4rem; }
+  .stat-tile { padding: 1rem 0.75rem; }
+  .testimonial-card { width: min(88vw, 280px); padding: 1rem; }
+  .join-modal-panel, .modal-panel {
+    width: calc(100vw - 1.5rem) !important;
+    max-width: calc(100vw - 1.5rem) !important;
+    margin: 0.75rem;
+    max-height: calc(100vh - 1.5rem);
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .flash-label strong { display: block; }
+  #what-you-get-grid { grid-template-columns: 1fr; }
+  .pointer-list li { font-size: 0.75rem; }
+  .session-card { padding: 1rem; }
+  .highlight-chip, .outcome-chip { padding: 0.85rem 0.65rem; }
+}

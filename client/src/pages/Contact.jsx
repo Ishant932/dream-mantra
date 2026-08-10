@@ -8,6 +8,9 @@ import FooterLocations from '../components/FooterLocations';
 import { footerSocial } from '../data/siteLinks';
 import { useLang } from '../context/LanguageContext';
 import { useGuidanceModal } from '../context/GuidanceModalContext';
+import { usePageCatalog } from '../hooks/usePageCatalog';
+import CmsFullPage from '../components/CmsFullPage';
+import CmsPageSections from '../components/CmsPageSections';
 
 const CONTACT_HERO_IMAGE = '/images/contact-hero-phone.png';
 
@@ -32,6 +35,7 @@ export default function Contact() {
   const { openGuidance } = useGuidanceModal();
   const contact = d('pages.contact');
   const footer = d('footer') || {};
+  const cms = usePageCatalog('contact');
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -47,15 +51,20 @@ export default function Contact() {
     { icon: Clock, label: contact.hours, value: t('footer.hours') },
   ];
 
+  if (cms?.fullHtml?.trim()) {
+    return <CmsFullPage cms={cms} fallbackImage={CONTACT_HERO_IMAGE} />;
+  }
+
   return (
     <>
       <PageHero
-        title={contact.title}
-        subtitle={contact.subtitle}
-        image={CONTACT_HERO_IMAGE}
+        title={cms?.heroTitle || contact.title}
+        subtitle={cms?.heroSubtitle || contact.subtitle}
+        image={cms?.heroImage || CONTACT_HERO_IMAGE}
         className="contact-page-hero"
         showBrandTag={false}
       />
+      <CmsPageSections cms={cms} />
 
       <section className="contact-page">
         <div className="contact-page__inner">

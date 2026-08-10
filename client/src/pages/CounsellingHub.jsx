@@ -5,6 +5,8 @@ import { useGuidanceModal } from '../context/GuidanceModalContext';
 import { programs as programImages } from '../data/content';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo } from 'react';
+import { usePageCatalog } from '../hooks/usePageCatalog';
+import CmsPageSections from '../components/CmsPageSections';
 import AgePathwaysSection, { InstitutionsPathways } from '../components/AgePathwaysSection';
 import HomeHowDreamzWorks from '../components/HomeHowDreamzWorks';
 import HomeWhyCounselling from '../components/HomeWhyCounselling';
@@ -79,6 +81,7 @@ export default function CounsellingHub() {
   const location = useLocation();
   const navigate = useNavigate();
   const { openGuidance } = useGuidanceModal();
+  const cms = usePageCatalog('counselling');
 
   const params = new URLSearchParams(location.search);
   const tab = params.get('tab') || 'overview';
@@ -222,6 +225,7 @@ export default function CounsellingHub() {
         <div className="counselling-shell__panel" role="tabpanel">
           {tab === 'overview' && (
             <div className="counselling-overview space-y-12 lg:space-y-16">
+              <CmsPageSections cms={cms} />
               <section className="counselling-overview__why-home">
                 <HomeWhyCounselling />
               </section>

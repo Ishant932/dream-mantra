@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career & Education Counselling</title>
+  <meta name="description" content="Brain Mapping & Skill Mapping powered career counselling for students from Class 1 to working professionals, guided by Esha Lohiya.">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { brandOrange: '#f97316', brandAmber: '#f59e0b', brandGreen: '#14342a' } } }
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="relative bg-slate-50 text-slate-900 antialiased selection:bg-orange-500 selection:text-white overflow-x-hidden" data-dm-studio="personalized-career-readiness-program" data-dm-product="career-readiness">
+
+  <div id="scroll-progress" class="scroll-progress"></div>
+
+  <div class="crazy-bg" aria-hidden="true">
+    <div class="blob blob-orange"></div>
+    <div class="blob blob-amber"></div>
+    <div class="blob blob-green"></div>
+    <div class="bg-grid"></div>
+    <div class="sparkle-field">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- STICKY FLASH-OFFER TIMER BAR -->
+  <div class="flash-timer-bar" id="flash-timer-bar">
+    <div class="flash-timer-inner">
+      <span class="flash-brand">Dream Mantra</span>
+      <div class="flash-timer-center">
+        <span class="flash-icon">🔥</span>
+        <span class="flash-label"><strong>Flash Offer:</strong> Free Guidance Call slot ends in</span>
+        <div class="flip-clock" aria-live="off">
+          <div class="flip-box" id="ft-m1">1</div>
+          <div class="flip-box" id="ft-m2">0</div>
+          <span class="flip-colon">:</span>
+          <div class="flip-box" id="ft-s1">4</div>
+          <div class="flip-box" id="ft-s2">5</div>
+        </div>
+        <button type="button" class="flash-timer-cta js-open-join-modal">BOOK NOW</button>
+      </div>
+      <img src="assets/logo.png" alt="Dream Mantra" class="flash-logo">
+    </div>
+  </div>
+
+  <!-- 1. HERO BANNER -->
+  <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">
+    <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+      <div class="lg:col-span-7 space-y-6 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-100 border border-orange-200 text-orange-700 text-xs sm:text-sm font-bold">
+          <i class="fa-solid fa-bolt"></i>
+          <span>India's #1 Career & Education Counselling</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 leading-[1.1] font-heading">
+          Turn Confusion Into A
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500 gradient-text-flow">
+            <span id="typed-text"></span><span class="typing-cursor"></span>
+          </span>
+        </h1>
+
+        <p class="text-slate-600 text-lg sm:text-xl max-w-2xl leading-relaxed">
+          Brain Mapping & Skill Mapping powered guidance for students from Class 1 to working professionals — led by Ex-Naukri.com expert, <strong>Esha Lohiya</strong>.
+        </p>
+
+        <div class="pt-4">
+          <button type="button" class="btn-pulse-glow js-open-join-modal text-white px-8 py-4 rounded-xl font-extrabold text-lg tracking-wide inline-flex items-center gap-3 shadow-xl">
+            <i class="fa-solid fa-bolt text-amber-200"></i>
+            <span>BOOK A FREE GUIDANCE CALL</span>
+          </button>
+          <p class="text-xs font-semibold text-slate-500 mt-3"><i class="fa-solid fa-fire text-orange-500"></i> One early decision can cost years. Talk to us first.</p>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 relative reveal-right delay-200">
+        <div class="image-tilt relative mx-auto max-w-md">
+          <div class="photo-cutout-frame relative mx-auto">
+            <img src="assets/esha-new.png" alt="Esha Lohiya" class="w-full h-full object-cover object-top">
+          </div>
+          <div class="absolute -bottom-6 -left-6 bg-white shadow-xl border border-slate-100 rounded-xl p-4 flex items-center gap-3">
+            <div class="h-10 w-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-lg">
+              <i class="fa-solid fa-compass"></i>
+            </div>
+            <div>
+              <p class="text-sm font-extrabold text-slate-900">Esha Lohiya</p>
+              <p class="text-[10px] font-bold text-slate-500 uppercase">Career Counselling Expert</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-xs sm:text-sm font-bold text-slate-700 mt-14">
+          <span class="text-orange-600">Founder, Dream Mantra</span> | Former Key Accounts Manager, Naukri.com
+        </p>
+        <p class="text-center text-[11px] sm:text-xs italic text-slate-400 mt-1">
+          Brain & Skill Mapping • Individual Assessment • Personalised Guidance
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 sm:gap-8 max-w-3xl mx-auto mt-16 reveal delay-300">
+      <div class="text-center quick-stat">
+        <p class="text-3xl sm:text-4xl font-black text-orange-500 font-heading"><span class="count-up" data-target="90" data-suffix="%">0</span></p>
+        <p class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase mt-1">Know Only 7-10 Careers</p>
+      </div>
+      <div class="text-center quick-stat" style="animation-delay: 0.3s">
+        <p class="text-3xl sm:text-4xl font-black text-amber-500 font-heading"><span class="count-up" data-target="65" data-suffix="%">0</span></p>
+        <p class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase mt-1">Graduates Underemployed</p>
+      </div>
+      <div class="text-center quick-stat" style="animation-delay: 0.6s">
+        <p class="text-3xl sm:text-4xl font-black text-emerald-500 font-heading"><span class="count-up" data-target="35" data-suffix="Cr+">0</span></p>
+        <p class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase mt-1">Graduates By 2030</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. BENEFITS -->
+  <section class="relative z-10 py-12 bg-white border-y border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8 reveal">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading">What You Get</h2>
+        <p class="text-slate-500 mt-2">Scientific clarity, not guesswork, for every big decision.</p>
+      </div>
+
+      <div id="what-you-get-grid" class="grid md:grid-cols-3 gap-5">
+        <div class="glass-card glass-card-hover p-6 rounded-3xl text-center space-y-2 reveal delay-100">
+          <div class="benefit-icon h-14 w-14 mx-auto rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-fingerprint"></i>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Brain Mapping</h3>
+          <p class="text-sm text-slate-600">Inborn talent revealed through fingerprint analysis — no exams, no pressure.</p>
+        </div>
+
+        <div class="glass-card glass-card-hover p-6 rounded-3xl text-center space-y-2 reveal delay-200">
+          <div class="benefit-icon h-14 w-14 mx-auto rounded-2xl bg-amber-100 text-amber-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Skill Mapping</h3>
+          <p class="text-sm text-slate-600">Acquired talent through personality, interests & behaviour assessment.</p>
+        </div>
+
+        <div class="glass-card glass-card-hover p-6 rounded-3xl text-center space-y-2 reveal delay-300">
+          <div class="benefit-icon h-14 w-14 mx-auto rounded-2xl bg-emerald-100 text-emerald-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Market-Aligned Guidance</h3>
+          <p class="text-sm text-slate-600">Careers matched to real demand, salary data & long-term AI-proof roles.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MID-PAGE CTA BANNER 1 -->
+  <section class="relative z-10 py-4">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="cta-banner relative overflow-hidden rounded-[2rem] p-8 sm:p-10 text-center reveal">
+        <h3 class="text-2xl sm:text-3xl font-black text-white font-heading">Ready For Personal Guidance?</h3>
+        <p class="text-orange-50 mt-2 max-w-lg mx-auto text-sm sm:text-base">Talk to a counsellor — no commitment. We'll help you choose the right next step.</p>
+        <button type="button" class="js-open-join-modal mt-6 inline-flex items-center gap-2 bg-white text-orange-600 px-8 py-3.5 rounded-full font-extrabold text-base shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all">
+          <i class="fa-solid fa-bolt"></i> BOOK NOW
+        </button>
+        <span class="urgency-microcopy-light"><i class="fa-solid fa-hourglass-half"></i> Free guidance call — limited slots today</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-container shadow-inner my-8">
+    <div class="marquee-content">
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Govt of India Certified</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> IIT Madras Trained</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Validated In 30+ Countries</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Assam Govt Endorsed</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Bombay High Court Endorsed</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Govt of India Certified</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> IIT Madras Trained</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Validated In 30+ Countries</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Assam Govt Endorsed</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Bombay High Court Endorsed</div>
+    </div>
+  </div>
+
+  <!-- 3. WHY DREAM MANTRA -->
+  <section class="relative z-10 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6 reveal-left">
+          <span class="text-sm font-bold text-orange-500 uppercase tracking-widest">The Dream Mantra Advantage</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading">Not Just Advice. <br/>Scientific Career Alignment.</h2>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-orange-500 mt-1"></i>
+              <p class="text-slate-600 text-sm"><strong class="text-slate-900">Govt. of India Certified:</strong> Authentic, structured guidance backed by national and international certifications.</p>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-orange-500 mt-1"></i>
+              <p class="text-slate-600 text-sm"><strong class="text-slate-900">5,000+ Real Career Paths:</strong> Most students only know 7-10 — we show you what actually exists in India today.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="grid grid-cols-2 gap-4 reveal-right delay-200">
+          <div class="stat-tile tilt-card">
+            <span class="text-2xl">🧬</span>
+            <p class="text-3xl font-black text-orange-500 font-heading mt-1">5</p>
+            <p class="text-xs font-bold text-slate-500 uppercase mt-1">Dimensions Mapped</p>
+          </div>
+          <div class="stat-tile tilt-card">
+            <span class="text-2xl">🎓</span>
+            <p class="text-3xl font-black text-amber-500 font-heading mt-1">6</p>
+            <p class="text-xs font-bold text-slate-500 uppercase mt-1">Age Stages Covered</p>
+          </div>
+          <div class="stat-tile tilt-card">
+            <span class="text-2xl">🗣️</span>
+            <p class="text-3xl font-black text-emerald-500 font-heading mt-1">EN/HI</p>
+            <p class="text-xs font-bold text-slate-500 uppercase mt-1">English & Hindi</p>
+          </div>
+          <div class="stat-tile tilt-card">
+            <span class="text-2xl">🏅</span>
+            <p class="text-3xl font-black text-slate-900 font-heading mt-1">Certified</p>
+            <p class="text-xs font-bold text-slate-500 uppercase mt-1">Expert Counsellors</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IS THIS FOR -->
+  <section class="relative z-10 py-16 section-bg-vibrant overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div class="reveal-left order-2 lg:order-1">
+          <span class="text-sm font-bold text-orange-600 uppercase tracking-widest">Age Wise Pathways</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading mt-2 multicolor-text">Built For Every Stage Of Life</h2>
+          <div class="age-stage-grid mt-6">
+            <div class="age-stage-card"><span class="stage-icon">🌟</span><span class="stage-class">Class 1-5</span><span class="stage-name">Talent Discovery</span></div>
+            <div class="age-stage-card"><span class="stage-icon">🔍</span><span class="stage-class">Class 6-8</span><span class="stage-name">Self Discovery</span></div>
+            <div class="age-stage-card"><span class="stage-icon">🎯</span><span class="stage-class">Class 9-10</span><span class="stage-name">Stream Selection</span></div>
+            <div class="age-stage-card"><span class="stage-icon">🚀</span><span class="stage-class">Class 11-12</span><span class="stage-name">Career Direction</span></div>
+            <div class="age-stage-card"><span class="stage-icon">🎓</span><span class="stage-class">College Students</span><span class="stage-name">Degree & Career Clarity</span></div>
+            <div class="age-stage-card"><span class="stage-icon">💼</span><span class="stage-class">Working Professionals</span><span class="stage-name">Career Switch & Growth</span></div>
+          </div>
+        </div>
+        <div class="reveal-right order-1 lg:order-2 relative">
+          <img src="assets/cta-students.png" alt="Students and working professionals" class="w-full max-w-md mx-auto drop-shadow-2xl">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEET YOUR COUNSELLOR -->
+  <section class="relative z-10 py-10">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="coach-card reveal">
+        <div class="coach-card-photo">
+          <img src="assets/esha-new.png" alt="Esha Lohiya">
+        </div>
+        <div class="coach-card-info">
+          <p class="coach-card-tagline">I will guide your career journey</p>
+          <h3>Esha <span>Lohiya</span></h3>
+          <p class="coach-card-role">Career Counselling Expert</p>
+          <p class="coach-card-subrole">Founder, Dream Mantra | Former Key Accounts Manager, Naukri.com</p>
+          <p class="coach-card-subrole-tagline">Brain & Skill Mapping • Individual Assessment • Personalised Guidance</p>
+          <div class="coach-card-stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. HOW COUNSELLING WORKS (5 Dimensions) -->
+  <section class="relative z-10 py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10 reveal">
+        <span class="text-sm font-bold text-orange-500 uppercase tracking-widest">The Science</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading mt-2 multicolor-text">How Counselling Works</h2>
+        <p class="text-slate-500 mt-2">5 dimensions mapped together for one clear, confident decision.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-5 gap-5">
+        <div class="session-card reveal delay-100">
+          <div class="session-num">1</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">Inborn Talent</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>Learning style & natural strengths</li>
+            <li><i class="fa-solid fa-check"></i>No exams or pressure</li>
+          </ul>
+        </div>
+        <div class="session-card reveal delay-200">
+          <div class="session-num">2</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">Acquired Talent</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>Personality, interests & behaviour</li>
+            <li><i class="fa-solid fa-check"></i>Fit for stream & career choices</li>
+          </ul>
+        </div>
+        <div class="session-card reveal delay-300">
+          <div class="session-num">3</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">What You've Learned</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>Subjects, grades & projects audited</li>
+            <li><i class="fa-solid fa-check"></i>Academics aligned to real paths</li>
+          </ul>
+        </div>
+        <div class="session-card reveal delay-400">
+          <div class="session-num">4</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">Market Trend</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>Growing careers matched to you</li>
+            <li><i class="fa-solid fa-check"></i>Demand, salary & opportunity data</li>
+          </ul>
+        </div>
+        <div class="session-card reveal delay-500">
+          <div class="session-num">5</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">AI-Proof Career</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>Roles that stay human-strong</li>
+            <li><i class="fa-solid fa-check"></i>Built for long-term employability</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MID-PAGE CTA BANNER 2 -->
+  <section class="relative z-10 py-4">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="cta-banner cta-banner-alt relative overflow-hidden rounded-[2rem] p-8 sm:p-10 text-center reveal">
+        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 font-heading">5 Dimensions<br>One Clear Path</h3>
+        <p class="text-slate-600 mt-2 max-w-lg mx-auto text-sm sm:text-base">One early decision can cost years of regret. Get clarity first.</p>
+        <button type="button" class="btn-pulse-glow js-open-join-modal mt-6 inline-flex items-center gap-2 text-white px-8 py-3.5 rounded-full font-extrabold text-base shadow-xl">
+          <i class="fa-solid fa-bolt text-amber-200"></i> BOOK NOW
+        </button>
+        <span class="urgency-microcopy" style="display:block; margin-top:0.6rem;"><i class="fa-solid fa-hourglass-half"></i> Free guidance call — limited slots today</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PROGRAM HIGHLIGHTS + OUTCOMES -->
+  <section class="relative z-10 py-16 section-bg-vibrant-2">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="modern-table reveal">
+        <div class="modern-table-header">
+          <div class="mt-col mt-col-highlight"><i class="fa-solid fa-star"></i> Process Highlights</div>
+          <div class="mt-col mt-col-outcome"><i class="fa-solid fa-bullseye"></i> Program Outcomes</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>💳</span> Register & confirm payment</div>
+          <div class="mt-cell"><span>🎯</span> Clear stream & subject choices</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>💻</span> Complete online test</div>
+          <div class="mt-cell"><span>🧭</span> Confident career direction</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>📋</span> Expert report review</div>
+          <div class="mt-cell"><span>💪</span> Reduced stress & confusion</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>🗣️</span> 1-on-1 counsellor session</div>
+          <div class="mt-cell"><span>👨‍👩‍👧</span> Stronger parent-student alignment</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>🌐</span> Online (Pan-India) & Offline (Jaipur)</div>
+          <div class="mt-cell"><span>📈</span> Careers matched to market demand</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>🏅</span> Govt & internationally certified</div>
+          <div class="mt-cell"><span>🤖</span> AI-proof, future-ready choices</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>🎓</span> Built for Class 1 to professionals</div>
+          <div class="mt-cell"><span>🗺️</span> A clear, personalised roadmap</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>📞</span> Free guidance call before you start</div>
+          <div class="mt-cell"><span>✨</span> Self-awareness backed by science</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. SUCCESS STORIES -->
+  <section class="relative z-10 py-16 bg-white border-y border-slate-100 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-5 gap-8 items-center mb-10">
+        <div class="lg:col-span-2 text-center lg:text-left reveal-left">
+          <img src="assets/cta-growth.png" alt="Career growth" class="w-48 sm:w-56 mx-auto lg:mx-0 drop-shadow-xl">
+        </div>
+        <div class="lg:col-span-3 text-center lg:text-left reveal-right">
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 font-heading multicolor-text whitespace-nowrap">Success Stories</h2>
+          <p class="text-slate-500 mt-2">Real families who found clarity instead of confusion.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-marquee">
+      <div class="testimonial-track testimonial-track-left">
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"My son was totally confused between Science and Commerce. The report made it so clear."</p><p class="testimonial-name">Rakesh M.</p><p class="testimonial-role role-pink">Parent, Class 10</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"I finally understood why I hated my finance job — it was never the right fit for me."</p><p class="testimonial-name">Neha S.</p><p class="testimonial-role role-teal">Working Professional</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"The counsellor explained everything so simply. No pressure, just clarity."</p><p class="testimonial-name">Priyanka R.</p><p class="testimonial-role role-purple">Parent, Class 6</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"Chose my college major with actual confidence for the first time."</p><p class="testimonial-name">Aditya K.</p><p class="testimonial-role role-blue">College Student</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"We stopped comparing our daughter to others once we saw her real strengths."</p><p class="testimonial-name">Sunita J.</p><p class="testimonial-role role-orange">Parent, Class 8</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"Switched careers at 32 with zero regret — the report gave me the confidence."</p><p class="testimonial-name">Manish T.</p><p class="testimonial-role role-green">Career Switcher</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"Esha Ma'am explained our son's learning style in a way no school ever did."</p><p class="testimonial-name">Deepak V.</p><p class="testimonial-role role-indigo">Parent, Class 4</p></div>
+        <!-- duplicate for seamless loop -->
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"My son was totally confused between Science and Commerce. The report made it so clear."</p><p class="testimonial-name">Rakesh M.</p><p class="testimonial-role role-pink">Parent, Class 10</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"I finally understood why I hated my finance job — it was never the right fit for me."</p><p class="testimonial-name">Neha S.</p><p class="testimonial-role role-teal">Working Professional</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"The counsellor explained everything so simply. No pressure, just clarity."</p><p class="testimonial-name">Priyanka R.</p><p class="testimonial-role role-purple">Parent, Class 6</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"Chose my college major with actual confidence for the first time."</p><p class="testimonial-name">Aditya K.</p><p class="testimonial-role role-blue">College Student</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"We stopped comparing our daughter to others once we saw her real strengths."</p><p class="testimonial-name">Sunita J.</p><p class="testimonial-role role-orange">Parent, Class 8</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"Switched careers at 32 with zero regret — the report gave me the confidence."</p><p class="testimonial-name">Manish T.</p><p class="testimonial-role role-green">Career Switcher</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"Esha Ma'am explained our son's learning style in a way no school ever did."</p><p class="testimonial-name">Deepak V.</p><p class="testimonial-role role-indigo">Parent, Class 4</p></div>
+      </div>
+    </div>
+    <p class="text-center text-xs text-slate-400 mt-6">*Sample testimonials shown for illustration — swap in real participant feedback when available.</p>
+  </section>
+
+  <!-- 7. FAQ -->
+  <section class="relative z-10 py-16 section-bg-vibrant-2">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10 reveal">
+        <span class="text-sm font-bold text-orange-500 uppercase tracking-widest">Got Questions?</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading mt-2 multicolor-text">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div class="faq-item faq-card faq-card-1 faq-always-open reveal delay-100">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-circle-question"></i></div>
+            <h4>Why does career counselling matter?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-orange-400 mt-0.5"></i><span>90% of students know only 7-10 careers, while 5,000+ real paths exist</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-orange-400 mt-0.5"></i><span>65% of graduates end up underemployed from poor decisions</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-2 faq-always-open reveal delay-150">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-list-check"></i></div>
+            <h4>How does the process work?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>Register & confirm payment</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>Complete online test, get expert report review</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>1-on-1 counsellor session</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-3 faq-always-open reveal delay-200">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-handshake"></i></div>
+            <h4>Is it online or offline?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-0.5"></i><span>Pan-India online sessions</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-0.5"></i><span>Offline counselling available in Jaipur</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-4 faq-always-open reveal delay-250">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-user-graduate"></i></div>
+            <h4>Who is this counselling for?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-fuchsia-500 mt-0.5"></i><span>Class 1 to Class 12 students</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-fuchsia-500 mt-0.5"></i><span>College students & working professionals</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-1 faq-always-open reveal delay-300">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-shield-halved"></i></div>
+            <h4>Is this scientifically validated?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-orange-400 mt-0.5"></i><span>Backed by genetics, neuroscience & psychology</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-orange-400 mt-0.5"></i><span>Validated in 30+ countries worldwide</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-2 faq-always-open reveal delay-350">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-star"></i></div>
+            <h4>What makes this different?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>Combines Brain Mapping + Skill Mapping — nature & nurture</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>Endorsed by Assam Government & Bombay High Court</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FINAL CTA -->
+  <section class="relative z-10 py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="cta-banner relative overflow-hidden rounded-[2.5rem] p-10 sm:p-14 text-center reveal">
+        <h2 class="text-3xl sm:text-4xl font-black text-white font-heading">Ready For Personal Guidance?</h2>
+        <p class="text-orange-50 mt-2 max-w-md mx-auto">Talk to a counsellor — no commitment. We'll help you choose the right next step.</p>
+        <button type="button" class="js-open-join-modal mt-8 inline-flex items-center gap-2 bg-white text-orange-600 px-10 py-4 rounded-full font-extrabold text-lg shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all">
+          <span>BOOK A FREE GUIDANCE CALL</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <span class="urgency-microcopy-light"><i class="fa-solid fa-hourglass-half"></i> Free guidance call — limited slots today</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. BRAND STATEMENT -->
+  <section class="relative z-10 py-10 bg-white border-t border-slate-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+      <img src="assets/logo.png" alt="Dream Mantra" class="h-10 w-10 object-contain mx-auto mb-3">
+      <p class="text-sm sm:text-base font-bold text-slate-700 leading-relaxed">
+        <span class="text-orange-600">Dream Mantra</span> is India's #1 Career & Education Counselling platform — the only one that combines Brain Mapping, Skill Mapping & expert guidance under one roof, for every stage of life.
+      </p>
+    </div>
+  </section>
+
+  <!-- 10. FOOTER -->
+  <footer class="relative z-10 bg-slate-900 py-8 text-center text-slate-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p><i class="fa-solid fa-phone text-orange-500"></i> Call us: <a href="tel:+919680102276" class="text-white font-semibold hover:text-orange-400 transition">+91 9680102276</a></p>
+      <p>© 2026 Dream Mantra. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/919680102276" target="_blank" class="whatsapp-float bg-emerald-500 text-white h-14 w-14 rounded-full flex items-center justify-center text-2xl shadow-xl">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- JOIN NOW MODAL -->
+  <div id="join-modal-overlay" class="join-modal-overlay" aria-hidden="true">
+    <div class="join-modal-panel" role="dialog" aria-modal="true" aria-labelledby="join-modal-title">
+      <button type="button" id="join-modal-close-btn" class="join-modal-close" aria-label="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+
+      <h2 id="join-modal-title" class="text-2xl sm:text-3xl font-black font-heading text-slate-900 mb-2 mt-2 text-center">Book A Free Guidance Call</h2>
+      <p class="text-slate-500 mb-3 text-center text-sm">Fill out the form below to secure your free guidance call slot.</p>
+      <div class="countdown-badge inline-flex items-center gap-2 px-4 py-2 rounded-full mb-6 mx-auto">
+        <i class="fa-solid fa-hourglass-half"></i>
+        <span>Slot closes in <span id="countdown-timer-2" class="font-black">10:45</span></span>
+      </div>
+
+      <form id="lead-form" class="max-w-md mx-auto space-y-4 text-left" novalidate>
+        <div class="modal-field" style="--field-delay: 1">
+          <label class="flex items-center gap-2 text-sm font-bold text-slate-800 mb-1.5"><i class="fa-solid fa-user text-orange-500"></i> Full Name</label>
+          <input type="text" id="lf-name" required placeholder="John Doe" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition">
+        </div>
+
+        <div class="modal-field" style="--field-delay: 2">
+          <label class="flex items-center gap-2 text-sm font-bold text-slate-800 mb-1.5"><i class="fa-solid fa-envelope text-orange-500"></i> Email</label>
+          <input type="email" id="lf-email" required placeholder="your@email.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition">
+        </div>
+
+        <div class="modal-field" style="--field-delay: 3">
+          <label class="flex items-center gap-2 text-sm font-bold text-slate-800 mb-1.5"><i class="fa-solid fa-phone text-orange-500"></i> Mobile / WhatsApp</label>
+          <input type="tel" id="lf-phone" required placeholder="10-digit WhatsApp number" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition">
+        </div>
+
+        <div class="modal-field" style="--field-delay: 4">
+          <label class="flex items-center gap-2 text-sm font-bold text-slate-800 mb-1.5"><i class="fa-solid fa-lock text-orange-500"></i> Password</label>
+          <div class="relative">
+            <input type="password" id="lf-password" required minlength="6" placeholder="Password" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 pr-11 text-sm text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition">
+            <button type="button" class="password-toggle-btn absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500 transition" data-target="lf-password" aria-label="Show password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-field" style="--field-delay: 5">
+          <label class="flex items-center gap-2 text-sm font-bold text-slate-800 mb-1.5"><i class="fa-solid fa-lock text-orange-500"></i> Confirm Password</label>
+          <div class="relative">
+            <input type="password" id="lf-confirm-password" required minlength="6" placeholder="Password" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 pr-11 text-sm text-slate-900 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition">
+            <button type="button" class="password-toggle-btn absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-orange-500 transition" data-target="lf-confirm-password" aria-label="Show password">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+          <p id="password-error" class="hidden text-xs font-semibold text-red-500 mt-1.5"><i class="fa-solid fa-circle-exclamation"></i> Passwords do not match.</p>
+        </div>
+
+        <button type="submit" class="modal-field btn-pulse-glow w-full text-white py-4 rounded-xl font-extrabold text-base flex items-center justify-center gap-2 mt-4 shadow-xl" style="--field-delay: 6">
+          <span>BOOK NOW</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </form>
+
+      <div id="form-success" class="hidden relative py-8 space-y-4 overflow-visible text-center">
+        <div id="confetti-container" class="confetti-container" aria-hidden="true"></div>
+        <div class="h-16 w-16 mx-auto bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center text-3xl">
+          <i class="fa-solid fa-check"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-slate-900 font-heading">You're In! Welcome Aboard 🎉</h3>
+        <p class="text-slate-500 text-sm max-w-sm mx-auto">Click below to connect with our team on WhatsApp immediately to confirm your slot.</p>
+        <a id="success-whatsapp-btn" href="#" target="_blank" class="inline-flex items-center gap-2 bg-emerald-500 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-emerald-600 transition">
+          <i class="fa-brands fa-whatsapp text-lg"></i> Connect on WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/studio/checkout-bridge.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

@@ -46,7 +46,11 @@ import {
   listStudioLandingsForAdmin,
   readStudioLanding,
   writeStudioLanding,
+  createStudioLanding,
+  updateStudioLandingMeta,
+  deleteStudioLanding,
 } from '../lib/studioLandingEditor.js';
+import { listPageCatalog, getPageCatalog, updatePageCatalog } from '../lib/pageCatalog.js';
 
 const router = Router();
 router.use(authRequired, adminRequired);
@@ -378,6 +382,52 @@ router.put('/studio-landings/:slug', (req, res) => {
     res.json({ landing });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to save landing page' });
+  }
+});
+
+router.post('/studio-landings', (req, res) => {
+  try {
+    const landing = createStudioLanding(req.body || {});
+    res.status(201).json({ landing, landings: listStudioLandingsForAdmin() });
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to create landing page' });
+  }
+});
+
+router.patch('/studio-landings/:slug/meta', (req, res) => {
+  try {
+    const meta = updateStudioLandingMeta(req.params.slug, req.body || {});
+    res.json({ meta, landings: listStudioLandingsForAdmin() });
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to update landing meta' });
+  }
+});
+
+router.delete('/studio-landings/:slug', (req, res) => {
+  try {
+    const result = deleteStudioLanding(req.params.slug);
+    res.json({ ...result, landings: listStudioLandingsForAdmin() });
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to delete landing page' });
+  }
+});
+
+router.get('/page-catalog', (_req, res) => {
+  res.json({ pages: listPageCatalog() });
+});
+
+router.get('/page-catalog/:slug', (req, res) => {
+  const page = getPageCatalog(req.params.slug);
+  if (!page) return res.status(404).json({ message: 'Page not found' });
+  res.json({ page });
+});
+
+router.put('/page-catalog/:slug', (req, res) => {
+  try {
+    const page = updatePageCatalog(req.params.slug, req.body || {});
+    res.json({ page });
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to save page' });
   }
 });
 

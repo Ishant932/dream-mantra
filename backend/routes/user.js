@@ -52,6 +52,7 @@ const router = Router();
 router.use(authRequired);
 
 router.get('/dashboard', (req, res) => {
+  try {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
   if (!user) {
     return res.status(401).json({ message: 'Session expired or account not found. Please sign in again.' });
@@ -109,6 +110,10 @@ router.get('/dashboard', (req, res) => {
     unreadNotifications: countUnreadNotifications(req.user.id),
     counsellingAccess: userHasCounsellingAccess(req.user.id),
   });
+  } catch (e) {
+    console.error('GET /user/dashboard failed:', e);
+    res.status(500).json({ message: e.message || 'Failed to load dashboard' });
+  }
 });
 
 router.patch('/profile', (req, res) => {
@@ -310,6 +315,17 @@ router.delete('/consultations/:id', (req, res) => {
     return res.status(result.error === 'Booking not found' ? 404 : 400).json({ message: result.error });
   }
   res.json({ ok: true, message: 'Booking cancelled', consultation: enrichConsultation(result.consultation) });
+});
+
+router.post('/notifications/activity', (req, res) => {
+  const { title, body, link } = req.body || {};
+  const row = notifyUser(req.user.id, {
+    type: 'activity',
+    title: title || 'Activity',
+    body: body || '',
+    link: link || null,
+  });
+  res.json({ notification: row, unread: countUnreadNotifications(req.user.id) });
 });
 
 router.get('/notifications', (req, res) => {

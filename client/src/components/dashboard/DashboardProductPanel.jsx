@@ -62,7 +62,7 @@ export function CounsellingProductPanel({
         </div>
       )}
       <div className="dash-panel-surface dash-panel-surface--product">
-        {(overviewMode || !paid) && <DashboardProductOverview focus={focus} onBook={onBook} />}
+        {(overviewMode || !paid) && <DashboardProductOverview focus={focus} onBook={onBook} paid={paid} />}
         {paid && subtab === 'journey' && (
           <ProductJourneySteps
             focus={focus}
@@ -134,7 +134,7 @@ export function TrainingProductPanel({
         </div>
       )}
       <div className="dash-panel-surface dash-panel-surface--product">
-        {(overviewMode || !paid) && <DashboardProductOverview focus={focus} onBook={onBook} />}
+        {(overviewMode || !paid) && <DashboardProductOverview focus={focus} onBook={onBook} paid={paid} />}
         {paid && subtab === 'journey' && (
           <ProductJourneySteps
             focus={focus}

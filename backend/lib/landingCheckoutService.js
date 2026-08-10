@@ -8,7 +8,7 @@ import { isAssessmentFullyPaid } from './paymentService.js';
 import { onPaymentPending } from './whatsapp/events.js';
 import { onUserRegistered } from './whatsapp/events.js';
 import { normalizeProfile } from './profile.js';
-import { STUDIO_LANDINGS } from './studioLandings.js';
+import { getAllStudioLandings } from './studioLandings.js';
 
 const JWT_SECRET = () => process.env.JWT_SECRET || 'dreams-mantra-secret-key';
 const JWT_EXPIRES = () => process.env.JWT_EXPIRES_IN || '7d';
@@ -95,9 +95,10 @@ export function landingSignupCheckout({ name, email, phone, password, productSlu
   if (!userEmail && !userPhone) throw new Error('Please enter email or phone');
   if (pwd.length < 6) throw new Error('Password must be at least 6 characters');
 
-  const landing = STUDIO_LANDINGS.find((l) => l.slug === studioSlug);
+  const landings = getAllStudioLandings();
+  const landing = landings.find((l) => l.slug === studioSlug);
   const slug = productSlug || landing?.productSlug;
-  if (!slug || !STUDIO_LANDINGS.some((l) => l.productSlug === slug)) {
+  if (!slug || !landings.some((l) => l.productSlug === slug)) {
     throw new Error('Invalid landing program');
   }
 

@@ -50,6 +50,7 @@ function TabLoader() {
     </div>
   );
 }
+import { useFlashNotice } from '../hooks/useFlashNotice';
 import {
   DashboardShell,
   DashboardLoading,
@@ -91,7 +92,6 @@ export default function UserDashboard() {
   const [data, setData] = useState({ consultations: [], assessments: [], stats: {} });
   const [program, setProgram] = useState('Class 9-10');
   const [notes, setNotes] = useState('');
-  const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [loading, setLoading] = useState(true);
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -176,6 +176,12 @@ export default function UserDashboard() {
       setErr(e.message);
     }
   }, [token]);
+
+  const refreshNotifs = useCallback(async () => {
+    if (!token) return;
+    try { await refreshDashboard(); } catch { /* silent */ }
+  }, [token, refreshDashboard]);
+  const { notice: flashNotice, flash: flashMsg } = useFlashNotice(token, refreshNotifs);
 
   useEffect(() => {
     if (!token) {
@@ -276,7 +282,7 @@ export default function UserDashboard() {
     }
     try {
       await userApi.bookConsultation(token, { program, notes, slot_id: selectedSlot.id });
-      setMsg('Session booked! See it in My Bookings below.');
+      flashMsg('Session booked! See it in My Bookings below.');
       setNotes('');
       setSelectedSlot(null);
       await load(token, () => false);
@@ -303,7 +309,7 @@ export default function UserDashboard() {
         stats: { ...prev.stats, profileCompletion: res.profileCompletion },
       }));
       setShowProfileModal(false);
-      setMsg('Profile updated! Your completion score has been refreshed.');
+      flashMsg('Profile updated! Your completion score has been refreshed.');
       await refreshUser();
     } catch (e) {
       setErr(e.message);
@@ -465,9 +471,9 @@ export default function UserDashboard() {
           )}
         />
 
-        {msg && (
+        {flashNotice && (
           <DashAlert type="success">
-            <CheckCircle className="w-5 h-5 shrink-0" /> {msg}
+            <CheckCircle className="w-5 h-5 shrink-0" /> {flashNotice}
           </DashAlert>
         )}
         {err && (
@@ -518,11 +524,9 @@ export default function UserDashboard() {
 
               {tab === 'careers' && (
                 <Suspense fallback={<TabLoader />}>
-                  <CareerLibraryExplorer
-                    embedded
-                    showHeader={false}
-                    initialStream={careerLibraryStream}
-                  />
+                  <div className="dash-embed-host">
+                    <CareerLibraryExplorer embedded />
+                  </div>
                 </Suspense>
               )}
 
@@ -541,7 +545,7 @@ export default function UserDashboard() {
                   profile={data.profile}
                   user={displayUser}
                   onError={setErr}
-                  onSuccess={setMsg}
+                  onSuccess={flashMsg}
                   onRefresh={refreshDashboard}
                   onGoProcessGuides={goProcessGuides}
                   onGoTakeTest={goToTakeTest}

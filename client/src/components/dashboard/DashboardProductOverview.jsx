@@ -54,7 +54,7 @@ function CardGrid({ items, titleKey = 'title', descKey = 'desc' }) {
   );
 }
 
-export default function DashboardProductOverview({ focus, onBook }) {
+export default function DashboardProductOverview({ focus, onBook, paid = false }) {
   const { d } = useLang();
   const meta = PRODUCT_OVERVIEWS[focus];
   if (!meta) return null;
@@ -74,7 +74,9 @@ export default function DashboardProductOverview({ focus, onBook }) {
       </div>
       <p className="dash-product-overview__lede">{meta.desc}</p>
       <div className="flex flex-wrap gap-3 mt-4 mb-4">
-        <button type="button" className="btn-primary dash-product-overview__book" onClick={onBook}>Book Now</button>
+        {!paid && (
+          <button type="button" className="btn-primary dash-product-overview__book" onClick={onBook}>Book Now</button>
+        )}
         <Link to={meta.link} className="dash-product-overview__link">{meta.linkLabel} <ArrowRight className="w-4 h-4" /></Link>
       </div>
       <ul className="dash-product-overview__perks">
@@ -197,7 +199,9 @@ export default function DashboardProductOverview({ focus, onBook }) {
       )}
 
       <div className="flex flex-wrap gap-3 mt-5">
-        <button type="button" className="btn-primary dash-product-overview__book" onClick={onBook}>Book Now</button>
+        {!paid && (
+          <button type="button" className="btn-primary dash-product-overview__book" onClick={onBook}>Book Now</button>
+        )}
         <Link to={meta.link} className="dash-product-overview__link">{meta.linkLabel} <ArrowRight className="w-4 h-4" /></Link>
       </div>
     </div>

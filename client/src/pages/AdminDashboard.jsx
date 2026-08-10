@@ -31,6 +31,8 @@ import NotificationBell from '../components/NotificationBell';
 import AdminMessagesPanel from '../components/MessagesPanel';
 import AdminBlogPanel from '../components/AdminBlogPanel';
 import AdminStudioPanel from '../components/admin/AdminStudioPanel';
+import AdminPageCatalogPanel from '../components/admin/AdminPageCatalogPanel';
+import { useFlashNotice } from '../hooks/useFlashNotice';
 import DashboardB2BBanner from '../components/DashboardB2BBanner';
 import { getAdminDashboardNextStep, ADMIN_NEXT_STEP_ACTIONS } from '../utils/dashboardNextStep';
 
@@ -43,11 +45,12 @@ const ADMIN_TABS = [
   { id: 'payments', label: 'Payment Management', desc: 'Paid assessments & orders' },
   { id: 'modules', label: 'Module Catalog', desc: 'Add & edit checkout modules' },
   { id: 'vouchers', label: 'Vouchers', desc: 'Discount codes by module' },
-  { id: 'messages', label: 'Messages', desc: 'Direct messages to students' },
+  { id: 'messages', label: 'Support', desc: 'Messages and help for students' },
   { id: 'reports', label: 'Report Management', desc: 'Deliver reports to users' },
   { id: 'leads', label: 'Guidance Calls', desc: 'Free guidance call requests' },
   { id: 'blogs', label: 'Blogs', desc: 'Create & publish website articles' },
   { id: 'landing-pages', label: 'Landing Pages', desc: 'Internal campaign landing pages' },
+  { id: 'site-pages', label: 'Site Pages', desc: 'Terms, About, policies & content' },
   { id: 'settings', label: 'Community & Links', desc: 'AI Launchpad community URL' },
 ];
 
@@ -64,7 +67,19 @@ export default function AdminDashboard() {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [notice, setNotice] = useState('');
+  const [notifUnread, setNotifUnread] = useState(0);
+
+  const refreshNotifs = useCallback(async () => {
+    if (!token) return;
+    try {
+      const data = await userApi.notifications(token);
+      setNotifUnread(data.unread ?? 0);
+    } catch {
+      /* silent */
+    }
+  }, [token]);
+
+  const { notice: flashNotice, flash: setNotice } = useFlashNotice(token, refreshNotifs);
   const [profileUser, setProfileUser] = useState(null);
   const [profileStats, setProfileStats] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
@@ -78,17 +93,6 @@ export default function AdminDashboard() {
   const [profileSaving, setProfileSaving] = useState(false);
   const [loadErrors, setLoadErrors] = useState([]);
   const [catalogModules, setCatalogModules] = useState([]);
-  const [notifUnread, setNotifUnread] = useState(0);
-
-  const refreshNotifs = useCallback(async () => {
-    if (!token) return;
-    try {
-      const data = await userApi.notifications(token);
-      setNotifUnread(data.unread ?? 0);
-    } catch {
-      /* silent */
-    }
-  }, [token]);
 
   const handleCatalogChange = useCallback((list) => {
     setCatalogModules(Array.isArray(list) ? list : []);
@@ -255,9 +259,9 @@ export default function AdminDashboard() {
       />
 
       <div className="dash-b2b-page w-full max-w-none mx-0 px-0">
-        {notice && (
+        {flashNotice && (
           <DashAlert type="success">
-            <p className="text-sm">{notice}</p>
+            <p className="text-sm">{flashNotice}</p>
           </DashAlert>
         )}
 
@@ -423,6 +427,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'landing-pages' && <AdminStudioPanel />}
+              {tab === 'site-pages' && <AdminPageCatalogPanel onNotice={setNotice} onError={setError} />}
 
               {tab === 'settings' && (
                 <div className="space-y-4 max-w-3xl">
@@ -456,7 +461,7 @@ export default function AdminDashboard() {
                 </DashCard>
                   )}
                   {settingsTab === 'resources' && (
-                    <AdminResourceLinksPanel token={token} users={users} onNotice={setNotice} onError={setError} />
+                    <AdminResourceLinksPanel token={token} users={users} payments={payments} onNotice={setNotice} onError={setError} />
                   )}
                 </div>
               )}

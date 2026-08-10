@@ -1,18 +1,25 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Copy, ExternalLink, Save, RefreshCw } from 'lucide-react';
+import { Copy, ExternalLink, Save, RefreshCw, Plus, Trash2, Power } from 'lucide-react';
 import AdminPanelHeader from '../AdminPanelHeader';
 import { useAuth } from '../../context/AuthContext';
 import { adminApi } from '../../api';
-import {
-  studioLandingLocalUrl,
-  studioLandingProductionUrl,
-} from '../../data/studioLandings';
+import { MODULE_CATALOG } from '../../data/moduleCatalog';
+import { studioLandingLocalUrl, studioLandingProductionUrl } from '../../data/studioLandings';
 
 const FILE_TABS = [
   { id: 'html', label: 'HTML' },
   { id: 'css', label: 'CSS' },
   { id: 'js', label: 'JavaScript' },
 ];
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result).split(',')[1] || '');
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
 
 export default function AdminStudioPanel() {
   const { token } = useAuth();
@@ -22,6 +29,11 @@ export default function AdminStudioPanel() {
   const [files, setFiles] = useState({ html: '', css: '', js: '' });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [creating, setCreating] = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newPage, setNewPage] = useState({ slug: '', label: '', productSlug: 'dmit', folder: '', ctaLabel: 'Book Now' });
+  const [heroFile, setHeroFile] = useState(null);
+  const [logoFile, setLogoFile] = useState(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [previewKey, setPreviewKey] = useState(0);
@@ -49,7 +61,6 @@ export default function AdminStudioPanel() {
   const loadPage = useCallback(async (slug) => {
     if (!token || !slug) return;
     setLoading(true);
-    setError('');
     try {
       const res = await adminApi.getStudioLanding(token, slug);
       setFiles(res.files || { html: '', css: '', js: '' });
@@ -61,22 +72,16 @@ export default function AdminStudioPanel() {
     }
   }, [token]);
 
-  useEffect(() => {
-    loadList();
-  }, [loadList]);
-
-  useEffect(() => {
-    if (active) loadPage(active);
-  }, [active, loadPage]);
+  useEffect(() => { loadList(); }, [loadList]);
+  useEffect(() => { if (active) loadPage(active); }, [active, loadPage]);
 
   const savePage = async () => {
     if (!token || !active) return;
     setSaving(true);
     setError('');
-    setNotice('');
     try {
       await adminApi.updateStudioLanding(token, active, { files });
-      setNotice('Landing page saved — live preview updated.');
+      setNotice('Landing page saved.');
       setPreviewKey((k) => k + 1);
     } catch (e) {
       setError(e.message || 'Failed to save');
@@ -85,9 +90,50 @@ export default function AdminStudioPanel() {
     }
   };
 
-  const copyUrl = (url) => {
-    navigator.clipboard?.writeText(url);
-    setNotice('Link copied.');
+  const toggleLive = async (slug, published) => {
+    try {
+      const res = await adminApi.updateStudioLandingMeta(token, slug, { published });
+      setLandings(res.landings || []);
+      setNotice(published ? 'Page is now LIVE' : 'Page is now OFFLINE');
+    } catch (e) {
+      setError(e.message);
+    }
+  };
+
+  const removePage = async (slug) => {
+    if (!window.confirm('Delete or unpublish this landing page?')) return;
+    try {
+      const res = await adminApi.deleteStudioLanding(token, slug);
+      setLandings(res.landings || []);
+      setActive(res.landings?.[0]?.slug || '');
+      setNotice(res.deleted ? 'Landing page deleted' : 'Landing page taken offline');
+    } catch (e) {
+      setError(e.message);
+    }
+  };
+
+  const createPage = async (e) => {
+    e.preventDefault();
+    if (!token) return;
+    setCreating(true);
+    setError('');
+    try {
+      const payload = { ...newPage };
+      if (heroFile) payload.heroImage = await fileToBase64(heroFile);
+      if (logoFile) payload.logoImage = await fileToBase64(logoFile);
+      const res = await adminApi.createStudioLanding(token, payload);
+      setLandings(res.landings || []);
+      if (res.landing?.slug) setActive(res.landing.slug);
+      setShowCreate(false);
+      setNewPage({ slug: '', label: '', productSlug: 'dmit', folder: '', ctaLabel: 'Book Now' });
+      setHeroFile(null);
+      setLogoFile(null);
+      setNotice('Landing page created with Book Now CTAs.');
+    } catch (e) {
+      setError(e.message || 'Failed to create');
+    } finally {
+      setCreating(false);
+    }
   };
 
   if (loading && !landings.length) {
@@ -96,50 +142,61 @@ export default function AdminStudioPanel() {
 
   return (
     <div className="space-y-4">
-      <AdminPanelHeader title="Landing Pages" />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <AdminPanelHeader title="Landing Pages" />
+        <button type="button" onClick={() => setShowCreate((v) => !v)} className="btn-primary !py-2 !px-4 text-sm inline-flex items-center gap-2">
+          <Plus className="w-4 h-4" /> New landing page
+        </button>
+      </div>
+
+      {showCreate && (
+        <form onSubmit={createPage} className="rounded-xl border border-sand-200 p-4 grid sm:grid-cols-2 gap-3 bg-sand-50/50">
+          <input className="input-field" placeholder="URL slug" value={newPage.slug} onChange={(e) => setNewPage({ ...newPage, slug: e.target.value })} required />
+          <input className="input-field" placeholder="Page label" value={newPage.label} onChange={(e) => setNewPage({ ...newPage, label: e.target.value })} required />
+          <select className="input-field" value={newPage.productSlug} onChange={(e) => setNewPage({ ...newPage, productSlug: e.target.value })}>
+            {MODULE_CATALOG.map((m) => <option key={m.slug} value={m.slug}>{m.title}</option>)}
+          </select>
+          <input className="input-field" placeholder="CTA label (e.g. Book Now)" value={newPage.ctaLabel} onChange={(e) => setNewPage({ ...newPage, ctaLabel: e.target.value })} />
+          <input className="input-field" placeholder="Folder name (optional)" value={newPage.folder} onChange={(e) => setNewPage({ ...newPage, folder: e.target.value })} />
+          <label className="text-xs font-bold">Hero image<input type="file" accept="image/*" className="input-field !py-2 mt-1" onChange={(e) => setHeroFile(e.target.files?.[0] || null)} /></label>
+          <label className="text-xs font-bold">Logo image<input type="file" accept="image/*" className="input-field !py-2 mt-1" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} /></label>
+          <button type="submit" disabled={creating} className="btn-primary sm:col-span-2">{creating ? 'Creating…' : 'Create page'}</button>
+        </form>
+      )}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
       {notice && <p className="text-sm text-emerald-700">{notice}</p>}
 
       <div className="overflow-x-auto rounded-xl border border-sand-200">
-        <table className="w-full text-sm admin-data-table min-w-[640px]">
+        <table className="w-full text-sm admin-data-table min-w-[720px]">
           <thead>
             <tr className="border-b border-sand-200 text-left">
-              <th className="py-2.5 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Program</th>
-              <th className="py-2.5 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Status</th>
-              <th className="py-2.5 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Local</th>
-              <th className="py-2.5 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Production</th>
+              <th className="py-2.5 px-3 font-semibold text-xs uppercase opacity-60">Program</th>
+              <th className="py-2.5 px-3 font-semibold text-xs uppercase opacity-60">Status</th>
+              <th className="py-2.5 px-3 font-semibold text-xs uppercase opacity-60">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {landings.map((p) => {
-              const local = studioLandingLocalUrl(p.slug);
-              const prod = studioLandingProductionUrl(p.slug);
-              return (
-                <tr
-                  key={p.slug}
-                  className={`border-b border-sand-100 cursor-pointer hover:bg-amber-50/50 ${active === p.slug ? 'bg-amber-50/80' : ''}`}
-                  onClick={() => setActive(p.slug)}
-                >
-                  <td className="py-2.5 px-3 font-semibold">{p.label}</td>
-                  <td className="py-2.5 px-3">
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.live ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}`}>
-                      {p.live ? 'LIVE' : 'Missing'}
-                    </span>
-                  </td>
-                  <td className="py-2.5 px-3">
-                    <a href={local} target="_blank" rel="noopener noreferrer" className="text-amber-800 hover:underline font-mono text-xs break-all">
-                      {local}
-                    </a>
-                  </td>
-                  <td className="py-2.5 px-3">
-                    <a href={prod} target="_blank" rel="noopener noreferrer" className="text-amber-800 hover:underline font-mono text-xs break-all">
-                      {prod}
-                    </a>
-                  </td>
-                </tr>
-              );
-            })}
+            {landings.map((p) => (
+              <tr key={p.slug} className={`border-b border-sand-100 cursor-pointer hover:bg-amber-50/50 ${active === p.slug ? 'bg-amber-50/80' : ''}`} onClick={() => setActive(p.slug)}>
+                <td className="py-2.5 px-3 font-semibold">{p.label}</td>
+                <td className="py-2.5 px-3">
+                  <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.live ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}`}>
+                    {p.live ? 'LIVE' : 'OFFLINE'}
+                  </span>
+                </td>
+                <td className="py-2.5 px-3" onClick={(e) => e.stopPropagation()}>
+                  <div className="flex gap-2">
+                    <button type="button" className="btn-outline !py-1 !px-2 text-xs" onClick={() => toggleLive(p.slug, !p.live)}>
+                      <Power className="w-3.5 h-3.5 inline" /> {p.live ? 'Unpublish' : 'Go live'}
+                    </button>
+                    <button type="button" className="btn-outline !py-1 !px-2 text-xs text-red-700" onClick={() => removePage(p.slug)}>
+                      <Trash2 className="w-3.5 h-3.5 inline" />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -149,51 +206,21 @@ export default function AdminStudioPanel() {
           <div className="admin-landing-meta rounded-xl border border-sand-200 p-3 text-sm space-y-2">
             <p className="font-bold">{page.label}</p>
             <div className="flex flex-wrap gap-2">
-              <a href={localUrl} target="_blank" rel="noopener noreferrer" className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">
-                Open local <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-              <a href={productionUrl} target="_blank" rel="noopener noreferrer" className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">
-                Open production <ExternalLink className="w-3.5 h-3.5" />
-              </a>
-              <button type="button" onClick={() => copyUrl(localUrl)} className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">
-                <Copy className="w-3.5 h-3.5" /> Copy local
-              </button>
-              <button type="button" onClick={() => setPreviewKey((k) => k + 1)} className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">
-                <RefreshCw className="w-3.5 h-3.5" /> Refresh preview
-              </button>
-              <button type="button" onClick={savePage} disabled={saving} className="btn-primary !py-1.5 !px-3 text-xs inline-flex items-center gap-1">
-                <Save className="w-3.5 h-3.5" /> {saving ? 'Saving…' : 'Save changes'}
-              </button>
+              <a href={localUrl} target="_blank" rel="noopener noreferrer" className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">Open local <ExternalLink className="w-3.5 h-3.5" /></a>
+              <a href={productionUrl} target="_blank" rel="noopener noreferrer" className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">Production <ExternalLink className="w-3.5 h-3.5" /></a>
+              <button type="button" onClick={() => { navigator.clipboard?.writeText(localUrl); setNotice('Copied'); }} className="btn-outline !py-1.5 !px-3 text-xs"><Copy className="w-3.5 h-3.5 inline" /> Copy</button>
+              <button type="button" onClick={() => setPreviewKey((k) => k + 1)} className="btn-outline !py-1.5 !px-3 text-xs"><RefreshCw className="w-3.5 h-3.5 inline" /> Refresh</button>
+              <button type="button" onClick={savePage} disabled={saving} className="btn-primary !py-1.5 !px-3 text-xs"><Save className="w-3.5 h-3.5 inline" /> {saving ? 'Saving…' : 'Save'}</button>
             </div>
           </div>
-
           <div className="flex flex-wrap gap-2">
             {FILE_TABS.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setFileTab(tab.id)}
-                className={`subtab-btn ${fileTab === tab.id ? 'active' : ''}`}
-              >
-                {tab.label}
-              </button>
+              <button key={tab.id} type="button" onClick={() => setFileTab(tab.id)} className={`subtab-btn ${fileTab === tab.id ? 'active' : ''}`}>{tab.label}</button>
             ))}
           </div>
-
-          <textarea
-            className="input-field w-full min-h-[280px] font-mono text-xs leading-relaxed"
-            value={files[fileTab] || ''}
-            onChange={(e) => setFiles((prev) => ({ ...prev, [fileTab]: e.target.value }))}
-            spellCheck={false}
-          />
-
+          <textarea className="input-field w-full min-h-[280px] font-mono text-xs" value={files[fileTab] || ''} onChange={(e) => setFiles((prev) => ({ ...prev, [fileTab]: e.target.value }))} spellCheck={false} />
           <div className="admin-landing-preview">
-            <iframe
-              key={`${active}-${previewKey}`}
-              title={page.label}
-              src={localUrl}
-              className="admin-landing-preview__frame"
-            />
+            <iframe key={`${active}-${previewKey}`} title={page.label} src={localUrl} className="admin-landing-preview__frame" />
           </div>
         </>
       )}

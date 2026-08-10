@@ -2,6 +2,8 @@ import { motion } from 'framer-motion';
 import PageHero from '../components/PageHero';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
+import { usePageCatalog } from '../hooks/usePageCatalog';
+import CmsFullPage from '../components/CmsFullPage';
 
 function SectionBody({ section }) {
   if (section.paragraphs?.length || section.items?.length || section.subsections?.length) {
@@ -35,19 +37,39 @@ function SectionBody({ section }) {
   return <p className="text-sand-600 leading-relaxed">{section.content}</p>;
 }
 
-export default function Terms({ pageKey = 'pages.terms', titleOverride }) {
+const CMS_SLUGS = {
+  'pages.terms': 'terms',
+  'pages.policies': 'policies',
+  'pages.privacy': 'privacy',
+  'pages.refund': 'refund',
+  'pages.dmit': 'brain-mapping',
+  'pages.psychometric': 'skill-mapping',
+  'pages.dmitPsychometric': 'combo',
+};
+
+export default function Terms({ pageKey = 'pages.terms', titleOverride, cmsSlug }) {
   const { d } = useLang();
   const page = d(pageKey) || d('pages.terms') || {};
-  const heroTitle = titleOverride || page.title || 'Policies';
-  const sections = page.sections || [];
+  const cms = usePageCatalog(cmsSlug || CMS_SLUGS[pageKey]);
+  const heroTitle = cms?.heroTitle || titleOverride || page.title || 'Policies';
+  const heroSubtitle = cms?.heroSubtitle || page.subtitle;
+  const heroImage = cms?.heroImage || IMAGES.counselling;
+  const intro = cms?.intro || page.intro || '';
+  const sections = cms?.sections?.length
+    ? cms.sections.map((s) => ({ title: s.title, content: s.content, image: s.image }))
+    : (page.sections || []);
   const disclaimer = page.disclaimer || { title: 'Disclaimer', p1: '', p2: '' };
+
+  if (cms?.fullHtml?.trim()) {
+    return <CmsFullPage cms={{ ...cms, heroTitle, heroSubtitle, heroImage }} />;
+  }
 
   return (
     <>
       <PageHero
         title={heroTitle}
-        subtitle={page.subtitle}
-        image={IMAGES.counselling}
+        subtitle={heroSubtitle}
+        image={heroImage}
       />
 
       <section className="py-16 bg-[var(--bg-elevated)]">
@@ -58,7 +80,7 @@ export default function Terms({ pageKey = 'pages.terms', titleOverride }) {
             className="prose prose-amber max-w-none mb-12"
           >
             <p className="text-sand-600 text-lg leading-relaxed mb-8">
-              {page.intro || ''}
+              {intro}
             </p>
           </motion.div>
 
@@ -73,6 +95,9 @@ export default function Terms({ pageKey = 'pages.terms', titleOverride }) {
                 className="glass-card p-8 hover:shadow-lg transition-shadow"
               >
                 <h2 className="font-display font-bold text-xl text-brand-700 mb-4">{section.title}</h2>
+                {section.image && (
+                  <img src={section.image} alt="" className="rounded-xl mb-4 max-h-56 w-full object-cover" />
+                )}
                 <SectionBody section={section} />
               </motion.div>
             ))}

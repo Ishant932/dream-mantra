@@ -27,9 +27,11 @@ import contactRoutes from './routes/contact.js';
 import blogRoutes from './routes/blog.js';
 import whatsappRoutes from './routes/whatsapp.js';
 import cronRoutes from './routes/cron.js';
+import pagesRoutes from './routes/pages.js';
 import { getWhatsAppPublicConfig } from './lib/whatsapp/events.js';
 import { startWhatsAppScheduler } from './lib/whatsapp/scheduler.js';
-import { STUDIO_LANDINGS } from './lib/studioLandings.js';
+import { getAllStudioLandings } from './lib/studioLandings.js';
+import { isLandingPublished } from './lib/studioLandingMeta.js';
 import landingRoutes from './routes/landing.js';
 
 dotenv.config();
@@ -113,15 +115,30 @@ if (fs.existsSync(landingCheckoutBridge)) {
 
 const landingPagesDir = path.join(__dirname, '../Landing Pages');
 if (fs.existsSync(landingPagesDir)) {
-  for (const { slug, folder } of STUDIO_LANDINGS) {
-    const dir = path.join(landingPagesDir, folder);
-    if (!fs.existsSync(dir)) continue;
-    app.get(`/studio/${slug}`, (req, res, next) => {
-      if (req.path !== `/studio/${slug}`) return next();
-      res.redirect(301, `/studio/${slug}/`);
-    });
-    app.use(`/studio/${slug}/`, express.static(dir, { index: 'index.html', maxAge: isProd ? '1h' : 0, redirect: false }));
+  const sharedDir = path.join(landingPagesDir, 'shared');
+  if (fs.existsSync(sharedDir)) {
+    app.use('/studio/shared/', express.static(sharedDir, { maxAge: isProd ? '1h' : 0 }));
   }
+  app.get('/studio/:slug', (req, res, next) => {
+    const meta = getAllStudioLandings().find((l) => l.slug === req.params.slug);
+    if (!meta) return next();
+    if (req.path !== `/studio/${req.params.slug}`) return next();
+    const dir = path.join(landingPagesDir, meta.folder);
+    if (!isLandingPublished(req.params.slug, fs.existsSync(dir))) {
+      return res.status(404).send('Landing page is offline');
+    }
+    res.redirect(301, `/studio/${req.params.slug}/`);
+  });
+  app.use('/studio/:slug', (req, res, next) => {
+    const meta = getAllStudioLandings().find((l) => l.slug === req.params.slug);
+    if (!meta) return next();
+    const dir = path.join(landingPagesDir, meta.folder);
+    if (!fs.existsSync(dir)) return next();
+    if (!isLandingPublished(req.params.slug, true)) {
+      return res.status(404).send('Landing page is offline');
+    }
+    express.static(dir, { index: 'index.html', maxAge: isProd ? '1h' : 0, redirect: false })(req, res, next);
+  });
 }
 
 app.use(express.json({ limit: '12mb' }));
@@ -219,6 +236,7 @@ app.use('/api/payments', paymentsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/landing', landingRoutes);
 app.use('/api/blog', blogRoutes);
+app.use('/api/pages', pagesRoutes);
 app.use('/api/webhooks/whatsapp', whatsappRoutes);
 app.use('/api/cron', cronRoutes);
 

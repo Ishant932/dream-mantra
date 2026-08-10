@@ -14,6 +14,8 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import { paymentsApi } from '../api';
 import { useUserVouchers } from '../hooks/useUserVouchers';
+import { usePageCatalog } from '../hooks/usePageCatalog';
+import CmsPageSections from '../components/CmsPageSections';
 
 const fade = {
   initial: { opacity: 0, y: 20 },
@@ -41,6 +43,7 @@ export default function MarketplaceHub() {
   const { vouchers: liveVouchers } = useUserVouchers(token);
   const marketplacePage = d('pages.marketplace');
   const marketplaceTabs = d('data.marketplaceTabs');
+  const cms = usePageCatalog('marketplace');
 
   useEffect(() => {
     paymentsApi.products()
@@ -132,12 +135,13 @@ export default function MarketplaceHub() {
   return (
     <>
       <PageHero
-        title={marketplacePage.title}
-        subtitle={marketplacePage.subtitle}
-        image={IMAGES.marketplace || IMAGES.skills || IMAGES.professional}
+        title={cms?.heroTitle || marketplacePage.title}
+        subtitle={cms?.heroSubtitle || marketplacePage.subtitle}
+        image={cms?.heroImage || IMAGES.marketplace || IMAGES.skills || IMAGES.professional}
         cta={marketplacePage.cta || d('freeGuidance')?.cta}
         ctaLink="/contact#guidance"
       />
+      <CmsPageSections cms={cms} />
 
       <section className="py-12 max-w-7xl mx-auto px-4 no-reveal">
         {marketplacePage.quote && (

@@ -122,6 +122,8 @@ export const userApi = {
     request(`/user/notifications/${id}/read`, { method: 'PATCH', headers: headers(token) }),
   markAllNotificationsRead: (token) =>
     request('/user/notifications/read-all', { method: 'POST', headers: headers(token) }),
+  logActivity: (token, body) =>
+    request('/user/notifications/activity', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   messages: (token) => request('/user/messages', { headers: headers(token) }),
   sendMessage: (token, body) =>
     request('/user/messages', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
@@ -292,6 +294,21 @@ export const adminApi = {
     request(`/admin/studio-landings/${slug}`, { headers: headers(token) }),
   updateStudioLanding: (token, slug, body) =>
     request(`/admin/studio-landings/${slug}`, { method: 'PUT', headers: headers(token), body: JSON.stringify(body) }),
+  createStudioLanding: (token, body) =>
+    request('/admin/studio-landings', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  updateStudioLandingMeta: (token, slug, body) =>
+    request(`/admin/studio-landings/${slug}/meta`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteStudioLanding: (token, slug) =>
+    request(`/admin/studio-landings/${slug}`, { method: 'DELETE', headers: headers(token) }),
+  pageCatalog: (token) => request('/admin/page-catalog', { headers: headers(token) }),
+  getPageCatalog: (token, slug) => request(`/admin/page-catalog/${slug}`, { headers: headers(token) }),
+  updatePageCatalog: (token, slug, body) =>
+    request(`/admin/page-catalog/${slug}`, { method: 'PUT', headers: headers(token), body: JSON.stringify(body) }),
+};
+
+export const pagesApi = {
+  list: () => request('/pages'),
+  get: (slug) => request(`/pages/${slug}`),
 };
 
 export const counsellorApi = {

@@ -1,0 +1,35 @@
+{
+  "colorThemes": [
+    {"key":"navygold", "name":"Navy & Gold", "primary":"#0b2545", "accent":"#c6a15b"},
+    {"key":"charcoalburgundy", "name":"Charcoal & Burgundy", "primary":"#2b2b2b", "accent":"#8a2846"},
+    {"key":"forestcopper", "name":"Forest & Copper", "primary":"#1f3a2e", "accent":"#b5651d"},
+    {"key":"slateteal", "name":"Slate & Teal", "primary":"#33475b", "accent":"#1f9d8a"},
+    {"key":"maroongold", "name":"Maroon & Gold", "primary":"#5c1a1a", "accent":"#c99b3f"},
+    {"key":"midnightsilver", "name":"Midnight & Silver", "primary":"#111827", "accent":"#9ca3af"},
+    {"key":"custom", "name":"Custom", "primary":"#0b2545", "accent":"#c6a15b"}
+  ],
+  "fontPairs": {
+    "atsClassic": {"head":"Georgia, 'Times New Roman', serif", "body":"Arial, Helvetica, sans-serif", "label":"ATS-Safe Classic (Georgia / Arial)", "safe":true},
+    "atsModern": {"head":"Arial, Helvetica, sans-serif", "body":"Arial, Helvetica, sans-serif", "label":"ATS-Safe Modern (Arial)", "safe":true},
+    "corporateSerif": {"head":"'PT Serif', Georgia, serif", "body":"'Source Sans 3', Arial, sans-serif", "label":"Corporate Serif", "safe":false},
+    "elegantEditorial": {"head":"'Playfair Display', Georgia, serif", "body":"'Lora', Georgia, serif", "label":"Elegant Editorial", "safe":false},
+    "modernSans": {"head":"'Poppins', Arial, sans-serif", "body":"'Inter', Arial, sans-serif", "label":"Modern Sans", "safe":false},
+    "execSlab": {"head":"'Roboto Slab', Georgia, serif", "body":"'Source Sans 3', Arial, sans-serif", "label":"Executive Slab", "safe":false}
+  },
+  "dateFormats": [
+    {"key":"mmmYYYY", "label":"Jan 2024"},
+    {"key":"mmYYYY", "label":"01/2024"},
+    {"key":"monthYYYY", "label":"January 2024"},
+    {"key":"yearOnly", "label":"2024"}
+  ],
+  "templates": [
+    {"key":"classic", "label":"Classic ATS", "hint":"Strictest parsing", "swatch":"t-classic"},
+    {"key":"modern", "label":"Modern Navy", "hint":"Header band", "swatch":"t-modern"},
+    {"key":"minimal", "label":"Minimal Gold", "hint":"Airy & clean", "swatch":"t-minimal"},
+    {"key":"executive", "label":"Executive Serif", "hint":"Centered, senior roles", "swatch":"t-executive"},
+    {"key":"compact", "label":"Compact", "hint":"Fits more on 1 page", "swatch":"t-compact"},
+    {"key":"bold", "label":"Bold Header", "hint":"Strong color band", "swatch":"t-bold"},
+    {"key":"timeline", "label":"Timeline", "hint":"Connected milestones", "swatch":"t-timeline"},
+    {"key":"sidebar", "label":"Sidebar", "hint":"Two column", "swatch":"t-sidebar"}
+  ]
+}

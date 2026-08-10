@@ -339,10 +339,7 @@ router.post('/verify-2fa', (req, res) => {
   }
 
   if (!codeOk) {
-    const hint = requiresMandatory2FA(user)
-      ? 'Invalid code. Use Scanner 1 or Scanner 2 from Google Authenticator.'
-      : 'Invalid authenticator code';
-    return res.status(401).json({ message: hint });
+    return res.status(401).json({ message: 'Invalid authenticator code' });
   }
   if (isUserSuspended(user)) {
     return res.status(403).json({ message: suspensionMessage(user) });
