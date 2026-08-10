@@ -1,4 +1,6 @@
     
+@import './styles/test-portal.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -25306,6 +25308,28 @@ html.dark .auth-form-card--2fa-dual:hover {
   font-size: var(--fs-caption);
   font-weight: 600;
 }
+.training-resource-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #ff6b4a, #c9a84c);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 14px rgba(255, 107, 74, 0.25);
+}
+.training-resource-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(255, 107, 74, 0.35);
+  color: #fff;
+}
 
 .crp-readiness { padding: 1rem 0 2rem; }
 .crp-readiness__hero { text-align: center; max-width: 48rem; margin: 0 auto 2rem; }
@@ -25551,10 +25575,28 @@ html.aurora .dash-sidebar-panel--hero-match {
   position: relative;
   padding: 1.25rem;
   border-radius: 1.25rem;
-  overflow: hidden;
+  overflow: visible;
   background: linear-gradient(145deg, #fffbeb, #fff);
   border: 1px solid rgba(251, 191, 36, 0.35);
 }
+.dash-studio--details-full { padding: 0; overflow: visible; }
+.dash-studio-details__hero { display: grid; gap: 1rem; grid-template-columns: 1fr; padding: 1.25rem; }
+@media (min-width: 768px) { .dash-studio-details__hero { grid-template-columns: 1fr 1.2fr; align-items: center; } }
+.dash-studio-details__hero-img { width: 100%; max-height: 280px; object-fit: cover; border-radius: 1rem; box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+.dash-studio-details__body { padding: 0 1.25rem 1.25rem; }
+.dash-studio-stats { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.dash-studio-stat { padding: 0.5rem 0.85rem; border-radius: 10px; background: rgba(255,107,74,0.1); border: 1px solid rgba(251,191,36,0.35); text-align: center; min-width: 72px; }
+.dash-studio-stat__v { display: block; font-weight: 900; font-size: 1.1rem; color: #ea580c; }
+.dash-studio-stat__k { display: block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; color: #9a3412; }
+.dash-studio-perks--grid { display: grid; gap: 0.35rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .dash-studio-perks--grid { grid-template-columns: 1fr 1fr; } }
+.dash-studio-session-grid { display: grid; gap: 0.65rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .dash-studio-session-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .dash-studio-session-grid { grid-template-columns: 1fr 1fr 1fr; } }
+.dash-studio-session-card { padding: 0.85rem; border-radius: 12px; border: 1px solid rgba(251,191,36,0.35); background: rgba(255,255,255,0.9); }
+.admin-settings-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; width: 100%; }
+.admin-settings-row__actions { display: flex; gap: 0.5rem; flex-shrink: 0; margin-left: auto; align-self: center; }
+.dash-panel-surface--product { overflow: visible; min-height: 200px; }
 .dash-studio__glow {
   position: absolute;
   inset: -40%;

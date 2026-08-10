@@ -74,13 +74,41 @@ function buildModulePurchases(users, assessments, allPayments) {
     .sort((a, b) => b.count - a.count);
 }
 
-export function getPlatformAnalytics() {
+function inRange(iso, fromTs, toTs) {
+  if (fromTs == null && toTs == null) return true;
+  if (!iso) return false;
+  const t = new Date(iso).getTime();
+  if (!Number.isFinite(t)) return false;
+  if (fromTs != null && t < fromTs) return false;
+  if (toTs != null && t > toTs) return false;
+  return true;
+}
+
+function parseRange(opts = {}) {
+  const now = Date.now();
+  const period = opts.period || 'all';
+  if (opts.from || opts.to) {
+    return {
+      fromTs: opts.from ? new Date(opts.from).getTime() : null,
+      toTs: opts.to ? new Date(opts.to).getTime() : null,
+    };
+  }
+  const map = { '7d': 7, '30d': 30, '90d': 90, month: 30, year: 365 };
+  const days = map[period];
+  if (!days) return { fromTs: null, toTs: null };
+  return { fromTs: now - days * 24 * 60 * 60 * 1000, toTs: now };
+}
+
+export function getPlatformAnalytics(opts = {}) {
+  const { fromTs, toTs } = parseRange(opts);
   const data = getData();
-  const users = (data.users || []).filter((u) => u.role === 'user');
-  const assessments = data.assessments || [];
-  const consultations = data.consultations || [];
+  const users = (data.users || []).filter((u) => u.role === 'user' && inRange(u.created_at, fromTs, toTs));
+  const assessments = (data.assessments || []).filter((a) => inRange(a.created_at, fromTs, toTs));
+  const consultations = (data.consultations || []).filter((c) => inRange(c.created_at, fromTs, toTs));
   const reports = data.user_reports || [];
-  const allPayments = (data.payments || []).map((p) => normalizePaymentRow({ ...p }));
+  const allPayments = (data.payments || [])
+    .map((p) => normalizePaymentRow({ ...p }))
+    .filter((p) => inRange(p.paid_at || p.confirmed_at || p.created_at, fromTs, toTs));
 
   const paidAssessments = assessments.filter(isAssessmentFullyPaid);
   const confirmedPayments = allPayments.filter(isPaymentConfirmed);
@@ -195,6 +223,7 @@ export function getPlatformAnalytics() {
   const modulePurchases = buildModulePurchases(users, assessments, allPayments);
 
   return {
+    filters: { period: opts.period || 'all', from: opts.from || null, to: opts.to || null },
     summary: {
       totalUsers: users.length,
       newUsersThisWeek,

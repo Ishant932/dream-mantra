@@ -26,6 +26,8 @@ import {
   DashAlert,
   DashCard,
 } from '../components/DashboardUI';
+import AdminAgewiseCombosPanel from '../components/admin/AdminAgewiseCombosPanel';
+import AdminCommunitySchedulePanel from '../components/admin/AdminCommunitySchedulePanel';
 import AdminResourceLinksPanel from '../components/admin/AdminResourceLinksPanel';
 import NotificationBell from '../components/NotificationBell';
 import AdminMessagesPanel from '../components/MessagesPanel';
@@ -51,7 +53,7 @@ const ADMIN_TABS = [
   { id: 'blogs', label: 'Blogs', desc: 'Create & publish website articles' },
   { id: 'landing-pages', label: 'Landing Pages', desc: 'Internal campaign landing pages' },
   { id: 'site-pages', label: 'Site Pages', desc: 'Terms, About, policies & content' },
-  { id: 'settings', label: 'Community & Links', desc: 'AI Launchpad community URL' },
+  { id: 'settings', label: 'Community & Links', desc: 'Community schedule, agewise combos & resources' },
 ];
 
 export default function AdminDashboard() {
@@ -85,7 +87,8 @@ export default function AdminDashboard() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [settingsTab, setSettingsTab] = useState('community');
-  const [communityLink, setCommunityLink] = useState('');
+  const [communitySchedule, setCommunitySchedule] = useState([]);
+  const [bookingMgmtTab, setBookingMgmtTab] = useState('counselling');
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [analytics, setAnalytics] = useState(null);
   const [analyticsLoading, setAnalyticsLoading] = useState(false);
@@ -98,12 +101,14 @@ export default function AdminDashboard() {
     setCatalogModules(Array.isArray(list) ? list : []);
   }, []);
 
-  const loadAnalytics = useCallback(async () => {
+  const [analyticsFilters, setAnalyticsFilters] = useState({ period: 'all' });
+
+  const loadAnalytics = useCallback(async (filters = analyticsFilters) => {
     if (!token) return;
     setAnalyticsLoading(true);
     setAnalyticsError('');
     try {
-      const res = await adminApi.analytics(token);
+      const res = await adminApi.analytics(token, filters);
       setAnalytics(res.analytics || null);
     } catch (err) {
       setAnalytics(null);
@@ -111,7 +116,7 @@ export default function AdminDashboard() {
     } finally {
       setAnalyticsLoading(false);
     }
-  }, [token]);
+  }, [token, analyticsFilters]);
 
   const load = async () => {
     if (!token) return;
@@ -123,8 +128,8 @@ export default function AdminDashboard() {
       { key: 'stats', fn: () => adminApi.stats(token), set: (v) => setStats(v) },
       { key: 'consultations', fn: () => adminApi.consultations(token), set: (v) => setConsultations(v.consultations || []) },
       { key: 'payments', fn: () => adminApi.payments(token, { limit: 100 }), set: (v) => setPayments(v.payments || []) },
-      { key: 'settings', fn: () => adminApi.settings(token), set: (v) => setCommunityLink(v.settings?.community_links?.['crp-test'] || '') },
-      { key: 'analytics', fn: () => adminApi.analytics(token), set: (v) => setAnalytics(v.analytics || null) },
+      { key: 'settings', fn: () => adminApi.settings(token), set: (v) => setCommunitySchedule(v.settings?.community_schedule || []) },
+      { key: 'analytics', fn: () => adminApi.analytics(token, analyticsFilters), set: (v) => setAnalytics(v.analytics || null) },
       { key: 'modules', fn: () => adminApi.modules(token), set: (v) => setCatalogModules(v.modules || []) },
       { key: 'users', fn: () => adminApi.users(token), set: (v) => setUsers(v.users || []) },
     ];
@@ -178,6 +183,11 @@ export default function AdminDashboard() {
     }
   };
 
+  const reloadSettings = async () => {
+    const v = await adminApi.settings(token);
+    setCommunitySchedule(v.settings?.community_schedule || []);
+  };
+
   const viewProfile = async (userId) => {
     setProfileOpen(true);
     setProfileLoading(true);
@@ -192,21 +202,6 @@ export default function AdminDashboard() {
       setProfileOpen(false);
     } finally {
       setProfileLoading(false);
-    }
-  };
-
-  const saveCommunityLink = async (e) => {
-    e.preventDefault();
-    setSettingsSaving(true);
-    try {
-      await adminApi.updateSettings(token, {
-        community_links: { 'crp-test': communityLink.trim() },
-      });
-      setNotice('Community link saved');
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setSettingsSaving(false);
     }
   };
 
@@ -371,18 +366,27 @@ export default function AdminDashboard() {
                   analytics={analytics}
                   loading={analyticsLoading && !analytics}
                   error={analyticsError}
-                  onRetry={loadAnalytics}
+                  onRetry={() => loadAnalytics()}
+                  onFilterChange={(f) => { setAnalyticsFilters(f); loadAnalytics(f); }}
                 />
               )}
 
               {tab === 'bookings' && (
-                <StaffBookingsPanel
-                  api={adminApi}
-                  token={token}
-                  onViewProfile={viewProfile}
-                  onError={setError}
-                  onNotice={setNotice}
-                />
+                <div className="space-y-4">
+                  <div className="dash-subtab-rail dash-subtab-rail--product dash-subtab-rail--center">
+                    <button type="button" className={`dash-subtab-rail__chip${bookingMgmtTab === 'counselling' ? ' is-active' : ''}`} onClick={() => setBookingMgmtTab('counselling')}>Counselling Management</button>
+                    <button type="button" className={`dash-subtab-rail__chip${bookingMgmtTab === 'program_session' ? ' is-active' : ''}`} onClick={() => setBookingMgmtTab('program_session')}>Sessions Management</button>
+                  </div>
+                  <StaffBookingsPanel
+                    key={bookingMgmtTab}
+                    api={adminApi}
+                    token={token}
+                    slotType={bookingMgmtTab}
+                    onViewProfile={viewProfile}
+                    onError={setError}
+                    onNotice={setNotice}
+                  />
+                </div>
               )}
 
               {tab === 'users' && (
@@ -430,35 +434,23 @@ export default function AdminDashboard() {
               {tab === 'site-pages' && <AdminPageCatalogPanel onNotice={setNotice} onError={setError} />}
 
               {tab === 'settings' && (
-                <div className="space-y-4 max-w-3xl">
+                <div className="space-y-4 w-full max-w-none">
                   <div className="flex flex-wrap gap-2">
-                    <button type="button" className={`dash-subtab-rail__chip${settingsTab === 'community' ? ' is-active' : ''}`} onClick={() => setSettingsTab('community')}>Community link</button>
+                    <button type="button" className={`dash-subtab-rail__chip${settingsTab === 'community' ? ' is-active' : ''}`} onClick={() => setSettingsTab('community')}>Community links</button>
+                    <button type="button" className={`dash-subtab-rail__chip${settingsTab === 'combos' ? ' is-active' : ''}`} onClick={() => setSettingsTab('combos')}>Agewise Bifurcation</button>
                     <button type="button" className={`dash-subtab-rail__chip${settingsTab === 'resources' ? ' is-active' : ''}`} onClick={() => setSettingsTab('resources')}>Resource links</button>
                   </div>
                   {settingsTab === 'community' && (
-                <DashCard className="!p-5 sm:!p-6">
-                  <h2 className="text-lg font-bold mb-2 flex items-center gap-2">
-                    <Settings className="w-5 h-5 text-amber-500" /> AI Career Launchpad Community
-                  </h2>
-                  <p className="text-sm opacity-70 mb-6">
-                    Paste the WhatsApp group, Discord, or community link for AI Career Launchpad students. They will see this after payment in Step 5 of their career path.
-                  </p>
-                  <form onSubmit={saveCommunityLink} className="space-y-4">
-                    <div>
-                      <label className="text-sm font-semibold block mb-2">Community link (crp-test)</label>
-                      <input
-                        type="url"
-                        className="input-field w-full"
-                        placeholder="https://chat.whatsapp.com/... or https://discord.gg/..."
-                        value={communityLink}
-                        onChange={(e) => setCommunityLink(e.target.value)}
-                      />
-                    </div>
-                    <button type="submit" disabled={settingsSaving} className="btn-primary inline-flex items-center gap-2">
-                      <Save className="w-4 h-4" /> {settingsSaving ? 'Saving…' : 'Save community link'}
-                    </button>
-                  </form>
-                </DashCard>
+                    <AdminCommunitySchedulePanel
+                      token={token}
+                      schedule={communitySchedule}
+                      onReload={reloadSettings}
+                      onNotice={setNotice}
+                      onError={setError}
+                    />
+                  )}
+                  {settingsTab === 'combos' && (
+                    <AdminAgewiseCombosPanel token={token} onNotice={setNotice} onError={setError} />
                   )}
                   {settingsTab === 'resources' && (
                     <AdminResourceLinksPanel token={token} users={users} payments={payments} onNotice={setNotice} onError={setError} />

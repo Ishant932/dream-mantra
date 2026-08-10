@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
 import { Users, ExternalLink, MessageCircle, CheckCircle2 } from 'lucide-react';
 
+import { resolveCommunityMeta } from '../../utils/communityLink';
+
 export default function AssessmentCommunityStep({ communityLink, onJoin, saving }) {
-  const hasLink = Boolean(communityLink?.trim());
+  const meta = resolveCommunityMeta(communityLink);
+  const hasLink = Boolean(meta.url);
 
   return (
     <div>
@@ -20,15 +23,15 @@ export default function AssessmentCommunityStep({ communityLink, onJoin, saving 
         className="p-6 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/30 dark:to-orange-950/20 border border-amber-200/60 dark:border-amber-700/40 mb-8"
       >
         <MessageCircle className="w-10 h-10 text-amber-600 mb-3" />
-        <p className="font-bold text-lg">WhatsApp / Community Group</p>
+        <p className="font-bold text-lg">{meta.title || 'WhatsApp / Community Group'}</p>
         <p className="text-sm text-sand-600 dark:text-sand-400 mt-2">
           {hasLink
-            ? 'Click below to join your batch community. Introduce yourself after joining!'
-            : 'Your community link will appear here once the admin publishes it. Check back soon or contact support at 9680102276.'}
+            ? (meta.description || 'Click below to join your batch community. Introduce yourself after joining!')
+            : 'Your community link will appear here when your batch window is active. Check back soon or contact support at 9680102276.'}
         </p>
         {hasLink && (
           <a
-            href={communityLink}
+            href={meta.url}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary inline-flex items-center gap-2 mt-4"

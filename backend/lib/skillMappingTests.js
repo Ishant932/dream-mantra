@@ -1,11 +1,13 @@
 /**
  * Skill Mapping test forms — keep prefill in sync with client/src/data/moduleCatalog.js
- * Prefill entry IDs from each Google Form (Dreamz ID, Name, Phone fields).
  */
+import { resolveAssessmentTestIds, resolveAssessmentInstruments } from './moduleCatalog.js';
+import { formatInstrumentList } from './skillMappingInstruments.js';
+
 export const SKILL_MAPPING_TESTS = [
   {
     id: 'vak',
-    title: 'VAK Test',
+    title: '📚 Learning Style Assessment (VAK)',
     shortTitle: 'VAK',
     desc: 'Learning style assessment — Visual, Auditory, or Kinesthetic preferences.',
     duration: '5 mins',
@@ -16,7 +18,7 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'mit',
-    title: 'MIT Test',
+    title: '🌟 Multiple Talents Assessment (Multiple Intelligences Theory - MIT)',
     shortTitle: 'MIT',
     desc: 'Multiple Intelligence Assessment — logical, linguistic, creative, social & practical strengths.',
     duration: '30 mins',
@@ -27,7 +29,7 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'disc',
-    title: 'DISC Test',
+    title: '🤝 Professional Behaviour & Work Style Analysis (DISC)',
     shortTitle: 'DISC',
     desc: 'Behavioural style assessment — Dominance, Influence, Steadiness & Conscientiousness.',
     duration: '10 mins',
@@ -38,7 +40,7 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'riasec',
-    title: 'RIASEC Test',
+    title: '🧠 Career Interest Assessment (RIASEC)',
     shortTitle: 'RIASEC',
     desc: 'Career interest mapping — Realistic, Investigative, Artistic, Social, Enterprising & Conventional.',
     duration: '10 mins',
@@ -49,7 +51,7 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'mbti',
-    title: 'MBTI Test',
+    title: '👤 Personality Assessment (MBTI – Myers-Briggs Type Indicator)',
     shortTitle: 'MBTI',
     desc: 'Personality type indicator — how you learn, decide, and work best across 16 types.',
     duration: '15 mins',
@@ -60,7 +62,7 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'big5',
-    title: 'Big 5 Test',
+    title: '💡 Workplace Personality & Success Factors Analysis (Big Five Personality Traits)',
     shortTitle: 'Big 5',
     desc: 'Five-factor personality profile — openness, conscientiousness, extraversion, agreeableness & neuroticism.',
     duration: '15 mins',
@@ -105,10 +107,13 @@ export function buildSkillMappingTestUrl(
 }
 
 export function getSkillTestsForUser(assessment, user) {
-  const band = assessment?.progress?.skillMappingBand;
-  if (!band) {
-    throw new Error('Select your class band before taking tests.');
+  const comboId = assessment?.progress?.skillMappingComboId || assessment?.progress?.skillMappingBand;
+  if (!comboId) {
+    throw new Error('Select your agewise bifurcation combo before taking tests.');
   }
+
+  const instrumentIds = resolveAssessmentInstruments(assessment);
+  const allowedTestIds = new Set(resolveAssessmentTestIds(assessment));
 
   const userUid = String(user?.user_uid || '').trim();
   if (!userUid) {
@@ -118,7 +123,12 @@ export function getSkillTestsForUser(assessment, user) {
   const userName = String(user?.name || '').trim();
   const phone = String(user?.phone || user?.profile?.whatsappNumber || '').trim();
 
-  const tests = getSkillMappingTestsForBand(band).map((t) => {
+  let tests = SKILL_MAPPING_TESTS;
+  if (allowedTestIds.size) {
+    tests = tests.filter((t) => allowedTestIds.has(t.id));
+  }
+
+  const mapped = tests.map((t) => {
     const url = buildSkillMappingTestUrl(
       t.url,
       { userUid, userName, phone },
@@ -148,7 +158,10 @@ export function getSkillTestsForUser(assessment, user) {
     registeredEmail: user?.email || null,
     userName,
     phone,
-    band,
-    tests,
+    band: comboId,
+    comboName: assessment?.progress?.skillMappingComboName || null,
+    instruments: instrumentIds,
+    instrumentSummary: formatInstrumentList(instrumentIds),
+    tests: mapped,
   };
 }

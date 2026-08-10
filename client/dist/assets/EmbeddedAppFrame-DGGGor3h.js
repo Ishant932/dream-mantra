@@ -1,1 +1,0 @@
-import{j as i}from"./motion-DMW-7OZn.js";function n({src:e,title:r,className:a="",embed:m=!1}){const d=m&&!e.includes("embed=")?`${e}${e.includes("?")?"&":"?"}embed=1`:e;return i.jsx("iframe",{title:r,src:d,className:`embedded-app-frame ${a}`,loading:"lazy",referrerPolicy:"same-origin"})}export{n as E};

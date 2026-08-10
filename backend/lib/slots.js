@@ -27,12 +27,19 @@ export function listSlots({ from, to } = {}) {
   return slots.sort((a, b) => new Date(a.start_at) - new Date(b.start_at));
 }
 
-export function getAvailableSlots({ from, to } = {}) {
+export function getAvailableSlots({ from, to, slot_type, session_number } = {}) {
   const nowIso = new Date().toISOString();
   const fromBound = from && from > nowIso ? from : nowIso;
-  return listSlots({ from: fromBound, to }).filter(
+  let slots = listSlots({ from: fromBound, to }).filter(
     (s) => s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1) && s.start_at >= nowIso
   );
+  if (slot_type) {
+    slots = slots.filter((s) => (s.slot_type || 'counselling') === slot_type);
+  }
+  if (session_number != null && session_number !== '') {
+    slots = slots.filter((s) => Number(s.session_number) === Number(session_number));
+  }
+  return slots;
 }
 
 export function getSlotBookings(slotId) {
@@ -60,6 +67,8 @@ export function createSlot({
   meeting_link,
   capacity = 1,
   counsellor,
+  slot_type = 'counselling',
+  session_number = null,
 }) {
   ensureSlotsInitialized();
   const data = getData();
@@ -79,6 +88,8 @@ export function createSlot({
     booked_count: 0,
     status: 'open',
     counsellor: counsellor || 'Esha Lohiya',
+    slot_type: slot_type || 'counselling',
+    session_number: session_number != null && session_number !== '' ? Number(session_number) : null,
     created_at: new Date().toISOString(),
   };
   data.availability_slots.push(row);
@@ -103,7 +114,7 @@ export function updateSlot(id, patch) {
     }
   }
 
-  const allowed = ['start_at', 'end_at', 'mode', 'location', 'title', 'meeting_link', 'capacity', 'status', 'counsellor'];
+  const allowed = ['start_at', 'end_at', 'mode', 'location', 'title', 'meeting_link', 'capacity', 'status', 'counsellor', 'slot_type', 'session_number'];
   for (const key of allowed) {
     if (patch[key] !== undefined) {
       slot[key] = key === 'capacity' ? Math.max(1, Number(patch[key]) || 1) : patch[key];
@@ -149,6 +160,8 @@ export function createBulkSlots({
   meeting_link,
   capacity = 1,
   counsellor,
+  slot_type = 'counselling',
+  session_number = null,
 }) {
   if (!startDate || !endDate || !startTime || !endTime) {
     throw new Error('Start date, end date, start time and end time are required');
@@ -174,6 +187,8 @@ export function createBulkSlots({
           meeting_link,
           capacity,
           counsellor,
+          slot_type,
+          session_number,
         }));
       } catch (e) {
         errors.push({ date: cur, message: e.message });
@@ -249,6 +264,95 @@ export function bookConsultationWithSlot(userId, { program, notes, slot_id }, us
     meeting_link: slot.meeting_link || null,
     counsellor: slot.counsellor || 'Esha Lohiya',
     user_snapshot: snapshot,
+    booking_type: 'counselling',
+    session_number: null,
+    status: 'pending',
+    created_at: new Date().toISOString(),
+  };
+  data.consultations.push(row);
+  saveData();
+  return { consultation: row, slot };
+}
+
+export function bookProgramSessionsBatch(userId, sessions = [], notes = '', userRecord = null) {
+  if (!Array.isArray(sessions) || !sessions.length) throw new Error('Select slots for all sessions');
+  const sorted = [...sessions].sort((a, b) => Number(a.session_number) - Number(b.session_number));
+  for (let i = 0; i < sorted.length; i += 1) {
+    if (Number(sorted[i].session_number) !== i + 1) {
+      throw new Error('Book sessions in order from Session 1 through Session 8');
+    }
+  }
+  if (sorted.length !== 8) throw new Error('You must book all 8 sessions together');
+
+  ensureSlotsInitialized();
+  const data = getData();
+  const existing = (data.consultations || []).filter(
+    (c) => c.user_id === Number(userId) && c.booking_type === 'program_session' && c.status !== 'cancelled',
+  );
+  if (existing.length) throw new Error('Sessions already booked. Contact support to reschedule.');
+
+  const times = sorted.map((s) => {
+    const slot = data.availability_slots.find((x) => x.id === Number(s.slot_id));
+    if (!slot) throw new Error(`Slot not found for Session ${s.session_number}`);
+    return new Date(slot.start_at).getTime();
+  });
+  for (let i = 1; i < times.length; i += 1) {
+    if (times[i] <= times[i - 1]) {
+      throw new Error(`Session ${i + 1} must be scheduled after Session ${i}`);
+    }
+  }
+
+  const results = [];
+  for (const s of sorted) {
+    results.push(bookProgramSessionWithSlot(userId, { slot_id: s.slot_id, session_number: s.session_number, notes }, userRecord));
+  }
+  return results;
+}
+
+export function bookProgramSessionWithSlot(userId, { slot_id, session_number, notes }, userRecord = null) {
+  ensureSlotsInitialized();
+  const data = getData();
+  const slot = data.availability_slots.find((s) => s.id === Number(slot_id));
+  if (!slot || slot.status !== 'open') throw new Error('This time slot is no longer available');
+  if ((slot.slot_type || 'counselling') !== 'program_session') {
+    throw new Error('This slot is not available for program sessions');
+  }
+  if (session_number != null && slot.session_number != null && Number(slot.session_number) !== Number(session_number)) {
+    throw new Error('This slot is for a different session number');
+  }
+  if ((slot.booked_count || 0) >= (slot.capacity || 1)) throw new Error('This time slot is full');
+
+  const existing = (data.consultations || []).find(
+    (c) => c.user_id === Number(userId)
+      && c.booking_type === 'program_session'
+      && Number(c.session_number) === Number(session_number)
+      && c.status !== 'cancelled',
+  );
+  if (existing) throw new Error(`You have already booked Session ${session_number}`);
+
+  const user = userRecord || data.users.find((u) => u.id === Number(userId));
+  const snapshot = buildUserSnapshot(user);
+
+  slot.booked_count = (slot.booked_count || 0) + 1;
+  if (slot.booked_count >= slot.capacity) slot.status = 'full';
+
+  const id = data.nextId.consultations++;
+  const row = {
+    id,
+    user_id: userId,
+    program: 'Personalised Career Readiness Program',
+    notes: notes || null,
+    slot_id: slot.id,
+    slot_title: slot.title || `Session ${session_number}`,
+    scheduled_at: slot.start_at,
+    end_at: slot.end_at,
+    mode: slot.mode,
+    location: slot.location,
+    meeting_link: slot.meeting_link || null,
+    counsellor: slot.counsellor || 'Esha Lohiya',
+    user_snapshot: snapshot,
+    booking_type: 'program_session',
+    session_number: Number(session_number),
     status: 'pending',
     created_at: new Date().toISOString(),
   };

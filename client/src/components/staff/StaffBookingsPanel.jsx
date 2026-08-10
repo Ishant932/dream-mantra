@@ -41,7 +41,7 @@ function BookingSectionHead({ icon: Icon, iconTone, title, desc }) {
   );
 }
 
-export default function StaffBookingsPanel({ api, token, onViewProfile, onError, onNotice }) {
+export default function StaffBookingsPanel({ api, token, onViewProfile, onError, onNotice, slotType = 'counselling' }) {
   const { t } = useLang();
   const [activeTab, setActiveTab] = useState('calendar');
   const [consultations, setConsultations] = useState([]);
@@ -58,23 +58,28 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
     setSlotsLoading(true);
     try {
       const data = await api.slots(token);
-      setSlots(data.slots || []);
+      const all = data.slots || [];
+      setSlots(all.filter((s) => (s.slot_type || 'counselling') === slotType));
     } catch (err) {
       onError?.(err.message);
     } finally {
       setSlotsLoading(false);
     }
-  }, [api, token, onError]);
+  }, [api, token, onError, slotType]);
 
   const loadConsultations = useCallback(async () => {
     if (!token) return;
     try {
       const data = await api.consultations(token);
-      setConsultations(data.consultations || []);
+      const all = data.consultations || [];
+      setConsultations(all.filter((c) => {
+        const type = c.booking_type || 'counselling';
+        return type === slotType;
+      }));
     } catch (err) {
       onError?.(err.message);
     }
-  }, [api, token, onError]);
+  }, [api, token, onError, slotType]);
 
   useEffect(() => {
     loadSlots();
@@ -225,12 +230,15 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
               icon={CalendarPlus}
               iconTone="bulk"
               title="Create bulk slots"
-              desc="Generate recurring counselling slots across a date range for selected weekdays."
+              desc={slotType === 'program_session'
+                ? 'Generate recurring program session slots (Career Readiness) across a date range.'
+                : 'Generate recurring counselling slots across a date range for selected weekdays.'}
             />
             <BulkSlotsTool
               mode="create"
               api={api}
               token={token}
+              slotType={slotType}
               onSuccess={(msg) => { onNotice?.(msg); loadSlots(); }}
               onError={onError}
             />

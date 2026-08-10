@@ -25,8 +25,12 @@ const defaultCreate = {
   counsellor: 'Esha Lohiya',
 };
 
-export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = 'both' }) {
-  const [createForm, setCreateForm] = useState(defaultCreate);
+export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = 'both', slotType = 'counselling' }) {
+  const [createForm, setCreateForm] = useState({
+    ...defaultCreate,
+    slot_type: slotType,
+    session_number: slotType === 'program_session' ? 1 : '',
+  });
   const [deleteForm, setDeleteForm] = useState({ from: '', to: '', onlyEmpty: true });
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -136,6 +140,12 @@ export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = '
             <label className="text-xs font-bold uppercase opacity-60 block mb-1">Title</label>
             <input className="input-field w-full !py-2 !text-sm" value={createForm.title} onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })} />
           </div>
+          {slotType === 'program_session' && (
+            <div>
+              <label className="text-xs font-bold uppercase opacity-60 block mb-1">Session number (1–8)</label>
+              <input type="number" min={1} max={8} className="input-field w-full !py-2 !text-sm" value={createForm.session_number} onChange={(e) => setCreateForm({ ...createForm, session_number: Number(e.target.value) || 1 })} />
+            </div>
+          )}
           <div className="sm:col-span-2">
             <label className="text-xs font-bold uppercase opacity-60 block mb-1">Location</label>
             <input className="input-field w-full !py-2 !text-sm" value={createForm.location} onChange={(e) => setCreateForm({ ...createForm, location: e.target.value })} />

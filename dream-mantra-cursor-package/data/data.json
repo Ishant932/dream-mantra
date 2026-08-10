@@ -1,0 +1,151 @@
+{
+  "brand": {
+    "name": "Dream Mantra",
+    "portal": "Test Portal"
+  },
+  "user": {
+    "name": "Aisha Sharma",
+    "email": "aisha.sharma@example.com",
+    "dreamzId": "606100001",
+    "academicStage": ""
+  },
+  "nav": [
+    { "id": "profile", "label": "Profile", "icon": "user" },
+    { "id": "ask", "label": "Ask questions", "icon": "chat" },
+    { "id": "taketest", "label": "Take test", "icon": "clipboard" }
+  ],
+  "instruments": [
+    {
+      "id": "RIASEC",
+      "title": "Career Interest Assessment",
+      "tag": "Career Interest Preferences",
+      "hint": "Finds the careers and work environments that match your interests.",
+      "status": "in_progress",
+      "answered": 10,
+      "total": 24,
+      "question": "I enjoy exploring new places and outdoor activities.",
+      "options": ["Agree", "Neutral", "Disagree"]
+    },
+    {
+      "id": "MIT",
+      "title": "Multiple Talents Assessment",
+      "tag": "Multiple Talents Profile",
+      "hint": "Identifies your strongest multiple abilities and areas of intelligence.",
+      "status": "in_progress",
+      "answered": 6,
+      "total": 24,
+      "question": "I can easily pick up new tunes or rhythms.",
+      "options": ["Agree", "Neutral", "Disagree"]
+    },
+    {
+      "id": "MBTI",
+      "title": "Personality Assessment",
+      "tag": "Personality Type Preferences",
+      "hint": "Helps you understand your personality type, work style, and preferences.",
+      "status": "not_started",
+      "answered": 0,
+      "total": 20,
+      "question": "I feel energized after spending time with a large group of people.",
+      "options": ["Agree", "Neutral", "Disagree"]
+    },
+    {
+      "id": "VAK",
+      "title": "Learning Style Assessment",
+      "tag": "VAK Learning Preferences",
+      "hint": "Discovers how you learn and retain information most effectively.",
+      "status": "not_started",
+      "answered": 0,
+      "total": 18,
+      "question": "I remember things best when I see them written down or drawn.",
+      "options": ["Agree", "Neutral", "Disagree"]
+    },
+    {
+      "id": "DISC",
+      "title": "Professional Behaviour & Work Style Analysis",
+      "tag": "Work Style & Behaviour",
+      "hint": "Understands how you communicate, collaborate, and respond in different situations.",
+      "status": "not_started",
+      "answered": 0,
+      "total": 16,
+      "question": "I prefer to take charge and make quick decisions in a team.",
+      "options": ["Agree", "Neutral", "Disagree"]
+    },
+    {
+      "id": "BIG5",
+      "title": "Workplace Personality & Success Factors Analysis",
+      "tag": "Workplace Personality Factors",
+      "hint": "Identifies your core personality traits, behavioural patterns, and strengths.",
+      "status": "not_started",
+      "answered": 0,
+      "total": 22,
+      "question": "I stay organized and plan things well in advance.",
+      "options": ["Agree", "Neutral", "Disagree"]
+    },
+    {
+      "id": "CARL_JUNG",
+      "title": "Decision-Making & Thinking Style Assessment",
+      "tag": "Thinking & Decision Style",
+      "hint": "Explains how you think, process information, and make decisions.",
+      "status": "not_started",
+      "answered": 0,
+      "total": 20,
+      "question": "I prefer to rely on logic rather than feelings when making decisions.",
+      "options": ["Agree", "Neutral", "Disagree"]
+    }
+  ],
+  "askMessages": [
+    { "role": "user", "body": "Hi, I wanted to ask which stream is best after my RIASEC results — I scored high on Investigative and Artistic.", "time": "Aug 8, 4:12 PM" },
+    { "role": "counsellor", "body": "Great question! With that combination, design technology, architecture, and UX research are strong fits. We'll cover this in your counselling session too.", "time": "Aug 8, 5:02 PM" },
+    { "role": "user", "body": "Got it, thank you!", "time": "Aug 9, 9:20 AM" }
+  ],
+  "profileSteps": [
+    {
+      "id": "basics",
+      "icon": "user",
+      "title": "Personal & Contact",
+      "subtitle": "Your details, contact, and family information",
+      "fields": [
+        { "key": "name", "label": "Name", "type": "text", "value": "Aisha Sharma" },
+        { "key": "dateOfBirth", "label": "Date of Birth", "type": "date" },
+        { "key": "gender", "label": "Gender", "type": "select", "options": ["Male", "Female"] },
+        { "key": "age", "label": "Age", "type": "text", "value": "19" },
+        { "key": "academicStage", "label": "What is your current academic or professional stage?", "type": "select",
+          "options": ["Class 1-5", "Class 6-8", "Class 9-10", "Class 11-12", "College UG", "College PG", "Working Professional"] },
+        { "key": "phone", "label": "Registered Phone and WhatsApp Number", "type": "text", "help": "This number will be used for WhatsApp communication. Please ensure it is active.", "span": 2 },
+        { "key": "institution", "label": "Name of Institution", "type": "text", "span": 2 },
+        { "key": "address", "label": "Address", "type": "textarea", "span": 2 },
+        { "key": "fatherName", "label": "Father's Name", "type": "text" },
+        { "key": "fatherNumber", "label": "Father's Number", "type": "text" },
+        { "key": "motherName", "label": "Mother's Name", "type": "text" },
+        { "key": "motherNumber", "label": "Mother's Number", "type": "text" }
+      ]
+    },
+    {
+      "id": "goals",
+      "icon": "target",
+      "title": "Your Goals",
+      "subtitle": "Why you are here and what you hope to gain",
+      "fields": [
+        { "key": "testObjective", "label": "Why are you getting the test done? Write the main objective and expected outcome.", "type": "textarea" },
+        { "key": "concerns", "label": "What concerns or confusions do you or your child have about studies, career choices, or overall growth?", "help": "Feel free to write as many questions as you want to.", "type": "textarea" },
+        { "key": "referralId", "label": "Referral ID", "type": "text" }
+      ]
+    },
+    {
+      "id": "career",
+      "icon": "briefcase",
+      "title": "Career Understanding",
+      "subtitle": "Your academic and career journey",
+      "fields": [
+        { "key": "course", "label": "Current course / degree", "type": "text" },
+        { "key": "yearSemester", "label": "Current year / semester", "type": "text" }
+      ]
+    },
+    {
+      "id": "review",
+      "icon": "clipboard",
+      "title": "Review & Confirm",
+      "subtitle": "Review your information"
+    }
+  ]
+}

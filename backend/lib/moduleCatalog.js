@@ -134,14 +134,31 @@ export function normalizeSkillMappingBand(band) {
   return SKILL_MAPPING_BAND_IDS.includes(id) ? id : null;
 }
 
+import { getSkillMappingCombo } from './skillMappingCombos.js';
+import { instrumentIdsToTestIds } from './skillMappingInstruments.js';
+
 export function assertSkillMappingBandSelected(assessment) {
   const slug = resolveAssessmentSlug(assessment);
   if (!requiresSkillMappingBand(slug)) return null;
-  const band = normalizeSkillMappingBand(assessment.progress?.skillMappingBand);
-  if (!band) {
-    throw new Error('Select which class band applies (Class 6–8, Class 9–12, or Adults / Professionals) before paying.');
+  const comboId = assessment.progress?.skillMappingComboId || assessment.progress?.skillMappingBand;
+  const combo = getSkillMappingCombo(comboId);
+  if (!combo) {
+    throw new Error('Select an agewise bifurcation combo before paying.');
   }
-  return band;
+  return combo.id;
+}
+
+export function resolveAssessmentInstruments(assessment) {
+  const fromProgress = assessment?.progress?.skillMappingInstruments;
+  if (Array.isArray(fromProgress) && fromProgress.length) {
+    return fromProgress;
+  }
+  const combo = getSkillMappingCombo(assessment?.progress?.skillMappingComboId || assessment?.progress?.skillMappingBand);
+  return combo?.instruments || [];
+}
+
+export function resolveAssessmentTestIds(assessment) {
+  return instrumentIdsToTestIds(resolveAssessmentInstruments(assessment));
 }
 
 export { getActiveModuleCatalog };

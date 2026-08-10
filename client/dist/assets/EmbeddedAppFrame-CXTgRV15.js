@@ -1,0 +1,1 @@
+import{j as s}from"./motion-DMW-7OZn.js";import{c as i}from"./vendor-Z1G8FAI1.js";const f=i.forwardRef(function({src:e,title:r,className:a="",embed:m=!1},d){const o=m&&!e.includes("embed=")?`${e}${e.includes("?")?"&":"?"}embed=1`:e;return s.jsx("iframe",{ref:d,title:r,src:o,className:`embedded-app-frame ${a}`,loading:"lazy",referrerPolicy:"same-origin"})});export{f as E};

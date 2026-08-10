@@ -243,10 +243,16 @@ function enrichCatalogModule(mod) {
 }
 
 export function getActiveModuleCatalog() {
-  ensureSiteSettings();
-  const data = getData();
-  const stored = ensureCatalogModulesArray(data);
-  return stored.filter((m) => m && !m.hidden).map(enrichCatalogModule).filter(Boolean);
+  try {
+    ensureSiteSettings();
+    const data = getData();
+    const stored = ensureCatalogModulesArray(data);
+    const list = stored.filter((m) => m && !m.hidden).map(enrichCatalogModule).filter(Boolean);
+    if (list.length) return list;
+  } catch (e) {
+    console.error('getActiveModuleCatalog failed:', e.message);
+  }
+  return BASE_MODULE_CATALOG.map((m) => enrichCatalogModule({ ...m, source: 'static' })).filter(Boolean);
 }
 
 export function listModulesForAdmin() {

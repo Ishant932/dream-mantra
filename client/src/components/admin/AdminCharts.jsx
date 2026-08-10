@@ -6,39 +6,33 @@ export function AdminBarChart({ data = [], labelKey = 'label', valueKey = 'count
   if (!data.length) {
     return <p className="text-sm opacity-60 py-8 text-center">No data yet</p>;
   }
-  const max = Math.max(...data.map((d) => d[valueKey] || 0), 1);
-  const barW = Math.min(48, Math.max(24, 320 / data.length - 8));
+  const max = Math.max(...data.map((d) => Number(d[valueKey]) || 0), 1);
 
   return (
-    <svg viewBox={`0 0 ${Math.max(data.length * (barW + 12), 200)} ${height + 40}`} className="w-full h-auto" role="img">
+    <div className="flex items-end justify-between gap-2" style={{ minHeight: height }}>
       {data.map((item, i) => {
-        const val = item[valueKey] || 0;
-        const h = (val / max) * height;
-        const x = i * (barW + 12) + 6;
-        const y = height - h + 8;
+        const val = Number(item[valueKey]) || 0;
+        const pct = Math.max((val / max) * 100, val ? 6 : 0);
         return (
-          <g key={item[labelKey] || i}>
-            <motion.rect
-              x={x}
-              y={height + 8}
-              width={barW}
-              height={0}
-              rx={6}
-              fill={COLORS[i % COLORS.length]}
-              initial={{ height: 0, y: height + 8 }}
-              animate={{ height: h, y }}
-              transition={{ delay: i * 0.06, duration: 0.55, ease: 'easeOut' }}
-            />
-            <text x={x + barW / 2} y={height + 26} textAnchor="middle" className="fill-current text-[9px] opacity-60">
-              {String(item[labelKey] || '').slice(0, 8)}
-            </text>
-            <text x={x + barW / 2} y={y - 4} textAnchor="middle" className="fill-amber-700 dark:fill-amber-400 text-[10px] font-bold">
+          <div key={`${item[labelKey]}-${i}`} className="flex-1 min-w-[2rem] flex flex-col items-center gap-1">
+            <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400">
               {formatValue ? formatValue(val) : val}
-            </text>
-          </g>
+            </span>
+            <motion.div
+              className="w-full rounded-t-lg"
+              style={{ background: COLORS[i % COLORS.length], height: `${pct}%`, minHeight: val ? 6 : 0 }}
+              initial={{ scaleY: 0 }}
+              animate={{ scaleY: 1 }}
+              transition={{ delay: i * 0.05, duration: 0.45 }}
+              title={`${item[labelKey]}: ${formatValue ? formatValue(val) : val}`}
+            />
+            <span className="text-[9px] opacity-60 text-center truncate w-full" title={item[labelKey]}>
+              {String(item[labelKey] || '').slice(0, 10)}
+            </span>
+          </div>
         );
       })}
-    </svg>
+    </div>
   );
 }
 
@@ -47,48 +41,41 @@ export function AdminLineChart({ data = [], valueKey = 'count', height = 140, fo
     return <p className="text-sm opacity-60 py-8 text-center">No data yet</p>;
   }
   const w = 360;
-  const pad = 24;
-  const max = Math.max(...data.map((d) => d[valueKey] || 0), 1);
+  const pad = 28;
+  const max = Math.max(...data.map((d) => Number(d[valueKey]) || 0), 1);
   const step = data.length > 1 ? (w - pad * 2) / (data.length - 1) : 0;
   const points = data.map((d, i) => {
     const x = pad + i * step;
-    const y = pad + (1 - (d[valueKey] || 0) / max) * (height - pad);
-    return `${x},${y}`;
-  }).join(' ');
+    const y = pad + (1 - (Number(d[valueKey]) || 0) / max) * (height - pad * 2);
+    return { x, y, d };
+  });
+  const poly = points.map((p) => `${p.x},${p.y}`).join(' ');
 
   return (
-    <svg viewBox={`0 0 ${w} ${height + 36}`} className="w-full h-auto">
+    <svg viewBox={`0 0 ${w} ${height + 40}`} className="w-full h-auto" role="img">
+      <polyline fill="none" stroke="#fcd34d" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round" points={poly} opacity="0.35" />
       <motion.polyline
         fill="none"
         stroke="#f59e0b"
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        points={points}
+        points={poly}
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 1 }}
-        transition={{ duration: 1, ease: 'easeOut' }}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
       />
-      {data.map((d, i) => {
-        const x = pad + i * step;
-        const y = pad + (1 - (d[valueKey] || 0) / max) * (height - pad);
-        return (
-          <g key={d.month || i}>
-            <motion.circle
-              cx={x}
-              cy={y}
-              r={4}
-              fill="#ea580c"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.3 + i * 0.05 }}
-            />
-            <text x={x} y={height + 28} textAnchor="middle" className="fill-current text-[8px] opacity-55">
-              {(d.month || '').slice(5)}
-            </text>
-          </g>
-        );
-      })}
+      {points.map((p, i) => (
+        <g key={p.d.month || i}>
+          <circle cx={p.x} cy={p.y} r={5} fill="#ea580c" />
+          <text x={p.x} y={height + 30} textAnchor="middle" className="fill-current text-[9px] opacity-70">
+            {(p.d.month || '').slice(2)}
+          </text>
+          <text x={p.x} y={p.y - 8} textAnchor="middle" className="fill-amber-700 text-[9px] font-bold">
+            {formatValue ? formatValue(p.d[valueKey]) : p.d[valueKey]}
+          </text>
+        </g>
+      ))}
     </svg>
   );
 }
@@ -97,14 +84,14 @@ export function AdminDonutChart({ data = [], labelKey = 'label', valueKey = 'cou
   if (!data.length) {
     return <p className="text-sm opacity-60 py-8 text-center">No data yet</p>;
   }
-  const total = data.reduce((s, d) => s + (d[valueKey] || 0), 0) || 1;
+  const total = data.reduce((s, d) => s + (Number(d[valueKey]) || 0), 0) || 1;
   const r = 52;
   const cx = 70;
   const cy = 70;
   let angle = -90;
 
   const slices = data.map((item, i) => {
-    const val = item[valueKey] || 0;
+    const val = Number(item[valueKey]) || 0;
     const pct = val / total;
     const sweep = pct * 360;
     const start = angle;

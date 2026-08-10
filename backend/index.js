@@ -32,6 +32,7 @@ import { getWhatsAppPublicConfig } from './lib/whatsapp/events.js';
 import { startWhatsAppScheduler } from './lib/whatsapp/scheduler.js';
 import { getAllStudioLandings } from './lib/studioLandings.js';
 import { isLandingPublished } from './lib/studioLandingMeta.js';
+import { listSkillMappingCombos, comboSummary } from './lib/skillMappingCombos.js';
 import landingRoutes from './routes/landing.js';
 
 dotenv.config();
@@ -118,6 +119,10 @@ if (fs.existsSync(landingPagesDir)) {
   const sharedDir = path.join(landingPagesDir, 'shared');
   if (fs.existsSync(sharedDir)) {
     app.use('/studio/shared/', express.static(sharedDir, { maxAge: isProd ? '1h' : 0 }));
+    app.get('/studio/shared-responsive.css', (_req, res) => {
+      res.type('text/css');
+      res.sendFile(path.join(sharedDir, 'responsive.css'), { maxAge: isProd ? '1h' : 0 });
+    });
   }
   app.get('/studio/:slug', (req, res, next) => {
     const meta = getAllStudioLandings().find((l) => l.slug === req.params.slug);
@@ -217,6 +222,18 @@ app.get('/api/warmup', (_, res) => {
   }
   res.set('Cache-Control', 'no-store');
   res.json({ ok: true, ready: true, ts: Date.now() });
+});
+
+app.get('/api/skill-mapping-combos', (req, res) => {
+  res.set('Cache-Control', 'public, max-age=120');
+  const combos = listSkillMappingCombos({ activeOnly: true }).map((c) => ({
+    id: c.id,
+    name: c.name,
+    instruments: c.instruments,
+    summary: comboSummary(c),
+    instrumentCount: c.instruments?.length || 0,
+  }));
+  res.json({ combos });
 });
 
 app.get('/api/slots/available', (req, res) => {
@@ -338,6 +355,7 @@ async function startServer() {
         try {
           loadCareersData();
           seedSampleSlots();
+          listSkillMappingCombos();
           migrateLegacyPayments();
           const pay = getGatewayPublicConfig();
           console.log(`  Payments: ${pay.mode}${pay.gatewayEnabled ? ' (Razorpay live)' : ' (manual UPI + admin verify)'}`);

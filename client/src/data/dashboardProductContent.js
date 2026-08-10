@@ -10,7 +10,7 @@ export const PRODUCT_OVERVIEWS = {
   skill: {
     title: 'Skill Mapping',
     price: '₹699',
-    desc: '7 psychometric frameworks (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung) for personality, interests, and career fit.',
+    desc: 'Scientific skill assessments tailored to your age band — personality, interests, learning style, and career fit.',
     perks: ['Age-wise test battery', 'Multi-framework report', 'Stream & career recommendations'],
     link: '/counselling?tab=psychometric',
     linkLabel: 'Learn more on website',

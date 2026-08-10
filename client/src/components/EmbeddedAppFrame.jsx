@@ -1,8 +1,11 @@
+import { forwardRef } from 'react';
+
 /** Full-page embed of standalone HTML apps */
-export default function EmbeddedAppFrame({ src, title, className = '', embed = false }) {
+const EmbeddedAppFrame = forwardRef(function EmbeddedAppFrame({ src, title, className = '', embed = false }, ref) {
   const url = embed && !src.includes('embed=') ? `${src}${src.includes('?') ? '&' : '?'}embed=1` : src;
   return (
     <iframe
+      ref={ref}
       title={title}
       src={url}
       className={`embedded-app-frame ${className}`}
@@ -10,4 +13,6 @@ export default function EmbeddedAppFrame({ src, title, className = '', embed = f
       referrerPolicy="same-origin"
     />
   );
-}
+});
+
+export default EmbeddedAppFrame;

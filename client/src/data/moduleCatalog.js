@@ -84,9 +84,9 @@ export const SKILL_MAPPING_BANDS = [
 export const SKILL_MAPPING_TESTS = [
   {
     id: 'vak',
-    title: 'VAK Test',
-    shortTitle: 'VAK',
-    desc: 'Learning style assessment — Visual, Auditory, or Kinesthetic preferences.',
+    title: '📚 Learning Style Assessment (VAK)',
+    shortTitle: '📚 VAK',
+    desc: 'Discovers how you learn and retain information most effectively.',
     duration: '5 mins',
     bands: ['class-6-8', 'class-9-12'],
     icon: '👁️',
@@ -95,9 +95,9 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'mit',
-    title: 'MIT Test',
+    title: '🌟 Multiple Talents Assessment (Multiple Intelligences Theory - MIT)',
     shortTitle: 'MIT',
-    desc: 'Multiple Intelligence Assessment — logical, linguistic, creative, social & practical strengths.',
+    desc: 'Identifies your strongest multiple abilities and areas of intelligence.',
     duration: '30 mins',
     bands: ['class-6-8', 'class-9-12', 'professionals'],
     icon: '🎯',
@@ -106,9 +106,9 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'disc',
-    title: 'DISC Test',
+    title: '🤝 Professional Behaviour & Work Style Analysis (DISC)',
     shortTitle: 'DISC',
-    desc: 'Behavioural style assessment — Dominance, Influence, Steadiness & Conscientiousness.',
+    desc: 'Understands how you communicate, collaborate, and respond in different situations.',
     duration: '10 mins',
     bands: ['class-9-12', 'professionals'],
     icon: '⚡',
@@ -117,9 +117,9 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'riasec',
-    title: 'RIASEC Test',
+    title: '🧠 Career Interest Assessment (RIASEC)',
     shortTitle: 'RIASEC',
-    desc: 'Career interest mapping — Realistic, Investigative, Artistic, Social, Enterprising & Conventional.',
+    desc: 'Finds the careers and work environments that match your interests.',
     duration: '10 mins',
     bands: ['class-9-12', 'professionals'],
     icon: '🗺️',
@@ -128,9 +128,9 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'mbti',
-    title: 'MBTI Test',
+    title: '👤 Personality Assessment (MBTI – Myers-Briggs Type Indicator)',
     shortTitle: 'MBTI',
-    desc: 'Personality type indicator — how you learn, decide, and work best across 16 types.',
+    desc: 'Helps you understand your personality type, work style, and preferences.',
     duration: '15 mins',
     bands: ['class-9-12', 'professionals'],
     icon: '🧠',
@@ -139,9 +139,9 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'big5',
-    title: 'Big 5 Test',
-    shortTitle: 'Big 5',
-    desc: 'Five-factor personality profile — openness, conscientiousness, extraversion, agreeableness & neuroticism.',
+    title: '💡 Workplace Personality & Success Factors Analysis (Big Five Personality Traits)',
+    shortTitle: 'Big Five',
+    desc: 'Identifies your core personality traits, behavioural patterns, and strengths.',
     duration: '15 mins',
     bands: ['professionals'],
     icon: '🌟',
@@ -182,6 +182,13 @@ export function resolveSkillMappingBand(assessment) {
 
 export function getSkillMappingBandLabel(bandId) {
   return SKILL_MAPPING_BANDS.find((b) => b.id === bandId)?.label || bandId;
+}
+
+/** Label for agewise combo — falls back to band label for legacy ids */
+export function getSkillMappingComboLabel(comboId, combos = []) {
+  const match = combos.find((c) => c.id === comboId);
+  if (match) return match.name;
+  return getSkillMappingBandLabel(comboId);
 }
 
 /** @deprecated use SKILL_MAPPING_TESTS */

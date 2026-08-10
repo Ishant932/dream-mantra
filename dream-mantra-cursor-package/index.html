@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dream Mantra — Test Portal</title>
+<link rel="icon" href="assets/logo.svg" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ================= HEADER ================= -->
+  <header class="dm-header">
+    <div class="dm-header-inner">
+      <div class="dm-brand">
+        <img src="assets/logo.svg" alt="Dream Mantra" class="dm-brand-badge" width="28" height="28" />
+        <div>
+          <p class="dm-brand-name font-display">Dream Mantra</p>
+          <p class="dm-brand-portal">Test Portal</p>
+        </div>
+      </div>
+
+      <nav class="dm-nav" id="dm-nav"></nav>
+
+      <div class="dm-trailing">
+        <button class="icon-btn" title="Notifications">🔔</button>
+        <div class="locale-toggle">
+          <button class="active">EN</button>
+          <button>हिंदी</button>
+        </div>
+        <p class="user-name" id="dm-username"></p>
+        <button class="signout-btn">⎋ <span>Sign out</span></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN ================= -->
+  <main class="dm-main">
+
+    <!-- ============ TAB: PROFILE ============ -->
+    <section id="tab-profile" class="tab-page">
+      <div class="stat-grid">
+        <div class="stat-card peach">
+          <p class="k">Dream Mantra ID</p>
+          <p class="v mono" id="stat-dreamzid"></p>
+        </div>
+        <div class="stat-card sky">
+          <p class="k">My assessments</p>
+          <p class="v">3</p>
+        </div>
+        <div class="stat-card mint">
+          <p class="k">Available reports</p>
+          <p class="v">0</p>
+        </div>
+      </div>
+
+      <div class="wizard-shell">
+        <div class="wizard-grid">
+          <aside class="wizard-sidebar">
+            <div class="wizard-sidebar-head">
+              <span>✨</span>
+              <div>
+                <h1 class="font-display">Create Your Profile</h1>
+                <p>Let's build your profile to personalize your experience and give you the best recommendations.</p>
+              </div>
+            </div>
+
+            <div class="wizard-progress">
+              <div class="wizard-progress-row">
+                <span id="wizard-step-label">Step 1 of 4</span>
+                <span id="wizard-step-pct">25%</span>
+              </div>
+              <div class="wizard-progress-bg">
+                <div class="wizard-progress-fill" id="wizard-progress-fill" style="width:25%"></div>
+              </div>
+            </div>
+
+            <nav class="wizard-steps" id="wizard-steps"></nav>
+
+            <div class="data-safe-box">
+              <div class="head">🛡 Your Data is Safe</div>
+              <p class="body">We use industry-standard encryption to protect your personal information.</p>
+            </div>
+          </aside>
+
+          <div class="wizard-main">
+            <div id="wizard-step-content"></div>
+
+            <div class="wizard-actions">
+              <div class="left">
+                <button id="wizard-back-btn" class="btn btn-outline" style="display:none;">← Back</button>
+                <button class="btn btn-outline">Save & Exit</button>
+              </div>
+              <button id="wizard-continue-btn" class="btn btn-primary">Continue →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="back-link"><a href="#">Back to dashboard</a></p>
+    </section>
+
+    <!-- ============ TAB: ASK QUESTIONS ============ -->
+    <section id="tab-ask" class="tab-page">
+      <div class="chat-shell">
+        <div class="chat-main">
+          <header class="chat-header">
+            <h1 class="font-display">Ask questions</h1>
+            <p>Ask as many questions as you have before counselling....</p>
+          </header>
+
+          <div class="chat-messages" id="chat-messages"></div>
+
+          <div class="chat-composer">
+            <form id="chat-form">
+              <textarea rows="2" placeholder="Type a message…" id="chat-input"></textarea>
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TAB: TAKE TEST ============ -->
+    <section id="tab-taketest" class="tab-page">
+      <h1 class="page-title font-display">Take test</h1>
+      <p class="page-subtitle">Start or continue your Skill Mapping tests. Status shows only here.</p>
+
+      <div class="info-banner" id="class-banner" style="margin-top:12px;"></div>
+
+      <div class="dreamz-banner" style="margin-top:12px;">
+        Dream Mantra ID: <span class="val" id="taketest-dreamzid"></span>
+        <span class="sep">·</span> Your Dream Mantra ID is used on the test form.
+      </div>
+
+      <!-- Sub-tab strip: all skill mapping instruments -->
+      <div class="sm-subtabs" id="sm-subtabs"></div>
+
+      <!-- Overview: all instrument cards -->
+      <div id="sm-overview" class="instrument-grid"></div>
+
+      <!-- Individual instrument test-taking screen -->
+      <div id="sm-tests-wrap"></div>
+    </section>
+
+  </main>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

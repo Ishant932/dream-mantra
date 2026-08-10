@@ -64,7 +64,7 @@ async function request(path, options = {}, attempt = 0) {
       throw new Error(
         import.meta.env.PROD
           ? 'Unable to reach server. The site may be starting — please retry.'
-          : 'Cannot reach the API (port 5000). Run npm run dev from the project root, then refresh.'
+          : 'Cannot reach the API (port 5001). Run npm run dev from the project root, then refresh.'
       );
     }
     throw err;
@@ -78,6 +78,7 @@ export const publicApi = {
     const q = new URLSearchParams(params).toString();
     return request(`/slots/available${q ? `?${q}` : ''}`);
   },
+  skillMappingCombos: () => request('/skill-mapping-combos'),
   submitContact: (body) =>
     request('/contact', { method: 'POST', headers: headers(), body: JSON.stringify(body) }),
 };
@@ -238,7 +239,19 @@ export const adminApi = {
   settings: (token) => request('/admin/settings', { headers: headers(token) }),
   updateSettings: (token, body) =>
     request('/admin/settings', { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
-  analytics: (token) => request('/admin/analytics', { headers: headers(token) }),
+  skillMappingCombos: (token) => request('/admin/skill-mapping-combos', { headers: headers(token) }),
+  createSkillMappingCombo: (token, body) =>
+    request('/admin/skill-mapping-combos', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  updateSkillMappingCombo: (token, id, body) =>
+    request(`/admin/skill-mapping-combos/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  saveCommunitySchedule: (token, body) =>
+    request('/admin/community-schedule', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  deleteCommunitySchedule: (token, id) =>
+    request(`/admin/community-schedule/${id}`, { method: 'DELETE', headers: headers(token) }),
+  analytics: (token, params = {}) => {
+    const q = new URLSearchParams(params).toString();
+    return request(`/admin/analytics${q ? `?${q}` : ''}`, { headers: headers(token) });
+  },
   leads: (token, params = {}) => {
     const q = new URLSearchParams(params).toString();
     return request(`/admin/leads${q ? `?${q}` : ''}`, { headers: headers(token) });

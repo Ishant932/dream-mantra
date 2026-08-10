@@ -33,8 +33,19 @@ function MetricBar({ label, count, total, color = 'from-amber-500 to-orange-500'
   );
 }
 
-export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry }) {
+export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry, onFilterChange }) {
+  const [period, setPeriod] = useState('all');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [view, setView] = useState('overview');
+
+  const applyFilters = () => {
+    onFilterChange?.({
+      period: fromDate || toDate ? 'custom' : period,
+      from: fromDate || undefined,
+      to: toDate || undefined,
+    });
+  };
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20 gap-4">
@@ -106,6 +117,28 @@ export default function AdminAnalyticsPanel({ analytics, loading, error, onRetry
         subtitle="Users, conversion, revenue & marketing insights."
         exportProps={{ title: 'Analytics', filename: 'analytics', rows: exportRows, columns: exportColumns }}
       />
+
+      <div className="flex flex-wrap gap-2 items-end mb-2 p-3 rounded-xl border border-sand-200 dark:border-sand-800 bg-white/60 dark:bg-sand-900/40">
+        <label className="text-xs font-semibold">Period
+          <select className="input-field block mt-1 text-sm" value={period} onChange={(e) => setPeriod(e.target.value)}>
+            <option value="all">All time</option>
+            <option value="7d">Last 7 days</option>
+            <option value="30d">Last 30 days</option>
+            <option value="90d">Last 90 days</option>
+            <option value="year">Last year</option>
+          </select>
+        </label>
+        <label className="text-xs font-semibold">From
+          <input type="date" className="input-field block mt-1 text-sm" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+        </label>
+        <label className="text-xs font-semibold">To
+          <input type="date" className="input-field block mt-1 text-sm" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+        </label>
+        <button type="button" className="btn-primary !py-2 !px-4 text-sm" onClick={applyFilters}>Apply</button>
+        {analytics?.filters && (
+          <span className="text-xs opacity-60 ml-auto">Showing: {analytics.filters.period || 'all'}</span>
+        )}
+      </div>
 
       <div className="flex flex-wrap gap-2 mb-3">
         {analyticsTabs.map((tab) => (

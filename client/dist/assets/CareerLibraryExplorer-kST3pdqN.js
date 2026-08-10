@@ -1,0 +1,1 @@
+import{j as r}from"./motion-DMW-7OZn.js";import{E as a}from"./EmbeddedAppFrame-CXTgRV15.js";import"./vendor-Z1G8FAI1.js";function i({embedded:e=!1}){return r.jsx("div",{className:`app-embed app-embed--career${e?" app-embed--flush":""}`,children:r.jsx(a,{src:"/career-library/index.html",title:"Career Library",className:"app-embed__frame",embed:e})})}export{i as default};

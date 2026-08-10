@@ -1,0 +1,25 @@
+{
+  "skill-mapping": {
+    "published": true,
+    "ctaLabel": "Join Now"
+  },
+  "counselling": {
+    "published": true,
+    "ctaLabel": "Join Now",
+    "updated_at": "2026-08-10T14:09:25.219Z"
+  },
+  "brain-mapping": {
+    "published": true,
+    "ctaLabel": "Join Now",
+    "updated_at": "2026-08-10T14:09:24.588Z"
+  },
+  "training-and-placement": {
+    "published": true,
+    "ctaLabel": "Join Now",
+    "updated_at": "2026-08-10T14:09:23.438Z"
+  },
+  "personalized-career-readiness-program": {
+    "published": false,
+    "ctaLabel": "Join Now"
+  }
+}

@@ -41,3 +41,13 @@ export function userHasCounsellingAccess(userId) {
   );
   return assessments.some(assessmentGrantsSlotBooking);
 }
+
+/** User may book 8 program sessions after purchasing Career Readiness. */
+export function userHasProgramSessionAccess(userId) {
+  const data = getData();
+  return (data.assessments || []).some(
+    (a) => a.user_id === Number(userId)
+      && isAssessmentFullyPaid(a)
+      && resolveAssessmentSlug(a) === 'career-readiness',
+  );
+}

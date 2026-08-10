@@ -394,6 +394,8 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
         meeting_link,
         capacity,
         counsellor,
+        slot_type,
+        session_number,
       } = req.body;
       const result = createBulkSlots({
         startDate,
@@ -407,6 +409,8 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
         meeting_link,
         capacity,
         counsellor,
+        slot_type,
+        session_number,
       });
       await flushDatabase();
       res.status(201).json(result);
@@ -437,14 +441,14 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
 
   router.post('/slots', async (req, res) => {
     try {
-      const { date, startTime, endTime, mode, location, title, meeting_link, capacity, counsellor } = req.body;
+      const { date, startTime, endTime, mode, location, title, meeting_link, capacity, counsellor, slot_type, session_number } = req.body;
       let start_at = req.body.start_at;
       let end_at = req.body.end_at;
       if (date && startTime && endTime) {
         start_at = istIso(date, startTime);
         end_at = istIso(date, endTime);
       }
-      const slot = createSlot({ start_at, end_at, mode, location, title, meeting_link, capacity, counsellor });
+      const slot = createSlot({ start_at, end_at, mode, location, title, meeting_link, capacity, counsellor, slot_type, session_number });
       await flushDatabase();
       res.status(201).json({ slot });
     } catch (e) {

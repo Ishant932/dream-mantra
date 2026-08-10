@@ -19,7 +19,7 @@ function writeAll(data) {
 
 export function getLandingMeta(slug) {
   const all = readAll();
-  return all[slug] || { published: true, ctaLabel: 'Book Now' };
+  return all[slug] || { published: true, ctaLabel: 'Join Now' };
 }
 
 export function setLandingMeta(slug, patch = {}) {

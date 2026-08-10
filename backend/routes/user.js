@@ -15,8 +15,8 @@ import {
   normalizeStreamInput,
   getStreamInsight,
 } from '../lib/streamKnowledge.js';
-import { getAvailableSlots, bookConsultationWithSlot, enrichConsultation, cancelConsultationByUser } from '../lib/slots.js';
-import { userHasCounsellingAccess } from '../lib/userAccess.js';
+import { getAvailableSlots, bookConsultationWithSlot, bookProgramSessionWithSlot, bookProgramSessionsBatch, enrichConsultation, cancelConsultationByUser } from '../lib/slots.js';
+import { userHasCounsellingAccess, userHasProgramSessionAccess } from '../lib/userAccess.js';
 import { listReportsForUser } from '../lib/reports.js';
 import { listResourcesForUser } from '../lib/userResources.js';
 import { getAssessmentFlow, updateAssessmentFlow } from '../lib/assessmentProgress.js';
@@ -57,33 +57,67 @@ router.get('/dashboard', (req, res) => {
   if (!user) {
     return res.status(401).json({ message: 'Session expired or account not found. Please sign in again.' });
   }
-  const consultations = (db
-    .prepare('SELECT * FROM consultations WHERE user_id = ? ORDER BY created_at DESC')
-    .all(req.user.id) || [])
-    .filter(Boolean)
-    .map(enrichConsultation)
-    .filter(Boolean);
-  const assessments = (db
-    .prepare('SELECT * FROM assessments WHERE user_id = ? ORDER BY created_at DESC')
-    .all(req.user.id) || [])
-    .filter(Boolean)
-    .map((a) => {
-      const pay = getPaymentForAssessment(a.id);
-      return {
-        ...a,
-        payment_status: pay?.payment_status || (a.status === 'paid' ? 'confirmed' : 'pending'),
-        payment_confirmed: isAssessmentFullyPaid(a),
-        confirmation_source: pay?.confirmation_source || null,
-      };
-    });
+  let consultations = [];
+  let assessments = [];
+  let reports = [];
+  let resources = [];
+  let payments = [];
+  let notifications = [];
+  let unreadNotifications = 0;
+  let careerPath = null;
+  let communityLink = null;
+  let counsellingAccess = false;
+
+  try {
+    consultations = (db
+      .prepare('SELECT * FROM consultations WHERE user_id = ? ORDER BY created_at DESC')
+      .all(req.user.id) || [])
+      .filter(Boolean)
+      .map(enrichConsultation)
+      .filter(Boolean);
+  } catch (e) {
+    console.error('dashboard consultations:', e.message);
+  }
+
+  try {
+    assessments = (db
+      .prepare('SELECT * FROM assessments WHERE user_id = ? ORDER BY created_at DESC')
+      .all(req.user.id) || [])
+      .filter(Boolean)
+      .map((a) => {
+        const pay = getPaymentForAssessment(a.id);
+        return {
+          ...a,
+          payment_status: pay?.payment_status || (a.status === 'paid' ? 'confirmed' : 'pending'),
+          payment_confirmed: isAssessmentFullyPaid(a),
+          confirmation_source: pay?.confirmation_source || null,
+        };
+      });
+  } catch (e) {
+    console.error('dashboard assessments:', e.message);
+  }
+
+  try { reports = listReportsForUser(req.user.id); } catch (e) { console.error('dashboard reports:', e.message); }
+  try { resources = listResourcesForUser(req.user.id); } catch (e) { console.error('dashboard resources:', e.message); }
+  try { payments = listPaymentsForUser(req.user.id); } catch (e) { console.error('dashboard payments:', e.message); }
+  try { notifications = listNotificationsForUser(req.user.id, { limit: 20 }); } catch (e) { console.error('dashboard notifications:', e.message); }
+  try { unreadNotifications = countUnreadNotifications(req.user.id); } catch (e) { console.error('dashboard unread:', e.message); }
+  try { careerPath = getCareerPathForUser(req.user.id); } catch (e) { console.error('dashboard careerPath:', e.message); }
+  try { communityLink = getCommunityLink('crp-test', new Date(), user.created_at); } catch (e) { console.error('dashboard community:', e.message); }
+  try { counsellingAccess = userHasCounsellingAccess(req.user.id); } catch (e) { console.error('dashboard counsellingAccess:', e.message); }
   const paidTests = assessments.filter((a) => a.payment_confirmed).length;
   const pendingPayment = assessments.filter((a) => a.status === 'pending_payment').length;
   const profile = normalizeProfile(user?.profile);
-  const profileCompletion = calcProfileCompletion(user, { paidTests, consultations: consultations.length });
+  let profileCompletion = 0;
+  let profileChecklistData = [];
+  let products = [];
+  try { profileCompletion = calcProfileCompletion(user, { paidTests, consultations: consultations.length }); } catch (e) { console.error('dashboard profileCompletion:', e.message); }
+  try { profileChecklistData = profileChecklist(user); } catch (e) { console.error('dashboard profileChecklist:', e.message); }
+  try { products = getActiveModuleCatalog(); } catch (e) { console.error('dashboard products:', e.message); }
 
   res.json({
     profile,
-    profileChecklist: profileChecklist(user),
+    profileChecklist: profileChecklistData,
     user: {
       id: user.id,
       user_uid: user.user_uid,
@@ -93,8 +127,8 @@ router.get('/dashboard', (req, res) => {
     },
     consultations,
     assessments,
-    reports: listReportsForUser(req.user.id),
-    resources: listResourcesForUser(req.user.id),
+    reports,
+    resources,
     stats: {
       consultations: consultations.length,
       assessments: assessments.length,
@@ -102,13 +136,13 @@ router.get('/dashboard', (req, res) => {
       pendingPayment,
       profileCompletion,
     },
-    products: getActiveModuleCatalog(),
-    careerPath: getCareerPathForUser(req.user.id),
-    communityLink: getCommunityLink('crp-test'),
-    payments: listPaymentsForUser(req.user.id),
-    notifications: listNotificationsForUser(req.user.id, { limit: 20 }),
-    unreadNotifications: countUnreadNotifications(req.user.id),
-    counsellingAccess: userHasCounsellingAccess(req.user.id),
+    products,
+    careerPath,
+    communityLink,
+    payments,
+    notifications,
+    unreadNotifications,
+    counsellingAccess,
   });
   } catch (e) {
     console.error('GET /user/dashboard failed:', e);
@@ -124,6 +158,10 @@ router.patch('/profile', (req, res) => {
     'classLevel', 'stream', 'city', 'state', 'board', 'schoolOrCollege', 'careerGoal',
     'dateOfBirth', 'gender', 'hobbies', 'biggestChallenge', 'parentName', 'parentPhone',
     'whatsappNumber', 'whatsappOptIn', 'preferredMode', 'howHeard',
+    'academicStage', 'age', 'institution', 'address', 'fatherName', 'fatherNumber',
+    'motherName', 'motherNumber', 'testObjective', 'concerns', 'referralId', 'course', 'yearSemester',
+    'favoriteSubjects', 'schoolActivities', 'careerDream', 'streamInterest', 'targetExams',
+    'internships', 'specialization', 'currentRole', 'yearsExperience', 'industry',
   ];
   const current = normalizeProfile(user.profile);
   const patch = { ...current };
@@ -147,7 +185,10 @@ router.patch('/profile', (req, res) => {
     patch.setupComplete = true;
   }
 
-  repo.updateUser(user.id, { profile: patch });
+  repo.updateUser(user.id, {
+    profile: patch,
+    ...(req.body.name?.trim() ? { name: String(req.body.name).trim() } : {}),
+  });
 
   const updated = db.prepare('SELECT * FROM users WHERE id = ?').get(user.id);
   const consultations = db.prepare('SELECT * FROM consultations WHERE user_id = ?').all(req.user.id) || [];
@@ -279,8 +320,39 @@ router.get('/stream-insight', (req, res) => {
 });
 
 router.post('/consultations', (req, res) => {
-  const { program, notes, slot_id } = req.body;
+  const { program, notes, slot_id, booking_type, session_number } = req.body;
   try {
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
+
+    if (booking_type === 'program_session') {
+      if (!userHasProgramSessionAccess(req.user.id)) {
+        return res.status(403).json({ message: 'Program sessions unlock when you purchase the Personalised Career Readiness Program.' });
+      }
+      if (Array.isArray(req.body.sessions) && req.body.sessions.length) {
+        const results = bookProgramSessionsBatch(req.user.id, req.body.sessions, notes, user);
+        notifyUser(req.user.id, {
+          type: 'booking',
+          title: 'All 8 sessions booked',
+          body: 'Your Career Readiness schedule is confirmed. Check Schedule your Session for details.',
+          link: '/dashboard?tab=training',
+          meta: { consultationIds: results.map((r) => r.consultation.id) },
+        });
+        return res.status(201).json({ consultations: results.map((r) => r.consultation), slots: results.map((r) => r.slot) });
+      }
+      if (!slot_id || !session_number) {
+        return res.status(400).json({ message: 'Please book all 8 sessions together from Schedule your Session.' });
+      }
+      const result = bookProgramSessionWithSlot(req.user.id, { slot_id, session_number, notes }, user);
+      notifyUser(req.user.id, {
+        type: 'booking',
+        title: `Session ${session_number} booked`,
+        body: `Your career readiness session is booked for ${new Date(result.consultation.scheduled_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}.`,
+        link: '/dashboard?tab=training',
+        meta: { consultationId: result.consultation.id },
+      });
+      return res.status(201).json(result);
+    }
+
     if (!userHasCounsellingAccess(req.user.id)) {
       return res.status(403).json({
         message: 'Counselling sessions unlock when you purchase a module with counselling. Go to Modules to add counselling at checkout.',
@@ -293,7 +365,6 @@ router.post('/consultations', (req, res) => {
       });
     }
 
-    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
     const result = bookConsultationWithSlot(req.user.id, { program, notes, slot_id }, user);
     notifyUser(req.user.id, {
       type: 'booking',
@@ -374,10 +445,14 @@ router.post('/messages', async (req, res) => {
 router.get('/slots/available', (req, res) => {
   const from = req.query.from || new Date().toISOString();
   const to = req.query.to;
+  const slot_type = req.query.slot_type || 'counselling';
+  const session_number = req.query.session_number;
   const counsellingAccess = userHasCounsellingAccess(req.user.id);
+  const programSessionAccess = userHasProgramSessionAccess(req.user.id);
   res.json({
-    slots: getAvailableSlots({ from, to }),
+    slots: getAvailableSlots({ from, to, slot_type, session_number }),
     counsellingAccess,
+    programSessionAccess,
   });
 });
 
@@ -387,6 +462,7 @@ router.get('/reports', (req, res) => {
 
 /** Book test → pending payment → redirect to /payment/:id */
 router.post('/assessments/book', (req, res) => {
+  try {
   const { productSlug, type, addCounselling, amount: clientAmount, lineItems: clientLineItems, selectionTitle } = req.body;
   const slug = productSlug || type || 'dmit';
   const catalog = buildModuleSelection(slug, !!addCounselling);
@@ -475,6 +551,10 @@ router.post('/assessments/book', (req, res) => {
     assessment: repo.getAssessment(assessment.id),
     paymentUrl: `/payment/${assessment.id}`,
   });
+  } catch (e) {
+    console.error('POST /user/assessments/book failed:', e);
+    res.status(500).json({ message: e.message || 'Could not book assessment' });
+  }
 });
 
 router.post('/assessments', (req, res) => {

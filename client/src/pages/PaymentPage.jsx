@@ -6,11 +6,11 @@ import {
   RefreshCw, UserCheck, MessageCircle, Download, QrCode,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { paymentsApi, userApi } from '../api';
+import { paymentsApi, userApi, publicApi } from '../api';
 import { applyVoucherPrice } from '../data/promotions';
-import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests, getSkillMappingBandLabel, MODULE_CATALOG, resolveCounsellingAddon } from '../data/moduleCatalog';
+import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests, getSkillMappingComboLabel, MODULE_CATALOG, resolveCounsellingAddon } from '../data/moduleCatalog';
 import { purchaseIncludesCounselling, resolveAssessmentSlug } from '../utils/moduleAccess';
-import SkillMappingBandPicker from '../components/SkillMappingBandPicker';
+import SkillMappingComboPicker from '../components/SkillMappingComboPicker';
 
 const UPI_VPA = '8824652354@pthdfc';
 const UPI_QR_IMAGE = '/payments/upi-qr.png';
@@ -79,6 +79,7 @@ export default function PaymentPage() {
   const [paymentReferenceId, setPaymentReferenceId] = useState('');
   const [userNote, setUserNote] = useState('');
   const [skillMappingBand, setSkillMappingBand] = useState('');
+  const [skillCombos, setSkillCombos] = useState([]);
   const [catalog, setCatalog] = useState(MODULE_CATALOG);
   const [liveVouchers, setLiveVouchers] = useState([]);
   const [updatingCounselling, setUpdatingCounselling] = useState(false);
@@ -130,9 +131,15 @@ export default function PaymentPage() {
   }, [order?.payment?.payment_status, loadOrder]);
 
   useEffect(() => {
-    const band = order?.assessment?.progress?.skillMappingBand;
-    if (band) setSkillMappingBand(band);
-  }, [order?.assessment?.progress?.skillMappingBand]);
+    publicApi.skillMappingCombos()
+      .then((res) => setSkillCombos(res.combos || []))
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    const comboId = order?.assessment?.progress?.skillMappingComboId || order?.assessment?.progress?.skillMappingBand;
+    if (comboId) setSkillMappingBand(comboId);
+  }, [order?.assessment?.progress?.skillMappingBand, order?.assessment?.progress?.skillMappingComboId]);
 
   const checkout = useMemo(() => {
     const assessment = order?.assessment;
@@ -198,7 +205,7 @@ export default function PaymentPage() {
 
   const ensureAdminBandBeforeSubmit = async () => {
     if (!skillMappingBand) {
-      setError('Please select age bifurcation (Class 6–8, Class 9–12, or Adults / Professionals) before submitting.');
+      setError('Please select an agewise bifurcation combo before submitting.');
       return false;
     }
     if (needsSkillBand) {
@@ -312,7 +319,7 @@ export default function PaymentPage() {
       const bandOk = await ensureAdminBandBeforeSubmit();
       if (!bandOk) return;
 
-      const bandLabel = getSkillMappingBandLabel(skillMappingBand);
+      const bandLabel = getSkillMappingComboLabel(skillMappingBand, skillCombos);
       const noteParts = [
         bandLabel ? `Age bifurcation: ${bandLabel}` : '',
         userNote.trim(),
@@ -350,6 +357,11 @@ export default function PaymentPage() {
     setPaying(true);
     setError('');
     try {
+      if (needsSkillBand) {
+        const bandOk = await ensureAdminBandBeforeSubmit();
+        if (!bandOk) { setPaying(false); return; }
+      }
+
       await loadRazorpayScript();
 
       const created = await paymentsApi.createOrder(
@@ -645,6 +657,19 @@ export default function PaymentPage() {
                 </section>
               )}
 
+              {needsSkillBand && (
+                <section className="payment-page__card">
+                  <SkillMappingComboPicker
+                    combos={skillCombos}
+                    value={skillMappingBand}
+                    onChange={handleSkillBandChange}
+                    lockedComboId={order?.assessment?.progress?.skillMappingComboId || order?.assessment?.progress?.skillMappingBand}
+                    title="Agewise Bifurcation (required)"
+                    hint="Select the test package for this student. This cannot be changed after payment."
+                  />
+                </section>
+              )}
+
               <section className="payment-page__card">
                 <h3 className="payment-page__section-title">Payment</h3>
                 <button
@@ -714,11 +739,12 @@ export default function PaymentPage() {
                         <label className="payment-page__field-label">Note (optional)</label>
                         <input className="input-field !py-2.5 w-full" placeholder="Any extra details" value={userNote} onChange={(e) => setUserNote(e.target.value)} maxLength={500} />
                         <div className="payment-page__admin-band">
-                          <SkillMappingBandPicker
+                          <SkillMappingComboPicker
+                            combos={skillCombos}
                             value={skillMappingBand}
                             onChange={handleSkillBandChange}
-                            title="Age bifurcation (required)"
-                            hint="Select the student’s class band. Payment cannot be submitted without this."
+                            title="Agewise Bifurcation (required)"
+                            hint="Select the test package for this student. Payment cannot be submitted without this."
                           />
                         </div>
                         <button type="button" onClick={handleAdminSubmit} disabled={paying} className="btn-primary payment-page__admin-submit-btn w-full mt-2">

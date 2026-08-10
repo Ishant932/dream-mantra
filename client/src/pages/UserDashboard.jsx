@@ -18,7 +18,6 @@ import ProfileDetailsCard from '../components/ProfileDetailsCard';
 import NotificationBell from '../components/NotificationBell';
 import CVMakerPanel from '../components/dashboard/CVMakerPanel';
 import TrainingResourcesPanel from '../components/dashboard/TrainingResourcesPanel';
-import { TrainingDetailsStudio } from '../components/dashboard/TrainingStudioPanels';
 import SupportStudio from '../components/dashboard/SupportStudio';
 import { profileStreamToFilter } from '../utils/careerStreams';
 import DashboardOverview from '../components/DashboardOverview';
@@ -37,7 +36,9 @@ import {
   hasPaidAccessForSlug,
   slugForCounsellingFocus,
   slugForTrainingFocus,
+  findAssessmentForSlug,
 } from '../utils/productCareerPath';
+import { getModuleDashboardRoute } from '../utils/moduleDashboardNav';
 import { startModuleCheckout } from '../utils/startCheckout';
 import { programPageForSlug } from '../utils/routes';
 
@@ -126,7 +127,7 @@ export default function UserDashboard() {
     });
   }, []);
 
-  const loadSlots = useCallback(async () => {
+  const loadSlots = useCallback(async (slotType) => {
     if (!token) return;
     setSlotsLoading(true);
     try {
@@ -134,16 +135,17 @@ export default function UserDashboard() {
       const to = new Date();
       to.setMonth(to.getMonth() + 3);
       const params = { from: from.toISOString(), to: to.toISOString() };
-      let data = await userApi.availableSlots(token, params);
-      if (!data?.slots?.length) {
+      if (slotType) params.slot_type = slotType;
+      let slotData = await userApi.availableSlots(token, params);
+      if (!slotData?.slots?.length && !slotType) {
         try {
           const pub = await publicApi.availableSlots(params);
-          data = { slots: pub.slots || [] };
+          slotData = { slots: pub.slots || [] };
         } catch {
           /* user route is primary */
         }
       }
-      setSlots(data.slots || []);
+      setSlots(slotData.slots || []);
     } catch {
       setSlots([]);
     } finally {
@@ -266,6 +268,32 @@ export default function UserDashboard() {
     );
   };
 
+  useEffect(() => {
+    const p = new URLSearchParams(location.search);
+    const focus = p.get('focus');
+    const subtab = p.get('subtab');
+    if (focus && COUNSELLING_PATHS.some((x) => x.id === focus)) setCounsellingFocus(focus);
+    if (focus && TRAINING_PATHS.some((x) => x.id === focus)) setTrainingFocus(focus);
+    if (subtab && tabParam === 'counselling') setCounsellingSubtab(subtab);
+    if (subtab && tabParam === 'training') setTrainingSubtab(subtab);
+  }, [location.search, tabParam]);
+
+  const openPaidModule = useCallback((assessment, action = 'default') => {
+    const route = getModuleDashboardRoute(assessment, action);
+    if (route.focus && route.tab === 'counselling') setCounsellingFocus(route.focus);
+    if (route.focus && route.tab === 'training') setTrainingFocus(route.focus);
+    if (route.subtab) {
+      if (route.tab === 'counselling') setCounsellingSubtab(route.subtab);
+      if (route.tab === 'training') setTrainingSubtab(route.subtab);
+    }
+    const qs = new URLSearchParams();
+    qs.set('tab', route.tab);
+    if (route.focus) qs.set('focus', route.focus);
+    if (route.subtab) qs.set('subtab', route.subtab);
+    if (route.hubView) qs.set('hub', route.hubView);
+    navigate({ pathname: '/dashboard', search: `?${qs.toString()}` }, { preventScrollReset: true });
+  }, [navigate]);
+
   const openProfileModal = () => setShowProfileModal(true);
 
   const goProcessGuides = (section = 'process') => {
@@ -302,7 +330,9 @@ export default function UserDashboard() {
     setProfileSaving(true);
     setErr('');
     try {
-      const res = await userApi.updateProfile(token, { ...form, markComplete });
+      const payload = form.profile ? { ...form.profile, markComplete } : { ...form, markComplete };
+      const name = form.name?.trim();
+      const res = await userApi.updateProfile(token, name ? { ...payload, name } : payload);
       setData((prev) => ({
         ...prev,
         profile: res.profile,
@@ -316,6 +346,10 @@ export default function UserDashboard() {
     } finally {
       setProfileSaving(false);
     }
+  };
+
+  const saveProfileWizard = async ({ profile: profilePatch, name }) => {
+    await saveProfile({ ...profilePatch, name }, true);
   };
 
   const pendingPayment = data.assessments?.find((a) => canCancelAssessment(a));
@@ -383,16 +417,38 @@ export default function UserDashboard() {
     return (data.reports || []).filter((r) => !slug || r.product_slug === slug || r.product_title?.toLowerCase().includes(slug.split('-')[0]));
   }, [data.reports, counsellingProductSlug]);
 
+  const counsellingSlots = useMemo(
+    () => slots.filter((s) => !s.slot_type || s.slot_type === 'counselling'),
+    [slots],
+  );
+
+  const programSessionSlots = useMemo(
+    () => slots.filter((s) => s.slot_type === 'program_session'),
+    [slots],
+  );
+
+  const bookAllProgramSessions = async ({ sessions, notes }) => {
+    try {
+      await userApi.bookConsultation(token, { sessions, notes, booking_type: 'program_session' });
+      flashMsg('All 8 sessions booked successfully!');
+      await load(token, () => false);
+      loadSlots('program_session');
+    } catch (e) {
+      setErr(e.message);
+      throw e;
+    }
+  };
+
   const bookingProps = {
     counsellingAccess,
     onBrowseModules: () => goTab('assess'),
     showTopUpOffer: canShowCounsellingTopUp(data.assessments || [], data.consultations || []),
     onTopUpBook: goToCounsellingTopUp,
-    slots,
+    slots: counsellingSlots,
     slotsLoading,
     selectedSlot,
     onSelectSlot: setSelectedSlot,
-    onMonthChange: loadSlots,
+    onMonthChange: () => loadSlots('counselling'),
     displayUser,
     program,
     onProgramChange: setProgram,
@@ -400,8 +456,25 @@ export default function UserDashboard() {
     onNotesChange: setNotes,
     onSubmit: bookConsultation,
     programs,
-    bookings: (data.consultations || []).filter((c) => c.status !== 'cancelled'),
+    bookings: (data.consultations || []).filter((c) => c.status !== 'cancelled' && (!c.booking_type || c.booking_type === 'counselling')),
     t,
+  };
+
+  const programSessionBookings = (data.consultations || []).filter((c) => c.booking_type === 'program_session' && c.status !== 'cancelled');
+
+  const sessionBookingProps = {
+    slots: programSessionSlots,
+    slotsLoading,
+    bookings: programSessionBookings,
+    onBookAll: bookAllProgramSessions,
+    onMonthChange: () => loadSlots('program_session'),
+  };
+
+  const profilePanelProps = {
+    displayUser,
+    profile: data.profile,
+    onProfileSave: saveProfileWizard,
+    profileSaving,
   };
 
   const testSlugFor = (slug) => {
@@ -415,10 +488,16 @@ export default function UserDashboard() {
   const makeJourneyCtx = (productSlug) => {
     const slug = productSlug || counsellingProductSlug;
     const testSlug = testSlugFor(slug);
+    const assessment = findAssessmentForSlug(data.assessments || [], slug);
+    const progress = assessment?.progress || {};
     return {
       hasReport: (data.reports || []).some((r) => r.report_link && (!r.product_slug || r.product_slug === slug || r.product_slug === testSlug)),
-      hasBooking: (data.consultations || []).some((c) => c.status !== 'cancelled'),
+      hasBooking: (data.consultations || []).some((c) => c.status !== 'cancelled' && (!c.booking_type || c.booking_type === 'counselling')),
       counsellingDone: (data.consultations || []).some((c) => c.status === 'completed' || c.status === 'done'),
+      profileComplete: profileCompletion >= 80 || !!data.profile?.setupComplete,
+      sessionsBooked: programSessionBookings.length,
+      sessionTarget: 8,
+      communityJoined: !!progress.communityJoined,
       onProcess: () => openProgramPage(slug),
       onFingerprints: () => navigate('/dashboard/test/dmit'),
       onTakeTest: () => openModuleTest(slug),
@@ -549,6 +628,8 @@ export default function UserDashboard() {
                   onRefresh={refreshDashboard}
                   onGoProcessGuides={goProcessGuides}
                   onGoTakeTest={goToTakeTest}
+                  onOpenModule={openPaidModule}
+                  initialHubView={new URLSearchParams(location.search).get('hub') || undefined}
                 />
               )}
 
@@ -581,6 +662,7 @@ export default function UserDashboard() {
                       reports={counsellingReports}
                       bookingProps={bookingProps}
                       onBook={() => goCheckout(counsellingProductSlug)}
+                      {...profilePanelProps}
                     />
                   </div>
               )}
@@ -611,9 +693,13 @@ export default function UserDashboard() {
                     journeyCtx={makeJourneyCtx(trainingProductSlug)}
                     bookingProps={bookingProps}
                     resourcesPanel={<TrainingResourcesPanel token={token} resources={data.resources} />}
-                    detailsStudio={<TrainingDetailsStudio focus={trainingFocus} />}
                     cvPanel={<CVMakerPanel />}
                     onBook={() => goCheckout(trainingProductSlug)}
+                    communityLink={data.communityLink}
+                    sessionBookingProps={sessionBookingProps}
+                    token={token}
+                    onCommunityJoined={refreshDashboard}
+                    {...profilePanelProps}
                   />
                 </div>
               )}

@@ -2,21 +2,12 @@ import { Lock } from 'lucide-react';
 import ProductJourneySteps from './ProductJourneySteps';
 import CounsellingBookingPanel from '../CounsellingBookingPanel';
 import DashboardProductOverview from './DashboardProductOverview';
+import ProfileWizardPanel from './ProfileWizardPanel';
+import SkillMappingTakeTestPanel from './SkillMappingTakeTestPanel';
+import CommunityLinksPanel from './CommunityLinksPanel';
+import SessionBookingPanel from './SessionBookingPanel';
+import { getCounsellingSubtabs, getTrainingSubtabs } from '../../utils/productSubtabs';
 import { DashCard } from '../DashboardUI';
-
-const COUNSELLING_SUBTABS = [
-  { id: 'journey', label: 'Your Journey', lock: true },
-  { id: 'counselling', label: 'Counselling', lock: true },
-  { id: 'report', label: 'Report', lock: true },
-];
-
-const TRAINING_SUBTABS = [
-  { id: 'journey', label: 'Your Journey', lock: true },
-  { id: 'counselling', label: 'Counselling', lock: true },
-  { id: 'resources', label: 'Resources', lock: true },
-  { id: 'details', label: 'Details', lock: true },
-  { id: 'cv', label: 'CV Maker', lock: true },
-];
 
 function LockedCard({ onBook }) {
   return (
@@ -32,30 +23,30 @@ function showOverview(subtab) {
   return !subtab || subtab === 'overview';
 }
 
+const REPORT_TAB = 'report';
+
 export function CounsellingProductPanel({
   focus, paid, subtab, onSubtab, careerPath, reports = [], bookingProps, journeyCtx, onBook,
+  displayUser, profile, onProfileSave, profileSaving,
 }) {
+  const subtabs = getCounsellingSubtabs(focus);
   const locked = (tab) => tab.lock && !paid;
   const pick = (id) => {
-    const tab = COUNSELLING_SUBTABS.find((t) => t.id === id);
+    const tab = subtabs.find((t) => t.id === id);
     if (tab && locked(tab)) return;
     onSubtab(id);
   };
   const progress = careerPath?.activeAssessment?.progress || {};
   const slug = careerPath?.productSlug;
   const overviewMode = !paid || showOverview(subtab);
+  const validIds = subtabs.map((t) => t.id);
 
   return (
     <div className="space-y-3">
       {paid && (
         <div className="dash-subtab-rail dash-subtab-rail--product dash-subtab-rail--center dash-subtab-rail--lg">
-          {COUNSELLING_SUBTABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}`}
-              onClick={() => pick(tab.id)}
-            >
+          {subtabs.map((tab) => (
+            <button key={tab.id} type="button" className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}`} onClick={() => pick(tab.id)}>
               {tab.label}
             </button>
           ))}
@@ -64,23 +55,21 @@ export function CounsellingProductPanel({
       <div className="dash-panel-surface dash-panel-surface--product">
         {(overviewMode || !paid) && <DashboardProductOverview focus={focus} onBook={onBook} paid={paid} />}
         {paid && subtab === 'journey' && (
-          <ProductJourneySteps
-            focus={focus}
-            paid={paid}
-            progress={progress}
-            slug={slug}
-            hasReport={journeyCtx.hasReport}
-            hasBooking={journeyCtx.hasBooking}
-            counsellingDone={journeyCtx.counsellingDone}
-            onProcess={journeyCtx.onProcess}
-            onFingerprints={journeyCtx.onFingerprints}
-            onTakeTest={journeyCtx.onTakeTest}
-            onBookCounselling={() => onSubtab('counselling')}
-            onReports={journeyCtx.onReports}
+          <ProductJourneySteps focus={focus} paid={paid} progress={progress} slug={slug} {...journeyCtx}
+            onProfile={() => onSubtab('profile')} onBookCounselling={() => onSubtab('counselling')} onTakeTest={() => onSubtab('take-test')} onReports={() => onSubtab('report')} />
+        )}
+        {paid && subtab === 'profile' && (
+          <ProfileWizardPanel user={displayUser} profile={profile} onSave={onProfileSave} saving={profileSaving} />
+        )}
+        {paid && subtab === 'take-test' && (
+          <SkillMappingTakeTestPanel
+            user={displayUser}
+            profile={profile}
+            instrumentIds={careerPath?.activeAssessment?.progress?.skillMappingInstruments}
           />
         )}
         {paid && subtab === 'counselling' && <CounsellingBookingPanel {...bookingProps} />}
-        {paid && subtab === 'report' && (
+        {paid && subtab === REPORT_TAB && (
           <div>
             <p className="font-semibold text-theme-primary mb-3">Your reports</p>
             {reports.length ? reports.map((r) => (
@@ -89,45 +78,39 @@ export function CounsellingProductPanel({
                   <p className="font-semibold">{r.report_title || 'Report'}</p>
                   <p className="text-xs dash-card-meta">{r.product_title}</p>
                 </div>
-                {r.report_link ? (
-                  <a href={r.report_link} target="_blank" rel="noreferrer" className="btn-outline">View</a>
-                ) : (
-                  <span className="text-sm text-amber-700">Pending</span>
-                )}
+                {r.report_link ? <a href={r.report_link} target="_blank" rel="noreferrer" className="btn-outline">View</a> : <span className="text-sm text-amber-700">Pending</span>}
               </div>
             )) : <p className="text-sm dash-card-meta">Reports appear after assessment review.</p>}
           </div>
         )}
-        {paid && subtab && subtab !== 'overview' && !['journey', 'counselling', 'report'].includes(subtab) && <LockedCard onBook={onBook} />}
+        {paid && subtab && !showOverview(subtab) && !validIds.includes(subtab) && <LockedCard onBook={onBook} />}
       </div>
     </div>
   );
 }
 
 export function TrainingProductPanel({
-  focus, paid, subtab, onSubtab, careerPath, journeyCtx, bookingProps, resourcesPanel, detailsStudio, cvPanel, onBook,
+  focus, paid, subtab, onSubtab, careerPath, journeyCtx, bookingProps, resourcesPanel, cvPanel, onBook,
+  displayUser, profile, onProfileSave, profileSaving, communityLink, sessionBookingProps, onCommunityJoined, token,
 }) {
+  const subtabs = getTrainingSubtabs(focus);
   const locked = (tab) => tab.lock && !paid;
   const pick = (id) => {
-    const tab = TRAINING_SUBTABS.find((t) => t.id === id);
+    const tab = subtabs.find((t) => t.id === id);
     if (tab && locked(tab)) return;
     onSubtab(id);
   };
   const progress = careerPath?.activeAssessment?.progress || {};
   const slug = careerPath?.productSlug;
   const overviewMode = !paid || showOverview(subtab);
+  const validIds = subtabs.map((t) => t.id);
 
   return (
     <div className="space-y-3">
       {paid && (
         <div className="dash-subtab-rail dash-subtab-rail--product dash-subtab-rail--center dash-subtab-rail--lg">
-          {TRAINING_SUBTABS.map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}`}
-              onClick={() => pick(tab.id)}
-            >
+          {subtabs.map((tab) => (
+            <button key={tab.id} type="button" className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}`} onClick={() => pick(tab.id)}>
               {tab.label}
             </button>
           ))}
@@ -136,28 +119,24 @@ export function TrainingProductPanel({
       <div className="dash-panel-surface dash-panel-surface--product">
         {(overviewMode || !paid) && <DashboardProductOverview focus={focus} onBook={onBook} paid={paid} />}
         {paid && subtab === 'journey' && (
-          <ProductJourneySteps
-            focus={focus}
-            paid={paid}
-            progress={progress}
-            slug={slug}
-            hasReport={journeyCtx.hasReport}
-            hasBooking={journeyCtx.hasBooking}
-            counsellingDone={journeyCtx.counsellingDone}
-            onProcess={journeyCtx.onProcess}
-            onTakeTest={journeyCtx.onTakeTest}
-            onBookCounselling={() => onSubtab('counselling')}
-            onReports={journeyCtx.onReports}
+          <ProductJourneySteps focus={focus} paid={paid} progress={progress} slug={slug} {...journeyCtx}
+            onCommunity={() => onSubtab('community')} onSchedule={() => onSubtab('schedule')} onResources={() => onSubtab('resources')} onCv={() => onSubtab('cv')} />
+        )}
+        {paid && subtab === 'community' && (
+          <CommunityLinksPanel
+            communityLink={communityLink}
+            assessmentId={careerPath?.activeAssessment?.id}
+            token={token}
+            communityJoined={careerPath?.activeAssessment?.progress?.communityJoined}
+            onJoined={onCommunityJoined}
           />
         )}
-        {paid && subtab === 'counselling' && bookingProps && <CounsellingBookingPanel {...bookingProps} />}
+        {paid && subtab === 'schedule' && sessionBookingProps && <SessionBookingPanel {...sessionBookingProps} displayUser={displayUser} />}
         {paid && subtab === 'resources' && resourcesPanel}
-        {paid && subtab === 'details' && detailsStudio}
         {paid && subtab === 'cv' && cvPanel}
-        {paid && subtab && !showOverview(subtab) && !['journey', 'counselling', 'resources', 'details', 'cv'].includes(subtab) && (
-          <LockedCard onBook={onBook} />
-        )}
+        {paid && subtab && !showOverview(subtab) && !validIds.includes(subtab) && <LockedCard onBook={onBook} />}
       </div>
     </div>
   );
 }
+

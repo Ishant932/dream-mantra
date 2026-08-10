@@ -26,6 +26,7 @@ import {
   assessmentGrantsSlotBooking,
   moduleHasTakeTest,
 } from '../utils/moduleAccess';
+import { moduleActionFlags } from '../utils/moduleDashboardNav';
 
 function formatPrice(n) {
   return `₹${Number(n || 0).toLocaleString('en-IN')}`;
@@ -227,6 +228,8 @@ export default function ModulesPanel({
   onRefresh,
   onGoProcessGuides,
   onGoTakeTest,
+  onOpenModule,
+  initialHubView,
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -237,7 +240,7 @@ export default function ModulesPanel({
   const [activePaidId, setActivePaidId] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
   const [removedIds, setRemovedIds] = useState(() => new Set());
-  const [hubView, setHubView] = useState('book');
+  const [hubView, setHubView] = useState(initialHubView || 'book');
   const [catalog, setCatalog] = useState(MODULE_CATALOG);
   const [liveVouchers, setLiveVouchers] = useState([]);
 
@@ -414,6 +417,12 @@ export default function ModulesPanel({
     }
   }, [token, activePaidId, onError, onSuccess, onRefresh]);
 
+  useEffect(() => {
+    if (initialHubView && ['book', 'active', 'history'].includes(initialHubView)) {
+      setHubView(initialHubView);
+    }
+  }, [initialHubView]);
+
   const goToProcessGuides = (section = 'process') => {
     if (onGoProcessGuides) onGoProcessGuides(section);
   };
@@ -422,6 +431,15 @@ export default function ModulesPanel({
     if (onGoTakeTest) onGoTakeTest();
     else goToProcessGuides('tests');
   };
+
+  const openModule = useCallback((assessment, action = 'default') => {
+    if (onOpenModule) {
+      onOpenModule(assessment, action);
+      return;
+    }
+    if (action === 'test') goToTakeTest();
+    else goToProcessGuides('process');
+  }, [onOpenModule, goToTakeTest, goToProcessGuides]);
 
   const handleBook = async () => {
     if (!selection || !selectedSlug || !token) return;
@@ -481,8 +499,8 @@ export default function ModulesPanel({
               <CheckCircle2 className="w-5 h-5 text-emerald-600" />
               Active modules {confirmedAssessments.length > 1 ? `(${confirmedAssessments.length})` : ''}
             </h3>
-            <button type="button" onClick={() => goToProcessGuides('process')} className="text-sm font-semibold text-amber-600 inline-flex items-center gap-1 hover:underline">
-              Process & Take test <ArrowRight className="w-4 h-4" />
+            <button type="button" onClick={() => setHubView('active')} className="text-sm font-semibold text-amber-600 inline-flex items-center gap-1 hover:underline">
+              View active modules <ArrowRight className="w-4 h-4" />
             </button>
           </div>
           <div className="modules-active-list">
@@ -490,9 +508,7 @@ export default function ModulesPanel({
               const slug = resolveAssessmentSlug(a);
               const mod = getMod(slug) || { icon: '📋' };
               const selected = Number(activePaid?.id) === Number(a.id);
-              const showTest = slug && moduleHasTakeTest(slug);
-              const showProcess = slug !== 'counselling-topup';
-              const showBook = assessmentGrantsSlotBooking(a);
+              const { showTest, showProcess, showBook } = moduleActionFlags(a);
               return (
                 <div key={a.id} className={`modules-active-row ${selected ? 'modules-active-row--selected' : ''}`}>
                   <button type="button" className="modules-active-row__main" onClick={() => setActivePaidId(a.id)}>
@@ -504,17 +520,17 @@ export default function ModulesPanel({
                   </button>
                   <div className="flex flex-wrap gap-2">
                     {showProcess && (
-                      <button type="button" onClick={() => goToProcessGuides('process')} className="modules-order-btn modules-order-btn--ghost">
-                        <Play className="w-4 h-4" /> Process
+                      <button type="button" onClick={() => openModule(a, 'default')} className="modules-order-btn modules-order-btn--ghost">
+                        <Play className="w-4 h-4" /> Open
                       </button>
                     )}
                     {showTest && (
-                      <button type="button" onClick={goToTakeTest} className="modules-order-btn modules-order-btn--primary">
-                        <ClipboardList className="w-4 h-4" /> Take test
+                      <button type="button" onClick={() => openModule(a, 'test')} className="modules-order-btn modules-order-btn--primary">
+                        <ClipboardList className="w-4 h-4" /> {slug === 'crp-test' ? 'Community' : 'Take test'}
                       </button>
                     )}
                     {showBook && (
-                      <button type="button" onClick={() => navigate('/dashboard?tab=book')} className="modules-order-btn modules-order-btn--primary">
+                      <button type="button" onClick={() => openModule(a, 'book')} className="modules-order-btn modules-order-btn--primary">
                         <MessageCircle className="w-4 h-4" /> Book session
                       </button>
                     )}
@@ -525,9 +541,9 @@ export default function ModulesPanel({
           </div>
           {activePaid && (
             <PaidModuleActions
-              onGoProcess={() => goToProcessGuides('process')}
-              onGoTest={goToTakeTest}
-              onGoBook={() => navigate('/dashboard?tab=book')}
+              onGoProcess={() => openModule(activePaid, 'default')}
+              onGoTest={() => openModule(activePaid, 'test')}
+              onGoBook={() => openModule(activePaid, 'book')}
               showTakeTest={!!activeShowTest}
               showProcess={activeShowProcess}
               showBook={!!activeShowBook}
@@ -615,8 +631,8 @@ export default function ModulesPanel({
                   <div className="modules-order-row__actions">
                     <p className="font-bold text-amber-600 modules-order-row__amount">{formatPrice(p.amount)}</p>
                     {linked && isAssessmentUnlocked(linked) && resolveAssessmentSlug(linked) !== 'counselling-topup' && (
-                      <button type="button" onClick={() => goToProcessGuides('process')} className="modules-order-btn modules-order-btn--ghost">
-                        View module
+                      <button type="button" onClick={() => openModule(linked, 'default')} className="modules-order-btn modules-order-btn--ghost">
+                        Open module
                       </button>
                     )}
                     {canRemove && (

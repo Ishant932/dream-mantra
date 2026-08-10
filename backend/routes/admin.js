@@ -4,7 +4,18 @@ import { authRequired, adminRequired } from '../middleware/auth.js';
 import { getAvailableSlots } from '../lib/slots.js';
 import { getPaidAssessmentsWithUsers } from '../lib/reports.js';
 import { listPaymentsForAdmin, updatePaymentStatus, patchPaymentDetails } from '../lib/paymentService.js';
-import { getSiteSettings, updateSiteSettings } from '../lib/siteSettings.js';
+import {
+  createSkillMappingCombo,
+  listSkillMappingCombos,
+  updateSkillMappingCombo,
+  comboSummary,
+} from '../lib/skillMappingCombos.js';
+import {
+  getSiteSettings,
+  updateSiteSettings,
+  upsertCommunityScheduleEntry,
+  deleteCommunityScheduleEntry,
+} from '../lib/siteSettings.js';
 import { getPlatformAnalytics } from '../lib/analytics.js';
 import { listContactLeads, updateContactLead, countNewLeads, deleteContactLead } from '../lib/leads.js';
 import {
@@ -110,7 +121,13 @@ router.delete('/counsellors/:id', async (req, res) => {
 
 router.get('/analytics', (req, res) => {
   try {
-    res.json({ analytics: getPlatformAnalytics() });
+    res.json({
+      analytics: getPlatformAnalytics({
+        period: req.query.period,
+        from: req.query.from,
+        to: req.query.to,
+      }),
+    });
   } catch (e) {
     console.error('GET /admin/analytics failed:', e);
     res.status(500).json({ message: e.message || 'Failed to load analytics' });
@@ -189,6 +206,56 @@ router.patch('/settings', (req, res) => {
   try {
     const settings = updateSiteSettings(req.body);
     res.json({ settings });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.get('/skill-mapping-combos', (req, res) => {
+  try {
+    const combos = listSkillMappingCombos().map((c) => ({
+      ...c,
+      summary: comboSummary(c),
+    }));
+    res.json({ combos });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+});
+
+router.post('/skill-mapping-combos', (req, res) => {
+  try {
+    const combo = createSkillMappingCombo(req.body);
+    res.status(201).json({ combo: { ...combo, summary: comboSummary(combo) } });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.patch('/skill-mapping-combos/:id', (req, res) => {
+  try {
+    const combo = updateSkillMappingCombo(req.params.id, req.body);
+    if (!combo) return res.status(404).json({ message: 'Combo not found' });
+    res.json({ combo: { ...combo, summary: comboSummary(combo) } });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.post('/community-schedule', (req, res) => {
+  try {
+    const entry = upsertCommunityScheduleEntry(req.body);
+    res.json({ entry, settings: getSiteSettings() });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.delete('/community-schedule/:id', (req, res) => {
+  try {
+    const ok = deleteCommunityScheduleEntry(req.params.id);
+    if (!ok) return res.status(404).json({ message: 'Entry not found' });
+    res.json({ ok: true, settings: getSiteSettings() });
   } catch (e) {
     res.status(400).json({ message: e.message });
   }

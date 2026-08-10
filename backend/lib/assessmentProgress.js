@@ -16,6 +16,8 @@ import {
   onJourneyStatusUpdate,
 } from './whatsapp/events.js';
 
+import { getCommunityLink } from './siteSettings.js';
+
 export const FLOW_STEPS = {
   CLASS: 'class_select',
   PROCESS: 'process',
@@ -43,7 +45,7 @@ export function getAssessmentFlow(assessmentId, userId) {
       progress: assessment.progress || null,
     },
     profileClassLevel: profile.classLevel || null,
-    communityLink: slug === 'crp-test' ? getCommunityLink('crp-test') : null,
+    communityLink: slug === 'crp-test' ? getCommunityLink('crp-test', new Date(), user?.created_at) : null,
   };
 }
 

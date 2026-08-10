@@ -1,1 +1,0 @@
-import{j as r}from"./motion-DMW-7OZn.js";import e from"./CareerLibraryExplorer-C28Z_2Xr.js";import"./vendor-Z1G8FAI1.js";import"./EmbeddedAppFrame-DGGGor3h.js";function i(){return r.jsx(e,{embedded:!1})}export{i as default};
