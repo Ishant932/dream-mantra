@@ -227,12 +227,6 @@ router.post('/create-order', authRequired, async (req, res) => {
   const { assessment: synced, selection } = syncAssessmentSelection(assessment, repo);
   assessment = synced;
 
-  try {
-    assertSkillMappingBandSelected(assessment);
-  } catch (e) {
-    return res.status(400).json({ message: e.message });
-  }
-
   let finalPrice = selection?.total ?? 0;
   let pricing = { original: finalPrice, final: finalPrice, discount: 0, discountPercent: 0, coupon: null };
 
@@ -360,12 +354,6 @@ router.post('/verify', authRequired, (req, res) => {
   const assessment = db.prepare('SELECT * FROM assessments WHERE id = ?').get(assessmentId);
   if (!assessment || Number(assessment.user_id) !== Number(req.user.id)) {
     return res.status(404).json({ message: 'Assessment not found' });
-  }
-
-  try {
-    assertSkillMappingBandSelected(assessment);
-  } catch (e) {
-    return res.status(400).json({ message: e.message });
   }
 
   if (

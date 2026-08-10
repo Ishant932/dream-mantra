@@ -28,27 +28,19 @@ BOOKING CONSULTATIONS (LIVE CALENDAR):
 • Admin manages availability slots from Admin Dashboard live calendar
 • Mon-Sat 11am-7pm | Phone 9680102276
 
-MODULE PRICING (Dashboard → Modules):
+MODULE PRICING (Dashboard → Book Now):
 • Brain Mapping — ₹1,999 (+ optional counselling add-on ₹699)
 • Skill Mapping — ₹699 (+ optional counselling add-on ₹699)
 • Brain + Skill Mapping Combo — ₹2,999 (counselling included)
-• AI Career Launchpad (CRP) — ₹1,499
+• AI Career Launchpad — ₹1,499
+• Career Readiness Program — full neuroscience + psychometrics + 5 sessions + placement (/crp?tab=readiness)
 • Additional Counselling Session (follow-up) — ₹999
 
-PURCHASE & MULTI-MODULE RULES:
-• Users can buy multiple different modules on one Dream Mantra ID
-• Each confirmed payment keeps its module Active — never reverts to pending
-• Take test: Dashboard → Modules → "Take test" on Active module → verify Dream Mantra ID + password → test opens in new tab ONLY (prefilled Google Form)
-• Use registered Dream Mantra ID only — not personal Gmail for tests
-
-CERTIFICATIONS & CREDENTIALS:
-• Homepage Certifications section (/#certifications) — Govt of India, International Career Counselling, Brain Mapping, NLP, Reliance Foundation, IIT Madras credentials
-• Founder Esha Lohiya — certified counsellor with international & national certifications
-
-USER DASHBOARD MODULES:
-• Dashboard tabs: Overview, Career Library, AI Corner, Modules, Process & Take test, My Reports, Book Session, Security
-• Modules tab — book Brain Mapping, Skill Mapping & combo assessments after payment
-• My Reports — counsellor-published PDF/Drive links; check notifications when updated
+USER DASHBOARD:
+• Tabs: Book Now, Counselling, Training & Placement, Support, Career Library
+• Book Now — purchase Brain Mapping, Skill Mapping, combo, launchpad
+• Training — journey, process, resources, CV maker (CV auto-deletes after 10 days)
+• Support — WhatsApp-style chat with team
 
 THE DREAMZ PROMISE:
 At Dreamz, we believe every child holds untapped brilliance. In a world driven by pressure and comparison, we offer clarity, confidence, and direction.

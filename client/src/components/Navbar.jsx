@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
 import ThemeToggle from './ThemeToggle';
 import NavQuickMenu from './NavQuickMenu';
+import { useBookNowModal } from '../context/BookNowModalContext';
 import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLink, NavDropdownLinkGroup } from './NavDropdownPanel';
 import { useSiteNav } from '../i18n/useSiteContent';
 import { isMobilePerf } from '../utils/mobilePerf';
@@ -112,6 +113,7 @@ export default function Navbar({ scrolled = false }) {
   const commonTitle = d('navMega')?.common?.title || 'Common';
   const mainNav = buildMainNav(t, counsellingMega, crpMega, counsellingCommon, commonTitle);
   const navLite = isMobilePerf();
+  const { openBookNow } = useBookNowModal();
 
   const closeMobile = () => setMobile(false);
 
@@ -174,7 +176,9 @@ export default function Navbar({ scrolled = false }) {
               <div className="hidden xl:block nav-quick-menu-wrap">
                 <NavQuickMenu />
               </div>
-              <ThemeToggle compact />
+              <div className="hidden xl:block">
+                <ThemeToggle compact />
+              </div>
               {!navLite && (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -192,6 +196,9 @@ export default function Navbar({ scrolled = false }) {
               )}
             </div>
             <div className="nav-header-actions__auth hidden xl:flex items-center gap-1 shrink-0">
+              <button type="button" onClick={openBookNow} className="btn-gold nav-header-auth-btn whitespace-nowrap !text-sm">
+                Book now
+              </button>
               {user ? (
                 <>
                   <Link
@@ -220,6 +227,13 @@ export default function Navbar({ scrolled = false }) {
                 </>
               )}
             </div>
+            <button
+              type="button"
+              className="nav-mobile-toggle xl:hidden nav-header-book-now"
+              onClick={openBookNow}
+            >
+              Book
+            </button>
             <button
               type="button"
               className="nav-mobile-toggle xl:hidden"
@@ -256,7 +270,9 @@ export default function Navbar({ scrolled = false }) {
             >
               <div className="nav-mobile-drawer-header">
                 <span className="nav-mobile-drawer-title">{t('nav.menu')}</span>
-                <button
+                <div className="flex items-center gap-1">
+                  <ThemeToggle compact />
+                  <button
                   type="button"
                   className="nav-mobile-drawer-close"
                   onClick={closeMobile}
@@ -264,8 +280,12 @@ export default function Navbar({ scrolled = false }) {
                 >
                   <X className="w-5 h-5" strokeWidth={2.25} />
                 </button>
+                </div>
               </div>
               <div className="nav-mobile-menu overflow-y-auto overscroll-contain">
+                <button type="button" onClick={() => { openBookNow(); closeMobile(); }} className="btn-gold w-full !py-3 mb-3">
+                  Book now
+                </button>
                 <div className="nav-mobile-auth">
                   {user ? (
                     <div className="flex flex-col gap-2">

@@ -35,6 +35,7 @@ export default function AdminUserProfileModal({
   api,
   token,
   onError,
+  variant = 'modal',
 }) {
   const [editing, setEditing] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', profile: {} });
@@ -59,24 +60,17 @@ export default function AdminUserProfileModal({
   };
 
   const checklist = user?.profileChecklist || [];
+  const isPage = variant === 'page';
 
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-brand-950/60 backdrop-blur-sm"
-        onClick={onClose}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.96, y: 12 }}
-          transition={{ type: 'spring', stiffness: 340, damping: 28 }}
-          className="relative w-full max-w-3xl bg-[var(--bg-elevated)] dark:bg-sand-900 rounded-3xl border border-sand-200 dark:border-sand-700 shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
-          onClick={(e) => e.stopPropagation()}
-        >
+  const panel = (
+    <motion.div
+      initial={isPage ? false : { opacity: 0, scale: 0.94, y: 20 }}
+      animate={isPage ? undefined : { opacity: 1, scale: 1, y: 0 }}
+      exit={isPage ? undefined : { opacity: 0, scale: 0.96, y: 12 }}
+      transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+      className={`relative w-full ${isPage ? 'max-w-none' : 'max-w-3xl max-h-[90vh]'} bg-[var(--bg-elevated)] dark:bg-sand-900 rounded-3xl border border-sand-200 dark:border-sand-700 shadow-2xl overflow-hidden overflow-y-auto`}
+      onClick={isPage ? undefined : (e) => e.stopPropagation()}
+    >
           <div className="sticky top-0 z-10 flex items-center justify-between px-6 py-4 bg-[var(--bg-elevated)] dark:bg-sand-900 border-b border-sand-200 dark:border-sand-700">
             <div className="flex items-center gap-3">
               <UserCircle className="w-7 h-7 text-amber-500" />
@@ -268,6 +262,20 @@ export default function AdminUserProfileModal({
             )}
           </div>
         </motion.div>
+  );
+
+  if (isPage) return panel;
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-brand-950/60 backdrop-blur-sm"
+        onClick={onClose}
+      >
+        {panel}
       </motion.div>
     </AnimatePresence>
   );

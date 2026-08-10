@@ -17,6 +17,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
+import { useGuidanceModal } from '../context/GuidanceModalContext';
+import { isGuidancePath } from '../utils/guidancePath';
 import { programs as programImages } from '../data/content';
 
 const PROBLEM_PREVIEW = 8;
@@ -48,6 +50,7 @@ export default function AgePathwaysWorkspace() {
   const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+  const { openGuidance } = useGuidanceModal();
 
   const copy = d('pages.program');
   const tabsCopy = d('pages.counselling.tabs.programs');
@@ -99,6 +102,10 @@ export default function AgePathwaysWorkspace() {
   const goBook = () => {
     if (!selectedModule) return;
     const purchasePath = resolvePurchasePath(selectedModule);
+    if (isGuidancePath(purchasePath)) {
+      openGuidance();
+      return;
+    }
     if (!isLoggedIn) {
       navigate('/login', {
         state: {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { MoreVertical, Ban, Trash2, Eye, FileSpreadsheet, FileText, Loader2 } from 'lucide-react';
+import { MoreVertical, Ban, Trash2, Eye, FileSpreadsheet, FileText, Loader2, KeyRound } from 'lucide-react';
 import { downloadUserRecord } from '../utils/userExport';
 
 export default function UserActionsMenu({
@@ -10,6 +10,7 @@ export default function UserActionsMenu({
   onSuspend,
   onUnsuspend,
   onDelete,
+  onResetPassword,
   onError,
   allowAccountActions = false,
   actionBusy = false,
@@ -81,6 +82,14 @@ export default function UserActionsMenu({
           {allowAccountActions && (
             <>
               <div className="border-t border-sand-100 dark:border-sand-700 my-1" />
+              <button
+                type="button"
+                disabled={actionBusy}
+                className="w-full text-left px-3 py-2 text-sm hover:bg-amber-50 dark:hover:bg-sand-800 inline-flex items-center gap-2 disabled:opacity-50"
+                onClick={() => { setOpen(false); onResetPassword?.(user); }}
+              >
+                <KeyRound className="w-3.5 h-3.5" /> Reset password
+              </button>
               {suspended ? (
                 <button
                   type="button"

@@ -29,6 +29,7 @@ const HOME_CATALOG_SLUG = {
   psychometric: 'psychometric',
   'dmit-psychometric': 'dmit-psychometric',
   crp: 'crp-test',
+  'career-readiness': 'career-readiness',
 };
 
 function enrichModules(modules, catalog) {
@@ -122,32 +123,14 @@ export default function HomeModulesIntro() {
     const known = new Set(
       configured.flatMap((g) => g.modules.map((mod) => HOME_CATALOG_SLUG[mod.slug] || mod.slug))
     );
-    const extras = catalog
-      .filter((m) => !known.has(m.slug) && !m.hidden && !m.followUpOnly)
-      .map((m) => ({
-        slug: m.slug,
-        title: m.title,
-        desc: m.description || '',
-        icon: m.icon || '📋',
-        link: '/marketplace',
-      }));
 
     const primary = configured.filter((g) => g.id === 'counselling' || g.id === 'training');
-    const rest = configured.filter((g) => g.id !== 'counselling' && g.id !== 'training');
-    if (extras.length) {
-      rest.push({
-        id: 'more',
-        label: copy.moreLabel || 'More modules',
-        subtitle: '',
-        modules: extras,
-      });
-    }
 
     return {
       primaryGroups: primary.length ? primary : configured,
-      extraGroups: rest,
+      extraGroups: [],
     };
-  }, [copy.groups, copy.modules, copy.moreLabel, catalog]);
+  }, [copy.groups, copy.modules, catalog]);
 
   return (
     <div className="home-modules-intro relative overflow-hidden no-reveal">

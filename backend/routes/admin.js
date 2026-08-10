@@ -6,7 +6,7 @@ import { getPaidAssessmentsWithUsers } from '../lib/reports.js';
 import { listPaymentsForAdmin, updatePaymentStatus, patchPaymentDetails } from '../lib/paymentService.js';
 import { getSiteSettings, updateSiteSettings } from '../lib/siteSettings.js';
 import { getPlatformAnalytics } from '../lib/analytics.js';
-import { listContactLeads, updateContactLead, countNewLeads } from '../lib/leads.js';
+import { listContactLeads, updateContactLead, countNewLeads, deleteContactLead } from '../lib/leads.js';
 import {
   listModulesForAdmin,
   upsertModule,
@@ -37,6 +37,16 @@ import {
   updateBlogPost,
   deleteBlogPost,
 } from '../lib/blogs.js';
+import {
+  listAllResources,
+  createUserResource,
+  deleteUserResource,
+} from '../lib/userResources.js';
+import {
+  listStudioLandingsForAdmin,
+  readStudioLanding,
+  writeStudioLanding,
+} from '../lib/studioLandingEditor.js';
 
 const router = Router();
 router.use(authRequired, adminRequired);
@@ -104,16 +114,21 @@ router.get('/analytics', (req, res) => {
 });
 
 router.get('/payments', (req, res) => {
-  const { status, search, page, limit, sort, order } = req.query;
-  const result = listPaymentsForAdmin({
-    status: status || 'all',
-    search: search || '',
-    page: Number(page) || 1,
-    limit: Math.min(Number(limit) || 20, 100),
-    sort: sort || 'created_at',
-    order: order || 'desc',
-  });
-  res.json(result);
+  try {
+    const { status, search, page, limit, sort, order } = req.query;
+    const result = listPaymentsForAdmin({
+      status: status || 'all',
+      search: search || '',
+      page: Number(page) || 1,
+      limit: Math.min(Number(limit) || 20, 100),
+      sort: sort || 'created_at',
+      order: order || 'desc',
+    });
+    res.json(result);
+  } catch (e) {
+    console.error('GET /admin/payments failed:', e);
+    res.status(500).json({ message: e.message || 'Failed to load payments', payments: [], pagination: { page: 1, limit: 20, total: 0, totalPages: 0 } });
+  }
 });
 
 router.patch('/payments/:id', (req, res) => {
@@ -137,8 +152,33 @@ router.patch('/payments/:id', (req, res) => {
   }
 });
 
+router.get('/resources', (req, res) => {
+  res.json({ resources: listAllResources() });
+});
+
+router.post('/resources', async (req, res) => {
+  try {
+    const resource = createUserResource({ ...req.body, adminId: req.user.id });
+    await flushDatabase();
+    res.status(201).json({ resource, resources: listAllResources() });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
+});
+
+router.delete('/resources/:id', async (req, res) => {
+  deleteUserResource(req.params.id);
+  await flushDatabase();
+  res.json({ resources: listAllResources() });
+});
+
 router.get('/settings', (req, res) => {
-  res.json({ settings: getSiteSettings() });
+  try {
+    res.json({ settings: getSiteSettings() });
+  } catch (e) {
+    console.error('GET /admin/settings failed:', e);
+    res.status(500).json({ message: e.message || 'Failed to load settings', settings: {} });
+  }
 });
 
 router.patch('/settings', (req, res) => {
@@ -152,7 +192,12 @@ router.patch('/settings', (req, res) => {
 
 router.get('/leads', (req, res) => {
   const status = req.query.status || 'all';
-  res.json({ leads: listContactLeads({ status }), newCount: countNewLeads() });
+  const program = req.query.program || 'all';
+  const search = req.query.search || '';
+  res.json({
+    leads: listContactLeads({ status, program, search }),
+    newCount: countNewLeads(),
+  });
 });
 
 router.patch('/leads/:id', (req, res) => {
@@ -161,8 +206,19 @@ router.patch('/leads/:id', (req, res) => {
   res.json({ lead });
 });
 
+router.delete('/leads/:id', (req, res) => {
+  const ok = deleteContactLead(req.params.id);
+  if (!ok) return res.status(404).json({ message: 'Lead not found' });
+  res.json({ ok: true });
+});
+
 router.get('/modules', (req, res) => {
-  res.json({ modules: listModulesForAdmin() });
+  try {
+    res.json({ modules: listModulesForAdmin() });
+  } catch (e) {
+    console.error('GET /admin/modules failed:', e);
+    res.status(500).json({ message: e.message || 'Failed to load modules', modules: [] });
+  }
 });
 
 router.post('/modules', (req, res) => {
@@ -297,6 +353,31 @@ router.delete('/blogs/:id', async (req, res) => {
     res.json({ message: 'Deleted' });
   } catch (e) {
     res.status(400).json({ message: e.message });
+  }
+});
+
+router.get('/studio-landings', (_req, res) => {
+  try {
+    res.json({ landings: listStudioLandingsForAdmin() });
+  } catch (e) {
+    res.status(500).json({ message: e.message || 'Failed to list landing pages' });
+  }
+});
+
+router.get('/studio-landings/:slug', (req, res) => {
+  try {
+    res.json(readStudioLanding(req.params.slug));
+  } catch (e) {
+    res.status(404).json({ message: e.message || 'Landing page not found' });
+  }
+});
+
+router.put('/studio-landings/:slug', (req, res) => {
+  try {
+    const landing = writeStudioLanding(req.params.slug, req.body?.files || {});
+    res.json({ landing });
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to save landing page' });
   }
 });
 

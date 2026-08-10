@@ -29,6 +29,8 @@ import whatsappRoutes from './routes/whatsapp.js';
 import cronRoutes from './routes/cron.js';
 import { getWhatsAppPublicConfig } from './lib/whatsapp/events.js';
 import { startWhatsAppScheduler } from './lib/whatsapp/scheduler.js';
+import { STUDIO_LANDINGS } from './lib/studioLandings.js';
+import landingRoutes from './routes/landing.js';
 
 dotenv.config();
 
@@ -42,7 +44,7 @@ const clientDist = path.join(__dirname, '../client/dist');
 const hasBuiltClient = fs.existsSync(path.join(clientDist, 'index.html'));
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 const isProd = process.env.NODE_ENV === 'production';
 
 app.set('trust proxy', 1);
@@ -54,8 +56,12 @@ const corsOrigins = process.env.CORS_ORIGIN
   : [
       'http://localhost:5173',
       'http://127.0.0.1:5173',
+      'http://localhost:5174',
+      'http://127.0.0.1:5174',
       'http://localhost:5000',
       'http://127.0.0.1:5000',
+      'http://localhost:5001',
+      'http://127.0.0.1:5001',
       ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
     ];
 
@@ -96,6 +102,27 @@ app.post('/api/payments/webhook/phonepe', express.raw({ type: 'application/json'
     res.status(400).json({ message: e.message || 'Webhook failed' });
   }
 });
+
+const landingCheckoutBridge = path.join(__dirname, 'assets/landing-checkout.js');
+if (fs.existsSync(landingCheckoutBridge)) {
+  app.get('/studio/checkout-bridge.js', (_req, res) => {
+    res.type('application/javascript');
+    res.sendFile(landingCheckoutBridge, { maxAge: isProd ? '1h' : 0 });
+  });
+}
+
+const landingPagesDir = path.join(__dirname, '../Landing Pages');
+if (fs.existsSync(landingPagesDir)) {
+  for (const { slug, folder } of STUDIO_LANDINGS) {
+    const dir = path.join(landingPagesDir, folder);
+    if (!fs.existsSync(dir)) continue;
+    app.get(`/studio/${slug}`, (req, res, next) => {
+      if (req.path !== `/studio/${slug}`) return next();
+      res.redirect(301, `/studio/${slug}/`);
+    });
+    app.use(`/studio/${slug}/`, express.static(dir, { index: 'index.html', maxAge: isProd ? '1h' : 0, redirect: false }));
+  }
+}
 
 app.use(express.json({ limit: '12mb' }));
 
@@ -190,6 +217,7 @@ app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/careers', careersRoutes);
 app.use('/api/payments', paymentsRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/landing', landingRoutes);
 app.use('/api/blog', blogRoutes);
 app.use('/api/webhooks/whatsapp', whatsappRoutes);
 app.use('/api/cron', cronRoutes);

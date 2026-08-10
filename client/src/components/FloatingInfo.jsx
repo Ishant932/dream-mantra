@@ -3,7 +3,7 @@ import { Brain, Phone, MapPin, Sparkles } from 'lucide-react';
 
 const tips = [
   { text: 'Brain Mapping talent scan', icon: Brain, gradient: 'from-amber-500 to-orange-600', pos: 'top-28 left-3', delay: 0 },
-  { text: 'Free consult', icon: Phone, gradient: 'from-amber-500 to-orange-500', pos: 'bottom-36 left-4', delay: 1.2 },
+  { text: 'Free guidance call', icon: Phone, gradient: 'from-amber-500 to-orange-500', pos: 'bottom-36 left-4', delay: 1.2 },
   { text: 'Science-backed guidance', icon: Sparkles, gradient: 'from-amber-500 to-orange-500', pos: 'bottom-28 right-4', delay: 2.4 },
   { text: 'Jaipur centres', icon: MapPin, gradient: 'from-orange-500 to-orange-400', pos: 'top-1/2 left-2 -translate-y-1/2 hidden xl:block', delay: 1.8 },
 ];

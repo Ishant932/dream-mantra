@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
+import GuidanceLink from './GuidanceLink';
 
 export default function PageHero({
   title,
@@ -33,9 +34,15 @@ export default function PageHero({
             </p>
           )}
           {cta && (
-            <Link to={ctaLink} className="btn-gold mt-8 inline-flex hero-btns">
-              {cta}
-            </Link>
+            ctaLink.includes('guidance') ? (
+              <GuidanceLink to={ctaLink} className="btn-gold mt-8 inline-flex hero-btns">
+                {cta}
+              </GuidanceLink>
+            ) : (
+              <Link to={ctaLink} className="btn-gold mt-8 inline-flex hero-btns">
+                {cta}
+              </Link>
+            )
           )}
         </div>
       </div>

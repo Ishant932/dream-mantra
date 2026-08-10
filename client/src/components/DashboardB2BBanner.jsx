@@ -1,16 +1,22 @@
 import { motion } from 'framer-motion';
 import { Sparkles, Radio } from 'lucide-react';
 import { isPhoneViewport } from '../utils/mobilePerf';
+import CopyableUserId from './CopyableUserId';
 import DashboardNextStepButton from './DashboardNextStepButton';
 
 export default function DashboardB2BBanner({
   tag,
   title,
   subtitle,
+  meta,
   dateLabel,
   variant = 'admin',
   action,
+  dreamsUid,
   nextStep,
+  toolkitTabs,
+  activeTab,
+  onSelectTab,
 }) {
   const phone = isPhoneViewport();
   const today = dateLabel || new Date().toLocaleDateString('en-IN', {
@@ -18,35 +24,71 @@ export default function DashboardB2BBanner({
     day: 'numeric',
     month: phone ? 'short' : 'long',
   });
+  const hasToolkit = toolkitTabs?.length > 0;
+
+  const dreamsIdBlock = dreamsUid ? (
+    <div className="dash-hero-id" aria-label="Dreams ID">
+      <p className="dash-hero-id__label">Dreams ID</p>
+      <CopyableUserId uid={dreamsUid} compact animate={false} className="dash-hero-id__copy" />
+    </div>
+  ) : null;
+
+  const toolkitRail = hasToolkit && (
+    <nav className="dash-hero-toolkit" role="tablist" aria-label="Dashboard sections">
+      <div className="dash-hero-toolkit__scroll">
+        {toolkitTabs.map((tab, i) => {
+          const on = activeTab === tab.id;
+          return (
+            <motion.button
+              key={tab.id}
+              type="button"
+              role="tab"
+              aria-selected={on}
+              disabled={tab.locked}
+              className={`dash-hero-toolkit__chip${on ? ' is-active' : ''}${tab.locked ? ' is-locked' : ''}`}
+              onClick={() => !tab.locked && onSelectTab(tab.id)}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 + i * 0.03 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              {tab.label}
+              {tab.locked && <span className="dash-hero-toolkit__lock">🔒</span>}
+            </motion.button>
+          );
+        })}
+      </div>
+    </nav>
+  );
+
+  const headerBlock = (
+    <div className="dash-hero-head">
+      {tag && (
+        <span className="dash-b2b-hero__tag dash-b2b-hero__tag--small">
+          {phone ? <Radio className="w-3 h-3" aria-hidden /> : <Sparkles className="w-3 h-3" />}
+          {tag}
+        </span>
+      )}
+      <h1 className="dash-b2b-hero__title dash-b2b-hero__title--compact">{title}</h1>
+      {subtitle && <p className="dash-b2b-hero__subtitle dash-b2b-hero__subtitle--compact">{subtitle}</p>}
+      {meta && <p className="dash-hero-meta">{meta}</p>}
+    </div>
+  );
 
   if (phone) {
     return (
-      <div className={`dash-b2b-hero dash-b2b-hero--${variant} dash-b2b-hero--cockpit`}>
+      <div className={`dash-b2b-hero dash-b2b-hero--${variant} dash-b2b-hero--cockpit dash-b2b-hero--unified`}>
         <div className="dash-b2b-hero__orb dash-b2b-hero__orb--a" aria-hidden />
-        <div className="dash-b2b-hero__orb dash-b2b-hero__orb--b" aria-hidden />
-        <div className="dash-b2b-hero__cockpit-grid" aria-hidden />
-        <div className="dash-b2b-hero__cockpit-row">
-          <div className="dash-b2b-hero__cockpit-left">
-            {tag && (
-              <span className="dash-b2b-hero__tag dash-b2b-hero__tag--pulse">
-                <Radio className="w-3 h-3 dash-b2b-hero__radio" aria-hidden />
-                {tag}
-              </span>
-            )}
-            <h1 className="dash-b2b-hero__title dash-b2b-hero__title--glitch" data-text={title}>
-              {title}
-            </h1>
-            {subtitle && (
-              <p className="dash-b2b-hero__subtitle dash-b2b-hero__subtitle--cockpit">{subtitle}</p>
-            )}
-          </div>
-          <div className="dash-b2b-hero__cockpit-right">
+        <div className="dash-b2b-hero__cockpit-row dash-hero-head-row">
+          <div className="min-w-0 flex-1">{headerBlock}</div>
+          <div className="dash-b2b-hero__cockpit-right shrink-0">
             {action}
             <span className="dash-b2b-hero__date dash-b2b-hero__date--cockpit">{today}</span>
           </div>
         </div>
-        <div className="dash-b2b-hero__cockpit-bar" aria-hidden>
-          <span /><span /><span /><span /><span />
+        <div className="dash-b2b-hero__unified-row">
+          {dreamsIdBlock}
+          {toolkitRail}
         </div>
       </div>
     );
@@ -54,45 +96,22 @@ export default function DashboardB2BBanner({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className={`dash-b2b-hero dash-b2b-hero--${variant}`}
+      className={`dash-b2b-hero dash-b2b-hero--${variant} dash-b2b-hero--unified`}
     >
       <div className="dash-b2b-hero__shine" aria-hidden />
-      {tag && (
-        <motion.span
-          className="dash-b2b-hero__tag"
-          initial={{ opacity: 0, scale: 0.92 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.1, duration: 0.35 }}
-        >
-          <Sparkles className="w-3.5 h-3.5" />
-          {tag}
-        </motion.span>
-      )}
-      <div className="flex flex-wrap items-start justify-between gap-4 relative z-[1]">
-        <motion.div
-          className="min-w-0"
-          initial={{ opacity: 0, x: -10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.15, duration: 0.4 }}
-        >
-          <h1 className="dash-b2b-hero__title">{title}</h1>
-          {subtitle && <p className="dash-b2b-hero__subtitle">{subtitle}</p>}
-        </motion.div>
-        <motion.div
-          className="flex flex-wrap items-center gap-2 shrink-0 relative z-[1]"
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-        >
-          {nextStep && (
-            <DashboardNextStepButton nextStep={nextStep} variant="hero" />
-          )}
+      <div className="dash-b2b-hero__top flex flex-wrap items-start justify-between gap-3 relative z-[1]">
+        <div className="min-w-0 flex-1">{headerBlock}</div>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          {nextStep && <DashboardNextStepButton nextStep={nextStep} variant="hero" />}
           {action}
           <span className="dash-b2b-hero__date">{today}</span>
-        </motion.div>
+        </div>
+      </div>
+      <div className="dash-b2b-hero__unified-row">
+        {dreamsIdBlock}
+        {toolkitRail}
       </div>
     </motion.div>
   );

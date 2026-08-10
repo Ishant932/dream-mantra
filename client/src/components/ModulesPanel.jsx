@@ -237,6 +237,7 @@ export default function ModulesPanel({
   const [activePaidId, setActivePaidId] = useState(null);
   const [cancellingId, setCancellingId] = useState(null);
   const [removedIds, setRemovedIds] = useState(() => new Set());
+  const [hubView, setHubView] = useState('book');
   const [catalog, setCatalog] = useState(MODULE_CATALOG);
   const [liveVouchers, setLiveVouchers] = useState([]);
 
@@ -362,8 +363,25 @@ export default function ModulesPanel({
 
   useEffect(() => {
     if (!shopSlug || blockedSlugs.has(shopSlug)) return;
-    if (catalogModules.some((m) => m.slug === shopSlug)) setSelectedSlug(shopSlug);
+    if (catalogModules.some((m) => m.slug === shopSlug)) {
+      setSelectedSlug(shopSlug);
+      const mod = catalogModules.find((m) => m.slug === shopSlug);
+      if (mod?.optionalCounselling) {
+        setCounsellingBySlug((prev) => ({ ...prev, [shopSlug]: true }));
+      }
+    }
   }, [shopSlug, blockedSlugs, catalogModules]);
+
+  useEffect(() => {
+    if (!selectedSlug) return;
+    const mod = getMod(selectedSlug);
+    if (mod?.optionalCounselling) {
+      setCounsellingBySlug((prev) => {
+        if (prev[selectedSlug] != null) return prev;
+        return { ...prev, [selectedSlug]: true };
+      });
+    }
+  }, [selectedSlug, getMod]);
 
   const handleRemoveOrder = useCallback(async (assessmentId) => {
     const id = Number(assessmentId);
@@ -431,7 +449,7 @@ export default function ModulesPanel({
         <div>
           <h2 className="text-2xl font-bold flex items-center gap-2 dash-card-title">
             <Package className="w-7 h-7 text-amber-600" />
-            My Modules & Orders
+            Book Now & Orders
           </h2>
           <p className="text-sm dash-card-meta mt-1">
             Buy modules, track payments, and access your assessments — all in one place.
@@ -444,8 +462,19 @@ export default function ModulesPanel({
         />
       </div>
 
-      {/* ── Active (paid) modules ── */}
-      {hasConfirmed && (
+      <div className="modules-hub-tabs dash-subtab-rail dash-subtab-rail--center dash-subtab-rail--lg flex flex-wrap gap-2 justify-center">
+        {[
+          { id: 'book', label: 'Book program' },
+          { id: 'active', label: 'Active modules' },
+          { id: 'history', label: 'Payment history' },
+        ].map((t) => (
+          <button key={t.id} type="button" className={`dash-subtab-rail__chip${hubView === t.id ? ' is-active' : ''}`} onClick={() => setHubView(t.id)}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {hubView === 'active' && hasConfirmed && (
         <DashCard className="modules-hub-card" glow={false} hover={false}>
           <div className="flex items-center justify-between gap-3 mb-5">
           <h3 className="font-bold text-lg sm:text-xl flex items-center gap-2">
@@ -507,8 +536,7 @@ export default function ModulesPanel({
         </DashCard>
       )}
 
-      {/* ── Pending orders (checkout) ── */}
-      {pendingOrders.length > 0 && (
+      {hubView === 'book' && pendingOrders.length > 0 && (
         <DashCard className="modules-hub-card modules-hub-card--pending" glow={false} hover={false}>
           <h3 className="font-bold text-lg sm:text-xl flex items-center gap-2 mb-1">
             <Clock className="w-5 h-5 text-amber-600" />
@@ -553,8 +581,7 @@ export default function ModulesPanel({
         </DashCard>
       )}
 
-      {/* ── Payment history (all payments; remove when order is still cancellable) ── */}
-      {paymentHistory.length > 0 && (
+      {hubView === 'history' && paymentHistory.length > 0 && (
         <DashCard className="modules-hub-card" glow={false} hover={false}>
           <h3 className="font-bold text-lg flex items-center gap-2 mb-1">
             <Receipt className="w-5 h-5 text-amber-600" />
@@ -607,12 +634,11 @@ export default function ModulesPanel({
         </DashCard>
       )}
 
-      {/* ── Shop ── */}
-      {catalogModules.length > 0 ? (
+      {hubView === 'book' && catalogModules.length > 0 ? (
         <DashCard className="modules-hub-card modules-hub-card--browse" glow={false} hover={false}>
           <h3 className="text-xl font-bold flex items-center gap-2 mb-1">
             <ShoppingBag className="w-6 h-6 text-amber-600" />
-            {hasConfirmed ? 'Add another module' : 'Browse modules'}
+            {hasConfirmed ? 'Add another program' : 'Browse programs'}
           </h3>
           <p className="text-sm dash-card-meta mb-5">Select → Pay → Get access after confirmation</p>
           {!hasConfirmed && liveVouchers.length > 0 && (
@@ -672,7 +698,7 @@ export default function ModulesPanel({
             {booking ? 'Processing…' : selectedSlug ? `Proceed to payment · ${formatPrice(checkoutTotal)}` : 'Select a module above'}
           </button>
         </DashCard>
-      ) : hasConfirmed ? (
+      ) : hubView === 'book' && hasConfirmed ? (
         <DashCard className="modules-hub-card text-center" glow={false} hover={false}>
           <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
           <p className="font-bold">You own all available modules</p>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import GuidanceCTA from './GuidanceCTA';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -57,7 +58,7 @@ export default function WhyCounsellingPanel({ compact = false }) {
   };
 
   return (
-    <div className={compact ? 'why-saas why-saas--compact' : 'why-saas why-saas--page py-10 sm:py-14 px-4 sm:px-6 lg:px-8'}>
+    <div className={compact ? 'why-saas why-saas--compact dm-overview-tints' : 'why-saas why-saas--page py-10 sm:py-14 px-4 sm:px-6 lg:px-8 dm-overview-tints'}>
       <motion.header {...fade} className="why-saas__hero">
         <span className="why-saas__label">
           <Sparkles className="w-3.5 h-3.5" aria-hidden />
@@ -68,6 +69,33 @@ export default function WhyCounsellingPanel({ compact = false }) {
         </h2>
         <p className="why-saas__lede">{page.intro}</p>
       </motion.header>
+
+      {d('pages.psychometric.challenge') && (
+        <motion.section {...fade} className="why-saas__section">
+          <div className="grid lg:grid-cols-2 gap-8 items-start">
+            <div>
+              <p className="section-label mb-3">{d('pages.psychometric.challenge.label')}</p>
+              <h3 className="why-saas__heading mb-4">{d('pages.psychometric.challenge.title')}</h3>
+              <p className="why-saas__muted mb-3">{d('pages.psychometric.challenge.p1')}</p>
+              <p className="why-saas__muted">
+                {d('pages.psychometric.challenge.p2Before')}
+                <strong>{d('pages.psychometric.challenge.p2Highlight')}</strong>
+                {d('pages.psychometric.challenge.p2After')}
+              </p>
+            </div>
+            <div className="glass-card p-6 border-l-4 border-l-orange-500">
+              <h4 className="font-bold mb-4">{d('pages.psychometric.challenge.problemsTitle')}</h4>
+              <ul className="space-y-2">
+                {(d('data.psychoProblems') || []).map((item) => (
+                  <li key={item} className="text-sm text-sand-600 dark:text-sand-400 flex gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0 mt-2" />{item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </motion.section>
+      )}
 
       {content.impactStats?.length > 0 && (
         <motion.section {...fade} className="why-saas__section" aria-label="Impact">
@@ -333,10 +361,10 @@ export default function WhyCounsellingPanel({ compact = false }) {
               </span>
             </div>
           </div>
-          <Link to="/contact#guidance" className="why-saas__btn">
+          <GuidanceCTA className="why-saas__btn">
             {page.contactCta}
             <ArrowRight className="w-4 h-4" />
-          </Link>
+          </GuidanceCTA>
         </article>
       </motion.section>
     </div>

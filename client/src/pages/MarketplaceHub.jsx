@@ -9,8 +9,9 @@ import SubTabs from '../components/SubTabs';
 import { IMAGES } from '../data/content';
 import { PRODUCTS } from '../data/products';
 import { applyVoucherPrice } from '../data/promotions';
-import { useLang } from '../context/LanguageContext';
+import GuidanceLink from '../components/GuidanceLink';
 import { useAuth } from '../context/AuthContext';
+import { useLang } from '../context/LanguageContext';
 import { paymentsApi } from '../api';
 import { useUserVouchers } from '../hooks/useUserVouchers';
 
@@ -20,7 +21,7 @@ const fade = {
   transition: { duration: 0.45 },
 };
 
-const TRAINING_PRODUCT_SLUGS = new Set(['crp-test']);
+const TRAINING_PRODUCT_SLUGS = new Set(['crp-test', 'career-readiness']);
 const LEGACY_TO_VERTICAL = {
   tests: 'counselling',
   ai: 'counselling',
@@ -116,9 +117,9 @@ export default function MarketplaceHub() {
             )}
           </div>
           <div className="mt-3 flex flex-wrap gap-3 text-sm">
-            <Link to="/contact#guidance" className="text-amber-700 font-semibold hover:underline">
+            <GuidanceLink to="/contact#guidance" className="text-amber-700 font-semibold hover:underline">
               {d('freeGuidance')?.cta || 'Book a free guidance call'}
-            </Link>
+            </GuidanceLink>
             <Link to="/signup" className="text-theme-muted font-semibold hover:underline">
               {d('freeGuidance')?.authCta || 'Sign in to know more'}
             </Link>
@@ -157,10 +158,40 @@ export default function MarketplaceHub() {
                   {counsellingProducts.length > 0 && (
                     <div>
                       <h3 className="font-bold mb-4 flex items-center gap-2 text-theme-primary">
-                        <Tag className="w-5 h-5 text-amber-500" />{' '}
-                        {counsellingCopy.productsTitle || marketplacePage.tests?.paidProductsTitle}
+                        <Tag className="w-5 h-5 text-amber-500" />
+                        {counsellingCopy.productsTitle || marketplacePage.tests?.paidProductsTitle || 'Counselling'}
                       </h3>
                       {renderProductGrid(counsellingProducts)}
+                    </div>
+                  )}
+
+                  <div className="marketplace-vertical-wall" aria-hidden>
+                    <div className="marketplace-vertical-wall__line" />
+                    <span className="marketplace-vertical-wall__label">Training & Placement</span>
+                    <div className="marketplace-vertical-wall__line" />
+                  </div>
+
+                  <motion.div {...fade} className="marketplace-training-hero marketplace-training-hero--inline">
+                    <div className="marketplace-training-hero__copy">
+                      <p className="marketplace-training-hero__eyebrow">{trainingCopy.programEyebrow || 'AI Career Launchpad'}</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-theme-primary mb-2">{trainingCopy.programTitle || 'Training & Placement'}</h2>
+                      <p className="text-sm text-theme-muted leading-relaxed max-w-2xl">{trainingCopy.programDesc}</p>
+                      <div className="flex flex-wrap gap-3 mt-4">
+                        <Link to="/crp?tab=launchpad" className="btn-primary inline-flex items-center gap-2 text-sm">
+                          {trainingCopy.exploreCta || 'Explore Launchpad'} <ArrowRight className="w-4 h-4" />
+                        </Link>
+                        <Link to="/crp?tab=readiness" className="btn-outline inline-flex items-center gap-2 text-sm">Personalised Career Readiness Program</Link>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {trainingProducts.length > 0 && (
+                    <div>
+                      <h3 className="font-bold mb-4 flex items-center gap-2 text-theme-primary">
+                        <Tag className="w-5 h-5 text-orange-500" />
+                        {trainingCopy.productsTitle || 'Training programs'}
+                      </h3>
+                      {renderProductGrid(trainingProducts)}
                     </div>
                   )}
                 </div>
@@ -181,9 +212,9 @@ export default function MarketplaceHub() {
                           'Job-ready skill sessions, interviews, resume and placement support for college students, freshers, and professionals.'}
                       </p>
                       <div className="flex flex-wrap gap-3 mt-6">
-                        <Link to="/contact#guidance" className="btn-primary inline-flex items-center gap-2">
+                        <GuidanceLink to="/contact#guidance" className="btn-primary inline-flex items-center gap-2">
                           {d('freeGuidance')?.cta || 'Book a free guidance call'} <ArrowRight className="w-4 h-4" />
-                        </Link>
+                        </GuidanceLink>
                         <Link to="/crp?tab=launchpad" className="btn-outline inline-flex items-center gap-2">
                           {trainingCopy.exploreCta || 'Explore Launchpad'}
                         </Link>

@@ -128,7 +128,7 @@ function Composer({ onSend, sending, placeholder = 'Type your message…' }) {
   );
 }
 
-export function UserMessagesPanel({ token }) {
+export function UserMessagesPanel({ token, variant = 'default' }) {
   const [thread, setThread] = useState(null);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -151,7 +151,15 @@ export function UserMessagesPanel({ token }) {
   }, [token]);
 
   useEffect(() => { load(); }, [load]);
-  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+
+  const skipInitialScroll = useRef(true);
+  useEffect(() => {
+    if (skipInitialScroll.current) {
+      skipInitialScroll.current = false;
+      return;
+    }
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
 
   const send = async ({ body, attachments }) => {
     setSending(true);
@@ -172,12 +180,12 @@ export function UserMessagesPanel({ token }) {
   }
 
   return (
-    <DashCard className="!p-0 overflow-hidden msg-panel" hover={false} glow={false}>
-      <div className="msg-panel__head">
-        <MessageSquare className="w-5 h-5 text-amber-600" />
+    <DashCard className={`!p-0 overflow-hidden msg-panel${variant === 'whatsapp' ? ' msg-panel--whatsapp' : ''}`} hover={false} glow={false}>
+      <div className="msg-panel__head msg-panel__head--whatsapp">
+        <div className="msg-wa-avatar" aria-hidden>DM</div>
         <div>
-          <h2 className="font-bold">Messages from Dream Mantra</h2>
-          <p className="text-xs opacity-70">Reply to admin — text, photos, documents, voice, or video</p>
+          <h2 className="font-bold">Dream Mantra Support</h2>
+          <p className="text-xs opacity-70">Usually replies within a few hours · Mon–Sat 11 AM – 7 PM</p>
         </div>
       </div>
       {error && <p className="text-sm text-red-600 px-4 py-2">{error}</p>}

@@ -1,3 +1,5 @@
+import GuidanceCTA from '../components/GuidanceCTA';
+import GuidanceLink from '../components/GuidanceLink';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, Clock, Sparkles } from 'lucide-react';
@@ -250,9 +252,9 @@ export default function CRPExplorePage({ compact = false }) {
                 <p className="crp-launchpad__cta-desc">{crp.explore.footerDesc}</p>
               ) : null}
               <div className="crp-launchpad__cta-actions">
-                <Link to="/contact#guidance" className="crp-studio__btn crp-studio__btn--primary">
+                <GuidanceCTA className="crp-studio__btn crp-studio__btn--primary">
                   {crp.explore.cta} <ArrowRight className="w-5 h-5" />
-                </Link>
+                </GuidanceCTA>
                 <Link to="/signup" className="crp-studio__btn crp-studio__btn--ghost-dark">
                   {d('freeGuidance')?.login || 'Sign in to know more'} <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -271,9 +273,9 @@ export default function CRPExplorePage({ compact = false }) {
               ) : null}
             </div>
             <div className="crp-launchpad__cta-actions">
-              <Link to="/contact#guidance" className="btn-primary inline-flex">
+              <GuidanceCTA className="btn-primary inline-flex">
                 {crp.explore.cta} <ArrowRight className="w-5 h-5" />
-              </Link>
+              </GuidanceCTA>
               <Link to="/signup" className="block mt-4 text-sm font-semibold text-amber-700 hover:underline">
                 {d('freeGuidance')?.login || 'Sign in to know more'}
               </Link>

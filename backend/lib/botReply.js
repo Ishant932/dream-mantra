@@ -8,14 +8,15 @@ import { formatBotReply } from './formatBotReply.js';
 
 export const BOT_KNOWLEDGE = [
   ...DREAMZ_KNOWLEDGE,
-  { keys: ['ai career launchpad', 'career launchpad', 'launchpad', 'crp'], en: '**AI Career Launchpad** — 5 sessions for Class 12+, college & freshers. LinkedIn, resume, interviews. ₹1,499 | dreammantra.in/crp | 9680102276', hi: 'AI Career Launchpad — Class 12+ के लिए। /crp | 9680102276' },
-  { keys: ['what is dmit', 'dmit kya', 'brain mapping'], en: '**Brain Mapping** maps inborn potential via fingerprint analysis. ₹1,999 | dreammantra.in/assessments/dmit | 9680102276', hi: 'Brain Mapping — fingerprint analysis। /assessments/dmit' },
-  { keys: ['skill mapping', 'mbti', 'disc', 'riasec'], en: 'Skill Mapping: MBTI, DISC, RIASEC, Big 5, VAK. ₹699 | /assessments/psychometric', hi: 'Skill Mapping: MBTI, DISC, RIASEC।' },
-  { keys: ['contact', 'phone', '9680102276'], en: '📞 9680102276 | info@dreammantra.in | Mon-Sat 11am-7pm | Jaipur & Pan-India online', hi: '9680102276 | info@dreammantra.in' },
-  { keys: ['book', 'consultation', 'slot'], en: 'Book counselling after payment: Dashboard → Book tab. dreammantra.in/dashboard?tab=book | 9680102276', hi: 'Payment confirm के बाद Book tab। /dashboard?tab=book' },
-  { keys: ['cost', 'price', 'fees', '1999', '699', '2999'], en: 'Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499. Dashboard → Modules.', hi: 'Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999।' },
-  { keys: ['dashboard', 'modules'], en: 'Dashboard: dreammantra.in/dashboard — Modules, Book, Take test, Reports, Careers.', hi: 'Dashboard: Modules, Book, Take test। dreammantra.in/dashboard' },
-  { keys: ['payment', 'pending payment', 'pay'], en: 'Pay from Dashboard → Modules. Razorpay online or upload UPI proof. Pending until confirmed.', hi: 'Modules से pay करें।' },
+  { keys: ['career readiness', 'readiness program', 'crp readiness'], en: '**Career Readiness Program** — Brain + Skill Mapping, 5 training sessions, placement support. /crp?tab=readiness | Book Now', hi: 'Career Readiness Program — /crp?tab=readiness' },
+  { keys: ['ai career launchpad', 'career launchpad', 'launchpad'], en: '**AI Career Launchpad** — 5 sessions. ₹1,499 | /crp?tab=launchpad | 9680102276', hi: 'AI Career Launchpad — /crp?tab=launchpad' },
+  { keys: ['cost', 'price', 'fees', '1999', '699', '2999'], en: 'Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | Launchpad ₹1,499. Dashboard → Book Now.', hi: 'Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999.' },
+  { keys: ['dashboard', 'book now', 'modules'], en: 'Dashboard: Book Now, Counselling, Training & Placement, Support, Career Library. dreammantra.in/dashboard', hi: 'Dashboard: Book Now, Counselling, Training.' },
+  { keys: ['what is dmit', 'dmit kya', 'brain mapping'], en: '**Brain Mapping** — fingerprint inborn talent analysis. ₹1,999 | /counselling?tab=dmit | 9680102276', hi: 'Brain Mapping — fingerprint analysis' },
+  { keys: ['skill mapping', 'mbti', 'disc', 'riasec'], en: 'Skill Mapping: MBTI, DISC, RIASEC, Big 5. ₹699 | /counselling?tab=psychometric', hi: 'Skill Mapping — psychometric tests' },
+  { keys: ['contact', 'phone', '9680102276'], en: '📞 9680102276 | info@dreammantra.in | Mon-Sat 11am-7pm', hi: '9680102276 | info@dreammantra.in' },
+  { keys: ['payment', 'pending payment', 'pay'], en: 'Pay from Dashboard → Book Now. Razorpay or UPI proof.', hi: 'Book Now से pay करें।' },
+  { keys: ['book', 'consultation', 'slot'], en: 'Book counselling: Dashboard → Counselling after payment. 9680102276', hi: 'Payment के बाद Counselling tab' },
 ];
 
 function getLocalReply(message, lang) {

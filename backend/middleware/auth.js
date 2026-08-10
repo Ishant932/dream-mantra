@@ -18,9 +18,13 @@ export function authRequired(req, res, next) {
     req.user = userFromToken(header.split(' ')[1]);
     const data = getData();
     const dbUser = data.users?.find((u) => Number(u.id) === Number(req.user.id));
-    if (dbUser && isUserSuspended(dbUser)) {
+    if (!dbUser) {
+      return res.status(401).json({ message: 'Session expired or account not found. Please sign in again.' });
+    }
+    if (isUserSuspended(dbUser)) {
       return res.status(403).json({ message: suspensionMessage(dbUser) });
     }
+    req.user = { ...req.user, role: dbUser.role, email: dbUser.email };
     next();
   } catch {
     return res.status(401).json({ message: 'Invalid or expired token' });
@@ -33,6 +37,13 @@ export function optionalAuth(req, res, next) {
   if (header?.startsWith('Bearer ')) {
     try {
       req.user = userFromToken(header.split(' ')[1]);
+      const data = getData();
+      const dbUser = data.users?.find((u) => Number(u.id) === Number(req.user.id));
+      if (dbUser) {
+        req.user = { ...req.user, role: dbUser.role, email: dbUser.email };
+      } else {
+        req.user = undefined;
+      }
     } catch {
       /* ignore invalid token */
     }

@@ -34,6 +34,7 @@ export const siteEn = {
       title: 'Training and placement',
       links: [
         { label: 'AI Career Launchpad', desc: 'Blueprint · Sessions · Highlights · Parameters' },
+        { label: 'Personalised Career Readiness Program', desc: 'Brain + Skill mapping · 5 sessions · Placement support' },
       ],
     },
     crpPrograms: {
@@ -88,7 +89,8 @@ export const siteEn = {
       {
         title: 'Discover',
         links: [
-          { to: '/marketplace', label: 'Marketplace', icon: '🛒' },
+          { to: '/marketplace', label: 'Book Now', icon: '🛒' },
+          { to: '/dashboard?tab=assess&shop=career-readiness', label: 'Personalised Career Readiness Program', icon: '🎯' },
           { to: '/counselling?tab=institutions', label: 'Institutions', icon: '🏛️' },
           { to: '/#certifications', label: 'Certifications', icon: '🏅' },
         ],
@@ -113,7 +115,7 @@ export const siteEn = {
     contact: 'Contact',
     careers: 'Careers',
     call: 'Call',
-    modules: 'Modules',
+    modules: 'Book Now',
     pillars: '5 Pillars',
     book: 'Book Free Call',
     faq: 'FAQ',
@@ -142,7 +144,7 @@ export const siteEn = {
     },
     footerQuickLinks: [
       { to: '/', label: 'Home' },
-      { to: '/marketplace', label: 'Marketplace' },
+      { to: '/marketplace', label: 'Book Now' },
       { to: '/counselling', label: 'Counselling' },
       { to: '/crp?tab=launchpad', label: 'Training & Placement' },
       { to: '/about', label: 'About Us' },
@@ -166,7 +168,7 @@ export const siteEn = {
     footerQuickColumn: [
       { to: '/contact#guidance', label: 'Book a free guidance call' },
       { to: '/counselling?tab=institutions', label: 'Institutions' },
-      { to: '/marketplace', label: 'Marketplace' },
+      { to: '/marketplace', label: 'Book Now' },
       { to: '/#certifications', label: 'Certifications' },
       { to: '/about', label: 'About Us' },
       { to: '/blog', label: 'Blog' },
@@ -177,7 +179,7 @@ export const siteEn = {
       {
         title: 'Discover',
         links: [
-          { to: '/marketplace', label: 'Marketplace' },
+          { to: '/marketplace', label: 'Book Now' },
           { to: '/counselling?tab=institutions', label: 'Institutions' },
           { to: '/#certifications', label: 'Certifications' },
         ],
@@ -189,6 +191,7 @@ export const siteEn = {
           { to: '/about', label: 'About Us' },
           { to: '/blog', label: 'Blog' },
           { to: '/contact', label: 'Contact' },
+          { to: '/policies', label: 'Policies' },
           { to: '/terms', label: 'Terms & Conditions' },
         ],
       },
@@ -255,6 +258,13 @@ export const siteEn = {
               title: 'AI Career Launchpad',
               desc: '5 sessions away from your next job.',
               link: '/crp/explore',
+            },
+            {
+              slug: 'career-readiness',
+              icon: '🎯',
+              title: 'Personalised Career Readiness Program',
+              desc: 'Brain + Skill Mapping, 5 sessions · placement support.',
+              link: '/crp?tab=readiness',
             },
           ],
         },
@@ -585,12 +595,12 @@ export const siteEn = {
         desc: 'Explore 1000+ careers with skills, salaries, education paths, and growth.',
       },
       {
-        title: 'Modules',
-        desc: 'Brain Mapping, Skill Mapping, and combo modules — purchase and track progress.',
+        title: 'Book Now',
+        desc: 'Brain Mapping, Skill Mapping, combo, and training programs — purchase and track progress.',
       },
       {
-        title: 'Book Session',
-        desc: 'Schedule your counselling slot with a certified Dream Mantra counsellor.',
+        title: 'Training & Placement',
+        desc: 'AI Career Launchpad and Career Readiness Program for job-ready outcomes.',
       },
     ],
 
@@ -637,8 +647,9 @@ export const siteEn = {
     ],
 
     crpTabs: [
-      { id: 'pathways', label: 'Age Pathways' },
       { id: 'launchpad', label: 'AI Career Launchpad' },
+      { id: 'readiness', label: 'Personalised Career Readiness Program' },
+      { id: 'pathways', label: 'Age Pathways' },
     ],
 
     assessmentTabs: [
@@ -700,7 +711,9 @@ export const siteEn = {
     products: [
       { slug: 'dmit', title: 'Brain Mapping', description: 'Fingerprint-based inborn talent mapping' },
       { slug: 'psychometric', title: 'Skill Mapping', description: 'MBTI, DISC, RIASEC & 7 frameworks' },
+      { slug: 'dmit-psychometric', title: 'Brain + Skill Mapping', description: 'Complete nature + nurture profile' },
       { slug: 'crp-test', title: 'AI Career Launchpad Training', description: 'Job readiness for college & freshers' },
+      { slug: 'career-readiness', title: 'Personalised Career Readiness Program', description: 'Brain + Skill Mapping, training & placement' },
     ],
 
     studyAbroadCountries: ['USA', 'UK', 'Canada', 'Australia', 'Germany', 'Ireland', 'Singapore', 'UAE'],
@@ -867,14 +880,11 @@ export const siteEn = {
     ],
 
     dashboardTabs: [
-      { id: 'overview', label: 'Overview', desc: 'Profile, stats & activity' },
+      { id: 'assess', label: 'Book Now', desc: 'Browse and purchase modules' },
+      { id: 'counselling', label: 'Counselling', desc: 'Choose your counselling path' },
+      { id: 'training', label: 'Training and Placement', desc: 'Explore job-ready training' },
+      { id: 'support', label: 'Support', desc: 'Messages and help' },
       { id: 'careers', label: 'Career Library', desc: 'Explore 1000+ career paths' },
-      { id: 'assess', label: 'Modules', desc: 'Brain Mapping & Skill Mapping modules' },
-      { id: 'process-guides', label: 'Process & Take test', desc: 'Step guides & skill mapping forms' },
-      { id: 'reports', label: 'My Reports', desc: 'Assessment reports & deliverables' },
-      { id: 'messages', label: 'Messages', desc: 'Direct messages from admin' },
-      { id: 'book', label: 'Book Session', desc: 'Schedule expert counselling' },
-      { id: 'security', label: 'Security', desc: 'Two-factor authentication' },
     ],
 
     managementTeam: [
@@ -1234,11 +1244,13 @@ export const siteEn = {
       'Behavioural strengths & communication style',
     ],
     psychoProfileCovers: [
-      'How a student learns',
-      'How they think & decide',
-      'How they interact socially',
-      'What motivates them',
-      'Which careers match their natural orientation',
+      'Personality Analysis – Understand your natural personality, strengths, and areas for growth.',
+      'Career Interest Analysis – Discover the careers and work environments that best match your interests.',
+      'Behavioural Style – Learn how you communicate, work with others, and respond in different situations.',
+      'Learning Style Assessment – Identify how you learn best and the study techniques that suit you.',
+      'Multiple Intelligence Profile – Discover your strongest abilities and areas where you have the highest potential.',
+      'Core Personality Traits – Gain deeper insights into your confidence, discipline, adaptability, emotional balance, and social preferences.',
+      'Personalised Career Roadmap – Receive stream, subject, career recommendations, and expert guidance from a certified counsellor.',
     ],
     psychoProcess: [
       { step: '01', title: 'Online Assessment', desc: 'Complete the Skill Mapping battery online — typically 30–45 minutes, at your own pace.', icon: '💻' },
@@ -1291,7 +1303,7 @@ export const siteEn = {
       { step: '01', title: 'Brain Mapping', desc: 'Fingerprint scanning maps your inborn potential — learning styles, memory patterns, intelligence types. Validated in 30+ countries.', icon: '🔬', link: '/counselling?tab=dmit' },
       { step: '02', title: 'Skill Mapping', desc: 'Online assessment (30–45 min) across 7 frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung.', icon: '📊', link: '/counselling?tab=psychometric' },
       { step: '03', title: 'Combined Report', desc: 'Single holistic report merging inborn (Brain Mapping) + acquired (Skill Mapping) insights — your complete talent profile.', icon: '📋' },
-      { step: '04', title: 'Expert Counselling', desc: 'Certified Dream Mantra counsellor interprets both reports in a dedicated session and builds your personalised career roadmap.', icon: '💬', link: '/contact#guidance' },
+      { step: '04', title: 'Expert Counselling', desc: 'Certified Dream Mantra counsellor interprets both reports in a dedicated session and builds your personalised career roadmap.', icon: '💬' },
     ],
     comboCompare: [
       { aspect: 'What it maps', dmit: 'Inborn / genetic potential via fingerprints', psychometric: 'Current personality, interests & behaviour', combo: 'Complete nature + nurture picture' },
@@ -1639,7 +1651,7 @@ export const siteEn = {
       },
     },
     marketplace: {
-      title: 'Marketplace',
+      title: 'Book Now',
       subtitle: 'Two clear paths — counselling assessments & products, plus training for job readiness',
       quote: '"The best investment you can make is in yourself — and the right career decision starts with the right assessment."',
       cta: 'Book a free guidance call',
@@ -1790,16 +1802,16 @@ export const siteEn = {
         exploreMore: 'Explore more',
         cards: [
           {
-            id: 'pathways',
-            icon: '🎯',
-            title: 'Age Pathways',
-            desc: 'College students, freshers, and working professionals — pick your stage.',
-          },
-          {
             id: 'launchpad',
             icon: '🚀',
             title: 'AI Career Launchpad',
             desc: '5 skill sessions, highlights, and parameters for job-ready confidence.',
+          },
+          {
+            id: 'readiness',
+            icon: '🌟',
+            title: 'Personalised Career Readiness Program',
+            desc: 'Neuroscience + psychometrics + placement — the complete launchpad.',
           },
         ],
       },
@@ -1883,6 +1895,59 @@ export const siteEn = {
         button: 'Book a free guidance call',
         seePillars: 'See all 5 Pillars',
       },
+      readiness: {
+        badge: 'Flagship career launchpad',
+        title: 'Personalised Career Readiness Program',
+        subtitle: 'The CRP blends neuroscience, psychometrics, and modern recruitment practices to prepare students and professionals for the job market — five sessions, five counselling pillars, and placement assistance.',
+        bookCta: 'Book Now',
+        intro: 'Structured into five sessions, supported by five counselling pillars, and backed by placement assistance — designed to transform students and professionals into market-ready candidates with clarity, confidence, and future-proof skills.',
+        sessionsTitle: 'Five Training & Placement Sessions',
+        pillarsTitle: 'Five Counselling Pillars',
+        leadersTitle: 'Leadership Team',
+        audienceTitle: 'Who Can Benefit?',
+        contactTitle: 'Contact & Access',
+        contactDesc: 'Phone: 9680102276 · Email: info@dreammantra.in · Mon–Sat, 11 AM – 7 PM · Jaipur, Rajasthan (Pan-India services available)',
+        mappingSteps: [
+          {
+            title: 'Step 1: Brain Mapping (Inborn Talent)',
+            desc: 'Fingerprint-based biometric analysis decodes natural abilities — learning styles, memory patterns, and intelligence types.',
+            bullets: ['Validated in 30+ countries', 'Discover natural strengths without exam stress', 'Rooted in neuroscience, genetics, and dermatoglyphics'],
+          },
+          {
+            title: 'Step 2: Skill Mapping (Acquired Talent)',
+            desc: 'Psychometric tests measure personality traits, soft skills, and technical skills matched to career paths and industry demand.',
+            bullets: ['MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung', 'Leadership, communication, and problem-solving insight'],
+          },
+          {
+            title: 'Step 3: Combined Mapping',
+            desc: 'Integrates Brain Mapping + Skill Mapping for a 360° career profile aligned with market trends.',
+            bullets: ['What comes naturally + what you have learned', 'Future-proof and AI-proof career choices'],
+          },
+        ],
+        trainingSessions: [
+          { title: 'Career Discovery', desc: 'Identify strengths, interests, and personality fit.', outcome: 'Complete career clarity with a personalized roadmap.' },
+          { title: 'Personal Branding', desc: 'Build resume, LinkedIn profile, and digital presence.', outcome: 'Recruiter-attractive branding.' },
+          { title: 'AI-Powered Job Search', desc: 'Learn to use AI tools for smart job hunting.', outcome: 'Efficient access to hidden opportunities.' },
+          { title: 'Interview Mastery', desc: 'Mock interviews, confidence-building, communication training.', outcome: 'Strong interview performance.' },
+          { title: 'Career Launch', desc: 'Placement assistance, recruiter connections, final push.', outcome: 'Smooth transition into the workforce.' },
+        ],
+        pillars: [
+          { title: 'Inborn Talent (Brain Mapping)', desc: 'Discover natural strengths.' },
+          { title: 'Acquired Talent (Skill Mapping)', desc: 'Assess learned skills.' },
+          { title: 'What You Have Learned', desc: 'Academic and professional knowledge.' },
+          { title: 'Market Trend', desc: 'Align with industry demand.' },
+          { title: 'AI-Proof Career', desc: 'Future-ready career paths.' },
+        ],
+        leaders: [
+          { name: 'Esha (Founder)', role: 'Ex-Naukri.com recruiter', focus: 'Bridging education with industry needs.' },
+          { name: 'Shivam (Co-Founder)', role: 'PwC consulting background', focus: 'Scalable technology and operations.' },
+        ],
+        audiences: [
+          { title: 'School Students (Class 1–12)', desc: 'Early talent discovery.' },
+          { title: 'College Students', desc: 'Career clarity and placement readiness.' },
+          { title: 'Working Professionals', desc: 'Career transitions and upskilling.' },
+        ],
+      },
     },
 
     dmit: {
@@ -1893,7 +1958,7 @@ export const siteEn = {
         titleAfter: '',
         desc: 'Brain Mapping maps your inborn brain potential through fingerprint analysis — without exams, pressure, or labels. Trusted by Assam Government, Bombay High Court & families across 30+ countries.',
         bookTest: 'Book Brain Mapping',
-        freeConsultation: 'Free Consultation',
+        freeConsultation: 'Free guidance Call',
         imageAlt: 'Brain Mapping fingerprint session',
       },
       trustedBy: {
@@ -1906,8 +1971,6 @@ export const siteEn = {
         paragraphs: [
           'Brain Mapping (Dermatoglyphics Multiple Intelligence Test) is a scientific assessment that maps an individual\'s inborn brain potential through fingerprint analysis.',
           'Fingerprints are formed in the womb between the 13th and 19th week of pregnancy and remain unchanged throughout life. During this same developmental phase, the brain lobes are also forming, creating a natural connection between finger ridge patterns and brain development.',
-          'Because of this biological link, each fingerprint corresponds to specific brain regions and neural characteristics, allowing experts to interpret how a person\'s brain is naturally wired.',
-          'Unlike traditional assessments that measure performance, marks, or learned skills, Brain Mapping focuses on identifying natural abilities, learning style, and hidden potential — without exams, pressure, or labels.',
         ],
         revealsTitle: 'What Brain Mapping Reveals',
         reveals: [
@@ -2103,7 +2166,7 @@ export const siteEn = {
         desc: 'Beyond Brain Mapping: understanding your current personality, interests & behaviour through scientifically designed assessments.',
         subdesc: 'Internationally researched · Multi-framework analysis · Certified counsellor interpretation',
         bookTest: 'Book Skill Mapping',
-        freeConsultation: 'Free Consultation',
+        freeConsultation: 'Free guidance Call',
         imageAlt: 'Skill Mapping assessment',
       },
       challenge: {
@@ -2120,18 +2183,19 @@ export const siteEn = {
         title: 'What are Skill Mapping?',
         subtitle: 'What is Psychometric Testing?',
         paragraphs: [
-          'Psychometric testing is a scientific method of measuring a person\'s mental abilities, personality traits, interests, and behavioural patterns through validated questionnaires and standardised assessments — used by schools, universities, and career counsellors worldwide.',
-          'Unlike marks, opinions, or peer pressure, psychometric tests apply internationally researched frameworks (MBTI, DISC, RIASEC, Big 5, VAK, MIT & more) to build an objective picture of who a student is right now — how they learn, think, decide, and interact with others.',
-          'At Dream Mantra, Skill Mapping brings multiple psychometric tests together into one integrated profile, interpreted by certified counsellors — so students and parents get clarity backed by science, not guesswork.',
+          'Skill Mapping is a comprehensive psychometric assessment that combines 7 internationally researched frameworks to understand a student\'s current personality, interests, behaviour, learning style, strengths, and career preferences.',
+          'Instead of relying only on marks or opinions, it provides an objective profile of how a student thinks, learns, communicates, and what careers naturally suit them.',
         ],
-        benefitsTitle: 'How Psychometric Testing Benefits Students',
+        benefitsTitle: 'Benefits of Skill Mapping',
+        profileAgeNote: 'Report contents vary based on the student\'s age.',
         studentBenefits: [
-          'Clear stream & subject choices — Science, Commerce, or Arts based on personality and interests, not pressure',
-          'Discover natural learning style — study smarter using Visual, Auditory, or Kinesthetic strategies',
-          'Build self-confidence — focus on unique strengths instead of comparing with classmates',
-          'Reduce stress & confusion — career decisions rooted in self-awareness, not fear or trends',
-          'Early career direction — identify suitable paths before costly wrong college or course choices',
-          'Stronger parent-student alignment — an objective report helps families decide together with clarity',
+          'Gain clarity about your strengths and potential',
+          'Choose the right stream, subjects, and career path',
+          'Discover your preferred learning style',
+          'Improve confidence and self-awareness',
+          'Make informed decisions backed by scientific insights',
+          'Reduce confusion, stress, and career uncertainty',
+          'Support better parent-student career discussions',
         ],
         profileTitle: 'Your comprehensive profile covers',
       },
@@ -2159,7 +2223,7 @@ export const siteEn = {
         title: 'How is it Done?',
       },
       cta: {
-        title: 'Book Your Free Consultation',
+        title: 'Book Your Free guidance Call',
         desc: 'Mon–Sat, 11am–7pm · Online (Pan-India) & Offline (Jaipur) · No fees for initial consultation',
         bookSession: 'Book Free Session',
         frameworks: '7 Frameworks',
@@ -2172,11 +2236,11 @@ export const siteEn = {
       hero: {
         badge: 'Complete Nature + Nurture Profile',
         title: 'Brain Mapping + Skill Mapping',
-        desc: 'At Dream Mantra, we provide both Brain Mapping and Skill Mapping assessments — then certified expert counselling based on your combined reports to guide stream, career, and life decisions with clarity.',
-        flow: 'Inborn talent (Brain Mapping) + Current personality (Skill Mapping) → Combined report → Personalised roadmap',
+        desc: 'Complete nature + nurture profile with certified expert counselling for stream, career, and life decisions.',
+        flow: '',
         bookCombo: 'Book Combo Package',
-        freeConsultation: 'Free Consultation',
-        mergeCard: 'Both reports merged → Expert counsellor session → Your personalised career roadmap',
+        freeConsultation: 'Free guidance Call',
+        mergeCard: '',
         dmitAlt: 'Brain Mapping',
         psychometricAlt: 'Skill Mapping',
       },
@@ -2211,7 +2275,7 @@ export const siteEn = {
         title: 'Why Career Counselling?',
         subtitle: 'Scientific Education & Career Guidance — We are all unique keys, meant to unlock different doors.',
         tagline: 'Discover Your Hidden Brilliance — No Pressure. No Comparison. Just Clarity.',
-        cta: 'Book Free Consultation',
+        cta: 'Book Free guidance Call',
       },
       intro: "India's most trusted scientific career guidance platform using Brain Mapping & Skill Mapping assessments — from Class 1 to First Job.",
       howWorksTitle: 'How Career Counselling Works',
@@ -2233,7 +2297,7 @@ export const siteEn = {
       reelBadge: 'Instagram Reel',
       testimonialsTitle: 'Testimonials',
       contactTitle: 'Get in Touch',
-      contactCta: 'Book Your Free Consultation',
+      contactCta: 'Book Your Free guidance Call',
     },
 
     program: {
@@ -2296,6 +2360,39 @@ export const siteEn = {
       subtitle: 'Collaborate with Dream Mantra',
       cta: 'Get in Touch',
       partnerPrefix: 'Partner',
+    },
+
+    policies: {
+      title: 'Policies',
+      subtitle: 'How we protect your data and deliver our services',
+      intro: 'Dream Mantra (Tibrewal Enterprises) provides career guidance, assessments, and counselling. These policies summarise how we operate — for full legal terms see Terms & Conditions.',
+      sections: [
+        { title: 'Privacy & Data', content: 'We collect name, email, phone, and assessment data to deliver services. Data is used only for counselling, reports, payments, and support. We do not sell personal data. You may request correction or deletion by emailing info@dreammantra.in.' },
+        { title: 'Assessment & Counselling', content: 'Brain Mapping, Skill Mapping, and psychometric reports are advisory tools. Final stream, course, and career decisions remain with students and parents. Counselling sessions require 24-hour notice to reschedule.' },
+        { title: 'Payments & Refunds', content: 'Fees are shown at checkout. Online payments via Razorpay unlock access instantly. Manual UPI/bank transfers require payment proof and admin verification (typically within 24 business hours). Refunds, when approved, are processed in 2–3 business days; bank reflection may take 10–15 days.' },
+        { title: 'Cookies & Website', content: 'We use essential cookies for login and session security. Analytics help us improve the platform. You can disable non-essential cookies in your browser settings.' },
+        { title: 'Children & Consent', content: 'Users under 18 need parental or guardian consent. Parents are responsible for supervising minors on the platform.' },
+        { title: 'Contact & Grievances', content: 'Questions or concerns: info@dreammantra.in or 9680102276 (Mon–Sat, 11 AM – 7 PM). GSTIN: 08CDYPT7241R1Z4. Registered address: C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, Rajasthan — 302004.' },
+      ],
+      disclaimer: {
+        title: 'Disclaimer',
+        p1: 'Assessment and counselling outputs are guidance aids, not guarantees of admission, employment, or academic results.',
+        p2: 'Dream Mantra is not liable for decisions made solely on third-party advice outside our certified counsellor sessions.',
+      },
+      operator: 'Dream Mantra — Tibrewal Enterprises',
+      gstNumber: '08CDYPT7241R1Z4',
+      gstAddress: 'C-23, Bhagat Singh Marg, Tilak Marg, Jaipur, Rajasthan — 302004',
+      gstLabel: 'GSTIN:',
+      locationLabel: 'Registered office:',
+      lastUpdated: 'Last updated:',
+      lastUpdatedDate: 'August 8, 2026',
+      contactTitle: 'Need help?',
+      contactDesc: 'Our team responds on business days.',
+      emailLabel: 'Email:',
+      phoneLabel: 'Phone:',
+      hoursLabel: 'Hours:',
+      hoursValue: 'Mon–Sat, 11 AM – 7 PM',
+      locationValue: 'Jaipur, Rajasthan (Pan-India online services)',
     },
 
     terms: {

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Phone, Mail, Clock, MapPin, Instagram, Linkedin, Facebook } from 'lucide-react';
 import PageHero from '../components/PageHero';
@@ -6,6 +7,7 @@ import FreeGuidanceForm from '../components/FreeGuidanceForm';
 import FooterLocations from '../components/FooterLocations';
 import { footerSocial } from '../data/siteLinks';
 import { useLang } from '../context/LanguageContext';
+import { useGuidanceModal } from '../context/GuidanceModalContext';
 
 const CONTACT_HERO_IMAGE = '/images/contact-hero-phone.png';
 
@@ -26,19 +28,18 @@ const SOCIAL_LINKS = [
 
 export default function Contact() {
   const { t, d } = useLang();
+  const navigate = useNavigate();
+  const { openGuidance } = useGuidanceModal();
   const contact = d('pages.contact');
   const footer = d('footer') || {};
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    if (window.location.hash !== '#guidance') return;
-    const el = document.getElementById('guidance');
-    if (el) {
-      requestAnimationFrame(() => {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
+    if (window.location.hash === '#guidance') {
+      openGuidance();
+      navigate('/contact', { replace: true });
     }
-  }, []);
+  }, [openGuidance, navigate]);
 
   const details = [
     { href: 'tel:9680102276', icon: Phone, label: contact.phone, value: t('footer.phone') },

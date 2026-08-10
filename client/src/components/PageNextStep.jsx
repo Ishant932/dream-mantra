@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import GuidanceCTA from './GuidanceCTA';
 import { useLang } from '../context/LanguageContext';
 
 /**
@@ -14,9 +14,9 @@ export default function PageNextStep({
   return (
     <div className={`page-next-step max-w-3xl ${className}`.trim()}>
       <div className="flex flex-wrap gap-5 sm:gap-6 items-center">
-        <Link to={primaryTo} className="btn-gold inline-flex items-center page-next-step__primary">
+        <GuidanceCTA className="btn-gold inline-flex items-center page-next-step__primary">
           {fg.cta || 'Book a free guidance call'}
-        </Link>
+        </GuidanceCTA>
       </div>
     </div>
   );

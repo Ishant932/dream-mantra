@@ -18,6 +18,7 @@ import {
 import { getAvailableSlots, bookConsultationWithSlot, enrichConsultation, cancelConsultationByUser } from '../lib/slots.js';
 import { userHasCounsellingAccess } from '../lib/userAccess.js';
 import { listReportsForUser } from '../lib/reports.js';
+import { listResourcesForUser } from '../lib/userResources.js';
 import { getAssessmentFlow, updateAssessmentFlow } from '../lib/assessmentProgress.js';
 import { setAssessmentSkillMappingBand } from '../lib/skillMappingBand.js';
 import { getSkillTestsForUser } from '../lib/skillMappingTests.js';
@@ -42,6 +43,7 @@ import {
   markThreadRead,
   countUnreadForUser,
 } from '../lib/messages.js';
+import { listUserCvs, upsertUserCv, deleteUserCv } from '../lib/userCvs.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const careersPath = path.join(__dirname, '../../client/public/data/careers.json');
@@ -51,13 +53,19 @@ router.use(authRequired);
 
 router.get('/dashboard', (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
-  const consultations = db
+  if (!user) {
+    return res.status(401).json({ message: 'Session expired or account not found. Please sign in again.' });
+  }
+  const consultations = (db
     .prepare('SELECT * FROM consultations WHERE user_id = ? ORDER BY created_at DESC')
-    .all(req.user.id)
-    .map(enrichConsultation);
-  const assessments = db
+    .all(req.user.id) || [])
+    .filter(Boolean)
+    .map(enrichConsultation)
+    .filter(Boolean);
+  const assessments = (db
     .prepare('SELECT * FROM assessments WHERE user_id = ? ORDER BY created_at DESC')
-    .all(req.user.id)
+    .all(req.user.id) || [])
+    .filter(Boolean)
     .map((a) => {
       const pay = getPaymentForAssessment(a.id);
       return {
@@ -85,6 +93,7 @@ router.get('/dashboard', (req, res) => {
     consultations,
     assessments,
     reports: listReportsForUser(req.user.id),
+    resources: listResourcesForUser(req.user.id),
     stats: {
       consultations: consultations.length,
       assessments: assessments.length,
@@ -347,16 +356,13 @@ router.post('/messages', async (req, res) => {
 });
 
 router.get('/slots/available', (req, res) => {
-  if (!userHasCounsellingAccess(req.user.id)) {
-    return res.status(403).json({
-      message: 'Purchase a module with counselling to view and book available slots.',
-      slots: [],
-    });
-  }
   const from = req.query.from || new Date().toISOString();
   const to = req.query.to;
-  const slots = getAvailableSlots({ from, to });
-  res.json({ slots });
+  const counsellingAccess = userHasCounsellingAccess(req.user.id);
+  res.json({
+    slots: getAvailableSlots({ from, to }),
+    counsellingAccess,
+  });
 });
 
 router.get('/reports', (req, res) => {
@@ -603,6 +609,25 @@ router.delete('/assessments/:id', (req, res) => {
     return res.status(404).json({ message: 'Module not found or already removed.' });
   }
   res.json({ ok: true, message: 'Module removed' });
+});
+
+router.get('/cv', (req, res) => {
+  const rows = listUserCvs(req.user.id);
+  res.json({ cv: rows[0] || null, expires_in_days: 10 });
+});
+
+router.post('/cv', (req, res) => {
+  const { form, template_id, ats_score } = req.body || {};
+  if (!form || typeof form !== 'object') return res.status(400).json({ message: 'CV data required' });
+  const row = upsertUserCv(req.user.id, { form, template_id, ats_score });
+  res.json({ cv: row, message: 'CV saved — auto-deletes after 10 days' });
+});
+
+router.delete('/cv', (req, res) => {
+  const rows = listUserCvs(req.user.id);
+  if (!rows.length) return res.status(404).json({ message: 'No CV found' });
+  deleteUserCv(req.user.id, rows[0].id);
+  res.json({ ok: true });
 });
 
 export default router;

@@ -1,4 +1,6 @@
+import GuidanceCTA from '../components/GuidanceCTA';
 import { Link } from 'react-router-dom';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   CheckCircle, XCircle, ArrowRight, Fingerprint, Brain, Target, Users, Star,
@@ -6,6 +8,7 @@ import {
 } from 'lucide-react';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
+import DermatoglyphicsDeepDive from '../components/DermatoglyphicsDeepDive';
 
 const fade = {
   initial: { opacity: 0, y: 24 },
@@ -28,9 +31,10 @@ export default function DMITPage({ compact = false }) {
   const { d } = useLang();
   const page = d('pages.dmit');
   const hero = page.hero;
+  const [deepDiveOpen, setDeepDiveOpen] = useState(false);
 
   return (
-    <div className={`overflow-hidden${compact ? ' counselling-embed dm-saas' : ''}`}>
+    <div className={`overflow-hidden dmit-page dm-saas dm-overview-tints${compact ? ' counselling-embed' : ''}`}>
       {/* Hero */}
       <section className={`relative ${compact ? 'pt-0 pb-8 lg:pb-10' : 'pt-28 pb-16 lg:pt-32 lg:pb-20'} bg-gradient-to-b from-amber-50 to-[var(--bg-base)] dark:from-[#5c6b2e] dark:to-[#523010]`}>
         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
@@ -46,7 +50,7 @@ export default function DMITPage({ compact = false }) {
             <p className="text-base text-sand-600 dark:text-sand-300 mb-8 leading-relaxed">{hero.desc}</p>
             <div className="flex flex-wrap gap-4">
               <Link to="/signup" className="btn-primary text-base px-8 py-4">{hero.bookTest}</Link>
-              <Link to="/contact" className="btn-outline">{hero.freeConsultation}</Link>
+              <GuidanceCTA className="btn-outline">{hero.freeConsultation}</GuidanceCTA>
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>
@@ -103,7 +107,13 @@ export default function DMITPage({ compact = false }) {
           </div>
 
           <motion.div {...fade} className="mb-10">
-            <h3 className="home-headline text-2xl mb-3 text-center">{page.whatIs.scienceTitle}</h3>
+            <div className="flex flex-wrap items-center justify-center gap-3 mb-3">
+              <h3 className="home-headline text-2xl text-center">{page.whatIs.scienceTitle}</h3>
+              <button type="button" className="dmit-deep-dive-btn" onClick={() => setDeepDiveOpen(true)}>
+                <BookOpen className="w-5 h-5" aria-hidden />
+                In-depth scientific history
+              </button>
+            </div>
             <p className="text-center text-sand-600 dark:text-sand-400 max-w-2xl mx-auto mb-8">{page.whatIs.scienceIntro}</p>
             <div className="grid sm:grid-cols-3 gap-6">
               {page.whatIs.scienceFields.map((field, i) => {
@@ -375,6 +385,7 @@ export default function DMITPage({ compact = false }) {
           </Link>
         </motion.div>
       </section>
+      <DermatoglyphicsDeepDive open={deepDiveOpen} onClose={() => setDeepDiveOpen(false)} />
     </div>
   );
 }

@@ -54,6 +54,15 @@ export const MODULE_CATALOG = [
     icon: '🚀',
   },
   {
+    slug: 'career-readiness',
+    title: 'Personalised Career Readiness Program',
+    price: 2999,
+    optionalCounselling: false,
+    includesCounselling: true,
+    description: 'Brain + Skill Mapping, five training sessions, counselling & placement support.',
+    icon: '🎯',
+  },
+  {
     slug: 'counselling-topup',
     title: 'Additional Counselling Session',
     price: COUNSELLING_TOPUP_PRICE,
@@ -226,7 +235,7 @@ export function getSkillMappingUrl(classLevel) {
 }
 
 export function hasSkillMappingTests(productSlug) {
-  return productSlug === 'psychometric' || productSlug === 'dmit-psychometric';
+  return productSlug === 'psychometric' || productSlug === 'dmit-psychometric' || productSlug === 'career-readiness';
 }
 
 export function getModuleBySlug(slug, catalog = MODULE_CATALOG) {

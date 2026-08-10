@@ -455,7 +455,6 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
           </section>
         );
       case 'open-slots':
-      default:
         return (
           <section className="dash-inner-card staff-booking-section">
             <BookingSectionHead
@@ -478,6 +477,12 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
                 ))}
               </div>
             )}
+          </section>
+        );
+      default:
+        return (
+          <section className="dash-inner-card staff-booking-section">
+            <p className="text-sm opacity-70">Select a tab above to manage bookings.</p>
           </section>
         );
     }

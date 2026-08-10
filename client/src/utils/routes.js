@@ -19,6 +19,15 @@ export function assessmentPath(slug) {
   return counsellingAssessmentPath(slug) || `/assessments/${slug}`;
 }
 
+export function programPageForSlug(slug) {
+  if (!slug) return '/marketplace';
+  const counselling = counsellingAssessmentPath(slug);
+  if (counselling) return counselling;
+  if (slug === 'crp-test') return '/crp?tab=launchpad';
+  if (slug === 'career-readiness') return '/crp?tab=readiness';
+  return '/marketplace';
+}
+
 export function programPath(slug) {
   return slug ? `/programs/${slug}` : '/counselling?tab=programs';
 }

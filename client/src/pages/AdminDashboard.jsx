@@ -26,10 +26,12 @@ import {
   DashAlert,
   DashCard,
 } from '../components/DashboardUI';
-import DashboardB2BBanner from '../components/DashboardB2BBanner';
+import AdminResourceLinksPanel from '../components/admin/AdminResourceLinksPanel';
 import NotificationBell from '../components/NotificationBell';
 import AdminMessagesPanel from '../components/MessagesPanel';
 import AdminBlogPanel from '../components/AdminBlogPanel';
+import AdminStudioPanel from '../components/admin/AdminStudioPanel';
+import DashboardB2BBanner from '../components/DashboardB2BBanner';
 import { getAdminDashboardNextStep, ADMIN_NEXT_STEP_ACTIONS } from '../utils/dashboardNextStep';
 
 const ADMIN_TABS = [
@@ -43,8 +45,9 @@ const ADMIN_TABS = [
   { id: 'vouchers', label: 'Vouchers', desc: 'Discount codes by module' },
   { id: 'messages', label: 'Messages', desc: 'Direct messages to students' },
   { id: 'reports', label: 'Report Management', desc: 'Deliver reports to users' },
-  { id: 'leads', label: 'Contact Leads', desc: 'Website enquiries & messages' },
+  { id: 'leads', label: 'Guidance Calls', desc: 'Free guidance call requests' },
   { id: 'blogs', label: 'Blogs', desc: 'Create & publish website articles' },
+  { id: 'landing-pages', label: 'Landing Pages', desc: 'Internal campaign landing pages' },
   { id: 'settings', label: 'Community & Links', desc: 'AI Launchpad community URL' },
 ];
 
@@ -66,6 +69,7 @@ export default function AdminDashboard() {
   const [profileStats, setProfileStats] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [settingsTab, setSettingsTab] = useState('community');
   const [communityLink, setCommunityLink] = useState('');
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [analytics, setAnalytics] = useState(null);
@@ -194,6 +198,7 @@ export default function AdminDashboard() {
       await adminApi.updateSettings(token, {
         community_links: { 'crp-test': communityLink.trim() },
       });
+      setNotice('Community link saved');
     } catch (err) {
       setError(err.message);
     } finally {
@@ -417,8 +422,16 @@ export default function AdminDashboard() {
                 <AdminBlogPanel token={token} onNotice={setNotice} onError={setError} />
               )}
 
+              {tab === 'landing-pages' && <AdminStudioPanel />}
+
               {tab === 'settings' && (
-                <DashCard className="!p-5 sm:!p-6 max-w-2xl">
+                <div className="space-y-4 max-w-3xl">
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" className={`dash-subtab-rail__chip${settingsTab === 'community' ? ' is-active' : ''}`} onClick={() => setSettingsTab('community')}>Community link</button>
+                    <button type="button" className={`dash-subtab-rail__chip${settingsTab === 'resources' ? ' is-active' : ''}`} onClick={() => setSettingsTab('resources')}>Resource links</button>
+                  </div>
+                  {settingsTab === 'community' && (
+                <DashCard className="!p-5 sm:!p-6">
                   <h2 className="text-lg font-bold mb-2 flex items-center gap-2">
                     <Settings className="w-5 h-5 text-amber-500" /> AI Career Launchpad Community
                   </h2>
@@ -441,6 +454,11 @@ export default function AdminDashboard() {
                     </button>
                   </form>
                 </DashCard>
+                  )}
+                  {settingsTab === 'resources' && (
+                    <AdminResourceLinksPanel token={token} users={users} onNotice={setNotice} onError={setError} />
+                  )}
+                </div>
               )}
             </>
           )}

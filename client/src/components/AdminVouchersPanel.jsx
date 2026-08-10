@@ -37,7 +37,7 @@ const emptyForm = {
   discountPercent: '',
   discountFixed: '',
   moduleSlugs: ['all'],
-  displayMode: 'not_live',
+  displayMode: 'live_everyone',
   firstTimeOnly: false,
   startsAt: '',
   expiresAt: '',

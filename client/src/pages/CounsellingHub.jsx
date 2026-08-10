@@ -1,5 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLang } from '../context/LanguageContext';
+import GuidanceCTA from '../components/GuidanceCTA';
+import { useGuidanceModal } from '../context/GuidanceModalContext';
 import { programs as programImages } from '../data/content';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo } from 'react';
@@ -76,6 +78,7 @@ export default function CounsellingHub() {
   const overview = tabs.overview;
   const location = useLocation();
   const navigate = useNavigate();
+  const { openGuidance } = useGuidanceModal();
 
   const params = new URLSearchParams(location.search);
   const tab = params.get('tab') || 'overview';
@@ -96,9 +99,10 @@ export default function CounsellingHub() {
       return;
     }
     if (p.get('tab') === 'book') {
-      navigate('/contact#guidance', { replace: true });
+      navigate({ pathname: '/counselling', search: '?tab=overview' }, { replace: true, preventScrollReset: true });
+      openGuidance();
     }
-  }, [location.search, navigate]);
+  }, [location.search, navigate, openGuidance]);
 
   const setTab = (tabId) => {
     navigate(
@@ -176,11 +180,11 @@ export default function CounsellingHub() {
             </h1>
             <p className="counselling-masthead__subtitle">{counsellingPage.subtitle}</p>
             <div className="counselling-masthead__actions">
-              <Link to="/contact#guidance" className="counselling-masthead__btn counselling-masthead__btn--primary">
+              <GuidanceCTA className="counselling-masthead__btn counselling-masthead__btn--primary">
                 <Calendar className="w-4 h-4" aria-hidden />
                 {counsellingPage.cta}
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </GuidanceCTA>
               <Link to="/signup" className="counselling-masthead__btn counselling-masthead__btn--ghost">
                 <LogIn className="w-4 h-4" aria-hidden />
                 {fg.login || 'Sign in to know more'}
@@ -295,10 +299,10 @@ export default function CounsellingHub() {
                   <h2 className="counselling-next__title">{nextStepTitle}</h2>
                   <p className="counselling-next__desc">{nextStepDesc}</p>
                 </div>
-                <Link to="/contact#guidance" className="btn-primary counselling-next__cta">
+                <GuidanceCTA className="btn-primary counselling-next__cta">
                   {counsellingPage.cta}
                   <ArrowRight className="w-4 h-4" />
-                </Link>
+                </GuidanceCTA>
               </motion.aside>
             </div>
           )}

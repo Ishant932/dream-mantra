@@ -215,7 +215,7 @@ export function CRPStatsStrip({ statItems }) {
             transition={{ delay: 0.3 + i * 0.1, type: 'spring', stiffness: 280 }}
             className="crp-stat-card"
           >
-            <s.icon className="w-6 h-6 text-amber-600 mx-auto mb-2" />
+            {s.icon ? <s.icon className="w-6 h-6 text-amber-600 mx-auto mb-2" /> : null}
             <p className="font-bold text-lg">{s.label}</p>
             <p className="text-xs text-sand-500">{s.sub}</p>
           </motion.div>

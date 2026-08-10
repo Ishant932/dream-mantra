@@ -1,3 +1,4 @@
+import GuidanceCTA from '../components/GuidanceCTA';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Users, Target, Zap, Heart, Sparkles, Microscope } from 'lucide-react';
@@ -230,7 +231,7 @@ export default function About() {
         <motion.div {...fade} className="max-w-4xl mx-auto rounded-3xl dm-spectrum-bg p-12 md:p-16 text-center shadow-2xl" style={{ color: 'var(--hero-text)' }}>
           <h2 className="font-display text-3xl md:text-4xl font-bold mb-3">{about.cta.title}</h2>
           <p className="text-lg opacity-90 mb-8">{about.cta.subtitle}</p>
-          <Link to="/contact#guidance" className="btn-gold text-lg px-10">{about.cta.button}</Link>
+          <GuidanceCTA className="btn-gold text-lg px-10">{about.cta.button}</GuidanceCTA>
         </motion.div>
       </section>
     </>

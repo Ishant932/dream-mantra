@@ -55,6 +55,16 @@ export default function CounsellingBookingPanel({
     return (
       <div className="space-y-6 w-full max-w-none">
         {topUpBanner}
+        {slots.length > 0 && (
+          <DashCard className="!p-5 sm:!p-6" glow={false} hover={false}>
+            <h2 className="text-lg font-bold flex items-center gap-2 mb-3">
+              <Calendar className="w-5 h-5 text-amber-600" />
+              Available slots
+            </h2>
+            <p className="text-sm dash-card-meta mb-4">Purchase a counselling module to book one of these slots.</p>
+            <SlotCalendar mode="user" size="large" slots={slots} loading={slotsLoading} onMonthChange={onMonthChange} />
+          </DashCard>
+        )}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease }}>
           <DashCard className="!p-6 sm:!p-8" glow={false} hover={false}>
             <PurchaseJourneyStrip activeStep="choose" />

@@ -19,7 +19,9 @@ const TAB_ICONS = {
   'process-guides': '▣',
   settings: '⚙',
   analytics: '▲',
-  messages: '✉',
+  support: '✉',
+  counselling: '🧭',
+  training: '🚀',
   modules: '⬢',
   vouchers: '★',
   leads: '◐',
@@ -42,6 +44,7 @@ export default function DashboardMobileDeck({
   variant = 'user',
   headerAction,
   nextStep,
+  hideSectionRail = false,
 }) {
   const [flipped, setFlipped] = useState(false);
   const [burst, setBurst] = useState(false);
@@ -161,6 +164,7 @@ export default function DashboardMobileDeck({
         </div>
       )}
 
+      {!hideSectionRail && (
       <div className="dash-mobile-deck__rail-wrap">
         <p className="dash-mobile-deck__rail-label">Sections</p>
         <div className="dash-mobile-deck__rail" role="tablist" aria-label="Dashboard sections">
@@ -185,8 +189,9 @@ export default function DashboardMobileDeck({
           })}
         </div>
       </div>
+      )}
 
-      {activeTab && (
+      {activeTab && !hideSectionRail && (
         <div className="dash-mobile-deck__active">
           <span className="dash-mobile-deck__active-icon" aria-hidden>{tabEmoji(activeTab.id)}</span>
           <div className="min-w-0">

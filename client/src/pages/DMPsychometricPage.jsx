@@ -1,3 +1,4 @@
+import GuidanceCTA from '../components/GuidanceCTA';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -7,6 +8,7 @@ import {
 } from 'lucide-react';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
+import CounsellingProcessTimeline from '../components/CounsellingProcessTimeline';
 
 const fade = {
   initial: { opacity: 0, y: 24 },
@@ -31,7 +33,7 @@ export default function DMPsychometricPage({ compact = false }) {
   const who = d('data.comboWho');
 
   return (
-    <div className={`overflow-hidden combo-page${compact ? ' counselling-embed dm-saas' : ''}`}>
+    <div className={`overflow-hidden combo-page dm-overview-tints${compact ? ' counselling-embed dm-saas' : ''}`}>
       <section className={`relative ${compact ? 'pt-0 pb-8 lg:pb-10' : 'pt-28 pb-20 lg:pt-32 lg:pb-28'} bg-gradient-to-br from-amber-50/90 via-[var(--bg-base)] to-emerald-50/40 dark:from-[#3d4a22]/30 dark:to-[var(--bg-base)]`}>
         <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, x: -24 }} animate={{ opacity: 1, x: 0 }}>
@@ -44,12 +46,9 @@ export default function DMPsychometricPage({ compact = false }) {
             <p className="text-base md:text-lg text-sand-600 dark:text-sand-300 leading-relaxed mb-4">
               {hero.desc}
             </p>
-            <p className="text-sm text-sand-500 dark:text-sand-400 mb-8">
-              {hero.flow}
-            </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/signup" className="btn-primary px-7 py-3.5">{hero.bookCombo}</Link>
-              <Link to="/contact" className="btn-outline">{hero.freeConsultation}</Link>
+              <GuidanceCTA className="btn-outline">{hero.freeConsultation}</GuidanceCTA>
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="relative">
@@ -73,18 +72,24 @@ export default function DMPsychometricPage({ compact = false }) {
                 <img src={IMAGES.comboSkill || IMAGES.skillMapping || IMAGES.psychometric} alt={hero.psychometricAlt} className="w-full h-full object-cover" />
                 <span className="absolute bottom-2 left-2 text-xs font-bold px-2 py-1 rounded-lg bg-amber-900/75 text-amber-50">Skill Mapping</span>
               </motion.div>
+              {hero.mergeCard && (
               <motion.div
                 className="col-span-2 glass-card p-4 flex items-center gap-3 combo-merge-card"
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 3, repeat: Infinity }}
               >
                 <Sparkles className="w-8 h-8 text-amber-600 shrink-0" />
-                <p className="text-sm font-semibold text-theme-body">
-                  {hero.mergeCard}
-                </p>
+                <p className="text-sm font-semibold text-theme-body">{hero.mergeCard}</p>
               </motion.div>
+              )}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="py-12 lg:py-16 bg-[var(--bg-elevated)]">
+        <div className="max-w-7xl mx-auto px-4">
+          <CounsellingProcessTimeline />
         </div>
       </section>
 
@@ -115,10 +120,15 @@ export default function DMPsychometricPage({ compact = false }) {
                 </span>
                 <h3 className="font-display font-bold mb-2">{s.title}</h3>
                 <p className="text-sm text-sand-600 dark:text-sand-400 leading-relaxed mb-3">{s.desc}</p>
-                {s.link && (
+                {s.link && s.step !== '04' && (
                   <Link to={s.link} className="text-xs font-semibold text-amber-600 inline-flex items-center gap-1 hover:gap-2 transition-all">
                     {page.process.learnMore} <ArrowRight className="w-3 h-3" />
                   </Link>
+                )}
+                {s.step === '04' && (
+                  <GuidanceCTA className="text-xs font-semibold text-amber-600 inline-flex items-center gap-1">
+                    {page.process.learnMore} <ArrowRight className="w-3 h-3" />
+                  </GuidanceCTA>
                 )}
               </motion.div>
               );

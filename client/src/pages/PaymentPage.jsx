@@ -3,13 +3,13 @@ import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CreditCard, Shield, CheckCircle, Loader2, Tag, Clock,
-  RefreshCw, UserCheck, MessageCircle, Download, QrCode, Lock,
+  RefreshCw, UserCheck, MessageCircle, Download, QrCode,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { paymentsApi, userApi } from '../api';
 import { applyVoucherPrice } from '../data/promotions';
-import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests, MODULE_CATALOG, resolveCounsellingAddon } from '../data/moduleCatalog';
-import { purchaseIncludesCounselling } from '../utils/moduleAccess';
+import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests, getSkillMappingBandLabel, MODULE_CATALOG, resolveCounsellingAddon } from '../data/moduleCatalog';
+import { purchaseIncludesCounselling, resolveAssessmentSlug } from '../utils/moduleAccess';
 import SkillMappingBandPicker from '../components/SkillMappingBandPicker';
 
 const UPI_VPA = '8824652354@pthdfc';
@@ -17,20 +17,6 @@ const UPI_QR_IMAGE = '/payments/upi-qr.png';
 
 function formatPrice(n) {
   return `₹${n.toLocaleString('en-IN')}`;
-}
-
-function loadRazorpayScript() {
-  return new Promise((resolve, reject) => {
-    if (window.Razorpay) {
-      resolve();
-      return;
-    }
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.onload = resolve;
-    script.onerror = () => reject(new Error('Could not load payment gateway'));
-    document.body.appendChild(script);
-  });
 }
 
 function downloadUpiQr() {
@@ -58,6 +44,20 @@ function downloadUpiQr() {
     });
 }
 
+function loadRazorpayScript() {
+  return new Promise((resolve, reject) => {
+    if (window.Razorpay) {
+      resolve();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('Could not load payment gateway'));
+    document.body.appendChild(script);
+  });
+}
+
 export default function PaymentPage() {
   const { assessmentId } = useParams();
   const { token, user } = useAuth();
@@ -82,6 +82,9 @@ export default function PaymentPage() {
   const [catalog, setCatalog] = useState(MODULE_CATALOG);
   const [liveVouchers, setLiveVouchers] = useState([]);
   const [updatingCounselling, setUpdatingCounselling] = useState(false);
+  const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+
+  const featuredVoucher = useMemo(() => liveVouchers[0] || null, [liveVouchers]);
 
   useEffect(() => {
     paymentsApi.products()
@@ -114,12 +117,8 @@ export default function PaymentPage() {
   }, [token, assessmentId, navigate, loadOrder]);
 
   useEffect(() => {
-    if (order?.gatewayEnabled) {
-      setPaymentMethod('razorpay');
-    } else {
-      setPaymentMethod('admin');
-    }
-  }, [order?.gatewayEnabled]);
+    setPaymentMethod('razorpay');
+  }, [assessmentId]);
 
   useEffect(() => {
     const pay = order?.payment;
@@ -138,7 +137,11 @@ export default function PaymentPage() {
   const checkout = useMemo(() => {
     const assessment = order?.assessment;
     const apiSelection = order?.selection;
-    const slug = apiSelection?.moduleSlug || navSelection?.slug || assessment?.product_slug;
+    const slug =
+      apiSelection?.moduleSlug ||
+      navSelection?.slug ||
+      assessment?.product_slug ||
+      resolveAssessmentSlug(assessment);
     const addCounselling =
       apiSelection?.addCounselling ??
       navSelection?.addCounselling ??
@@ -165,6 +168,10 @@ export default function PaymentPage() {
 
   const gatewayEnabled = order?.gatewayEnabled === true;
   const payment = order?.payment;
+
+  useEffect(() => {
+    if (order && !order.gatewayEnabled) setAdminPanelOpen(true);
+  }, [order?.gatewayEnabled]);
   const isConfirmed = payment?.payment_status === 'confirmed';
   const isSubmitted = !!payment?.submitted_at;
   const isPending = payment?.payment_status === 'pending' && !isConfirmed;
@@ -172,7 +179,7 @@ export default function PaymentPage() {
   const needsSkillBand = hasSkillMappingTests(checkout?.slug);
 
   const persistSkillBand = async (band) => {
-    if (!band || !token) return;
+    if (!band || !token || !needsSkillBand) return;
     await userApi.setSkillMappingBand(token, Number(assessmentId), band);
     await loadOrder();
   };
@@ -180,26 +187,30 @@ export default function PaymentPage() {
   const handleSkillBandChange = async (band) => {
     setSkillMappingBand(band);
     setError('');
-    try {
-      await persistSkillBand(band);
-    } catch (e) {
-      setError(e.message);
+    if (needsSkillBand) {
+      try {
+        await persistSkillBand(band);
+      } catch (e) {
+        setError(e.message);
+      }
     }
   };
 
-  const ensureSkillBandBeforePay = async () => {
-    if (!needsSkillBand) return true;
+  const ensureAdminBandBeforeSubmit = async () => {
     if (!skillMappingBand) {
-      setError('Please select which class band this purchase is for (Class 6–8, 9–12, or Adults).');
+      setError('Please select age bifurcation (Class 6–8, Class 9–12, or Adults / Professionals) before submitting.');
       return false;
     }
-    try {
-      await persistSkillBand(skillMappingBand);
-      return true;
-    } catch (e) {
-      setError(e.message);
-      return false;
+    if (needsSkillBand) {
+      try {
+        await persistSkillBand(skillMappingBand);
+        return true;
+      } catch (e) {
+        setError(e.message);
+        return false;
+      }
     }
+    return true;
   };
 
   const applyCoupon = async () => {
@@ -238,7 +249,7 @@ export default function PaymentPage() {
     if (purchaseIncludesCounselling({ slug, lineItems: items, addCounselling })) {
       return '/dashboard?tab=book';
     }
-    const mod = getModuleBySlug(slug);
+    const mod = getModuleBySlug(slug, catalog);
     const base = mod ? `/dashboard/test/${slug}` : `/dashboard/test/dmit`;
     return `${base}?id=${id}`;
   };
@@ -298,8 +309,14 @@ export default function PaymentPage() {
         setError('Please enter your payment reference / transaction ID');
         return;
       }
-      const ok = await ensureSkillBandBeforePay();
-      if (!ok) return;
+      const bandOk = await ensureAdminBandBeforeSubmit();
+      if (!bandOk) return;
+
+      const bandLabel = getSkillMappingBandLabel(skillMappingBand);
+      const noteParts = [
+        bandLabel ? `Age bifurcation: ${bandLabel}` : '',
+        userNote.trim(),
+      ].filter(Boolean);
 
       const res = await paymentsApi.submitManual(token, {
         assessmentId: Number(assessmentId),
@@ -307,7 +324,7 @@ export default function PaymentPage() {
         proofDataUrl: proofPreview,
         proofFileName: proofFileName || undefined,
         paymentReferenceId: paymentReferenceId.trim(),
-        userNote: userNote.trim() || undefined,
+        userNote: noteParts.join(' | ') || undefined,
       });
 
       if (res.alreadyConfirmed) {
@@ -325,26 +342,20 @@ export default function PaymentPage() {
 
   const handleGatewayPay = async () => {
     if (!gatewayEnabled) {
-      setError('Online payment via Razorpay is not available yet. Please use UPI transfer.');
+      setError('Razorpay is not configured. Use Admin Approval below to submit payment proof.');
+      setAdminPanelOpen(true);
       return;
     }
 
     setPaying(true);
     setError('');
     try {
-      const ok = await ensureSkillBandBeforePay();
-      if (!ok) {
-        setPaying(false);
-        return;
-      }
-
       await loadRazorpayScript();
 
       const created = await paymentsApi.createOrder(
         token,
         Number(assessmentId),
-        couponApplied?.code || undefined,
-        needsSkillBand ? skillMappingBand : undefined
+        couponApplied?.code || undefined
       );
 
       if (created.alreadyPaid) {
@@ -403,18 +414,6 @@ export default function PaymentPage() {
     }
   };
 
-  const handlePay = () => {
-    if (!paymentMethod) {
-      setError('Please choose a payment method');
-      return;
-    }
-    if (paymentMethod === 'admin') {
-      handleAdminSubmit();
-    } else {
-      handleGatewayPay();
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center pt-20">
@@ -463,7 +462,7 @@ export default function PaymentPage() {
                 <Link to="/dashboard?tab=book" className="btn-primary inline-flex items-center justify-center gap-2">
                   Book counselling slot
                 </Link>
-                <Link to="/dashboard?tab=process-guides" className="btn-outline inline-flex items-center justify-center gap-2">
+                <Link to="/dashboard?tab=support&section=process" className="btn-outline inline-flex items-center justify-center gap-2">
                   View process
                 </Link>
               </>
@@ -584,18 +583,15 @@ export default function PaymentPage() {
                 <h3 className="payment-page__section-title">
                   <Tag className="w-4 h-4 text-amber-600" /> Coupon
                 </h3>
-                {liveVouchers.length > 0 && (
+                {featuredVoucher && (
                   <div className="payment-page__voucher-chips">
-                    {liveVouchers.map((v) => (
-                      <button
-                        key={v.code}
-                        type="button"
-                        onClick={() => { setCoupon(v.code); setCouponApplied(null); }}
-                        className="payment-page__voucher-chip"
-                      >
-                        {v.code}
-                      </button>
-                    ))}
+                    <button
+                      type="button"
+                      onClick={() => { setCoupon(featuredVoucher.code); setCouponApplied(null); }}
+                      className="payment-page__voucher-chip"
+                    >
+                      {featuredVoucher.code}
+                    </button>
                   </div>
                 )}
                 <div className="payment-page__coupon-row">
@@ -625,36 +621,24 @@ export default function PaymentPage() {
 
             {/* Right — configure & pay */}
             <div className="payment-page__main">
-              {needsSkillBand && (
-                <section className="payment-page__card">
-                  <h3 className="payment-page__section-title">Class band</h3>
-                  <SkillMappingBandPicker
-                    value={skillMappingBand}
-                    onChange={handleSkillBandChange}
-                    title="Which class band is this Skill Mapping for?"
-                    hint="Only this band's tests unlock after payment."
-                  />
-                </section>
-              )}
-
               {showCounsellingToggle && counsellingAddon && (
                 <section className="payment-page__card">
-                  <h3 className="payment-page__section-title">Add-on</h3>
+                  <h3 className="payment-page__section-title">Add-on counselling</h3>
                   <button
                     type="button"
                     disabled={updatingCounselling}
                     onClick={toggleCounsellingAddon}
-                    className={`payment-page__addon${hasCounsellingInOrder ? ' payment-page__addon--on' : ''}`}
+                    className={`payment-page__addon payment-page__addon--orange${hasCounsellingInOrder ? ' payment-page__addon--on' : ''}`}
                   >
-                    <MessageCircle className="w-5 h-5 shrink-0 text-amber-600" />
+                    <MessageCircle className="w-5 h-5 shrink-0 text-orange-600" />
                     <div className="min-w-0 flex-1 text-left">
                       <p className="font-bold text-sm">{counsellingAddon.title}</p>
                       <p className="text-xs text-sand-600 mt-0.5 line-clamp-2">{counsellingAddon.description}</p>
                     </div>
                     <div className="payment-page__addon-meta shrink-0 text-right">
-                      <p className="text-sm font-bold text-amber-700">+{formatPrice(counsellingAddon.price)}</p>
-                      <p className="text-xs font-bold mt-0.5">
-                        {updatingCounselling ? '…' : hasCounsellingInOrder ? 'Added' : 'Add'}
+                      <p className="text-sm font-bold text-orange-700">+{formatPrice(counsellingAddon.price)}</p>
+                      <p className="text-xs font-bold mt-0.5 text-orange-600">
+                        {updatingCounselling ? '…' : hasCounsellingInOrder ? 'Included ✓' : 'Tap to add'}
                       </p>
                     </div>
                   </button>
@@ -662,146 +646,97 @@ export default function PaymentPage() {
               )}
 
               <section className="payment-page__card">
-                <h3 className="payment-page__section-title">Payment method</h3>
-                <div className="payment-page__methods">
-                  <button
-                    type="button"
-                    onClick={() => { setPaymentMethod('admin'); setError(''); }}
-                    className={`payment-page__method${paymentMethod === 'admin' ? ' payment-page__method--active' : ''}`}
-                  >
-                    <UserCheck className="w-5 h-5 shrink-0" />
-                    <div className="text-left min-w-0">
-                      <p className="font-bold text-sm">UPI transfer</p>
-                      <p className="text-xs text-sand-500 mt-0.5">Scan QR → upload proof</p>
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    disabled={!gatewayEnabled}
-                    onClick={() => {
-                      if (!gatewayEnabled) return;
-                      setPaymentMethod('razorpay');
-                      setError('');
-                    }}
-                    className={`payment-page__method${paymentMethod === 'razorpay' && gatewayEnabled ? ' payment-page__method--active' : ''}${!gatewayEnabled ? ' payment-page__method--locked' : ''}`}
-                    aria-disabled={!gatewayEnabled}
-                    title={gatewayEnabled ? 'Pay with Razorpay' : 'Razorpay — coming soon'}
-                  >
-                    <span className="payment-page__method-icon-wrap">
-                      <CreditCard className="w-5 h-5 shrink-0" aria-hidden />
-                      {!gatewayEnabled && (
-                        <span className="payment-page__method-lock" aria-hidden>
-                          <Lock className="w-3 h-3" />
-                        </span>
-                      )}
-                    </span>
-                    <div className="text-left min-w-0 flex-1">
-                      <p className="font-bold text-sm flex items-center gap-1.5 flex-wrap">
-                        Pay with Razorpay
-                        {!gatewayEnabled && (
-                          <span className="payment-page__method-soon">Locked</span>
-                        )}
-                      </p>
-                      <p className="text-xs text-sand-500 mt-0.5">
-                        {gatewayEnabled
-                          ? 'UPI, cards, netbanking — instant unlock'
-                          : 'Online gateway — set keys to enable'}
-                      </p>
-                    </div>
-                  </button>
-                </div>
-
-                {paymentMethod === 'admin' && (
-                  <div className="payment-page__upi">
-                    <div className="payment-page__qr-frame" aria-label="UPI QR code scanner">
-                      <div className="payment-page__qr-frame-head">
-                        <span className="payment-page__qr-badge">
-                          <QrCode className="w-3.5 h-3.5" aria-hidden />
-                          UPI Pay
-                        </span>
-                        <span className="payment-page__qr-brand">Dream Mantra</span>
-                      </div>
-                      <div className="payment-page__qr-mat">
-                        <div className="payment-page__qr-scan-corners" aria-hidden />
-                        <img
-                          src={UPI_QR_IMAGE}
-                          alt="Scan UPI QR code to pay Dream Mantra"
-                          className="payment-page__qr-image"
-                        />
-                      </div>
-                      <p className="payment-page__qr-caption">Scan with PhonePe, GPay, Paytm, or any UPI app</p>
-                      <div className="payment-page__qr-actions">
-                        <button
-                          type="button"
-                          onClick={downloadUpiQr}
-                          className="payment-page__qr-download"
-                        >
-                          <Download className="w-4 h-4 shrink-0" aria-hidden />
-                          Download QR
-                        </button>
-                      </div>
-                    </div>
-                    <div className="payment-page__upi-details">
-                      <div className="payment-page__upi-row">
-                        <span>UPI ID</span>
-                        <code>{UPI_VPA}</code>
-                      </div>
-                      <div className="payment-page__upi-row">
-                        <span>Amount</span>
-                        <strong>{formatPrice(finalPrice)}</strong>
-                      </div>
-                      <p className="payment-page__upi-note">
-                        Pay the exact amount, then upload your screenshot below. We confirm within 24 hours.
-                      </p>
-                      <label className="payment-page__field-label">
-                        Payment screenshot <span className="text-red-600">*</span>
-                      </label>
-                      <input type="file" accept="image/*,.pdf" onChange={handleProofChange} className="input-field !py-2 text-sm w-full" />
-                      {proofPreview && (
-                        <div className="payment-page__proof-preview">
-                          <p className="text-xs text-emerald-700">Attached: {proofFileName}</p>
-                          {proofPreview.startsWith('data:image') && (
-                            <img src={proofPreview} alt="Payment proof" />
-                          )}
-                        </div>
-                      )}
-                      <label className="payment-page__field-label">
-                        Transaction ID <span className="text-red-600">*</span>
-                      </label>
-                      <input
-                        className="input-field !py-2.5 w-full"
-                        placeholder="UPI reference number"
-                        value={paymentReferenceId}
-                        onChange={(e) => setPaymentReferenceId(e.target.value)}
-                        maxLength={120}
-                      />
-                      <label className="payment-page__field-label">Note (optional)</label>
-                      <input
-                        className="input-field !py-2.5 w-full"
-                        placeholder="Any extra details"
-                        value={userNote}
-                        onChange={(e) => setUserNote(e.target.value)}
-                        maxLength={500}
-                      />
-                    </div>
+                <h3 className="payment-page__section-title">Payment</h3>
+                <button
+                  type="button"
+                  onClick={() => { setPaymentMethod('razorpay'); setError(''); }}
+                  className={`payment-page__method payment-page__method--razorpay${paymentMethod === 'razorpay' ? ' payment-page__method--active' : ''}`}
+                >
+                  <CreditCard className="w-5 h-5 shrink-0" />
+                  <div className="text-left min-w-0 flex-1">
+                    <p className="font-bold text-sm">Pay with Razorpay</p>
+                    <p className="text-xs text-sand-500 mt-0.5">
+                      {gatewayEnabled ? 'UPI, cards, netbanking — instant unlock' : 'Online gateway (enable keys on server for live pay)'}
+                    </p>
                   </div>
-                )}
+                </button>
 
                 {paymentMethod === 'razorpay' && (
                   <p className="payment-page__razorpay-hint">
                     <Shield className="w-4 h-4 shrink-0 text-brand-500" />
-                    Secured by Razorpay — access unlocks immediately after payment.
+                    Secured by Razorpay — access unlocks after successful payment.
                   </p>
+                )}
+
+                <button
+                  type="button"
+                  className={`payment-page__admin-toggle${adminPanelOpen ? ' is-open' : ''}`}
+                  onClick={() => setAdminPanelOpen((v) => !v)}
+                >
+                  <UserCheck className="w-5 h-5 shrink-0" />
+                  <span className="font-bold text-sm">ADMIN APPROVAL</span>
+                  <span className="text-xs opacity-70">Manual verification if you paid offline</span>
+                </button>
+
+                {adminPanelOpen && (
+                  <div className="payment-page__admin-panel">
+                    <div className="payment-page__admin-split">
+                      <div className="payment-page__admin-left">
+                        <div className="payment-page__qr-frame payment-page__qr-frame--split">
+                          <div className="payment-page__qr-frame-head">
+                            <span className="payment-page__qr-badge"><QrCode className="w-3.5 h-3.5" /> Scan to pay</span>
+                            <span className="payment-page__qr-brand">Dream Mantra</span>
+                          </div>
+                          <div className="payment-page__qr-mat">
+                            <img src={UPI_QR_IMAGE} alt="UPI QR" className="payment-page__qr-image" />
+                          </div>
+                          <button type="button" onClick={downloadUpiQr} className="payment-page__qr-download">
+                            <Download className="w-4 h-4" /> Download QR
+                          </button>
+                        </div>
+                        <div className="payment-page__upi-details payment-page__upi-details--split">
+                          <div className="payment-page__upi-row"><span>UPI ID</span><code>{UPI_VPA}</code></div>
+                          <div className="payment-page__upi-row"><span>Amount</span><strong>{formatPrice(finalPrice)}</strong></div>
+                          <p className="payment-page__upi-note">Pay the exact amount shown. Then upload your payment screenshot and UPI reference on the right.</p>
+                        </div>
+                      </div>
+                      <div className="payment-page__admin-right">
+                        <label className="payment-page__field-label">Payment screenshot <span className="text-red-600">*</span></label>
+                        <input type="file" accept="image/*,.pdf" onChange={handleProofChange} className="input-field !py-2 text-sm w-full" />
+                        {proofPreview && (
+                          <div className="payment-page__proof-preview">
+                            <p className="text-xs text-orange-700">{proofFileName || 'File chosen'}</p>
+                            {proofPreview.startsWith('data:image') && <img src={proofPreview} alt="Proof" />}
+                          </div>
+                        )}
+                        <label className="payment-page__field-label">Transaction ID <span className="text-red-600">*</span></label>
+                        <input className="input-field !py-2.5 w-full" placeholder="UPI / bank reference" value={paymentReferenceId} onChange={(e) => setPaymentReferenceId(e.target.value)} maxLength={120} />
+                        <label className="payment-page__field-label">Note (optional)</label>
+                        <input className="input-field !py-2.5 w-full" placeholder="Any extra details" value={userNote} onChange={(e) => setUserNote(e.target.value)} maxLength={500} />
+                        <div className="payment-page__admin-band">
+                          <SkillMappingBandPicker
+                            value={skillMappingBand}
+                            onChange={handleSkillBandChange}
+                            title="Age bifurcation (required)"
+                            hint="Select the student’s class band. Payment cannot be submitted without this."
+                          />
+                        </div>
+                        <button type="button" onClick={handleAdminSubmit} disabled={paying} className="btn-primary payment-page__admin-submit-btn w-full mt-2">
+                          {paying ? 'Submitting…' : `Submit for verification · ${formatPrice(finalPrice)}`}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 <ul className="payment-page__status-hints">
                   <li>
                     <Clock className="w-4 h-4 shrink-0 text-amber-500" />
-                    {paymentMethod === 'admin'
-                      ? 'Awaiting proof — admin verifies within 24 hours'
+                    {adminPanelOpen
+                      ? 'Admin verifies within 24 hours after you submit proof'
                       : paymentMethod === 'razorpay'
                         ? 'Instant unlock after successful Razorpay payment'
-                        : 'Select a payment method above'}
+                        : 'Choose Razorpay or open Admin Approval below'}
                   </li>
                 </ul>
 
@@ -809,17 +744,11 @@ export default function PaymentPage() {
 
                 <button
                   type="button"
-                  onClick={handlePay}
-                  disabled={paying || !paymentMethod}
+                  onClick={handleGatewayPay}
+                  disabled={paying || paymentMethod !== 'razorpay'}
                   className="btn-primary payment-page__pay-btn w-full"
                 >
-                  {paying
-                    ? 'Processing…'
-                    : paymentMethod === 'admin'
-                      ? `Submit proof · ${formatPrice(finalPrice)}`
-                      : paymentMethod === 'razorpay'
-                        ? `Pay with Razorpay · ${formatPrice(finalPrice)}`
-                        : 'Choose payment method'}
+                  {paying ? 'Processing…' : `Pay with Razorpay · ${formatPrice(finalPrice)}`}
                 </button>
 
                 <div className="payment-page__footer-actions">

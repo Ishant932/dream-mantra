@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Sparkles, ArrowUpRight } from 'lucide-react';
+import { useGuidanceModal } from '../context/GuidanceModalContext';
 import { parseNavTarget, handleHashNavClick } from '../utils/scrollHash';
 import { isMobilePerf } from '../utils/mobilePerf';
 
@@ -263,15 +264,55 @@ export function NavDropdownLinkGroup({ icon, label, desc, links, index = 0 }) {
 export function NavDropdownLink({ to, label, desc, icon, index = 0, onClick, compact = false }) {
   const location = useLocation();
   const lite = isMobilePerf();
+  const { openGuidance } = useGuidanceModal();
   const target = parseNavTarget(to);
+  const isGuidance = String(to || '').includes('guidance');
 
   const handleClick = (e) => {
+    if (isGuidance) {
+      e.preventDefault();
+      openGuidance();
+      onClick?.(e);
+      return;
+    }
+    const handled = handleHashNavClick(e, to, location.pathname, onClick);
+    if (!handled) onClick?.(e);
+  };
+
+  if (isGuidance) {
+    const btn = (
+      <button type="button" onClick={handleClick} className={`nav-mega-link group ${compact ? 'nav-mega-link-compact' : ''} w-full text-left`}>
+        {!lite && <span className="nav-mega-link-accent" aria-hidden />}
+        <span className="flex items-center gap-3 relative z-[1]">
+          {icon && (
+            <span className="nav-mega-link-icon-box">
+              <span className="nav-mega-link-icon">{icon}</span>
+            </span>
+          )}
+          <span className="flex-1 min-w-0">
+            <span className="nav-mega-link-label">{label}</span>
+            {desc && <span className="nav-mega-link-desc">{desc}</span>}
+          </span>
+          <span className="nav-mega-link-arrow">
+            <ArrowUpRight className="w-4 h-4" />
+          </span>
+        </span>
+      </button>
+    );
+    return lite ? <div className="nav-mega-link-wrap">{btn}</div> : (
+      <motion.div className="nav-mega-link-wrap" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}>
+        {btn}
+      </motion.div>
+    );
+  }
+
+  const handleLinkClick = (e) => {
     const handled = handleHashNavClick(e, to, location.pathname, onClick);
     if (!handled) onClick?.(e);
   };
 
   const linkContent = (
-    <Link to={target} onClick={handleClick} className={`nav-mega-link group ${compact ? 'nav-mega-link-compact' : ''}`}>
+    <Link to={target} onClick={handleLinkClick} className={`nav-mega-link group ${compact ? 'nav-mega-link-compact' : ''}`}>
       {!lite && <span className="nav-mega-link-accent" aria-hidden />}
       {!lite && <span className="nav-mega-link-ring" aria-hidden />}
       {!lite && (

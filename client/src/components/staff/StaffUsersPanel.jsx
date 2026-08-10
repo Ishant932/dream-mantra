@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Search, Filter, X, Mail, Phone, UserCog } from 'lucide-react';
 import { useLang } from '../../context/LanguageContext';
@@ -8,6 +9,7 @@ import CopyableUserId from '../CopyableUserId';
 import { DashCard } from '../DashboardUI';
 import AdminSectionExport from '../AdminSectionExport';
 import UserActionsMenu from '../UserActionsMenu';
+import AdminPasswordCard from '../admin/AdminPasswordCard';
 
 const CLASS_FILTER_OPTIONS = ['All classes', ...programs.map((p) => p.title)];
 const STREAM_FILTER_OPTIONS = ['All streams', 'Science', 'Commerce', 'Arts', 'Humanities', 'Undecided'];
@@ -20,6 +22,7 @@ const JOINED_FILTER_OPTIONS = [
 
 export default function StaffUsersPanel({ api, token, onError, allowCounsellorAssign = false, allowAccountActions = false }) {
   const { t } = useLang();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [counsellors, setCounsellors] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +44,11 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
   const [suspendUser, setSuspendUser] = useState(null);
   const [suspendUntil, setSuspendUntil] = useState('');
   const [actionUserId, setActionUserId] = useState(null);
+  const [passwordCard, setPasswordCard] = useState(null);
+  const [passwordSending, setPasswordSending] = useState(false);
+  const [passwordUser, setPasswordUser] = useState(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
 
   const loadUsers = useCallback(async () => {
     if (!token) return;
@@ -151,6 +159,10 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
   };
 
   const viewProfile = async (userId) => {
+    if (allowAccountActions) {
+      navigate(`/admin/users/${userId}`);
+      return;
+    }
     setProfileOpen(true);
     setProfileLoading(true);
     setProfileUser(null);
@@ -220,6 +232,47 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
       onError?.(err.message);
     } finally {
       setActionUserId(null);
+    }
+  };
+
+  const resetPassword = (user) => {
+    setPasswordUser(user);
+    setNewPassword('');
+    setNewPasswordConfirm('');
+  };
+
+  const submitPasswordReset = async () => {
+    if (!passwordUser) return;
+    if (newPassword.length < 6) {
+      onError?.('Password must be at least 6 characters');
+      return;
+    }
+    if (newPassword !== newPasswordConfirm) {
+      onError?.('Passwords do not match');
+      return;
+    }
+    setActionUserId(passwordUser.id);
+    try {
+      const res = await api.resetUserPassword(token, passwordUser.id, { password: newPassword });
+      setPasswordUser(null);
+      setPasswordCard({ user: res.user || passwordUser, password: newPassword, messageSent: res.messageSent });
+    } catch (err) {
+      onError?.(err.message);
+    } finally {
+      setActionUserId(null);
+    }
+  };
+
+  const sendPasswordMessage = async () => {
+    if (!passwordCard?.user) return;
+    setPasswordSending(true);
+    try {
+      await api.resetUserPassword(token, passwordCard.user.id, { sendMessage: true, password: passwordCard.password });
+      setPasswordCard((p) => ({ ...p, messageSent: true }));
+    } catch (err) {
+      onError?.(err.message);
+    } finally {
+      setPasswordSending(false);
     }
   };
 
@@ -377,7 +430,9 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
               <div key={u.id} className="rounded-xl border border-sand-200 dark:border-sand-700 p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="font-bold">{u.name}</p>
+                    <button type="button" onClick={() => viewProfile(u.id)} className="font-bold text-left text-amber-800 hover:underline">
+                      {u.name}
+                    </button>
                     <CopyableUserId uid={u.user_uid} compact />
                     {u.account_status === 'suspended' && (
                       <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700">Suspended</span>
@@ -392,6 +447,7 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                       onSuspend={(user) => { setSuspendUser(user); setSuspendUntil(''); }}
                       onUnsuspend={unsuspendAccount}
                       onDelete={deleteAccount}
+                      onResetPassword={resetPassword}
                       onError={onError}
                       allowAccountActions={allowAccountActions}
                       actionBusy={actionUserId === u.id}
@@ -430,7 +486,11 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                     className="border-b border-sand-100 dark:border-sand-800/60 hover:bg-amber-50/40 dark:hover:bg-sand-800/30 transition"
                   >
                     <td className="py-3 px-3"><CopyableUserId uid={u.user_uid} compact /></td>
-                    <td className="py-3 px-3 font-semibold">{u.name}</td>
+                    <td className="py-3 px-3 font-semibold">
+                      <button type="button" onClick={() => viewProfile(u.id)} className="font-semibold text-amber-800 hover:underline text-left">
+                        {u.name}
+                      </button>
+                    </td>
                     <td className="py-3 px-3 text-xs opacity-80">
                       {u.email && <p className="flex items-center gap-1"><Mail className="w-3 h-3 shrink-0" />{u.email}</p>}
                       {u.phone && <p className="flex items-center gap-1 mt-0.5"><Phone className="w-3 h-3 shrink-0" />{u.phone}</p>}
@@ -487,6 +547,7 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                           onSuspend={(user) => { setSuspendUser(user); setSuspendUntil(''); }}
                           onUnsuspend={unsuspendAccount}
                           onDelete={deleteAccount}
+                          onResetPassword={resetPassword}
                           onError={onError}
                           allowAccountActions={allowAccountActions}
                           actionBusy={actionUserId === u.id}
@@ -502,6 +563,31 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
           </>
         )}
       </DashCard>
+
+      {passwordUser && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setPasswordUser(null)}>
+          <div className="bg-[var(--bg-elevated)] rounded-xl p-5 max-w-md w-full shadow-xl space-y-3" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-bold text-lg">Set password for {passwordUser.name}</h3>
+            <input type="password" className="input-field w-full" placeholder="New password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            <input type="password" className="input-field w-full" placeholder="Confirm password" value={newPasswordConfirm} onChange={(e) => setNewPasswordConfirm(e.target.value)} />
+            <div className="flex gap-2 justify-end">
+              <button type="button" className="btn-outline text-sm" onClick={() => setPasswordUser(null)}>Cancel</button>
+              <button type="button" className="btn-primary text-sm" disabled={actionUserId === passwordUser.id} onClick={submitPasswordReset}>Save password</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {passwordCard && (
+        <AdminPasswordCard
+          user={passwordCard.user}
+          password={passwordCard.password}
+          messageSent={passwordCard.messageSent}
+          onSend={sendPasswordMessage}
+          sending={passwordSending}
+          onClose={() => setPasswordCard(null)}
+        />
+      )}
 
       {suspendUser && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setSuspendUser(null)}>

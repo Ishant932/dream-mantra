@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import {
-  User, FlaskConical, Calendar, Briefcase, Play,
+  FlaskConical, Calendar, Briefcase, Play,
   BookOpen, Lock, Sparkles, ArrowRight, CheckCircle2, Clock,
 } from 'lucide-react';
 import { DashCard } from './DashboardUI';
@@ -38,6 +38,8 @@ export default function DashboardOverview({
   onViewReports,
   onBookCounselling,
   onGoTab,
+  onOpenProgram,
+  onOpenTest,
   pendingPayment,
   paidAssessment,
 }) {
@@ -61,7 +63,6 @@ export default function DashboardOverview({
       )}
 
       <div className="dash-b2b-stat-grid">
-        <QuickStat icon={User} label="Profile" value={`${profileCompletion}%`} accent="gold" />
         <QuickStat icon={FlaskConical} label="Active modules" value={activeModules.length} accent="orange" />
         <QuickStat
           icon={Calendar}
@@ -79,7 +80,7 @@ export default function DashboardOverview({
         </button>
         <button type="button" onClick={() => onGoTab('assess')} className="dash-overview-quick">
           <FlaskConical className="w-6 h-6 text-amber-600" />
-          <span className="font-bold text-sm">Modules & Orders</span>
+          <span className="font-bold text-sm">Book Now</span>
         </button>
         <button type="button" onClick={() => onGoTab('book')} className="dash-overview-quick">
           <Calendar className="w-6 h-6 text-amber-600" />
@@ -112,7 +113,7 @@ export default function DashboardOverview({
                 Book 1-on-1 sessions after you purchase a module with counselling — add the counselling add-on at checkout, or choose Brain Mapping + Skill Mapping (counselling included).
               </p>
               <button type="button" onClick={onBookModule} className="btn-primary mt-3 !py-2 !px-4 text-sm">
-                Browse modules with counselling
+                Browse programs with counselling
               </button>
             </div>
             </div>
@@ -155,10 +156,15 @@ export default function DashboardOverview({
             <ul className="space-y-2">
               {dedupeAssessmentsBySlug(activeModules).slice(0, 3).map((a) => (
                 <li key={a.id} className="flex items-center justify-between gap-2 text-sm p-2 rounded-lg bg-sand-50 dark:bg-sand-800/50">
-                  <span className="font-medium">{getAssessmentDisplayTitle(a)}</span>
-                  <button type="button" onClick={onProcess} className="text-xs font-semibold text-amber-600 inline-flex items-center gap-1">
-                    <Play className="w-3 h-3" /> Process
-                  </button>
+                  <span className="font-medium min-w-0 truncate">{getAssessmentDisplayTitle(a)}</span>
+                  <span className="flex gap-1 shrink-0">
+                    <button type="button" onClick={() => onOpenProgram?.(a)} className="text-xs font-semibold text-amber-600 inline-flex items-center gap-1">
+                      <Play className="w-3 h-3" /> Process
+                    </button>
+                    <button type="button" onClick={() => onOpenTest?.(a)} className="text-xs font-semibold text-emerald-700 inline-flex items-center gap-1">
+                      <FlaskConical className="w-3 h-3" /> Test
+                    </button>
+                  </span>
                 </li>
               ))}
             </ul>

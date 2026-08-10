@@ -2,6 +2,8 @@ import { Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ScrollToTopOnNavigate from './components/ScrollToTopOnNavigate';
 import { AuthProvider } from './context/AuthContext';
+import { GuidanceModalProvider } from './context/GuidanceModalContext';
+import { BookNowModalProvider } from './context/BookNowModalContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout';
@@ -13,6 +15,7 @@ const Home = lazyWithRetry(() => import('./pages/Home'));
 const About = lazyWithRetry(() => import('./pages/About'));
 const Contact = lazyWithRetry(() => import('./pages/Contact'));
 const Terms = lazyWithRetry(() => import('./pages/Terms'));
+const Policies = lazyWithRetry(() => import('./pages/Policies'));
 const Login = lazyWithRetry(() => import('./pages/Login'));
 const Signup = lazyWithRetry(() => import('./pages/Signup'));
 const AssessmentsHub = lazyWithRetry(() => import('./pages/AssessmentsHub'));
@@ -28,6 +31,7 @@ const CareerDetailPage = lazyWithRetry(() => import('./pages/CareerDetailPage'))
 const BlogPage = lazyWithRetry(() => import('./pages/BlogPage'));
 const BlogPostPage = lazyWithRetry(() => import('./pages/BlogPostPage'));
 const UserDashboard = lazyWithRetry(() => import('./pages/UserDashboard'));
+const AdminUserDetailPage = lazyWithRetry(() => import('./pages/AdminUserDetailPage'));
 const AdminDashboard = lazyWithRetry(() => import('./pages/AdminDashboard'));
 const CounsellorDashboard = lazyWithRetry(() => import('./pages/CounsellorDashboard'));
 const PaymentPage = lazyWithRetry(() => import('./pages/PaymentPage'));
@@ -59,6 +63,8 @@ export default function App() {
       <AuthProvider>
         <ErrorBoundary>
         <BrowserRouter>
+          <GuidanceModalProvider>
+          <BookNowModalProvider>
           <ScrollToTopOnNavigate />
           <Routes>
             <Route element={<Layout />}>
@@ -79,6 +85,7 @@ export default function App() {
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />
               <Route path="terms" element={<Terms />} />
+              <Route path="policies" element={<Policies />} />
               <Route path="privacy" element={<Navigate to="/" replace />} />
               <Route path="assessments" element={<AssessmentsHub />} />
               <Route path="assessments/dmit" element={<Navigate to="/counselling?tab=dmit" replace />} />
@@ -113,6 +120,14 @@ export default function App() {
                 }
               />
               <Route
+                path="admin/users/:userId"
+                element={
+                  <ProtectedRoute adminOnly>
+                    <AdminUserDetailPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="admin"
                 element={
                   <ProtectedRoute adminOnly>
@@ -140,6 +155,8 @@ export default function App() {
             <Route path="signup" element={<AuthPage><Signup /></AuthPage>} />
             <Route path="forgot-password" element={<AuthPage><ForgotPassword /></AuthPage>} />
           </Routes>
+          </BookNowModalProvider>
+          </GuidanceModalProvider>
         </BrowserRouter>
         </ErrorBoundary>
       </AuthProvider>

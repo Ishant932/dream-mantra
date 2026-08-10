@@ -1,0 +1,1 @@
+import{j as r}from"./motion-DMW-7OZn.js";import{w as i}from"./index-tSqb1aRM.js";function c({className:n="",children:e,onClick:o,...u}){const{openGuidance:a}=i();return r.jsx("button",{type:"button",className:n,onClick:t=>{t.preventDefault(),a(),o?.(t)},"data-guidance-open":!0,...u,children:e})}export{c as G};

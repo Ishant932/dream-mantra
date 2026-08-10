@@ -1,37 +1,29 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-const THEMES = ['light', 'dark', 'aurora'];
+const THEMES = ['light', 'dark'];
 
 const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('dm_theme');
+    if (saved === 'aurora') return 'dark';
     return THEMES.includes(saved) ? saved : 'light';
   });
 
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('light', 'dark', 'aurora');
-    if (theme === 'light') {
-      root.classList.add('light');
-    } else if (theme === 'dark') {
-      root.classList.add('dark');
-    } else if (theme === 'aurora') {
-      /* Solar Flux uses aurora tokens + dark class so Tailwind dark: utilities apply */
-      root.classList.add('aurora', 'dark');
-    }
+    root.classList.add(theme === 'dark' ? 'dark' : 'light');
     localStorage.setItem('dm_theme', theme);
   }, [theme]);
 
   const cycleTheme = useCallback(() => {
-    setTheme((t) => THEMES[(THEMES.indexOf(t) + 1) % THEMES.length]);
+    setTheme((t) => (t === 'light' ? 'dark' : 'light'));
   }, []);
 
-  const toggle = cycleTheme;
-
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggle, cycleTheme, themes: THEMES }}>
+    <ThemeContext.Provider value={{ theme, setTheme, toggle: cycleTheme, cycleTheme, themes: THEMES }}>
       {children}
     </ThemeContext.Provider>
   );

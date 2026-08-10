@@ -1,4 +1,6 @@
 import db, { flushDatabase, repo } from '../db.js';
+import bcrypt from 'bcryptjs';
+import { randomBytes } from 'crypto';
 import { calcProfileCompletion, normalizeProfile, profileChecklist, defaultProfile } from '../lib/profile.js';
 import {
   listSlots,
@@ -16,6 +18,12 @@ import { listAllReports, upsertReport, deleteReport } from '../lib/reports.js';
 import { summarizeUserAssessments, isPendingUser } from '../lib/adminUsers.js';
 import { getData, saveData } from '../lib/database.js';
 import { handleListStaffUsers } from '../lib/listStaffUsers.js';
+import { sendMessage } from '../lib/messages.js';
+
+function generatePassword() {
+  const raw = randomBytes(5).toString('base64url').replace(/[^a-zA-Z0-9]/g, '');
+  return `${raw.slice(0, 4)}${Math.floor(10 + Math.random() * 89)}${raw.slice(4, 8)}`;
+}
 
 function numId(value) {
   if (value == null || value === '') return null;
@@ -290,6 +298,50 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
     } catch (e) {
       console.error('DELETE /users/:id failed:', e);
       res.status(500).json({ message: e.message || 'Failed to delete user' });
+    }
+  });
+
+  router.post('/users/:id/reset-password', async (req, res) => {
+    try {
+      if (req.user?.role !== 'admin') {
+        return res.status(403).json({ message: 'Only admin can reset passwords' });
+      }
+      const data = getData();
+      const user = data.users.find((u) => numId(u.id) === numId(req.params.id) && u.role === 'user');
+      if (!user) return res.status(404).json({ message: 'User not found' });
+
+      const plain = String(req.body?.password || '').trim();
+      if (plain.length < 6) return res.status(400).json({ message: 'Password must be at least 6 characters' });
+
+      user.password = bcrypt.hashSync(plain, 10);
+      saveData();
+      await flushDatabase();
+
+      let messageSent = false;
+      if (req.body?.sendMessage) {
+        try {
+          sendMessage({
+            userId: user.id,
+            senderRole: 'admin',
+            senderId: req.user.id,
+            body: `Your Dream Mantra login password was reset by our team.\n\nEmail: ${user.email || '—'}\nPhone: ${user.phone || '—'}\nNew password: ${plain}\n\nSign in at dreammantra.in/login and change your password after logging in.`,
+          });
+          messageSent = true;
+        } catch (msgErr) {
+          console.warn('Password reset message failed:', msgErr.message);
+        }
+      }
+
+      const counsellors = counsellorMap(data);
+      const activity = userActivity(user.id);
+      res.json({
+        password: plain,
+        messageSent,
+        user: sanitizeUser(user, { ...activity, counsellors }),
+      });
+    } catch (e) {
+      console.error('POST /users/:id/reset-password failed:', e);
+      res.status(500).json({ message: e.message || 'Failed to reset password' });
     }
   });
 

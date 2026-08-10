@@ -48,6 +48,15 @@ export const BASE_MODULE_CATALOG = [
     description: '5-session AI-powered career training for college students & freshers.',
   },
   {
+    slug: 'career-readiness',
+    title: 'Personalised Career Readiness Program',
+    price: 2999,
+    optionalCounselling: false,
+    includesCounselling: true,
+    icon: '🎯',
+    description: 'Brain + Skill Mapping, five sessions, counselling pillars & placement assistance.',
+  },
+  {
     slug: 'counselling-topup',
     title: 'Additional Counselling Session',
     price: COUNSELLING_TOPUP_PRICE,
@@ -85,11 +94,29 @@ function cloneBaseCatalog() {
   }));
 }
 
+function syncBaseModulesIntoCatalog(catalog) {
+  let added = false;
+  for (const base of BASE_MODULE_CATALOG) {
+    if (!catalog.some((m) => m.slug === base.slug)) {
+      catalog.push({
+        ...base,
+        counsellingAddon: base.counsellingAddon ? { ...base.counsellingAddon } : undefined,
+        source: 'static',
+      });
+      added = true;
+    }
+  }
+  return added;
+}
+
 function ensureCatalogModulesArray(data) {
   if (!Array.isArray(data.site_settings.catalog_modules) || !data.site_settings.catalog_modules.length) {
     data.site_settings.catalog_modules = cloneBaseCatalog();
     saveData();
+    return data.site_settings.catalog_modules;
   }
+  const added = syncBaseModulesIntoCatalog(data.site_settings.catalog_modules);
+  if (added) saveData();
   return data.site_settings.catalog_modules;
 }
 
@@ -218,11 +245,8 @@ function enrichCatalogModule(mod) {
 export function getActiveModuleCatalog() {
   ensureSiteSettings();
   const data = getData();
-  const stored = data.site_settings?.catalog_modules;
-  if (!Array.isArray(stored) || !stored.length) {
-    return cloneBaseCatalog();
-  }
-  return stored.filter((m) => m && !m.hidden).map(enrichCatalogModule);
+  const stored = ensureCatalogModulesArray(data);
+  return stored.filter((m) => m && !m.hidden).map(enrichCatalogModule).filter(Boolean);
 }
 
 export function listModulesForAdmin() {

@@ -20,6 +20,7 @@ export function resolveAssessmentSlug(assessment) {
   if (t.includes('brain mapping') || t.includes('dmit')) return 'dmit';
   if (t.includes('skill mapping') || t.includes('psychometric')) return 'psychometric';
   if (t.includes('launchpad') || t.includes('crp') || t.includes('ai career')) return 'crp-test';
+  if (t.includes('career readiness') || t.includes('readiness program')) return 'career-readiness';
   if (t.includes('counselling') && t.includes('additional')) return 'counselling-topup';
   if (assessment.product_slug === 'counselling-topup') return 'counselling-topup';
   return null;
@@ -114,7 +115,7 @@ function assessmentHasCounselling(assessment) {
 export function assessmentGrantsSlotBooking(assessment) {
   if (!isAssessmentUnlocked(assessment)) return false;
   const slug = resolveAssessmentSlug(assessment);
-  if (slug === 'counselling-topup' || slug === 'crp-test') return true;
+  if (slug === 'counselling-topup' || slug === 'crp-test' || slug === 'career-readiness') return true;
   return assessmentHasCounselling(assessment);
 }
 

@@ -23,8 +23,9 @@ const STREAM_PROMPTS = {
     'What is Brain Mapping?',
     'Why Career Counselling?',
     'What is AI Career Launchpad?',
-    'Brain Mapping + Skill Mapping combo?',
-    'Book free consultation',
+    'Career Readiness Program?',
+    'Book Now pricing',
+    'Book free guidance call',
     'Programs for Class 11-12',
   ],
   hi: [

@@ -35,14 +35,17 @@ function SectionBody({ section }) {
   return <p className="text-sand-600 leading-relaxed">{section.content}</p>;
 }
 
-export default function Terms() {
+export default function Terms({ pageKey = 'pages.terms', titleOverride }) {
   const { d } = useLang();
-  const page = d('pages.terms');
+  const page = d(pageKey) || d('pages.terms') || {};
+  const heroTitle = titleOverride || page.title || 'Policies';
+  const sections = page.sections || [];
+  const disclaimer = page.disclaimer || { title: 'Disclaimer', p1: '', p2: '' };
 
   return (
     <>
       <PageHero
-        title={page.title}
+        title={heroTitle}
         subtitle={page.subtitle}
         image={IMAGES.counselling}
       />
@@ -55,12 +58,12 @@ export default function Terms() {
             className="prose prose-amber max-w-none mb-12"
           >
             <p className="text-sand-600 text-lg leading-relaxed mb-8">
-              {page.intro}
+              {page.intro || ''}
             </p>
           </motion.div>
 
           <div className="space-y-8">
-            {page.sections.map((section, i) => (
+            {sections.map((section, i) => (
               <motion.div
                 key={section.title || i}
                 initial={{ opacity: 0, y: 15 }}
@@ -81,12 +84,12 @@ export default function Terms() {
             viewport={{ once: true }}
             className="mt-12 p-8 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-200"
           >
-            <h3 className="font-display font-bold text-lg text-amber-900 mb-4">{page.disclaimer.title}</h3>
+            <h3 className="font-display font-bold text-lg text-amber-900 mb-4">{disclaimer.title}</h3>
             <p className="text-amber-900 leading-relaxed mb-3">
-              {page.disclaimer.p1}
+              {disclaimer.p1}
             </p>
             <p className="text-amber-900 leading-relaxed">
-              {page.disclaimer.p2}
+              {disclaimer.p2}
             </p>
           </motion.div>
 

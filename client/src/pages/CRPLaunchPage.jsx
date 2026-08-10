@@ -1,3 +1,5 @@
+import GuidanceCTA from '../components/GuidanceCTA';
+import GuidanceLink from '../components/GuidanceLink';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2 } from 'lucide-react';
@@ -203,9 +205,9 @@ export default function CRPLaunchPage({ compact = false }) {
             <p className="text-theme-muted mb-6">{crp.ctaCard.desc}</p>
           ) : null}
           <div className={compact ? 'crp-pathways__cta-actions' : ''}>
-            <Link to="/contact#guidance" className={compact ? 'crp-studio__btn crp-studio__btn--primary' : 'btn-primary inline-flex items-center gap-2'}>
+            <GuidanceCTA className={compact ? 'crp-studio__btn crp-studio__btn--primary' : 'btn-primary inline-flex items-center gap-2'}>
               {crp.ctaCard.button} <ArrowRight className="w-5 h-5" />
-            </Link>
+            </GuidanceCTA>
             <Link to="/signup" className={compact ? 'crp-studio__btn crp-studio__btn--ghost-dark' : 'block mt-4 text-sm font-semibold text-amber-700 hover:underline'}>
               {d('freeGuidance')?.login || 'Sign in to know more'} <ArrowRight className="w-4 h-4" />
             </Link>

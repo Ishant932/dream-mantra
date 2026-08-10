@@ -17,9 +17,12 @@ const STEP_ICONS = {
 
 const HIDDEN_STEP_IDS = new Set(['counselling']);
 
+const COMPACT_STEP_IDS = new Set(['payment', 'process', 'product_action', 'report', 'book_counselling']);
+
 export default function JourneyProgressBox({
   careerPath,
   showCounsellingStep = true,
+  compact = false,
   onCompleteProfile,
   onBookModule,
   onPayment,
@@ -112,8 +115,8 @@ export default function JourneyProgressBox({
         icon: STEP_ICONS.book_counselling,
         locked: showCounsellingStep && !doneMap.payment,
       },
-    ].filter((s) => s.title && !HIDDEN_STEP_IDS.has(s.id) && (s.id !== 'book_counselling' || showCounsellingStep));
-  }, [jp, careerPath, productSlug, productMeta, pendingPayment, showCounsellingStep, onCompleteProfile, onBookModule, onPayment, onProcess, onProductAction, onViewReports, onBookCounselling]);
+    ].filter((s) => s.title && !HIDDEN_STEP_IDS.has(s.id) && (s.id !== 'book_counselling' || showCounsellingStep) && (!compact || COMPACT_STEP_IDS.has(s.id)));
+  }, [jp, careerPath, productSlug, productMeta, pendingPayment, showCounsellingStep, compact, onCompleteProfile, onBookModule, onPayment, onProcess, onProductAction, onViewReports, onBookCounselling]);
 
   const completedCount = steps.filter((s) => s.done).length;
   const recommendedIdx = steps.findIndex((s) => !s.done);
@@ -124,16 +127,16 @@ export default function JourneyProgressBox({
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="dash-journey rounded-2xl border border-amber-200/80 dark:border-amber-800/60 bg-[var(--bg-elevated)] dark:bg-sand-900/40 shadow-md overflow-hidden"
+      className={`dash-journey rounded-2xl border border-amber-200/80 dark:border-amber-800/60 bg-[var(--bg-elevated)] dark:bg-sand-900/40 shadow-md overflow-hidden${compact ? ' dash-journey--compact' : ''}`}
     >
-      <div className="relative bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600 px-4 py-3 sm:px-5 text-amber-50">
+      <div className="relative bg-gradient-to-r from-amber-700 via-orange-600 to-amber-600 px-4 py-2.5 sm:px-5 text-amber-50">
         <div className="flex items-center justify-between gap-3">
           <div className="min-w-0">
             <span className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-amber-200/90">
               <Sparkles className="w-3 h-3 shrink-0" /> {jp.label}
             </span>
-            <h3 className="font-display text-base sm:text-lg font-bold">{jp.title}</h3>
-            {jp.subtitle && (
+            <h3 className="font-display text-sm sm:text-base font-bold">{compact ? 'Your progress' : jp.title}</h3>
+            {!compact && jp.subtitle && (
               <p className="text-[11px] sm:text-xs text-amber-100/85 mt-0.5 max-w-md">{jp.subtitle}</p>
             )}
           </div>
@@ -152,7 +155,7 @@ export default function JourneyProgressBox({
         </div>
       </div>
 
-      <div className="p-4 sm:p-5">
+      <div className={compact ? 'p-3 sm:p-4' : 'p-4 sm:p-5'}>
         {allDone && (
           <div className="mb-4 p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200/60 text-center">
             <CheckCircle2 className="w-5 h-5 text-emerald-600 mx-auto mb-1" />
@@ -160,7 +163,7 @@ export default function JourneyProgressBox({
           </div>
         )}
 
-        <ol className="space-y-3">
+        <ol className={compact ? 'space-y-2' : 'space-y-3'}>
           {steps.map((step, i) => {
             const Icon = step.icon;
             const isRecommended = i === recommendedIdx;
@@ -182,7 +185,7 @@ export default function JourneyProgressBox({
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03 }}
-                  className={`rounded-xl border p-3.5 sm:p-4 transition-all ${
+                  className={`rounded-xl border ${compact ? 'p-2.5 sm:p-3' : 'p-3.5 sm:p-4'} transition-all ${
                     step.done
                       ? 'border-emerald-200/70 dark:border-emerald-900/40 bg-emerald-50/30 dark:bg-emerald-950/10'
                       : isRecommended

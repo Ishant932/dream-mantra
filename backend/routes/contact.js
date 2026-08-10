@@ -16,8 +16,8 @@ router.post('/', rateLimit({ windowMs: 15 * 60 * 1000, max: 8, keyPrefix: 'conta
   if (!trimmedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
     return res.status(400).json({ message: 'Please enter a valid email address' });
   }
-  if (!trimmedMessage || trimmedMessage.length < 10) {
-    return res.status(400).json({ message: 'Please enter a message (at least 10 characters)' });
+  if (!trimmedMessage || trimmedMessage.length < 5) {
+    return res.status(400).json({ message: 'Please enter a message (at least 5 characters)' });
   }
 
   const lead = createContactLead({

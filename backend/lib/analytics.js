@@ -1,9 +1,9 @@
 import { getData } from './database.js';
+import { getActiveModuleCatalog } from './catalogStore.js';
 import { calcProfileCompletion, normalizeProfile } from './profile.js';
 import { isAssessmentComplete, summarizeUserAssessments } from './adminUsers.js';
 import { getAvailableSlots } from './slots.js';
 import { isAssessmentFullyPaid, isPaymentConfirmed, normalizePaymentRow } from './paymentService.js';
-
 function monthKey(iso) {
   if (!iso) return null;
   const d = new Date(iso);
@@ -25,7 +25,7 @@ function countByField(items, getKey) {
 
 function pct(num, den) {
   if (!den) return 0;
-  return Math.round((num / den) * 1000) / 10;
+  return Math.min(100, Math.round((num / den) * 1000) / 10);
 }
 
 function numId(value) {
@@ -59,6 +59,13 @@ function buildModulePurchases(users, assessments, allPayments) {
     });
   }
 
+  for (const mod of getActiveModuleCatalog()) {
+    if (mod.followUpOnly) continue;
+    if (!byProduct[mod.slug]) {
+      byProduct[mod.slug] = { slug: mod.slug, title: mod.title, count: 0, users: [] };
+    }
+  }
+
   return Object.values(byProduct)
     .map((m) => ({
       ...m,
@@ -80,10 +87,14 @@ export function getPlatformAnalytics() {
   const completedAssessments = paidAssessments.filter(isAssessmentComplete);
   const pendingPayments = assessments.filter((a) => a.status === 'pending_payment');
   const pendingPaymentReviews = allPayments.filter((p) => p.payment_status === 'pending' && p.submitted_at);
-  const usersWithBooking = new Set(assessments.map((a) => a.user_id));
-  const usersWithPayment = new Set(paidAssessments.map((a) => a.user_id));
+  const usersWithBooking = new Set(
+    assessments.map((a) => numId(a.user_id)).filter((id) => id != null)
+  );
+  const usersWithPayment = new Set(
+    paidAssessments.map((a) => numId(a.user_id)).filter((id) => id != null)
+  );
   const usersWithCompletedTest = new Set(
-    completedAssessments.map((a) => a.user_id)
+    completedAssessments.map((a) => numId(a.user_id)).filter((id) => id != null)
   );
 
   const totalRevenue = confirmedPayments.reduce((sum, p) => sum + (Number(p.amount) || 0), 0)

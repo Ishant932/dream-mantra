@@ -26,6 +26,14 @@ export const PRODUCTS = {
     testPath: '/dashboard/test/dmit-psychometric',
     description: 'Complete nature + nurture profile with expert counselling session included.',
   },
+  'career-readiness': {
+    slug: 'career-readiness',
+    title: 'Personalised Career Readiness Program',
+    price: 2999,
+    includesCounselling: true,
+    testPath: '/dashboard/test/dmit-psychometric',
+    description: 'Brain + Skill Mapping, five training sessions, counselling pillars & placement support.',
+  },
   'crp-test': {
     slug: 'crp-test',
     title: 'AI Career Launchpad',

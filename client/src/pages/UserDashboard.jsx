@@ -1,37 +1,45 @@
 import { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
-import { motion } from 'framer-motion';
 import {
-  Calendar, FlaskConical, User, CheckCircle, Award, Briefcase,
-  Sparkles, AlertCircle, ExternalLink, BookOpen,
+  CheckCircle,
+  AlertCircle, ExternalLink,
   FileText, Download,
 } from 'lucide-react';
 import { useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
-import { userApi } from '../api';
+import { userApi, publicApi } from '../api';
 import { programs } from '../data/content';
+import CounsellingBookingPanel from '../components/CounsellingBookingPanel';
 import ModulesPanel from '../components/ModulesPanel';
 import DashboardSidebarLayout from '../components/DashboardSidebarLayout';
 import { lazyWithRetry } from '../utils/lazyWithRetry';
-import SecuritySettings from '../components/SecuritySettings';
 import ProfileOnboardingModal from '../components/ProfileOnboardingModal';
 import ProfileDetailsCard from '../components/ProfileDetailsCard';
 import NotificationBell from '../components/NotificationBell';
+import CVMakerPanel from '../components/dashboard/CVMakerPanel';
+import TrainingResourcesPanel from '../components/dashboard/TrainingResourcesPanel';
+import { TrainingDetailsStudio } from '../components/dashboard/TrainingStudioPanels';
+import SupportStudio from '../components/dashboard/SupportStudio';
 import { profileStreamToFilter } from '../utils/careerStreams';
 import DashboardOverview from '../components/DashboardOverview';
-import CounsellingBookingPanel from '../components/CounsellingBookingPanel';
-import ProcessQuestionnairesPanel from '../components/ProcessQuestionnairesPanel';
+import { CounsellingProductPanel, TrainingProductPanel } from '../components/dashboard/DashboardProductPanel';
 import {
-  canShowProcessTab,
   canShowCounsellingTopUp,
   hasCounsellingAccess,
   isAssessmentUnlocked,
   resolveAssessmentSlug,
 } from '../utils/moduleAccess';
 import { canCancelAssessment } from '../utils/assessmentHelpers';
-import { getDashboardNextStep, NEXT_STEP_ACTIONS } from '../utils/dashboardNextStep';
 import { hasSkillMappingTests } from '../data/moduleCatalog';
 import { prefetchCareers } from '../utils/loadCareers';
+import {
+  buildProductCareerPath,
+  hasPaidAccessForSlug,
+  slugForCounsellingFocus,
+  slugForTrainingFocus,
+} from '../utils/productCareerPath';
+import { startModuleCheckout } from '../utils/startCheckout';
+import { programPageForSlug } from '../utils/routes';
 
 const CareerLibraryExplorer = lazyWithRetry(() => import('../components/CareerLibraryExplorer'));
 
@@ -45,29 +53,40 @@ function TabLoader() {
 import {
   DashboardShell,
   DashboardLoading,
-  DashSection,
   DashCard,
   DashAlert,
 } from '../components/DashboardUI';
 import DashboardB2BBanner from '../components/DashboardB2BBanner';
-import { UserMessagesPanel } from '../components/MessagesPanel';
 
-const toolkitIcons = [BookOpen, FlaskConical, Calendar];
-const toolkitTabs = ['careers', 'assess', 'book'];
-const toolkitLinks = ['/careers', null, null];
+const COUNSELLING_PATHS = [
+  { id: 'brain', label: 'Brain Mapping', slug: 'dmit' },
+  { id: 'skill', label: 'Skill Mapping', slug: 'psychometric' },
+  { id: 'combo', label: 'Brain + Skill', slug: 'dmit-psychometric' },
+];
+
+const TRAINING_PATHS = [
+  { id: 'launchpad', label: 'AI Career Launchpad', slug: 'crp-test' },
+  { id: 'readiness', label: 'Personalised Career Readiness Program', slug: 'career-readiness' },
+];
 
 export default function UserDashboard() {
   const { user, token, refreshUser } = useAuth();
   const { t, d } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
-  const tabParam = new URLSearchParams(location.search).get('tab') || 'overview';
+  const tabParam = new URLSearchParams(location.search).get('tab') || 'assess';
 
   useEffect(() => {
-    if (tabParam === 'ai') {
-      navigate({ pathname: location.pathname, search: '?tab=overview' }, { replace: true, preventScrollReset: true });
+    if (tabParam === 'ai' || tabParam === 'overview') {
+      navigate({ pathname: location.pathname, search: '?tab=assess' }, { replace: true, preventScrollReset: true });
     }
   }, [tabParam, navigate, location.pathname]);
+
+  useEffect(() => {
+    if (tabParam === 'support') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [tabParam]);
   const welcomeUid = location.state?.welcomeUid;
   const [data, setData] = useState({ consultations: [], assessments: [], stats: {} });
   const [program, setProgram] = useState('Class 9-10');
@@ -80,6 +99,10 @@ export default function UserDashboard() {
   const [slots, setSlots] = useState([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [counsellingFocus, setCounsellingFocus] = useState('brain');
+  const [counsellingSubtab, setCounsellingSubtab] = useState(null);
+  const [trainingFocus, setTrainingFocus] = useState('launchpad');
+  const [trainingSubtab, setTrainingSubtab] = useState(null);
 
   const counsellingAccess = useMemo(
     () => data.counsellingAccess === true || hasCounsellingAccess(data.assessments || []),
@@ -87,39 +110,39 @@ export default function UserDashboard() {
   );
 
   const dashboardTabs = useMemo(() => {
-    const tabs = Array.isArray(d('data.dashboardTabs')) ? d('data.dashboardTabs') : [];
+    const tabs = [
+      { id: 'assess', label: 'Book Now', desc: 'Browse and purchase programs' },
+      { id: 'counselling', label: 'Counselling', desc: 'Choose your counselling path' },
+      { id: 'training', label: 'Training and Placement', desc: 'Explore job-ready training' },
+      { id: 'support', label: 'Support', desc: 'Messages and help' },
+      { id: 'careers', label: 'Career Library', desc: 'Explore 1000+ career paths' },
+    ];
+
     return tabs.map((tab) => {
-      if (tab.id === 'process-guides' && !canShowProcessTab(data.assessments)) {
-        return { ...tab, locked: true, desc: 'Purchase & confirm a module to unlock' };
-      }
-      if (tab.id === 'book' && !counsellingAccess) {
-        return { ...tab, locked: true, desc: 'Unlock with a counselling module' };
+      if (tab.id === 'support') {
+        return { ...tab, desc: 'Get help and messages from the team' };
       }
       return tab;
     });
-  }, [d, data.assessments, counsellingAccess]);
-
-  const toolkit = useMemo(() => {
-    const services = Array.isArray(d('data.toolkitServices')) ? d('data.toolkitServices') : [];
-    return services.map((item, i) => ({
-      icon: toolkitIcons[i],
-      title: item.title,
-      desc: item.desc,
-      link: toolkitLinks[i],
-      tab: toolkitTabs[i],
-      locked: toolkitTabs[i] === 'book' && !counsellingAccess,
-    }));
-  }, [d, counsellingAccess]);
+  }, []);
 
   const loadSlots = useCallback(async () => {
     if (!token) return;
     setSlotsLoading(true);
     try {
       const from = new Date();
-      from.setDate(1);
-      const to = new Date(from);
-      to.setMonth(to.getMonth() + 2);
-      const data = await userApi.availableSlots(token, { from: from.toISOString(), to: to.toISOString() });
+      const to = new Date();
+      to.setMonth(to.getMonth() + 3);
+      const params = { from: from.toISOString(), to: to.toISOString() };
+      let data = await userApi.availableSlots(token, params);
+      if (!data?.slots?.length) {
+        try {
+          const pub = await publicApi.availableSlots(params);
+          data = { slots: pub.slots || [] };
+        } catch {
+          /* user route is primary */
+        }
+      }
       setSlots(data.slots || []);
     } catch {
       setSlots([]);
@@ -202,7 +225,7 @@ export default function UserDashboard() {
     const slotId = new URLSearchParams(location.search).get('slot_id');
     if (!slotId || loading) return;
     if (!counsellingAccess) {
-      navigate({ pathname: '/dashboard', search: '?tab=assess' }, { replace: true, preventScrollReset: true });
+      navigate({ pathname: '/dashboard', search: '?tab=book' }, { replace: true, preventScrollReset: true });
       return;
     }
     if (tabParam !== 'book') {
@@ -213,8 +236,15 @@ export default function UserDashboard() {
   }, [location.search, tabParam, navigate, loadSlots, counsellingAccess, loading]);
 
   useEffect(() => {
-    if (tabParam === 'book' && counsellingAccess) loadSlots();
-  }, [tabParam, loadSlots, counsellingAccess]);
+    if (tabParam === 'support') {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+      document.getElementById('user-dashboard-anchor')?.scrollIntoView({ behavior: 'auto', block: 'start' });
+    }
+  }, [tabParam]);
+
+  useEffect(() => {
+    if (token) loadSlots();
+  }, [token, loadSlots]);
 
   useEffect(() => {
     const slotId = new URLSearchParams(location.search).get('slot_id');
@@ -233,7 +263,7 @@ export default function UserDashboard() {
   const openProfileModal = () => setShowProfileModal(true);
 
   const goProcessGuides = (section = 'process') => {
-    goTab('process-guides', section === 'tests' ? '&section=tests&open=1' : '&section=process');
+    goTab('support', section === 'tests' ? '&section=tests&open=1' : '&section=process');
   };
 
   const goToTakeTest = () => goProcessGuides('tests');
@@ -295,42 +325,102 @@ export default function UserDashboard() {
 
   const goToCounsellingTopUp = () => goTab('assess', '&shop=counselling-topup');
 
-  const nextStep = useMemo(() => {
-    const step = getDashboardNextStep({
-      profileCompletion,
-      pendingPayment,
-      assessments: data.assessments,
-      paidAssessment,
-      counsellingAccess,
-      consultations: data.consultations,
-    });
-    const handlers = {
-      [NEXT_STEP_ACTIONS.PROFILE]: openProfileModal,
-      [NEXT_STEP_ACTIONS.PAYMENT]: () => pendingPayment && navigate(`/payment/${pendingPayment.id}`),
-      [NEXT_STEP_ACTIONS.MODULES]: () => goTab('assess'),
-      [NEXT_STEP_ACTIONS.PROCESS]: goToProductAction,
-      [NEXT_STEP_ACTIONS.BOOK]: () => goTab('book'),
-    };
-    return {
-      ...step,
-      onClick: handlers[step.action] || openProfileModal,
-    };
-  }, [
-    profileCompletion,
-    pendingPayment,
-    data.assessments,
-    data.consultations,
-    paidAssessment,
-    counsellingAccess,
-    navigate,
-  ]);
+  const openProgramPage = useCallback((assessmentOrSlug) => {
+    const slug = typeof assessmentOrSlug === 'string'
+      ? assessmentOrSlug
+      : resolveAssessmentSlug(assessmentOrSlug);
+    navigate(programPageForSlug(slug));
+  }, [navigate]);
 
-  const stats = [
-    { label: 'Profile', value: `${profileCompletion}%`, icon: User },
-    { label: t('dashboard.modules'), value: data.stats?.assessments ?? 0, icon: FlaskConical },
-    { label: 'Consultations', value: data.stats?.consultations ?? 0, icon: Calendar },
-    { label: 'Career Options', value: '1300+', icon: Briefcase },
-  ];
+  const openModuleTest = useCallback((assessmentOrSlug) => {
+    const slug = typeof assessmentOrSlug === 'string'
+      ? assessmentOrSlug
+      : resolveAssessmentSlug(assessmentOrSlug);
+    const testSlug = testSlugFor(slug);
+    navigate(`/dashboard/test/${testSlug}`);
+  }, [navigate]);
+
+  const goCheckout = useCallback(async (slug) => {
+    if (!token || !slug) return;
+    setErr('');
+    try {
+      const catalog = data.products?.length ? data.products : undefined;
+      await startModuleCheckout({ token, slug, navigate, userApi, catalog });
+    } catch (e) {
+      setErr(e.message || 'Could not start checkout');
+    }
+  }, [token, navigate, data.products]);
+
+  const counsellingProductSlug = slugForCounsellingFocus(counsellingFocus);
+  const trainingProductSlug = slugForTrainingFocus(trainingFocus);
+  const counsellingPaid = hasPaidAccessForSlug(data.assessments || [], counsellingProductSlug);
+  const trainingPaid = hasPaidAccessForSlug(data.assessments || [], trainingProductSlug);
+
+  const counsellingCareerPath = useMemo(
+    () => buildProductCareerPath(data, counsellingProductSlug, {
+      profileCompletion,
+      profile: data.profile,
+    }),
+    [data, counsellingProductSlug, profileCompletion],
+  );
+
+  const trainingCareerPath = useMemo(
+    () => buildProductCareerPath(data, trainingProductSlug, {
+      profileCompletion,
+      profile: data.profile,
+    }),
+    [data, trainingProductSlug, profileCompletion],
+  );
+
+  const counsellingReports = useMemo(() => {
+    const slug = counsellingProductSlug;
+    return (data.reports || []).filter((r) => !slug || r.product_slug === slug || r.product_title?.toLowerCase().includes(slug.split('-')[0]));
+  }, [data.reports, counsellingProductSlug]);
+
+  const bookingProps = {
+    counsellingAccess,
+    onBrowseModules: () => goTab('assess'),
+    showTopUpOffer: canShowCounsellingTopUp(data.assessments || [], data.consultations || []),
+    onTopUpBook: goToCounsellingTopUp,
+    slots,
+    slotsLoading,
+    selectedSlot,
+    onSelectSlot: setSelectedSlot,
+    onMonthChange: loadSlots,
+    displayUser,
+    program,
+    onProgramChange: setProgram,
+    notes,
+    onNotesChange: setNotes,
+    onSubmit: bookConsultation,
+    programs,
+    bookings: (data.consultations || []).filter((c) => c.status !== 'cancelled'),
+    t,
+  };
+
+  const testSlugFor = (slug) => {
+    if (slug === 'career-readiness') return 'dmit-psychometric';
+    if (slug === 'brain' || slug === 'dmit') return 'dmit';
+    if (slug === 'skill' || slug === 'psychometric') return 'psychometric';
+    if (slug === 'combo') return 'dmit-psychometric';
+    return slug || 'psychometric';
+  };
+
+  const makeJourneyCtx = (productSlug) => {
+    const slug = productSlug || counsellingProductSlug;
+    const testSlug = testSlugFor(slug);
+    return {
+      hasReport: (data.reports || []).some((r) => r.report_link && (!r.product_slug || r.product_slug === slug || r.product_slug === testSlug)),
+      hasBooking: (data.consultations || []).some((c) => c.status !== 'cancelled'),
+      counsellingDone: (data.consultations || []).some((c) => c.status === 'completed' || c.status === 'done'),
+      onProcess: () => openProgramPage(slug),
+      onFingerprints: () => navigate('/dashboard/test/dmit'),
+      onTakeTest: () => openModuleTest(slug),
+      onReports: () => goTab('reports'),
+    };
+  };
+
+  const activePanelTab = dashboardTabs.some((t) => t.id === tabParam) ? tabParam : dashboardTabs[0]?.id;
 
   if (loading) return <DashboardLoading />;
 
@@ -357,10 +447,15 @@ export default function UserDashboard() {
 
       <div className="dash-b2b-page w-full max-w-none mx-0 px-0">
         <DashboardB2BBanner
-          tag="Your Career Toolkit"
-          title={`Welcome, ${displayUser?.name?.split(' ')[0] || 'Student'}`}
-          subtitle={displayUser?.email || displayUser?.phone || 'Dream Mantra student dashboard'}
+          tag="Toolkit"
+          title={`Hi, ${displayUser?.name?.trim() || 'Student'}`}
+          subtitle="Your Dream Mantra dashboard"
+          meta={displayUser?.email || displayUser?.phone || ''}
+          dreamsUid={displayUser?.user_uid || welcomeUid}
           variant="user"
+          toolkitTabs={dashboardTabs}
+          activeTab={activePanelTab}
+          onSelectTab={goTab}
           action={(
             <NotificationBell
               token={token}
@@ -368,7 +463,6 @@ export default function UserDashboard() {
               onRefresh={refreshDashboard}
             />
           )}
-          nextStep={nextStep}
         />
 
         {msg && (
@@ -385,15 +479,18 @@ export default function UserDashboard() {
         <div id="user-dashboard-anchor" className="scroll-mt-24">
         <DashboardSidebarLayout
             tabs={dashboardTabs}
-            defaultTab={tabParam}
+            defaultTab={activePanelTab}
             id="user-dashboard"
+            topbar
+            hideNavigation
+            hideMobileDeck
+            hideSidebar
+            hideMainHeader
+            showProfileCompletion={false}
             user={displayUser}
-            profileCompletion={profileCompletion}
-            sectionTitle="My Dashboard"
             notifToken={token}
             notifUnread={data.unreadNotifications || 0}
             onNotifRefresh={refreshDashboard}
-            nextStep={nextStep}
           >
             {(tab) => (
                 <>
@@ -409,8 +506,10 @@ export default function UserDashboard() {
                       onCompleteProfile={openProfileModal}
                       onBookModule={() => goTab('assess')}
                       onPayment={() => pendingPayment && navigate(`/payment/${pendingPayment.id}`)}
-                      onProcess={() => goTab('process-guides')}
-                      onProductAction={goToProductAction}
+                      onProcess={() => openProgramPage(paidAssessment || data.careerPath?.productSlug)}
+                      onProductAction={() => openModuleTest(paidAssessment || data.careerPath?.productSlug)}
+                      onOpenProgram={openProgramPage}
+                      onOpenTest={openModuleTest}
                       onViewReports={() => goTab('reports')}
                       onBookCounselling={() => goTab('book')}
                       onGoTab={goTab}
@@ -427,10 +526,10 @@ export default function UserDashboard() {
                 </Suspense>
               )}
 
-              {tab === 'security' && (
-                <div>
-                  <SecuritySettings />
-                </div>
+              {tab === 'support' && <SupportStudio token={token} />}
+
+              {tab === 'book' && (
+                <CounsellingBookingPanel {...bookingProps} />
               )}
 
               {tab === 'assess' && (
@@ -449,63 +548,70 @@ export default function UserDashboard() {
                 />
               )}
 
-              {tab === 'book' && (
-                !counsellingAccess ? (
-                  <DashCard className="!p-8 text-center" glow={false} hover={false}>
-                    <Calendar className="w-12 h-12 text-amber-500 mx-auto mb-4 opacity-80" />
-                    <h3 className="font-bold text-lg mb-2">Book Session — locked</h3>
-                    <p className="text-sm opacity-70 mb-4 max-w-md mx-auto">
-                      Purchase Brain Mapping, Skill Mapping, Combo or CRP with counselling access, then return here to pick a slot.
-                    </p>
-                    <button type="button" className="btn-primary" onClick={() => goTab('assess')}>Browse modules</button>
-                  </DashCard>
-                ) : (
-                <CounsellingBookingPanel
-                  counsellingAccess={counsellingAccess}
-                  onBrowseModules={() => goTab('assess')}
-                  showTopUpOffer={canShowCounsellingTopUp(data.assessments || [], data.consultations || [])}
-                  onTopUpBook={goToCounsellingTopUp}
-                  slots={slots}
-                  slotsLoading={slotsLoading}
-                  selectedSlot={selectedSlot}
-                  onSelectSlot={setSelectedSlot}
-                  onMonthChange={loadSlots}
-                  displayUser={displayUser}
-                  program={program}
-                  onProgramChange={setProgram}
-                  notes={notes}
-                  onNotesChange={setNotes}
-                  onSubmit={bookConsultation}
-                  programs={programs}
-                  bookings={(data.consultations || []).filter((c) => c.status !== 'cancelled')}
-                  t={t}
-                />
-                )
+              {tab === 'counselling' && (
+                  <div className="space-y-3">
+                    <div className="dash-product-path-rail dash-product-path-rail--inline dash-product-path-rail--center dash-product-path-rail--lg" role="tablist" aria-label="Counselling paths">
+                      {COUNSELLING_PATHS.map((item) => {
+                        const pathPaid = hasPaidAccessForSlug(data.assessments || [], item.slug);
+                        return (
+                        <button
+                          key={item.id}
+                          type="button"
+                          role="tab"
+                          aria-selected={counsellingFocus === item.id}
+                          className={`dash-product-path-rail__chip${counsellingFocus === item.id ? ' dash-product-path-rail__chip--active' : ''}${!pathPaid ? ' dash-product-path-rail__chip--locked' : ''}`}
+                          onClick={() => { setCounsellingFocus(item.id); setCounsellingSubtab(null); }}
+                        >
+                          {item.label}{!pathPaid ? ' 🔒' : ''}
+                        </button>
+                        );
+                      })}
+                    </div>
+                    <CounsellingProductPanel
+                      focus={counsellingFocus}
+                      paid={counsellingPaid}
+                      subtab={counsellingSubtab}
+                      onSubtab={setCounsellingSubtab}
+                      careerPath={counsellingCareerPath}
+                      journeyCtx={makeJourneyCtx(counsellingProductSlug)}
+                      reports={counsellingReports}
+                      bookingProps={bookingProps}
+                      onBook={() => goCheckout(counsellingProductSlug)}
+                    />
+                  </div>
               )}
 
-              {tab === 'process-guides' && (
-                !canShowProcessTab(data.assessments) ? (
-                  <DashCard className="!p-8 text-center" glow={false} hover={false}>
-                    <FlaskConical className="w-12 h-12 text-amber-500 mx-auto mb-4 opacity-80" />
-                    <h3 className="font-bold text-lg mb-2">Process &amp; Take test — locked</h3>
-                    <p className="text-sm opacity-70 mb-4 max-w-md mx-auto">
-                      Buy and confirm payment for a module first. Then process guides, questionnaires and tests appear here.
-                    </p>
-                    <button type="button" className="btn-primary" onClick={() => goTab('assess')}>Go to modules</button>
-                  </DashCard>
-                ) : (
-                <ProcessQuestionnairesPanel
-                  assessments={data.assessments || []}
-                  profile={data.profile}
-                  user={displayUser}
-                  communityLink={data.communityLink}
-                  onRefresh={refreshDashboard}
-                />
-                )
-              )}
-              
-              {tab === 'messages' && (
-                <UserMessagesPanel token={token} />
+              {tab === 'training' && (
+                <div className="dash-panel-clean space-y-3">
+                  <div className="dash-product-path-rail dash-product-path-rail--inline dash-product-path-rail--center dash-product-path-rail--lg" role="tablist">
+                    {TRAINING_PATHS.map((item) => {
+                      const pathPaid = hasPaidAccessForSlug(data.assessments || [], item.slug);
+                      return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className={`dash-product-path-rail__chip${trainingFocus === item.id ? ' dash-product-path-rail__chip--active' : ''}${!pathPaid ? ' dash-product-path-rail__chip--locked' : ''}`}
+                        onClick={() => { setTrainingFocus(item.id); setTrainingSubtab(null); }}
+                      >
+                        {item.label}{!pathPaid ? ' 🔒' : ''}
+                      </button>
+                      );
+                    })}
+                  </div>
+                  <TrainingProductPanel
+                    focus={trainingFocus}
+                    paid={trainingPaid}
+                    subtab={trainingSubtab}
+                    onSubtab={setTrainingSubtab}
+                    careerPath={trainingCareerPath}
+                    journeyCtx={makeJourneyCtx(trainingProductSlug)}
+                    bookingProps={bookingProps}
+                    resourcesPanel={<TrainingResourcesPanel token={token} resources={data.resources} />}
+                    detailsStudio={<TrainingDetailsStudio focus={trainingFocus} />}
+                    cvPanel={<CVMakerPanel />}
+                    onBook={() => goCheckout(trainingProductSlug)}
+                  />
+                </div>
               )}
 
               {tab === 'reports' && (
@@ -540,7 +646,7 @@ export default function UserDashboard() {
                         Complete your module process and tests. Our counsellors will upload your report here — you will get a notification when it is ready.
                       </p>
                       <div className="flex flex-wrap justify-center gap-3 mt-6">
-                        <button type="button" onClick={() => goTab('assess')} className="btn-primary">Go to Modules</button>
+                        <button type="button" onClick={() => goTab('assess')} className="btn-primary">Book Now</button>
                         <button type="button" onClick={() => goProcessGuides('process')} className="btn-outline">View process</button>
                       </div>
                     </DashCard>
@@ -609,40 +715,6 @@ export default function UserDashboard() {
             )}
           </DashboardSidebarLayout>
         </div>
-
-        <DashSection title={t('dashboard.navigation')} icon={Sparkles} className="mt-6 dash-b2b-toolkit">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {toolkit.map((item, i) => (
-              <motion.button
-                key={item.title}
-                type="button"
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.06, duration: 0.4 }}
-                whileHover={{ y: -6, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  if (item.locked) goTab('assess');
-                  else if (item.link) navigate(item.link);
-                  else goTab(item.tab);
-                }}
-                className={`dash-card dash-card-glow text-left group !p-6 ${item.locked ? 'opacity-75' : ''}`}
-              >
-                <motion.span
-                  className="inline-flex mb-3"
-                  whileHover={{ rotate: 8, scale: 1.1 }}
-                  transition={{ type: 'spring', stiffness: 400 }}
-                >
-                  <item.icon className="w-10 h-10 text-amber-600" />
-                </motion.span>
-                <h3 className="font-bold dash-card-title">{item.title}</h3>
-                <p className="text-xs dash-card-meta mt-2">
-                  {item.locked ? 'Unlock with a counselling module purchase' : item.desc}
-                </p>
-              </motion.button>
-            ))}
-          </div>
-        </DashSection>
       </div>
     </DashboardShell>
   );

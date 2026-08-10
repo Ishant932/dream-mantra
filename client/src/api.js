@@ -125,6 +125,10 @@ export const userApi = {
   messages: (token) => request('/user/messages', { headers: headers(token) }),
   sendMessage: (token, body) =>
     request('/user/messages', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  getCv: (token) => request('/user/cv', { headers: headers(token) }),
+  saveCv: (token, body) =>
+    request('/user/cv', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  deleteCv: (token) => request('/user/cv', { method: 'DELETE', headers: headers(token) }),
   availableSlots: (token, params = {}) => {
     const q = new URLSearchParams(params).toString();
     return request(`/user/slots/available${q ? `?${q}` : ''}`, { headers: headers(token) });
@@ -195,6 +199,8 @@ export const adminApi = {
     request(`/admin/users/${userId}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   deleteUser: (token, userId) =>
     request(`/admin/users/${userId}`, { method: 'DELETE', headers: headers(token) }),
+  resetUserPassword: (token, userId, body = {}) =>
+    request(`/admin/users/${userId}/reset-password`, { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   consultations: (token) => request('/admin/consultations', { headers: headers(token) }),
   updateConsultation: (token, id, body) =>
     request(`/admin/consultations/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
@@ -237,6 +243,8 @@ export const adminApi = {
   },
   updateLead: (token, id, body) =>
     request(`/admin/leads/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  deleteLead: (token, id) =>
+    request(`/admin/leads/${id}`, { method: 'DELETE', headers: headers(token) }),
   modules: (token) => request('/admin/modules', { headers: headers(token) }),
   createModule: (token, body) =>
     request('/admin/modules', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
@@ -274,6 +282,16 @@ export const adminApi = {
     request(`/admin/blogs/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   deleteBlog: (token, id) =>
     request(`/admin/blogs/${id}`, { method: 'DELETE', headers: headers(token) }),
+  resources: (token) => request('/admin/resources', { headers: headers(token) }),
+  createResource: (token, body) =>
+    request('/admin/resources', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  deleteResource: (token, id) =>
+    request(`/admin/resources/${id}`, { method: 'DELETE', headers: headers(token) }),
+  studioLandings: (token) => request('/admin/studio-landings', { headers: headers(token) }),
+  getStudioLanding: (token, slug) =>
+    request(`/admin/studio-landings/${slug}`, { headers: headers(token) }),
+  updateStudioLanding: (token, slug, body) =>
+    request(`/admin/studio-landings/${slug}`, { method: 'PUT', headers: headers(token), body: JSON.stringify(body) }),
 };
 
 export const counsellorApi = {

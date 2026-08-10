@@ -20,8 +20,8 @@ export const navProgramIcons = ['🌱', '🎯', '📚', '🎓', '🏫', '💼'];
 export const navCommonRoutes = ['/counselling?tab=institutions'];
 export const navCommonIcons = ['🤝'];
 
-export const navCrpRoutes = ['/crp?tab=launchpad'];
-export const navCrpIcons = ['🚀'];
+export const navCrpRoutes = ['/crp?tab=launchpad', '/crp?tab=readiness'];
+export const navCrpIcons = ['🚀', '🌟'];
 
 export const navCrpProgramRoutes = [
   '/crp?tab=pathways&audience=college-students',

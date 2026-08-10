@@ -8,7 +8,7 @@ export const footerQuickLinks = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
   { to: '/careers', label: 'Career Library' },
-  { to: '/marketplace', label: 'Marketplace' },
+  { to: '/marketplace', label: 'Book Now' },
   { to: '/counselling', label: 'Counselling' },
   { to: '/contact', label: 'Contact' },
   { to: '/terms', label: 'Terms & Conditions' },

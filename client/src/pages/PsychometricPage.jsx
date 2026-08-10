@@ -1,8 +1,9 @@
+import GuidanceCTA from '../components/GuidanceCTA';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CheckCircle, ArrowRight, Brain, Users, Target, BookOpen,
-  AlertCircle, Sparkles, Phone, ChevronRight, BarChart3, Zap, Eye,
+  Sparkles, Phone, ChevronRight, BarChart3, Zap, Eye,
   Compass, Orbit, Monitor, Microscope, ClipboardList, MessageCircle,
 } from 'lucide-react';
 import { IMAGES } from '../data/content';
@@ -46,7 +47,6 @@ export default function PsychometricPage({ compact = false }) {
   const page = d('pages.psychometric');
   const hero = page.hero;
   const tests = d('data.psychometricTests');
-  const problems = d('data.psychoProblems');
   const profileCovers = d('data.psychoProfileCovers');
   const process = d('data.psychoProcess');
   const ageMap = d('data.psychoAgeMap');
@@ -54,7 +54,7 @@ export default function PsychometricPage({ compact = false }) {
   const whatAre = page.whatAre;
 
   return (
-    <div className={`overflow-hidden psycho-page${compact ? ' counselling-embed dm-saas' : ''}`}>
+    <div className={`overflow-hidden psycho-page dm-overview-tints${compact ? ' counselling-embed dm-saas' : ''}`}>
       <section className={`relative ${compact ? 'pt-0 pb-8 lg:pb-10' : 'pt-28 pb-20 lg:pt-32 lg:pb-28'} bg-gradient-to-b from-amber-50/80 to-[var(--bg-base)] dark:from-[#3d4a22]/40 dark:to-[var(--bg-base)]`}>
         <div className="absolute top-20 right-[10%] w-64 h-64 rounded-full blur-3xl opacity-30 animate-blob pointer-events-none" style={{ background: 'rgba(255,107,74,0.2)' }} />
         <div className="absolute bottom-10 left-[5%] w-48 h-48 rounded-full blur-3xl opacity-25 animate-blob-slow pointer-events-none" style={{ background: 'rgba(201,168,76,0.25)' }} />
@@ -75,7 +75,7 @@ export default function PsychometricPage({ compact = false }) {
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/signup" className="btn-primary px-7 py-3.5 psycho-cta-shine">{hero.bookTest}</Link>
-              <Link to="/contact" className="btn-outline">{hero.freeConsultation}</Link>
+              <GuidanceCTA className="btn-outline">{hero.freeConsultation}</GuidanceCTA>
             </div>
           </motion.div>
 
@@ -92,7 +92,7 @@ export default function PsychometricPage({ compact = false }) {
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
             >
               <img
-                src={IMAGES.skillMapping || IMAGES.psychometric}
+                src={IMAGES.studentsGroup || IMAGES.skillMapping}
                 alt={hero.imageAlt}
                 className="w-full aspect-[4/3] object-cover"
               />
@@ -106,50 +106,10 @@ export default function PsychometricPage({ compact = false }) {
         </div>
       </section>
 
-      <section className="py-16 lg:py-24">
-        <div className="max-w-7xl mx-auto px-4 grid lg:grid-cols-2 gap-12 items-start">
-          <motion.div {...fade}>
-            <p className="section-label mb-3">{page.challenge.label}</p>
-            <h2 className="section-title mb-5">{page.challenge.title}</h2>
-            <p className="text-sm md:text-base text-sand-600 dark:text-sand-400 leading-relaxed mb-4">
-              {page.challenge.p1}
-            </p>
-            <p className="text-sm md:text-base text-sand-600 dark:text-sand-400 leading-relaxed">
-              {page.challenge.p2Before}<strong className="text-amber-700 dark:text-amber-300">{page.challenge.p2Highlight}</strong>{page.challenge.p2After}
-            </p>
-          </motion.div>
-
-          <motion.div {...fade} transition={{ delay: 0.1 }}>
-            <div className="glass-card p-6 lg:p-8 border-l-4 border-l-orange-500 psycho-card-hover">
-              <div className="flex items-center gap-2 mb-5">
-                <AlertCircle className="w-5 h-5 text-orange-500" />
-                <h3 className="font-display font-bold text-lg">{page.challenge.problemsTitle}</h3>
-              </div>
-              <ul className="space-y-3">
-                {problems.map((item, i) => (
-                  <motion.li
-                    key={item}
-                    {...stagger}
-                    transition={{ delay: i * 0.06 }}
-                    className="flex gap-3 text-sm text-sand-600 dark:text-sand-400"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0 mt-2" />
-                    {item}
-                  </motion.li>
-                ))}
-              </ul>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
       <section className="py-16 lg:py-24 bg-gradient-to-b from-[var(--bg-elevated)] to-[var(--bg-base)]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div {...fade} className="text-center max-w-3xl mx-auto mb-10">
             <h2 className="home-headline mb-3">{whatAre.title}</h2>
-            <p className="text-lg font-accent font-bold text-amber-700 dark:text-amber-300 mb-6">
-              {whatAre.subtitle}
-            </p>
             <div className="space-y-4 text-left max-w-2xl mx-auto">
               {whatAre.paragraphs.map((p) => (
                 <p key={p.slice(0, 48)} className="text-sm md:text-base text-sand-600 dark:text-sand-400 leading-relaxed">
@@ -160,7 +120,10 @@ export default function PsychometricPage({ compact = false }) {
           </motion.div>
 
           <motion.div {...fade} transition={{ delay: 0.08 }} className="mb-12">
-            <h3 className="home-headline text-2xl text-center mb-8">{whatAre.benefitsTitle}</h3>
+            <h3 className="home-headline text-2xl text-center mb-2">{whatAre.benefitsTitle}</h3>
+            {whatAre.profileAgeNote && (
+              <p className="text-center text-sm text-amber-700 dark:text-amber-300 font-semibold mb-8">{whatAre.profileAgeNote}</p>
+            )}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {whatAre.studentBenefits.map((b, i) => (
                 <motion.div
@@ -178,7 +141,10 @@ export default function PsychometricPage({ compact = false }) {
           </motion.div>
 
           <motion.div {...fade} className="glass-card p-6 lg:p-8 bg-gradient-to-br from-amber-50/50 to-transparent dark:from-amber-900/10">
-            <h3 className="font-display font-bold text-lg mb-4">{whatAre.profileTitle}</h3>
+            <h3 className="font-display font-bold text-lg mb-2">{whatAre.profileTitle}</h3>
+            {whatAre.profileAgeNote && (
+              <p className="text-sm font-semibold text-amber-700 dark:text-amber-300 mb-4">{whatAre.profileAgeNote}</p>
+            )}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {profileCovers.map((c) => (
                 <div key={c} className="flex gap-2 text-sm text-sand-600 dark:text-sand-400">
@@ -382,7 +348,7 @@ export default function PsychometricPage({ compact = false }) {
             {page.cta.desc}
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/contact" className="btn-primary px-8 py-3.5">{page.cta.bookSession}</Link>
+            <GuidanceCTA className="btn-primary px-8 py-3.5">{page.cta.bookSession}</GuidanceCTA>
             <a href="tel:9680102276" className="btn-outline inline-flex items-center gap-2">
               <Phone className="w-4 h-4" /> 9680102276
             </a>

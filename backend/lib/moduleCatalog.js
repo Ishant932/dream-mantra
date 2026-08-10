@@ -125,7 +125,7 @@ export function requiresSkillMappingBand(slugOrAssessment) {
   const slug = typeof slugOrAssessment === 'string'
     ? slugOrAssessment
     : resolveAssessmentSlug(slugOrAssessment);
-  return slug === 'psychometric' || slug === 'dmit-psychometric';
+  return slug === 'psychometric' || slug === 'dmit-psychometric' || slug === 'career-readiness';
 }
 
 export function normalizeSkillMappingBand(band) {

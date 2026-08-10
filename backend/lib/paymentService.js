@@ -472,6 +472,11 @@ export function listPaymentsForAdmin({
   const data = getData();
   let rows = (data.payments || []).map((p) => enrichPaymentRow(normalizePaymentRow({ ...p })));
 
+  // Only show payments after proof submitted or gateway/admin confirmation
+  rows = rows.filter((p) =>
+    p.payment_status === 'confirmed' || p.submitted_at || p.payment_proof_url
+  );
+
   if (status && status !== 'all') {
     rows = rows.filter((p) => p.payment_status === status);
   }

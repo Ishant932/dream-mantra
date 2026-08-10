@@ -25,11 +25,42 @@ export function createContactLead({ name, email, phone, message, source = 'conta
   return row;
 }
 
-export function listContactLeads({ status } = {}) {
+export function deleteContactLead(id) {
+  ensureLeads();
+  const data = getData();
+  const idx = data.contact_leads.findIndex((l) => l.id === Number(id));
+  if (idx === -1) return false;
+  data.contact_leads.splice(idx, 1);
+  saveData();
+  return true;
+}
+
+export function listContactLeads({ status, program, search } = {}) {
   ensureLeads();
   let rows = getData().contact_leads || [];
   if (status && status !== 'all') rows = rows.filter((l) => l.status === status);
+  const q = String(search || '').trim().toLowerCase();
+  if (q) {
+    rows = rows.filter((l) =>
+      l.name?.toLowerCase().includes(q)
+      || l.email?.toLowerCase().includes(q)
+      || l.phone?.includes(q)
+      || l.message?.toLowerCase().includes(q)
+    );
+  }
+  if (program && program !== 'all') {
+    rows = rows.filter((l) => matchLeadProgram(l, program));
+  }
   return rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+}
+
+function matchLeadProgram(lead, program) {
+  const msg = String(lead.message || '').toLowerCase();
+  if (program === 'counselling') return /counselling|brain mapping|dmit|psychometric|skill mapping/.test(msg);
+  if (program === 'training') return /training|placement|crp|job/.test(msg);
+  if (program === 'partner') return /partner|institution|school/.test(msg);
+  if (program === 'other') return !/counselling|training|placement|partner|brain|dmit|psychometric/.test(msg);
+  return true;
 }
 
 export function updateContactLead(id, patch) {

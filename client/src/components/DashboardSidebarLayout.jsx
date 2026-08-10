@@ -37,7 +37,9 @@ const TAB_ICONS = {
   'process-guides': BookOpen,
   settings: Settings,
   analytics: BarChart3,
-  messages: MessageSquare,
+  support: MessageSquare,
+  counselling: BookOpen,
+  training: Sparkles,
   blogs: BookOpen,
   leads: MessageSquare,
 };
@@ -57,6 +59,11 @@ export default function DashboardSidebarLayout({
   notifUnread = 0,
   onNotifRefresh,
   nextStep,
+  topbar = false,
+  hideNavigation = false,
+  hideMobileDeck = false,
+  hideSidebar = false,
+  hideMainHeader = false,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -69,6 +76,7 @@ export default function DashboardSidebarLayout({
   const panelTab = tabs.some((t) => t.id === active) ? active : (activeTab?.id || 'overview');
   const lite = isMobilePerf();
   const phone = isPhoneViewport();
+  const isTopbar = topbar && !phone;
 
   const setTab = (tabId) => {
     if (tabId === active) return;
@@ -79,8 +87,9 @@ export default function DashboardSidebarLayout({
   };
 
   return (
-    <div className={`dash-sidebar-layout dash-b2b-layout no-reveal${phone ? ' dash-b2b-layout--mobile-deck' : ''}`}>
-      <div className="dash-sidebar-grid">
+    <div className={`dash-sidebar-layout dash-b2b-layout no-reveal${phone ? ' dash-b2b-layout--mobile-deck' : ''}${isTopbar ? ' dash-sidebar-layout--topbar' : ''}${hideSidebar ? ' dash-sidebar-layout--solo' : ''}`}>
+      <div className={`dash-sidebar-grid${hideSidebar ? ' dash-sidebar-grid--solo' : ''}`}>
+        {!hideSidebar && (
         <aside className="dash-sidebar" aria-label="Dashboard navigation">
           <motion.div
             className="dash-sidebar-inner"
@@ -92,7 +101,7 @@ export default function DashboardSidebarLayout({
               <p className="dash-sidebar-heading">{sectionTitle}</p>
             )}
 
-            {phone ? (
+            {phone && !hideMobileDeck ? (
               <DashboardMobileDeck
                 tabs={tabs}
                 activeTab={activeTab}
@@ -103,6 +112,7 @@ export default function DashboardSidebarLayout({
                 showProfileCompletion={showProfileCompletion}
                 sectionTitle={sectionTitle}
                 variant={deckVariant}
+                hideSectionRail={hideNavigation}
                 headerAction={notifToken ? (
                   <NotificationBell
                     token={notifToken}
@@ -185,8 +195,9 @@ export default function DashboardSidebarLayout({
               </select>
             </div>
 
+            {!hideNavigation && (
             <nav
-              className="dash-sidebar-nav dash-sidebar-nav--desktop"
+              className={`dash-sidebar-nav dash-sidebar-nav--desktop${isTopbar ? ' dash-sidebar-nav--topbar' : ''}`}
               role="tablist"
               aria-label="Dashboard sections"
             >
@@ -226,14 +237,16 @@ export default function DashboardSidebarLayout({
                 );
               })}
             </nav>
+            )}
               </>
             )}
           </motion.div>
         </aside>
+        )}
 
         {/* Main content */}
         <div className="dash-sidebar-main scroll-mt-28" ref={mainRef}>
-          {!phone && (
+          {!phone && !hideMainHeader && (
           <div
             ref={headerRef}
             id={`${id}-tab-header`}
@@ -258,7 +271,7 @@ export default function DashboardSidebarLayout({
           </div>
           )}
 
-          <div className="dash-sidebar-panel" role="tabpanel" id={`${id}-panel`}>
+          <div className={`dash-sidebar-panel${hideSidebar ? ' dash-sidebar-panel--hero-match' : ''}`} role="tabpanel" id={`${id}-panel`}>
             <div key={panelTab}>
               {typeof children === 'function' ? children(panelTab) : children}
             </div>

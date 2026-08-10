@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import RouteOrGuidanceLink from './RouteOrGuidanceLink';
 import { motion } from 'framer-motion';
 import { Phone, Mail, Instagram, Linkedin, Facebook, MapPin } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
@@ -31,9 +31,9 @@ function FooterColumn({ title, links, index = 0 }) {
       <ul className="footer-col__list">
         {links.map(({ to, label }) => (
           <li key={to + label}>
-            <Link to={to} className="footer-col__link">
+            <RouteOrGuidanceLink to={to} className="footer-col__link">
               {label}
-            </Link>
+            </RouteOrGuidanceLink>
           </li>
         ))}
       </ul>
@@ -58,13 +58,13 @@ function FooterExplore({ title, links = [], index = 0 }) {
       {title ? <h4 className="footer-col__title">{title}</h4> : null}
       <div className="footer-col__cta-stack">
         {links.map(({ to, label }, i) => (
-          <Link
+          <RouteOrGuidanceLink
             key={to + label}
             to={to}
             className={`footer-col__cta${i === 0 ? ' footer-col__cta--primary' : ''}`}
           >
             {label}
-          </Link>
+          </RouteOrGuidanceLink>
         ))}
       </div>
     </FadeBox>
@@ -89,9 +89,9 @@ function FooterQuickLinks({ title, links = [], index = 0 }) {
       <ul className="footer-col__list">
         {links.map(({ to, label }) => (
           <li key={to + label}>
-            <Link to={to} className="footer-col__link">
+            <RouteOrGuidanceLink to={to} className="footer-col__link">
               {label}
-            </Link>
+            </RouteOrGuidanceLink>
           </li>
         ))}
       </ul>

@@ -1,1 +1,0 @@
-const n={dmit:"dmit",psychometric:"psychometric","dmit-psychometric":"combo",combo:"combo","why-dreams-mantra":"why",why:"why"};function e(t){const s=n[t];return s?`/counselling?tab=${s}`:null}function c(t){return t?e(t)||`/assessments/${t}`:"/counselling"}export{c as a,e as c};

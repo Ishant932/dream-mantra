@@ -53,7 +53,7 @@ export const audienceCards = [
 
 export const toolkitServices = [
   { title: 'Career Library', desc: 'Explore 1000+ careers with skills, salaries, education paths, and growth.', icon: '📚', link: '/careers', image: IMAGES.library },
-  { title: 'Marketplace', desc: 'Counselling assessments and Training & Placement programs in one place.', icon: '🛒', link: '/marketplace?tab=counselling', image: IMAGES.aiTech },
+  { title: 'Book Now', desc: 'Counselling assessments and Training & Placement programs in one place.', icon: '🛒', link: '/marketplace?tab=counselling', image: IMAGES.aiTech },
   { title: 'Skill Mapping', desc: '5-dimensional AI-driven assessment for personality and career fit.', icon: '🧠', link: '/counselling?tab=psychometric', image: IMAGES.psychometric },
   { title: 'Career Roadmap', desc: 'Step-by-step roadmap for every stage to your dream career.', icon: '🗺️', link: '/counselling?tab=overview', image: IMAGES.career },
 ];

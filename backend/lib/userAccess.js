@@ -10,6 +10,7 @@ function resolveAssessmentSlug(assessment) {
   if (t.includes('brain mapping') || t.includes('dmit')) return 'dmit';
   if (t.includes('skill mapping') || t.includes('psychometric')) return 'psychometric';
   if (t.includes('launchpad') || t.includes('crp') || t.includes('ai career')) return 'crp-test';
+  if (t.includes('career readiness') || t.includes('readiness program')) return 'career-readiness';
   if (t.includes('counselling') && t.includes('additional')) return 'counselling-topup';
   return null;
 }
@@ -28,7 +29,7 @@ function assessmentHasCounselling(assessment) {
 /** Paid modules that unlock the Book tab / slot calendar (CRP, counselling top-up, or counselling add-on/combo). */
 function assessmentGrantsSlotBooking(assessment) {
   const slug = resolveAssessmentSlug(assessment);
-  if (slug === 'counselling-topup' || slug === 'crp-test') return true;
+  if (slug === 'counselling-topup' || slug === 'crp-test' || slug === 'career-readiness') return true;
   return assessmentHasCounselling(assessment);
 }
 

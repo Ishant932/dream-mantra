@@ -88,7 +88,7 @@ export const siteHi = {
       {
         title: 'खोजें',
         links: [
-          { to: '/marketplace', label: 'मार्केटप्लेस', icon: '🛒' },
+          { to: '/marketplace', label: 'Book Now', icon: '🛒' },
           { to: '/counselling?tab=institutions', label: 'संस्थान', icon: '🏛️' },
           { to: '/#certifications', label: 'Certifications', icon: '🏅' },
         ],
@@ -142,7 +142,7 @@ export const siteHi = {
     },
     footerQuickLinks: [
       { to: '/', label: 'होम' },
-      { to: '/marketplace', label: 'मार्केटप्लेस' },
+      { to: '/marketplace', label: 'Book Now' },
       { to: '/counselling', label: 'Counselling' },
       { to: '/crp?tab=launchpad', label: 'Training & Placement' },
       { to: '/about', label: 'हमारे बारे में' },
@@ -166,7 +166,7 @@ export const siteHi = {
     footerQuickColumn: [
       { to: '/contact#guidance', label: 'मुफ़्त guidance call बुक करें' },
       { to: '/counselling?tab=institutions', label: 'Institutions' },
-      { to: '/marketplace', label: 'Marketplace' },
+      { to: '/marketplace', label: 'Book Now' },
       { to: '/#certifications', label: 'Certifications' },
       { to: '/about', label: 'हमारे बारे में' },
       { to: '/blog', label: 'Blog' },
@@ -177,7 +177,7 @@ export const siteHi = {
       {
         title: 'खोजें',
         links: [
-          { to: '/marketplace', label: 'Marketplace' },
+          { to: '/marketplace', label: 'Book Now' },
           { to: '/counselling?tab=institutions', label: 'Institutions' },
           { to: '/#certifications', label: 'Certifications' },
         ],
@@ -189,6 +189,7 @@ export const siteHi = {
           { to: '/about', label: 'हमारे बारे में' },
           { to: '/blog', label: 'Blog' },
           { to: '/contact', label: 'संपर्क' },
+          { to: '/policies', label: 'Policies' },
           { to: '/terms', label: 'नियम और शर्तें' },
         ],
       },
@@ -633,8 +634,8 @@ export const siteHi = {
     ],
 
     crpTabs: [
-      { id: 'pathways', label: 'आयु मार्ग' },
       { id: 'launchpad', label: 'AI Career Launchpad' },
+      { id: 'readiness', label: 'Personalised Career Readiness Program' },
     ],
 
     assessmentTabs: [
@@ -800,14 +801,11 @@ export const siteHi = {
     ],
 
     dashboardTabs: [
-      { id: 'overview', label: 'अवलोकन', desc: 'Profile, stats और activity' },
+      { id: 'assess', label: 'Book Now', desc: 'Modules देखें और खरीदें' },
+      { id: 'counselling', label: 'Counselling', desc: 'अपना counselling path चुनें' },
+      { id: 'training', label: 'Training and Placement', desc: 'Job-ready training देखें' },
+      { id: 'support', label: 'Support', desc: 'Messages और help' },
       { id: 'careers', label: 'Career Library', desc: '1000+ career paths explore करें' },
-      { id: 'assess', label: 'Modules', desc: 'Brain Mapping और Skill Mapping modules' },
-      { id: 'process-guides', label: 'Process & Take test', desc: 'Guides, steps और skill mapping forms' },
-      { id: 'reports', label: 'My Reports', desc: 'Assessment reports और deliverables' },
-      { id: 'messages', label: 'Messages', desc: 'Admin से direct messages' },
-      { id: 'book', label: 'सत्र बुक करें', desc: 'Expert counselling schedule करें' },
-      { id: 'security', label: 'Security', desc: 'Two-factor authentication' },
     ],
 
     managementTeam: [
@@ -1570,7 +1568,7 @@ export const siteHi = {
       },
     },
     marketplace: {
-      title: 'मार्केटप्लेस',
+      title: 'Book Now',
       subtitle: 'दो clear paths — counselling से clarity, training से job readiness',
       cta: 'मुफ़्त guidance call बुक करें',
       verticals: {

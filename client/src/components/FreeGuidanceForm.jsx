@@ -11,10 +11,15 @@ const INTENT_PREFIX = {
   other: 'I need help choosing the right path',
 };
 
+const INTENT_TONES = ['red', 'purple', 'green', 'blue', 'orange'];
+
 export default function FreeGuidanceForm({
   className = '',
   showLoginHint = true,
+  hideHeader = false,
+  variant = 'default',
   id = 'guidance',
+  skipUrlIntent = false,
 }) {
   const { d } = useLang();
   const fg = d('freeGuidance') || {};
@@ -23,10 +28,10 @@ export default function FreeGuidanceForm({
   const intents = fg.intents || [];
 
   const initialIntent = useMemo(() => {
-    const fromUrl = searchParams.get('intent');
+    const fromUrl = skipUrlIntent ? null : searchParams?.get('intent');
     if (fromUrl && intents.some((i) => i.id === fromUrl)) return fromUrl;
     return intents[0]?.id || 'counselling';
-  }, [searchParams, intents]);
+  }, [searchParams, intents, skipUrlIntent]);
 
   const [intent, setIntent] = useState(initialIntent);
   const [form, setForm] = useState({
@@ -68,10 +73,11 @@ export default function FreeGuidanceForm({
     setSuccess('');
     try {
       const intentLabel = intents.find((i) => i.id === intent)?.label || intent;
-      const payload = {
-        ...form,
-        message: `[${intentLabel}] ${form.message}`.trim(),
-      };
+      let messageBody = `[${intentLabel}] ${form.message}`.trim();
+      if (messageBody.length < 10) {
+        messageBody = `${messageBody} — guidance call request`;
+      }
+      const payload = { ...form, message: messageBody, source: 'guidance_modal' };
       const res = await publicApi.submitContact(payload);
       setSuccess(res.message || fg.thankYou || contact.thankYou);
       setForm({ name: '', email: '', phone: '', message: '' });
@@ -89,27 +95,40 @@ export default function FreeGuidanceForm({
       className={`free-guidance-form ${className}`.trim()}
       onSubmit={handleSubmit}
     >
-      <h3 className="font-display text-xl font-bold mb-2 text-theme-primary">
-        {fg.formTitle || contact.formTitle}
-      </h3>
-      <p className="text-sm text-theme-muted mb-5">{fg.formSubtitle}</p>
+      {!hideHeader && (
+        <>
+          <h3 className="font-display text-xl font-bold mb-2 text-theme-primary">
+            {fg.formTitle || contact.formTitle}
+          </h3>
+          <p className="text-sm text-theme-muted mb-5">{fg.formSubtitle}</p>
+        </>
+      )}
 
       {intents.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-5" role="group" aria-label={fg.intentLabel}>
-          {intents.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => applyIntentPrefill(item.id)}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition ${
-                intent === item.id
-                  ? 'bg-amber-500 text-white border-amber-500'
-                  : 'border-amber-200 text-theme-muted hover:border-amber-400'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+          {intents.map((item, index) => {
+            const tone = INTENT_TONES[index % INTENT_TONES.length];
+            const isModal = variant === 'modal';
+            const active = intent === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => applyIntentPrefill(item.id)}
+                className={
+                  isModal
+                    ? `guidance-modal__intent guidance-modal__intent--${tone}${active ? ' guidance-modal__intent--active' : ''}`
+                    : `px-3 py-1.5 rounded-full text-xs font-semibold border transition ${
+                        active
+                          ? 'bg-amber-500 text-white border-amber-500'
+                          : 'border-amber-200 text-theme-muted hover:border-amber-400'
+                      }`
+                }
+              >
+                {item.label}
+              </button>
+            );
+          })}
         </div>
       )}
 
@@ -148,14 +167,14 @@ export default function FreeGuidanceForm({
           className="input-field min-h-[120px]"
           placeholder={fg.messagePlaceholder || contact.messagePlaceholder}
           required
-          minLength={10}
+          minLength={5}
           value={form.message}
           onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
         />
         <button
           type="submit"
           disabled={submitting}
-          className="btn-primary w-full inline-flex items-center justify-center gap-2"
+          className={`${variant === 'modal' ? 'guidance-modal__submit' : 'btn-primary'} w-full inline-flex items-center justify-center gap-2`}
         >
           {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
           {submitting ? fg.sending || 'Sending…' : fg.submit || contact.submit}

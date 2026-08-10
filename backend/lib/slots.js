@@ -28,8 +28,10 @@ export function listSlots({ from, to } = {}) {
 }
 
 export function getAvailableSlots({ from, to } = {}) {
-  return listSlots({ from, to }).filter(
-    (s) => s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1)
+  const nowIso = new Date().toISOString();
+  const fromBound = from && from > nowIso ? from : nowIso;
+  return listSlots({ from: fromBound, to }).filter(
+    (s) => s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1) && s.start_at >= nowIso
   );
 }
 
@@ -336,6 +338,7 @@ export function updateConsultation(id, patch) {
 }
 
 export function enrichConsultation(c) {
+  if (!c) return null;
   const data = getData();
   const u = data.users.find((x) => x.id === c.user_id);
   return {
