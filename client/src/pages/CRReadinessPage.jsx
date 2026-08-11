@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle2, Clock, Sparkles } from 'lucide-react';
 import GuidanceCTA from '../components/GuidanceCTA';
 import { useLang } from '../context/LanguageContext';
-import { IMAGES } from '../data/content';
 import { CRPStatsStrip, statIcons } from '../components/crp/crpShared';
 import {
   READINESS_HERO,
@@ -25,18 +24,15 @@ import {
   BEFORE_AFTER,
   COMPLETE_EXPERIENCE,
   READINESS_TONES,
+  SESSION_PHOTOS,
+  SESSION_STICKERS,
 } from '../data/crReadinessContent';
 
-const SESSION_IMGS = [
-  IMAGES.counselling, IMAGES.professional, IMAGES.career, IMAGES.internship,
-  IMAGES.aiTech, IMAGES.marketplace, IMAGES.mentorship, IMAGES.success,
-];
-
 const FLOW_STEPS = [
-  { label: 'Discover', tone: 'red' },
-  { label: 'Decide', tone: 'purple' },
-  { label: 'Build', tone: 'green' },
-  { label: 'Search', tone: 'blue' },
+  { label: 'Discover', tone: 'orange' },
+  { label: 'Decide', tone: 'orange' },
+  { label: 'Build', tone: 'orange' },
+  { label: 'Search', tone: 'orange' },
   { label: 'Launch', tone: 'orange' },
 ];
 
@@ -167,14 +163,14 @@ export default function CRReadinessPage({ compact = false }) {
 
       {!compact && <CRPStatsStrip statItems={statItems} />}
 
-      <ToneSection tone="red" className="crp-readiness-full__intro-block">
+      <ToneSection tone="orange" className="crp-readiness-full__intro-block">
         {READINESS_HERO.intro.map((p) => (
           <p key={p} className="crp-readiness-full__para">{p}</p>
         ))}
       </ToneSection>
 
       <ToneSection
-        tone="purple"
+        tone="orange"
         title={READINESS_SYSTEM.title}
         className="mt-6"
       >
@@ -192,7 +188,7 @@ export default function CRReadinessPage({ compact = false }) {
         </div>
       </ToneSection>
 
-      <ToneSection tone="green" title="What's included?" eyebrow="Program inclusions" className="mt-6">
+      <ToneSection tone="orange" title="What's included?" eyebrow="Program inclusions" className="mt-6">
         <ul className="crp-outcomes-cards">
           {READINESS_INCLUDED.map((item, i) => {
             const { title, desc } = parseIncluded(item);
@@ -233,7 +229,15 @@ export default function CRReadinessPage({ compact = false }) {
               >
                 {compact && (
                   <div className="crp-readiness-full__session-visual">
-                    <img src={SESSION_IMGS[i % SESSION_IMGS.length]} alt="" loading="lazy" />
+                    <img src={SESSION_PHOTOS[i]} alt="" loading="lazy" />
+                    {SESSION_STICKERS[i] && (
+                      <img
+                        src={SESSION_STICKERS[i]}
+                        alt=""
+                        className="crp-readiness-full__session-sticker"
+                        loading="lazy"
+                      />
+                    )}
                     <span className={`crp-readiness-full__session-badge crp-readiness-full__session-badge--${tone}`}>
                       Session {session.number}
                     </span>
@@ -265,7 +269,7 @@ export default function CRReadinessPage({ compact = false }) {
       </div>
 
       <ToneSection
-        tone="blue"
+        tone="orange"
         title="Personal Profile Reviews"
         subtitle="Your career profile shouldn't just exist. It should work for you."
         eyebrow="Profile reviews"
@@ -301,7 +305,7 @@ export default function CRReadinessPage({ compact = false }) {
         <OutputBox label="You receive" text={MOCK_INTERVIEW.output} tone="orange" />
       </ToneSection>
 
-      <ToneSection tone="red" title={PERSONAL_BRANDING.title} subtitle={PERSONAL_BRANDING.subtitle} className="mt-6">
+      <ToneSection tone="orange" title={PERSONAL_BRANDING.title} subtitle={PERSONAL_BRANDING.subtitle} className="mt-6">
         <p className="crp-readiness-full__para">{PERSONAL_BRANDING.intro}</p>
         <BulletList items={PERSONAL_BRANDING.channels} />
         <p className="text-xs font-bold uppercase tracking-wide mt-4 mb-2 opacity-80">You&apos;ll build:</p>
@@ -315,21 +319,21 @@ export default function CRReadinessPage({ compact = false }) {
         </div>
       </ToneSection>
 
-      <ToneSection tone="purple" title={AI_TOOLKIT.title} subtitle={AI_TOOLKIT.subtitle} className="mt-6">
+      <ToneSection tone="orange" title={AI_TOOLKIT.title} subtitle={AI_TOOLKIT.subtitle} className="mt-6">
         <p className="crp-readiness-full__para">{AI_TOOLKIT.intro}</p>
         <p className="text-xs font-bold uppercase tracking-wide mb-2 opacity-80">Use AI for:</p>
         <BulletList items={AI_TOOLKIT.uses} />
         <p className="crp-readiness-full__emphasis mt-4">{AI_TOOLKIT.footer}</p>
       </ToneSection>
 
-      <ToneSection tone="green" title={JOB_SEARCH_SYSTEM.title} subtitle={JOB_SEARCH_SYSTEM.subtitle} className="mt-6">
+      <ToneSection tone="orange" title={JOB_SEARCH_SYSTEM.title} subtitle={JOB_SEARCH_SYSTEM.subtitle} className="mt-6">
         <p className="crp-readiness-full__para">{JOB_SEARCH_SYSTEM.intro}</p>
         <p className="text-xs font-bold uppercase tracking-wide mb-2 opacity-80">You&apos;ll learn how to:</p>
         <BulletList items={JOB_SEARCH_SYSTEM.learn} />
-        <OutputBox label="Your result" text={JOB_SEARCH_SYSTEM.result} tone="green" />
+        <OutputBox label="Your result" text={JOB_SEARCH_SYSTEM.result} tone="orange" />
       </ToneSection>
 
-      <ToneSection tone="blue" title={INTERVIEW_KIT.title} subtitle={INTERVIEW_KIT.subtitle} className="mt-6">
+      <ToneSection tone="orange" title={INTERVIEW_KIT.title} subtitle={INTERVIEW_KIT.subtitle} className="mt-6">
         <p className="crp-readiness-full__para">
           You&apos;ll build your personal interview preparation system including:
         </p>
@@ -344,7 +348,7 @@ export default function CRReadinessPage({ compact = false }) {
         <BulletList items={OFFER_GUIDANCE.learn} />
       </ToneSection>
 
-      <ToneSection tone="red" title={NINETY_DAY_PLAN.title} subtitle={NINETY_DAY_PLAN.subtitle} className="mt-6">
+      <ToneSection tone="orange" title={NINETY_DAY_PLAN.title} subtitle={NINETY_DAY_PLAN.subtitle} className="mt-6">
         <p className="crp-readiness-full__para">{NINETY_DAY_PLAN.intro}</p>
         <div className="crp-readiness-full__phases">
           {NINETY_DAY_PLAN.phases.map((phase, i) => (
@@ -358,7 +362,7 @@ export default function CRReadinessPage({ compact = false }) {
         <BulletList items={NINETY_DAY_PLAN.navigate} />
       </ToneSection>
 
-      <ToneSection tone="purple" title={CAREER_TOOLKIT.title} subtitle={CAREER_TOOLKIT.subtitle} className="mt-6">
+      <ToneSection tone="orange" title={CAREER_TOOLKIT.title} subtitle={CAREER_TOOLKIT.subtitle} className="mt-6">
         <div className="crp-readiness-full__toolkit-grid">
           {CAREER_TOOLKIT.groups.map((group, i) => (
             <div key={group.title} className={`dash-overview-card dash-overview-card--${toneAt(i)}`}>
@@ -369,7 +373,7 @@ export default function CRReadinessPage({ compact = false }) {
         </div>
       </ToneSection>
 
-      <ToneSection tone="green" title={BONUS_RESOURCES.title} subtitle={BONUS_RESOURCES.subtitle} className="mt-6">
+      <ToneSection tone="orange" title={BONUS_RESOURCES.title} subtitle={BONUS_RESOURCES.subtitle} className="mt-6">
         <div className="crp-readiness-full__eval-grid">
           {BONUS_RESOURCES.items.map((item, i) => (
             <div key={item.title} className={`dash-overview-card dash-overview-card--${toneAt(i)}`}>
@@ -380,7 +384,7 @@ export default function CRReadinessPage({ compact = false }) {
         </div>
       </ToneSection>
 
-      <ToneSection tone="blue" title="Why this program is different" eyebrow="Differentiators" className="mt-6">
+      <ToneSection tone="orange" title="Why this program is different" eyebrow="Differentiators" className="mt-6">
         <div className="crp-readiness-full__eval-grid">
           {WHY_DIFFERENT.map((item, i) => (
             <div key={item.title} className={`dash-overview-card dash-overview-card--${toneAt(i)}`}>
@@ -402,7 +406,7 @@ export default function CRReadinessPage({ compact = false }) {
         </div>
       </ToneSection>
 
-      <ToneSection tone="red" title="From confusion to career confidence" eyebrow="Transformation" className="mt-6">
+      <ToneSection tone="orange" title="From confusion to career confidence" eyebrow="Transformation" className="mt-6">
         <div className="crp-readiness-full__before-after">
           {BEFORE_AFTER.map((row, i) => (
             <div key={row.before} className={`crp-readiness-full__ba-row crp-readiness-full__ba-row--${toneAt(i)}`}>
@@ -419,7 +423,7 @@ export default function CRReadinessPage({ compact = false }) {
         </div>
       </ToneSection>
 
-      <ToneSection tone="purple" title="The complete experience" className="mt-6">
+      <ToneSection tone="orange" title="The complete experience" className="mt-6">
         <div className="crp-readiness-full__eval-grid">
           {COMPLETE_EXPERIENCE.map((item, i) => (
             <div key={item.title} className={`dash-overview-card dash-overview-card--${toneAt(i)}`}>
@@ -437,7 +441,7 @@ export default function CRReadinessPage({ compact = false }) {
         <h3 className="dash-overview-section__title">Your career should not be left to guesswork.</h3>
         <p className="crp-readiness-full__lede font-bold">DISCOVER. DECIDE. BUILD. SEARCH. PERFORM. LAUNCH.</p>
         <p className="crp-readiness-full__para mt-2">
-          8 Sessions. Personalised Reviews. Real Practice. Practical Tools. One Career Strategy.
+          8 Sessions + 2 Mock Interviews. Personalised Reviews. Real Practice. Practical Tools. One Career Strategy.
         </p>
         <p className="crp-readiness-full__emphasis mt-3">Don&apos;t just prepare to get a job. Prepare to build a career.</p>
         <div className="flex flex-wrap justify-center gap-3 mt-6">

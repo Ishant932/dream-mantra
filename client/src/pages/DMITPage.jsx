@@ -57,18 +57,6 @@ export default function DMITPage({ compact = false }) {
             <img src={IMAGES.dmit} alt={hero.imageAlt} className="rounded-3xl shadow-2xl ring-1 ring-amber-200/50 w-full aspect-[4/3] object-cover" />
           </motion.div>
         </div>
-
-        {/* Trusted by strip */}
-        <div className="max-w-7xl mx-auto px-4 mt-12">
-          <motion.div {...fade} className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
-            <span className="text-xs font-bold uppercase tracking-wider text-sand-500">{page.trustedBy.label}:</span>
-            {page.trustedBy.items.map((item) => (
-              <span key={item} className="px-4 py-2 rounded-full bg-[var(--bg-elevated)] border border-amber-200/50 text-sm font-semibold shadow-sm">
-                {item}
-              </span>
-            ))}
-          </motion.div>
-        </div>
       </section>
 
       {/* 1. What is Brain Mapping */}

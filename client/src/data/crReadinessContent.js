@@ -31,7 +31,7 @@ export const READINESS_SYSTEM = {
 };
 
 export const READINESS_INCLUDED = [
-  '8 LIVE CAREER READINESS SESSIONS — structured 8-session journey covering the complete career-readiness process',
+  '8 LIVE CAREER READINESS SESSIONS + 2 MOCK INTERVIEWS — structured 8-session journey, then two additional mock interview sessions',
   'PERSONAL CAREER DIRECTION — strengths, interests, professional preferences and potential career directions',
   'PERSONALISED CAREER ROADMAP — practical roadmap based on current position, target roles and career goals',
   'LINKEDIN PROFILE REVIEW — reviewed and optimised for professional positioning and recruiter visibility',
@@ -442,4 +442,59 @@ export const COMPLETE_EXPERIENCE = [
   { title: '90-Day Career Plan', desc: 'Start your next role with confidence.' },
 ];
 
-export const READINESS_TONES = ['red', 'purple', 'green', 'blue', 'orange'];
+export const READINESS_TONES = ['orange'];
+
+/** Unique Unsplash photos — not reused elsewhere on the site */
+const sessionPhoto = (id) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&q=85`;
+
+export const SESSION_PHOTOS = [
+  sessionPhoto('photo-1531482615713-2afd69097998'),
+  sessionPhoto('photo-1454165804606-c3d57bc86b40'),
+  sessionPhoto('photo-1559136555-9303baea8ebd'),
+  sessionPhoto('photo-1455390582262-044cdead277a'),
+  sessionPhoto('photo-1611944212129-29977ae1398c'),
+  sessionPhoto('photo-1498050108023-c5249f4df085'),
+  sessionPhoto('photo-1573496359142-b8d87734a5a2'),
+  sessionPhoto('photo-1542744173-8e7e53415bb0'),
+];
+
+/** Sticker overlays from Twemoji (jsDelivr CDN) */
+const twemoji = (code) =>
+  `https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/72x72/${code}.png`;
+
+export const SESSION_STICKERS = [
+  twemoji('1f9ed'),
+  twemoji('1f3af'),
+  twemoji('1f4bc'),
+  twemoji('1f4c4'),
+  twemoji('1f517'),
+  twemoji('1f50d'),
+  twemoji('1f3a4'),
+  twemoji('1f680'),
+];
+
+export const CORE_SESSION_COUNT = 8;
+
+export const MOCK_INTERVIEW_SESSIONS = [
+  {
+    number: 9,
+    title: 'Mock Interview 1',
+    subtitle: 'PRACTISE THE REAL SELECTION PROCESS.',
+    intro: 'A realistic first mock interview with personalised feedback on communication, structure and presence.',
+  },
+  {
+    number: 10,
+    title: 'Mock Interview 2',
+    subtitle: 'REFINE YOUR PERFORMANCE.',
+    intro: 'A second mock interview to apply feedback, tighten answers and walk in with confidence.',
+  },
+];
+
+export function programSessionTitle(n) {
+  const num = Number(n);
+  const mock = MOCK_INTERVIEW_SESSIONS.find((s) => s.number === num);
+  if (mock) return mock.title;
+  const core = READINESS_SESSIONS.find((s) => s.number === num);
+  return core?.title || `Session ${num}`;
+}

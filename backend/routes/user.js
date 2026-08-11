@@ -15,7 +15,7 @@ import {
   normalizeStreamInput,
   getStreamInsight,
 } from '../lib/streamKnowledge.js';
-import { getAvailableSlots, bookConsultationWithSlot, bookProgramSessionWithSlot, bookProgramSessionsBatch, enrichConsultation, cancelConsultationByUser } from '../lib/slots.js';
+import { getAvailableSlots, bookConsultationWithSlot, bookProgramSessionsBatch, bookMockInterviewSessions, enrichConsultation, cancelConsultationByUser } from '../lib/slots.js';
 import { userHasCounsellingAccess, userHasProgramSessionAccess } from '../lib/userAccess.js';
 import { listReportsForUser } from '../lib/reports.js';
 import { listResourcesForUser } from '../lib/userResources.js';
@@ -329,11 +329,17 @@ router.post('/consultations', (req, res) => {
         return res.status(403).json({ message: 'Program sessions unlock when you purchase the Personalised Career Readiness Program.' });
       }
       if (Array.isArray(req.body.sessions) && req.body.sessions.length) {
-        const results = bookProgramSessionsBatch(req.user.id, req.body.sessions, notes, user);
+        const nums = req.body.sessions.map((s) => Number(s.session_number));
+        const isMocks = nums.length && nums.every((n) => n === 9 || n === 10);
+        const results = isMocks
+          ? bookMockInterviewSessions(req.user.id, req.body.sessions, notes, user)
+          : bookProgramSessionsBatch(req.user.id, req.body.sessions, notes, user);
         notifyUser(req.user.id, {
           type: 'booking',
-          title: 'All 8 sessions booked',
-          body: 'Your Career Readiness schedule is confirmed. Check Schedule your Session for details.',
+          title: isMocks ? 'Mock interviews booked' : 'All 8 sessions booked',
+          body: isMocks
+            ? 'Your mock interview session(s) are confirmed. Check Schedule your Session for details.'
+            : 'Your Career Readiness schedule is confirmed. You can now book 2 additional mock interviews.',
           link: '/dashboard?tab=training',
           meta: { consultationIds: results.map((r) => r.consultation.id) },
         });
@@ -342,15 +348,19 @@ router.post('/consultations', (req, res) => {
       if (!slot_id || !session_number) {
         return res.status(400).json({ message: 'Please book all 8 sessions together from Schedule your Session.' });
       }
-      const result = bookProgramSessionWithSlot(req.user.id, { slot_id, session_number, notes }, user);
-      notifyUser(req.user.id, {
-        type: 'booking',
-        title: `Session ${session_number} booked`,
-        body: `Your career readiness session is booked for ${new Date(result.consultation.scheduled_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}.`,
-        link: '/dashboard?tab=training',
-        meta: { consultationId: result.consultation.id },
-      });
-      return res.status(201).json(result);
+      if (Number(session_number) >= 9) {
+        const results = bookMockInterviewSessions(req.user.id, [{ slot_id, session_number }], notes, user);
+        const result = results[0];
+        notifyUser(req.user.id, {
+          type: 'booking',
+          title: `Mock Interview ${Number(session_number) === 9 ? '1' : '2'} booked`,
+          body: `Your mock interview is booked for ${new Date(result.consultation.scheduled_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}.`,
+          link: '/dashboard?tab=training',
+          meta: { consultationId: result.consultation.id },
+        });
+        return res.status(201).json(result);
+      }
+      return res.status(400).json({ message: 'Please book all 8 sessions together from Schedule your Session.' });
     }
 
     if (!userHasCounsellingAccess(req.user.id)) {
@@ -713,14 +723,14 @@ router.delete('/assessments/:id', (req, res) => {
 
 router.get('/cv', (req, res) => {
   const rows = listUserCvs(req.user.id);
-  res.json({ cv: rows[0] || null, expires_in_days: 10 });
+  res.json({ cv: rows[0] || null, cvs: rows, expires_in_days: 30 });
 });
 
 router.post('/cv', (req, res) => {
-  const { form, template_id, ats_score } = req.body || {};
+  const { form, template_id, ats_score, name } = req.body || {};
   if (!form || typeof form !== 'object') return res.status(400).json({ message: 'CV data required' });
-  const row = upsertUserCv(req.user.id, { form, template_id, ats_score });
-  res.json({ cv: row, message: 'CV saved — auto-deletes after 10 days' });
+  const row = upsertUserCv(req.user.id, { form, template_id, ats_score, name });
+  res.json({ cv: row, message: 'CV saved — auto-deletes after 30 days' });
 });
 
 router.delete('/cv', (req, res) => {

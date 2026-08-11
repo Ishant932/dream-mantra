@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   CreditCard, Shield, CheckCircle, Loader2, Tag, Clock,
-  RefreshCw, UserCheck, MessageCircle, Download, QrCode,
+  RefreshCw, MessageCircle, Download, QrCode,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { paymentsApi, userApi, publicApi } from '../api';
@@ -73,7 +73,7 @@ export default function PaymentPage() {
   const [coupon, setCoupon] = useState('');
   const [couponApplied, setCouponApplied] = useState(null);
   const [validating, setValidating] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('razorpay');
   const [proofPreview, setProofPreview] = useState(null);
   const [proofFileName, setProofFileName] = useState('');
   const [paymentReferenceId, setPaymentReferenceId] = useState('');
@@ -689,12 +689,12 @@ export default function PaymentPage() {
                 <button
                   type="button"
                   onClick={() => { setPaymentMethod('razorpay'); setAdminPanelOpen(false); setError(''); }}
-                  className={`payment-page__method payment-page__method--razorpay${paymentMethod === 'razorpay' && !adminPanelOpen ? ' payment-page__method--active' : ''}`}
+                  className={`payment-page__method payment-page__method--razorpay payment-page__method--featured${paymentMethod === 'razorpay' && !adminPanelOpen ? ' payment-page__method--active' : ''}`}
                 >
-                  <CreditCard className="w-5 h-5 shrink-0" />
+                  <CreditCard className="w-6 h-6 shrink-0" />
                   <div className="text-left min-w-0 flex-1">
-                    <p className="font-bold text-sm">Pay with Razorpay</p>
-                    <p className="text-xs text-sand-500 mt-0.5">
+                    <p className="font-extrabold text-base">Pay with Razorpay</p>
+                    <p className="text-xs mt-0.5 opacity-80">
                       {gatewayEnabled ? 'UPI, cards, netbanking — instant unlock' : 'Online gateway (enable keys on server for live pay)'}
                     </p>
                   </div>
@@ -709,14 +709,10 @@ export default function PaymentPage() {
 
                 <button
                   type="button"
-                  className={`payment-page__method payment-page__method--admin${adminPanelOpen ? ' payment-page__method--active' : ''}`}
+                  className={`payment-page__admin-line${adminPanelOpen ? ' is-open' : ''}`}
                   onClick={() => { setAdminPanelOpen(true); setPaymentMethod('admin'); setError(''); }}
                 >
-                  <UserCheck className="w-5 h-5 shrink-0" />
-                  <div className="text-left min-w-0 flex-1">
-                    <p className="font-bold text-sm">Pay with Admin Approval</p>
-                    <p className="text-xs text-sand-500 mt-0.5">UPI / offline — upload proof for verification</p>
-                  </div>
+                  Pay with Admin Approval
                 </button>
 
                 {adminPanelOpen && (

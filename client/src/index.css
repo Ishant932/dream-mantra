@@ -16902,8 +16902,8 @@ html.aurora .crp-audience-outcome-card {
 /* Skill mapping band picker (payment + legacy unlock) */
 .skill-band-picker__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
 }
 .skill-band-picker__option {
   display: flex;
@@ -16948,6 +16948,25 @@ html.aurora .skill-band-picker__option--active {
   font-size: var(--fs-micro);
   color: var(--text-muted);
   line-height: 1.35;
+}
+.skill-band-picker__count {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #c2410c;
+}
+.skill-band-picker__tests {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  list-style: disc;
+  text-align: left;
+}
+.skill-band-picker__tests li {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  margin: 0.15rem 0;
 }
 
 /* ═══ THEME READABILITY — comprehensive (light · dark · aurora) ═══ */
@@ -18589,7 +18608,7 @@ html.dark .leadership-card__contact-link--compact {
   margin-bottom: 1.25rem;
 }
 .why-saas--compact .why-saas__section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 3.25rem;
 }
 .why-saas--compact .why-saas__cta {
   padding: 1.35rem 1.5rem;
@@ -18643,7 +18662,7 @@ html.dark .leadership-card__contact-link--compact {
   margin-top: 0.65rem;
 }
 .why-saas__section {
-  margin: 0 0 3.75rem;
+  margin: 0 0 5.5rem;
 }
 .why-saas__section-head {
   text-align: center;
@@ -26889,7 +26908,7 @@ html.aurora .dash-sidebar-panel--hero-match {
 }
 
 /* CRP readiness polish */
-.crp-readiness-full__section { margin-bottom: 1.25rem; }
+.crp-readiness-full__section { margin-bottom: 2.5rem; padding-top: 0.5rem; }
 .crp-readiness-full__lede { max-width: 42rem; }
 .crp-readiness-flow { margin: 1rem 0 1.5rem; padding: 0.85rem; border-radius: 1rem; background: linear-gradient(135deg, #fff7ed, #fffbeb); border: 1px solid rgba(251, 191, 36, 0.35); }
 .crp-readiness-full__session--visual { border-radius: 1rem; border: 1px solid rgba(201, 168, 76, 0.25); padding: 0.85rem; background: #fff; transition: box-shadow 0.2s; }
@@ -27139,4 +27158,123 @@ html.aurora .dash-sidebar-panel--hero-match {
     width: 100%;
   }
   .navbar, .site-header, .nav-inner { max-width: 100%; }
+}
+
+/* Challenge section, checkout, CV, CRP stickers */
+.why-challenge {
+  padding: 0.25rem 0 0.5rem;
+}
+.why-challenge__inner {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 2.25rem;
+  border-radius: 1.35rem;
+  background: linear-gradient(180deg, #fffbeb 0%, #fff 72%);
+  border: 1px solid rgba(245, 158, 11, 0.28);
+  box-shadow: 0 12px 32px rgba(180, 83, 9, 0.06);
+}
+.why-challenge__label {
+  margin: 0 0 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #c2410c;
+}
+.why-challenge__title {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.45rem, 3.2vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.25;
+  color: var(--text-primary, #1c1917);
+}
+.why-challenge__lede {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary, #57534e);
+}
+.why-challenge__panel {
+  margin-top: 1.5rem;
+  padding: 1.15rem 1.25rem;
+  border-radius: 1rem;
+  background: #fff;
+  border-left: 4px solid #ea580c;
+}
+.why-challenge__panel-title {
+  margin: 0 0 0.7rem;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+.why-challenge__list {
+  margin: 0;
+  padding-left: 1.15rem;
+  list-style: disc;
+}
+.why-challenge__list li {
+  margin: 0.35rem 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-secondary, #57534e);
+}
+.why-challenge-wrap { background: linear-gradient(180deg, #fff7ed, var(--bg-base, #fff)); }
+
+.payment-page__method--razorpay.payment-page__method--featured {
+  width: 100%;
+  padding: 1.15rem 1.25rem;
+  border: 2px solid #eab308;
+  background: linear-gradient(135deg, #facc15, #f59e0b);
+  color: #1c1917;
+  box-shadow: 0 10px 24px rgba(245, 158, 11, 0.28);
+}
+.payment-page__method--razorpay.payment-page__method--featured .text-xs { color: #44403c; }
+.payment-page__admin-line {
+  display: inline-block;
+  margin-top: 0.85rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  font-weight: 500;
+  color: #78716c;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.payment-page__admin-line:hover,
+.payment-page__admin-line.is-open {
+  color: #c2410c;
+}
+
+.cv-saved-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.9rem;
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: #fffbeb;
+}
+
+.crp-readiness-full__session-sticker {
+  position: absolute !important;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 36px !important;
+  height: 36px !important;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.25));
+  pointer-events: none;
+  z-index: 2;
+}
+.dmit-page > section,
+.psycho-page > section {
+  scroll-margin-top: 5rem;
+}
+.dmit-page.counselling-embed > section:not(:first-child),
+.psycho-page.counselling-embed > section:not(:first-child) {
+  padding-top: 3.5rem;
+  padding-bottom: 3.5rem;
 }

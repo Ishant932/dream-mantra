@@ -45,7 +45,16 @@ export default function AdminOpenSlotCard({ slot, onUpdate, onDelete }) {
       {!editing ? (
         <>
           <div className="flex items-start justify-between gap-2">
-            <p className="font-semibold leading-snug">{slot.title || 'Counselling Session'}</p>
+            <div className="min-w-0">
+              <p className="font-semibold leading-snug">{slot.title || 'Counselling Session'}</p>
+              {slot.session_number != null && slot.session_number !== '' && (
+                <p className="text-[11px] font-bold text-amber-700 mt-0.5">
+                  {Number(slot.session_number) === 9 ? 'Mock Interview 1'
+                    : Number(slot.session_number) === 10 ? 'Mock Interview 2'
+                      : `Session ${slot.session_number}`}
+                </p>
+              )}
+            </div>
             <button
               type="button"
               onClick={() => setEditing(true)}

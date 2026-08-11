@@ -236,7 +236,7 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
               iconTone="bulk"
               title="Create bulk slots"
               desc={slotType === 'program_session'
-                ? 'Generate recurring program session slots (Career Readiness) across a date range.'
+                ? 'Generate recurring program session slots (Career Readiness 1–8, or Mock Interview 9–10) across a date range.'
                 : 'Generate recurring counselling slots across a date range for selected weekdays.'}
             />
             <BulkSlotsTool

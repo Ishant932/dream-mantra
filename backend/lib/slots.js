@@ -289,7 +289,9 @@ export function bookProgramSessionsBatch(userId, sessions = [], notes = '', user
   const existing = (data.consultations || []).filter(
     (c) => c.user_id === Number(userId) && c.booking_type === 'program_session' && c.status !== 'cancelled',
   );
-  if (existing.length) throw new Error('Sessions already booked. Contact support to reschedule.');
+  if (existing.some((c) => Number(c.session_number) >= 1 && Number(c.session_number) <= 8)) {
+    throw new Error('Sessions already booked. Contact support to reschedule.');
+  }
 
   const times = sorted.map((s) => {
     const slot = data.availability_slots.find((x) => x.id === Number(s.slot_id));
@@ -305,6 +307,55 @@ export function bookProgramSessionsBatch(userId, sessions = [], notes = '', user
   const results = [];
   for (const s of sorted) {
     results.push(bookProgramSessionWithSlot(userId, { slot_id: s.slot_id, session_number: s.session_number, notes }, userRecord));
+  }
+  return results;
+}
+
+export function bookMockInterviewSessions(userId, sessions = [], notes = '', userRecord = null) {
+  if (!Array.isArray(sessions) || !sessions.length) throw new Error('Select mock interview slots');
+  const sorted = [...sessions].sort((a, b) => Number(a.session_number) - Number(b.session_number));
+  for (const s of sorted) {
+    const n = Number(s.session_number);
+    if (n !== 9 && n !== 10) throw new Error('Mock interviews are Mock Interview 1 (session 9) and Mock Interview 2 (session 10)');
+  }
+
+  ensureSlotsInitialized();
+  const data = getData();
+  const existing = (data.consultations || []).filter(
+    (c) => c.user_id === Number(userId) && c.booking_type === 'program_session' && c.status !== 'cancelled',
+  );
+  const core = existing.filter((c) => {
+    const n = Number(c.session_number);
+    return n >= 1 && n <= 8;
+  });
+  if (core.length < 8) {
+    throw new Error('Book all 8 career readiness sessions before mock interviews');
+  }
+
+  const already = new Set(existing.map((c) => Number(c.session_number)));
+  for (const s of sorted) {
+    if (already.has(Number(s.session_number))) {
+      throw new Error(`${Number(s.session_number) === 9 ? 'Mock Interview 1' : 'Mock Interview 2'} is already booked`);
+    }
+  }
+  if (sorted.some((s) => Number(s.session_number) === 10) && !already.has(9) && !sorted.some((s) => Number(s.session_number) === 9)) {
+    throw new Error('Book Mock Interview 1 before Mock Interview 2');
+  }
+
+  const lastCore = core.reduce((max, c) => Math.max(max, new Date(c.scheduled_at).getTime()), 0);
+  const mock9Existing = existing.find((c) => Number(c.session_number) === 9);
+  let prev = mock9Existing ? new Date(mock9Existing.scheduled_at).getTime() : lastCore;
+
+  const results = [];
+  for (const s of sorted) {
+    const slot = data.availability_slots.find((x) => x.id === Number(s.slot_id));
+    if (!slot) throw new Error(`Slot not found for ${Number(s.session_number) === 9 ? 'Mock Interview 1' : 'Mock Interview 2'}`);
+    const t = new Date(slot.start_at).getTime();
+    if (t <= prev) {
+      throw new Error(`${Number(s.session_number) === 9 ? 'Mock Interview 1' : 'Mock Interview 2'} must be after your previous session`);
+    }
+    results.push(bookProgramSessionWithSlot(userId, { slot_id: s.slot_id, session_number: s.session_number, notes }, userRecord));
+    prev = t;
   }
   return results;
 }

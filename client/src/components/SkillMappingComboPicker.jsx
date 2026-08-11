@@ -1,5 +1,10 @@
 import { GraduationCap } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { SKILL_MAPPING_INSTRUMENT_META } from '../data/skillMappingInstruments';
+
+function instrumentLabel(id) {
+  return SKILL_MAPPING_INSTRUMENT_META[id]?.label || id;
+}
 
 /**
  * Agewise bifurcation combo picker — options from admin-defined combos.
@@ -37,6 +42,8 @@ export default function SkillMappingComboPicker({
           const isLocked = lockedComboId && combo.id !== lockedComboId;
           const isSelected = value === combo.id;
           const isDisabled = disabled || isLocked;
+          const count = combo.instrumentCount || combo.instruments?.length || 0;
+          const tests = combo.instruments || [];
           return (
             <motion.button
               key={combo.id}
@@ -48,9 +55,18 @@ export default function SkillMappingComboPicker({
               className={`skill-band-picker__option ${isSelected ? 'skill-band-picker__option--active' : ''} ${isLocked ? 'skill-band-picker__option--locked' : ''}`}
             >
               <span className="skill-band-picker__label">{combo.name}</span>
-              <span className="skill-band-picker__sub">
-                {isLocked ? 'Locked' : `${combo.instrumentCount || combo.instruments?.length || 0} tests · ${combo.summary || ''}`}
-              </span>
+              {isLocked ? (
+                <span className="skill-band-picker__sub">Locked</span>
+              ) : (
+                <>
+                  <span className="skill-band-picker__count">{count} {count === 1 ? 'test' : 'tests'}</span>
+                  <ul className="skill-band-picker__tests">
+                    {tests.map((id) => (
+                      <li key={id}>{instrumentLabel(id)}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
             </motion.button>
           );
         })}

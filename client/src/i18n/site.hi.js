@@ -1818,7 +1818,7 @@ export const siteHi = {
         titleBefore: 'Fingerprint Analysis से',
         titleHighlight: 'Inborn Potential',
         titleAfter: 'Reveal करें',
-        desc: 'Brain Mapping fingerprint analysis से आपकी inborn brain potential map करता है — बिना exams, pressure या labels। Assam Government, Bombay High Court और 30+ countries में families द्वारा trusted।',
+        desc: 'Brain Mapping fingerprint analysis से आपकी inborn brain potential map करता है — बिना exams, pressure या labels।',
         bookTest: 'Brain Mapping बुक करें',
         freeConsultation: 'Free Consultation',
         imageAlt: 'Brain Mapping fingerprint session',

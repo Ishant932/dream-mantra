@@ -1,6 +1,7 @@
 import { getData, saveData } from './database.js';
 
-const TTL_MS = 10 * 24 * 60 * 60 * 1000;
+export const TTL_DAYS = 30;
+const TTL_MS = TTL_DAYS * 24 * 60 * 60 * 1000;
 
 function purgeExpired(data) {
   const now = Date.now();
@@ -12,12 +13,20 @@ function purgeExpired(data) {
   if (data.user_cvs.length !== before) saveData(data);
 }
 
+function withMeta(row) {
+  if (!row) return null;
+  const daysLeft = Math.max(0, Math.ceil((new Date(row.expires_at).getTime() - Date.now()) / (24 * 60 * 60 * 1000)));
+  const name = row.name || row.form?.personal?.name || 'Untitled CV';
+  return { ...row, name, days_left: daysLeft, ttl_days: TTL_DAYS };
+}
+
 export function listUserCvs(userId) {
   const data = getData();
   purgeExpired(data);
   return (data.user_cvs || [])
     .filter((r) => r.user_id === Number(userId))
-    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at));
+    .sort((a, b) => new Date(b.updated_at) - new Date(a.updated_at))
+    .map(withMeta);
 }
 
 export function upsertUserCv(userId, payload) {
@@ -28,12 +37,16 @@ export function upsertUserCv(userId, payload) {
 
   const now = new Date().toISOString();
   const expires = new Date(Date.now() + TTL_MS).toISOString();
+  const name = payload.name
+    || payload.form?.personal?.name
+    || '';
   let row = (data.user_cvs || []).find((r) => r.user_id === Number(userId));
 
   if (row) {
     row.form = payload.form || row.form;
     row.template_id = payload.template_id || row.template_id;
     row.ats_score = payload.ats_score ?? row.ats_score;
+    if (name) row.name = name;
     row.updated_at = now;
     row.expires_at = expires;
   } else {
@@ -41,6 +54,7 @@ export function upsertUserCv(userId, payload) {
     row = {
       id,
       user_id: Number(userId),
+      name: name || 'Untitled CV',
       form: payload.form || {},
       template_id: payload.template_id || 'modern-ats',
       ats_score: payload.ats_score ?? 0,
@@ -51,7 +65,7 @@ export function upsertUserCv(userId, payload) {
     data.user_cvs.push(row);
   }
   saveData(data);
-  return row;
+  return withMeta(row);
 }
 
 export function deleteUserCv(userId, id) {

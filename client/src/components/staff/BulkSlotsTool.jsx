@@ -48,7 +48,12 @@ export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = '
     e.preventDefault();
     setCreating(true);
     try {
-      const result = await api.createBulkSlots(token, createForm);
+      const payload = { ...createForm };
+      const sn = Number(payload.session_number);
+      if (payload.slot_type === 'program_session' && (sn === 9 || sn === 10) && (!payload.title || payload.title === 'Career Counselling Session')) {
+        payload.title = sn === 9 ? 'Mock Interview 1' : 'Mock Interview 2';
+      }
+      const result = await api.createBulkSlots(token, payload);
       const msg = `Created ${result.count} slot${result.count === 1 ? '' : 's'}${result.errors?.length ? ` (${result.errors.length} skipped)` : ''}.`;
       onSuccess?.(msg);
     } catch (err) {
@@ -142,8 +147,11 @@ export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = '
           </div>
           {slotType === 'program_session' && (
             <div>
-              <label className="text-xs font-bold uppercase opacity-60 block mb-1">Session number (1–8)</label>
-              <input type="number" min={1} max={8} className="input-field w-full !py-2 !text-sm" value={createForm.session_number} onChange={(e) => setCreateForm({ ...createForm, session_number: Number(e.target.value) || 1 })} />
+              <label className="text-xs font-bold uppercase opacity-60 block mb-1">Session number (1–8, or 9–10 for mock interviews)</label>
+              <input type="number" min={1} max={10} className="input-field w-full !py-2 !text-sm" value={createForm.session_number} onChange={(e) => setCreateForm({ ...createForm, session_number: Number(e.target.value) || 1 })} />
+              {(Number(createForm.session_number) === 9 || Number(createForm.session_number) === 10) && (
+                <p className="text-[11px] text-amber-700 mt-1">Session {createForm.session_number} = Mock Interview {Number(createForm.session_number) === 9 ? '1' : '2'}</p>
+              )}
             </div>
           )}
           <div className="sm:col-span-2">

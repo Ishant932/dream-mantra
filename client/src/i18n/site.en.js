@@ -1956,7 +1956,7 @@ export const siteEn = {
         titleBefore: 'Reveal Inborn Potential Through',
         titleHighlight: 'Fingerprint Analysis',
         titleAfter: '',
-        desc: 'Brain Mapping maps your inborn brain potential through fingerprint analysis — without exams, pressure, or labels. Trusted by Assam Government, Bombay High Court & families across 30+ countries.',
+        desc: 'Brain Mapping maps your inborn brain potential through fingerprint analysis — without exams, pressure, or labels.',
         bookTest: 'Book Brain Mapping',
         freeConsultation: 'Free guidance Call',
         imageAlt: 'Brain Mapping fingerprint session',

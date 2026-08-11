@@ -426,7 +426,8 @@ export default function UserDashboard() {
   const bookAllProgramSessions = async ({ sessions, notes }) => {
     try {
       await userApi.bookConsultation(token, { sessions, notes, booking_type: 'program_session' });
-      flashMsg('All 8 sessions booked successfully!');
+      const isMocks = (sessions || []).length && (sessions || []).every((s) => Number(s.session_number) >= 9);
+      flashMsg(isMocks ? 'Mock interview(s) booked successfully!' : 'All 8 sessions booked successfully!');
       await load(token, () => false);
       loadSlots('program_session');
     } catch (e) {
