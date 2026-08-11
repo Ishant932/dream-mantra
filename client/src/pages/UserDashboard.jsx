@@ -46,6 +46,7 @@ import {
 import { getModuleDashboardRoute } from '../utils/moduleDashboardNav';
 import { startModuleCheckout } from '../utils/startCheckout';
 import { programPageForSlug } from '../utils/routes';
+import { dashboardPath, parseDashboardPath } from '../utils/pathRoutes';
 
 const CareerLibraryExplorer = lazyWithRetry(() => import('../components/CareerLibraryExplorer'));
 
@@ -90,13 +91,20 @@ export default function UserDashboard() {
   const { t, d } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
-  const tabParam = new URLSearchParams(location.search).get('tab') || 'assess';
+  const parsedDash = parseDashboardPath(location.pathname, location.search);
+  const tabParam = parsedDash.tab || 'assess';
+
+  useEffect(() => {
+    if (parsedDash.redirect) {
+      navigate(parsedDash.redirect, { replace: true, preventScrollReset: true });
+    }
+  }, [parsedDash.redirect, navigate]);
 
   useEffect(() => {
     if (tabParam === 'ai' || tabParam === 'overview') {
-      navigate({ pathname: location.pathname, search: '?tab=assess' }, { replace: true, preventScrollReset: true });
+      navigate(dashboardPath('assess'), { replace: true, preventScrollReset: true });
     }
-  }, [tabParam, navigate, location.pathname]);
+  }, [tabParam, navigate]);
 
   useEffect(() => {
     if (tabParam === 'support') {
@@ -243,18 +251,18 @@ export default function UserDashboard() {
   }, [token, tabParam]);
 
   useEffect(() => {
-    const slotId = new URLSearchParams(location.search).get('slot_id');
+    const slotId = parsedDash.slotId;
     if (!slotId || loading) return;
     if (!counsellingAccess) {
-      navigate({ pathname: '/dashboard', search: '?tab=book' }, { replace: true, preventScrollReset: true });
+      navigate(dashboardPath('book'), { replace: true, preventScrollReset: true });
       return;
     }
     if (tabParam !== 'book') {
-      navigate({ pathname: '/dashboard', search: `?tab=book&slot_id=${slotId}` }, { replace: true, preventScrollReset: true });
+      navigate(dashboardPath('book', { slotId }), { replace: true, preventScrollReset: true });
       return;
     }
     loadSlots();
-  }, [location.search, tabParam, navigate, loadSlots, counsellingAccess, loading]);
+  }, [parsedDash.slotId, tabParam, navigate, loadSlots, counsellingAccess, loading]);
 
   useEffect(() => {
     if (tabParam === 'support') {
@@ -268,28 +276,26 @@ export default function UserDashboard() {
   }, [token, loadSlots]);
 
   useEffect(() => {
-    const slotId = new URLSearchParams(location.search).get('slot_id');
+    const slotId = parsedDash.slotId;
     if (!slotId || !slots.length || !counsellingAccess) return;
     const match = slots.find((s) => String(s.id) === String(slotId));
     if (match) setSelectedSlot(match);
-  }, [location.search, slots, counsellingAccess]);
+  }, [parsedDash.slotId, slots, counsellingAccess]);
 
-  const goTab = (tabId, extraSearch = '') => {
+  const goTab = (tabId, extra = {}) => {
     navigate(
-      { pathname: '/dashboard', search: `?tab=${tabId}${extraSearch}` },
+      dashboardPath(tabId, extra),
       { preventScrollReset: true },
     );
   };
 
   useEffect(() => {
-    const p = new URLSearchParams(location.search);
-    const focus = p.get('focus');
-    const subtab = p.get('subtab');
+    const { focus, subtab } = parsedDash;
     if (focus && COUNSELLING_PATHS.some((x) => x.id === focus)) setCounsellingFocus(focus);
     if (focus && TRAINING_PATHS.some((x) => x.id === focus)) setTrainingFocus(focus);
     if (subtab && tabParam === 'counselling') setCounsellingSubtab(subtab);
     if (subtab && tabParam === 'training') setTrainingSubtab(subtab);
-  }, [location.search, tabParam]);
+  }, [parsedDash.focus, parsedDash.subtab, tabParam]);
 
   const openPaidModule = useCallback((assessment, action = 'default') => {
     const route = getModuleDashboardRoute(assessment, action);
@@ -299,18 +305,16 @@ export default function UserDashboard() {
       if (route.tab === 'counselling') setCounsellingSubtab(route.subtab);
       if (route.tab === 'training') setTrainingSubtab(route.subtab);
     }
-    const qs = new URLSearchParams();
-    qs.set('tab', route.tab);
-    if (route.focus) qs.set('focus', route.focus);
-    if (route.subtab) qs.set('subtab', route.subtab);
-    if (route.hubView) qs.set('hub', route.hubView);
-    navigate({ pathname: '/dashboard', search: `?${qs.toString()}` }, { preventScrollReset: true });
+    navigate(dashboardPath(route.tab, {
+      focus: route.focus,
+      subtab: route.subtab,
+    }), { preventScrollReset: true });
   }, [navigate]);
 
   const openProfileModal = () => setShowProfileModal(true);
 
   const goProcessGuides = (section = 'process') => {
-    goTab('support', section === 'tests' ? '&section=tests&open=1' : '&section=process');
+    goTab('support', { section: section === 'tests' ? 'tests' : 'process' });
   };
 
   const goToTakeTest = () => goProcessGuides('tests');

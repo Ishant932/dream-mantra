@@ -320,6 +320,11 @@ export const adminApi = {
   copyOverrides: (token) => request('/admin/copy-overrides', { headers: headers(token) }),
   updateCopyOverrides: (token, body) =>
     request('/admin/copy-overrides', { method: 'PUT', headers: headers(token), body: JSON.stringify(body) }),
+  whatsappConfig: (token) => request('/admin/whatsapp-config', { headers: headers(token) }),
+  updateWhatsAppConfig: (token, body) =>
+    request('/admin/whatsapp-config', { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  bulkImportUsers: (token, body) =>
+    request('/admin/users/bulk-import', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
 };
 
 export const pagesApi = {

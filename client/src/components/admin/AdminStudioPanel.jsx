@@ -36,7 +36,8 @@ export default function AdminStudioPanel() {
   const [logoFile, setLogoFile] = useState(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
-  const [previewKey, setPreviewKey] = useState(0);
+  const [productSlug, setProductSlug] = useState('dmit');
+  const [savingModule, setSavingModule] = useState(false);
 
   const page = landings.find((p) => p.slug === active) || landings[0];
   const localUrl = page ? studioLandingLocalUrl(page.slug) : '';
@@ -74,6 +75,9 @@ export default function AdminStudioPanel() {
 
   useEffect(() => { loadList(); }, [loadList]);
   useEffect(() => { if (active) loadPage(active); }, [active, loadPage]);
+  useEffect(() => {
+    if (page?.productSlug) setProductSlug(page.productSlug);
+  }, [page?.productSlug, active]);
 
   const savePage = async () => {
     if (!token || !active) return;
@@ -112,6 +116,21 @@ export default function AdminStudioPanel() {
     }
   };
 
+  const saveModule = async () => {
+    if (!token || !active) return;
+    setSavingModule(true);
+    try {
+      await adminApi.updateStudioLandingMeta(token, active, { productSlug });
+      const res = await adminApi.studioLandings(token);
+      setLandings(res.landings || []);
+      setNotice('Checkout module updated — Join Now opens that program checkout.');
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setSavingModule(false);
+    }
+  };
+
   const createPage = async (e) => {
     e.preventDefault();
     if (!token) return;
@@ -128,7 +147,7 @@ export default function AdminStudioPanel() {
       setNewPage({ slug: '', label: '', productSlug: 'dmit', folder: '', ctaLabel: 'Book Now' });
       setHeroFile(null);
       setLogoFile(null);
-      setNotice('Landing page created with Book Now CTAs.');
+      setNotice('Landing page created with Join Now → checkout.');
     } catch (e) {
       setError(e.message || 'Failed to create');
     } finally {
@@ -153,8 +172,9 @@ export default function AdminStudioPanel() {
         <form onSubmit={createPage} className="rounded-xl border border-sand-200 p-4 grid sm:grid-cols-2 gap-3 bg-sand-50/50">
           <input className="input-field" placeholder="URL slug" value={newPage.slug} onChange={(e) => setNewPage({ ...newPage, slug: e.target.value })} required />
           <input className="input-field" placeholder="Page label" value={newPage.label} onChange={(e) => setNewPage({ ...newPage, label: e.target.value })} required />
-          <select className="input-field" value={newPage.productSlug} onChange={(e) => setNewPage({ ...newPage, productSlug: e.target.value })}>
-            {MODULE_CATALOG.map((m) => <option key={m.slug} value={m.slug}>{m.title}</option>)}
+          <select className="input-field" value={newPage.productSlug} onChange={(e) => setNewPage({ ...newPage, productSlug: e.target.value })} required>
+            <option value="">Select checkout module…</option>
+            {MODULE_CATALOG.filter((m) => !m.followUpOnly).map((m) => <option key={m.slug} value={m.slug}>{m.title} (₹{m.price})</option>)}
           </select>
           <input className="input-field" placeholder="CTA label (e.g. Book Now)" value={newPage.ctaLabel} onChange={(e) => setNewPage({ ...newPage, ctaLabel: e.target.value })} />
           <input className="input-field" placeholder="Folder name (optional)" value={newPage.folder} onChange={(e) => setNewPage({ ...newPage, folder: e.target.value })} />
@@ -171,7 +191,8 @@ export default function AdminStudioPanel() {
         <table className="w-full text-sm admin-data-table min-w-[720px]">
           <thead>
             <tr className="border-b border-sand-200 text-left">
-              <th className="py-2.5 px-3 font-semibold text-xs uppercase opacity-60">Program</th>
+              <th className="py-2.5 px-3 font-semibold text-xs uppercase opacity-60">Page</th>
+              <th className="py-2.5 px-3 font-semibold text-xs uppercase opacity-60">Checkout module</th>
               <th className="py-2.5 px-3 font-semibold text-xs uppercase opacity-60">Status</th>
               <th className="py-2.5 px-3 font-semibold text-xs uppercase opacity-60">Actions</th>
             </tr>
@@ -180,6 +201,7 @@ export default function AdminStudioPanel() {
             {landings.map((p) => (
               <tr key={p.slug} className={`border-b border-sand-100 cursor-pointer hover:bg-amber-50/50 ${active === p.slug ? 'bg-amber-50/80' : ''}`} onClick={() => setActive(p.slug)}>
                 <td className="py-2.5 px-3 font-semibold">{p.label}</td>
+                <td className="py-2.5 px-3 text-xs opacity-80">{MODULE_CATALOG.find((m) => m.slug === p.productSlug)?.title || p.productSlug}</td>
                 <td className="py-2.5 px-3">
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.live ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}`}>
                     {p.live ? 'LIVE' : 'OFFLINE'}
@@ -203,8 +225,21 @@ export default function AdminStudioPanel() {
 
       {page && (
         <>
-          <div className="admin-landing-meta rounded-xl border border-sand-200 p-3 text-sm space-y-2">
+          <div className="admin-landing-meta rounded-xl border border-sand-200 p-3 text-sm space-y-3">
             <p className="font-bold">{page.label}</p>
+            <div className="flex flex-wrap items-end gap-2">
+              <label className="text-xs font-bold flex-1 min-w-[200px]">
+                Checkout module (Join Now → payment)
+                <select className="input-field mt-1" value={productSlug} onChange={(e) => setProductSlug(e.target.value)}>
+                  {MODULE_CATALOG.filter((m) => !m.followUpOnly).map((m) => (
+                    <option key={m.slug} value={m.slug}>{m.title} — ₹{m.price}</option>
+                  ))}
+                </select>
+              </label>
+              <button type="button" onClick={saveModule} disabled={savingModule} className="btn-outline !py-2 !px-3 text-xs">
+                {savingModule ? 'Saving…' : 'Save module'}
+              </button>
+            </div>
             <div className="flex flex-wrap gap-2">
               <a href={localUrl} target="_blank" rel="noopener noreferrer" className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">Open local <ExternalLink className="w-3.5 h-3.5" /></a>
               <a href={productionUrl} target="_blank" rel="noopener noreferrer" className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">Production <ExternalLink className="w-3.5 h-3.5" /></a>

@@ -1,0 +1,1 @@
+import{c as s}from"./vendor-Z1G8FAI1.js";import{q as o}from"./index-Cj1YJAwS.js";function c(t,n,e=""){if(!t?.hasCustom)return e;const r=t?.[n];return typeof r=="string"&&r.trim()?r:e}function i(t){const[n,e]=s.useState(null);return s.useEffect(()=>{t&&o.get(t).then(r=>e(r.page||null)).catch(()=>e(null))},[t]),n}export{c,i as u};

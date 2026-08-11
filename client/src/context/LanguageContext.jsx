@@ -6,43 +6,61 @@ import { pagesApi } from '../api';
 const LanguageContext = createContext(null);
 
 export function LanguageProvider({ children }) {
-  const [lang, setLang] = useState(() => localStorage.getItem('dm_lang') || 'en');
+  const [lang, setLangState] = useState(() => {
+    try {
+      return localStorage.getItem('dm_lang') || 'en';
+    } catch {
+      return 'en';
+    }
+  });
   const [copyTrees, setCopyTrees] = useState({ en: {}, hi: {} });
 
-  useEffect(() => {
+  const loadCopyOverrides = useCallback(() => {
     pagesApi.copyOverrides()
       .then((r) => setCopyTrees(r.trees || { en: {}, hi: {} }))
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    loadCopyOverrides();
+  }, [loadCopyOverrides]);
+
   const messages = useMemo(
-    () => mergeDeep(getMessages(lang), copyTrees[lang] || copyTrees.en || {}),
+    () => mergeDeep(getMessages(lang), copyTrees[lang] || {}),
     [lang, copyTrees],
   );
 
   useEffect(() => {
     document.documentElement.lang = lang === 'hi' ? 'hi' : 'en';
-    localStorage.setItem('dm_lang', lang);
+    document.documentElement.setAttribute('data-lang', lang);
+    try {
+      localStorage.setItem('dm_lang', lang);
+    } catch {
+      /* private mode */
+    }
   }, [lang]);
 
+  const setLang = useCallback((next) => {
+    setLangState((prev) => (typeof next === 'function' ? next(prev) : next));
+  }, []);
+
   const toggle = useCallback(() => {
-    setLang((l) => (l === 'en' ? 'hi' : 'en'));
+    setLangState((l) => (l === 'en' ? 'hi' : 'en'));
   }, []);
 
   const t = useCallback(
     (path) => translate(messages, path),
-    [messages]
+    [messages],
   );
 
-  /** Localized data arrays / objects — e.g. d('data.processSteps') */
   const d = useCallback(
     (path) => translateData(messages, path),
-    [messages]
+    [messages],
   );
 
   const localize = useCallback(
     (item, field = 'title') => loc(item, lang, field),
-    [lang]
+    [lang],
   );
 
   return (

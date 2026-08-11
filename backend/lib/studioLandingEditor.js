@@ -27,14 +27,30 @@ const DEFAULT_HTML = `<!DOCTYPE html>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/studio/shared/responsive.css">
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased overflow-x-hidden" data-dm-studio="{{SLUG}}" data-dm-product="{{PRODUCT}}">
   <section class="max-w-4xl mx-auto px-4 py-16 text-center">
     <h1 class="text-3xl sm:text-5xl font-black mb-4">{{LABEL}}</h1>
     <p class="text-slate-600 mb-8">Edit this page from Admin → Landing Pages.</p>
-    <button type="button" class="js-open-join-modal bg-orange-500 text-white px-8 py-4 rounded-xl font-bold">Join Now</button>
+    <button type="button" class="js-open-join-modal bg-orange-500 text-white px-8 py-4 rounded-xl font-bold">{{CTA}}</button>
   </section>
+  <div id="join-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6">
+      <h2 class="text-2xl font-black mb-4 text-center">Join Now</h2>
+      <form id="lead-form" class="space-y-3 text-left">
+        <input id="lf-name" class="w-full border rounded-lg px-3 py-2" placeholder="Full name" required />
+        <input id="lf-email" type="email" class="w-full border rounded-lg px-3 py-2" placeholder="Email" required />
+        <input id="lf-phone" class="w-full border rounded-lg px-3 py-2" placeholder="10-digit mobile" required />
+        <input id="lf-password" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Password (min 6 chars)" required minlength="6" />
+        <input id="lf-confirm-password" type="password" class="w-full border rounded-lg px-3 py-2" placeholder="Confirm password" required minlength="6" />
+        <p id="password-error" class="hidden text-red-600 text-sm">Passwords do not match</p>
+        <button type="submit" class="w-full bg-orange-500 text-white py-3 rounded-xl font-bold">JOIN NOW</button>
+      </form>
+    </div>
+  </div>
   <script src="script.js"></script>
+  <script src="/studio/checkout-bridge.js"></script>
 </body>
 </html>`;
 
@@ -52,10 +68,11 @@ export function listStudioLandingsForAdmin() {
     const exists = fs.existsSync(dir);
     const meta = getLandingMeta(l.slug);
     const published = isLandingPublished(l.slug, exists);
+    const productSlug = meta.productSlug || l.productSlug;
     return {
       slug: l.slug,
       label: l.label,
-      productSlug: l.productSlug,
+      productSlug,
       folder: l.folder,
       live: published,
       filesExist: exists,
@@ -144,10 +161,15 @@ function copyTemplateFiles(targetDir, { slug, label, productSlug, ctaLabel, asse
   const html = DEFAULT_HTML
     .replace(/\{\{LABEL\}\}/g, label)
     .replace(/\{\{SLUG\}\}/g, slug)
-    .replace(/\{\{PRODUCT\}\}/g, productSlug);
+    .replace(/\{\{PRODUCT\}\}/g, productSlug)
+    .replace(/\{\{CTA\}\}/g, ctaLabel || 'Join Now');
   fs.writeFileSync(path.join(targetDir, 'index.html'), html, 'utf8');
   fs.writeFileSync(path.join(targetDir, 'styles.css'), 'body { font-family: system-ui, sans-serif; }\n', 'utf8');
-  fs.writeFileSync(path.join(targetDir, 'script.js'), '', 'utf8');
+  fs.writeFileSync(path.join(targetDir, 'script.js'), `document.querySelectorAll('.js-open-join-modal').forEach((btn) => {
+  btn.addEventListener('click', () => document.getElementById('join-modal')?.classList.remove('hidden'));
+});
+document.getElementById('lead-form')?.addEventListener('submit', (e) => window.dmHandleLandingCheckout(e, {}));
+`, 'utf8');
 }
 
 export function createStudioLanding({ slug, label, productSlug, folder, ctaLabel, heroImage, logoImage }) {
@@ -187,6 +209,32 @@ export function createStudioLanding({ slug, label, productSlug, folder, ctaLabel
 
 export function updateStudioLandingMeta(slug, patch) {
   if (!getAllStudioLandings().some((l) => l.slug === slug)) throw new Error('Landing page not found');
+
+  if (patch.productSlug) {
+    const custom = readCustomLandings();
+    const builtin = BUILTIN_STUDIO_LANDINGS.find((l) => l.slug === slug);
+    if (builtin) {
+      setLandingMeta(slug, { productSlug: patch.productSlug });
+    } else {
+      const idx = custom.findIndex((l) => l.slug === slug);
+      if (idx >= 0) {
+        custom[idx] = { ...custom[idx], productSlug: patch.productSlug };
+        saveCustomLandings(custom);
+      }
+    }
+    try {
+      const { dir } = landingDir(slug);
+      const htmlPath = path.join(dir, 'index.html');
+      if (fs.existsSync(htmlPath)) {
+        let html = fs.readFileSync(htmlPath, 'utf8');
+        html = html.replace(/data-dm-product="[^"]*"/, `data-dm-product="${patch.productSlug}"`);
+        fs.writeFileSync(htmlPath, html, 'utf8');
+      }
+    } catch {
+      /* folder may be missing */
+    }
+  }
+
   return setLandingMeta(slug, patch);
 }
 

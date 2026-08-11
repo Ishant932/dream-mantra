@@ -3,6 +3,7 @@
  * Twilio sandbox sends plain text; Meta maps to Content SIDs in production.
  */
 import { siteUrl } from './config.js';
+import { getTemplateOverride, applyTemplateVars } from './adminConfig.js';
 import {
   banner,
   bullet,
@@ -23,7 +24,19 @@ export function supportLine() {
   return process.env.SUPPORT_EMAIL?.trim() || 'info@dreammantra.in';
 }
 
-export function messageCatalog(trigger, user, extra = {}) {
+const SAMPLE_EXTRA = {
+  joinPhrase: 'join dream-mantra',
+  moduleTitle: 'Brain Mapping',
+  sessionDate: '15 Mar 2026',
+  sessionTime: '4:00 PM',
+  reportTitle: 'Brain Mapping Report',
+  statusSummary: '2 of 3 modules complete',
+  progressPercent: 60,
+  phoneDisplay: '+91 98765 43210',
+  modulesSummary: '• Brain Mapping: Done\n• Skill Mapping: Pending',
+};
+
+export function buildDefaultMessage(trigger, user, extra = {}) {
   const name = user?.name?.split(' ')[0] || 'there';
   const uid = user?.user_uid || '';
   const base = siteUrl();
@@ -260,19 +273,63 @@ ${banner('Session booked!', '✅', '📅')}
 ${cta('View booking & join link', `${base}/dashboard?tab=book`)}
 ${sparkleBar()}`,
 
+    whatsapp_menu: `${sparkleBar()}
+${banner('Dream Mantra Menu', '📋', '✨')}
+
+*Reply with a number:*
+
+1️⃣ 💎 Modules & pricing (Brain / Skill / Combo)
+2️⃣ 📅 Book counselling session
+3️⃣ 🤖 AI Career Launchpad (₹1,499)
+4️⃣ 🎯 Personalised Career Readiness (₹2,999)
+5️⃣ 🆔 My Dreams ID & dashboard
+6️⃣ 🆘 Support & contact
+
+Or *type any question* — careers, streams, payments, booking! 🚀
+${cta('Open website', base)}
+${miniPulse('💬', '✨', '🌟')}`,
+
+    join_welcome: `${sparkleBar()}
+${banner('Welcome to Dream Mantra!', '🎉', '🚀')}
+
+Hey *${name}*! ${miniPulse('✨', '💫', '🌟')}
+You're connected with *Esh* — our AI career counsellor on WhatsApp 💬
+
+${trustBadge()}
+
+${waveBar()}
+*Your quick menu — reply with a number:*
+
+1️⃣ 💎 Modules & pricing
+2️⃣ 📅 Book counselling
+3️⃣ 🤖 AI Career Launchpad (₹1,499)
+4️⃣ 🎯 Career Readiness Program (₹2,999)
+5️⃣ 🆔 Dreams ID & dashboard
+6️⃣ 🆘 Support
+
+${uid ? `🆔 *Your Dreams ID:* \`${uid}\`\n` : ''}${cta('Explore dashboard', `${base}/dashboard`)}
+${cta('Book free guidance', `${base}/contact`)}
+
+_Type any question_ — Brain Mapping, Skill Mapping, Class 9–12 streams, jobs & more!
+${contactBlock(base)}
+${starTrail()}
+${sparkleBar()}`,
+
     chat_welcome: `${sparkleBar()}
 ${banner("I'm Esh — Dream Mantra AI Counsellor", '🤖', '✨')}
 
 ${waveBar()}
-Your 24/7 career buddy — streams, Brain Mapping, Skill Mapping, counselling & more! 💬
+Your 24/7 career buddy — Brain Mapping, Skill Mapping, AI Launchpad, Career Readiness & counselling! 💬
 
 ${trustBadge()}
 
 *Quick menu — reply with a number:*
-1️⃣ 💎 Modules & pricing (Brain / Skill / Combo)
+1️⃣ 💎 Modules & pricing
 2️⃣ 📅 Book counselling session
-3️⃣ 🆔 My Dreams ID & dashboard
-4️⃣ 🆘 Talk to our team
+3️⃣ 🤖 AI Career Launchpad (₹1,499)
+4️⃣ 🎯 Career Readiness Program (₹2,999)
+5️⃣ 🆔 My Dreams ID & dashboard
+6️⃣ 🆘 Talk to our team
 
 Or *type your question* — careers, courses, payments, Class 9–12 streams, anything! 🚀
 
@@ -379,4 +436,18 @@ ${contactBlock(base)}`,
   };
 
   return messages[trigger] || null;
+}
+
+export function messageCatalog(trigger, user, extra = {}) {
+  const override = getTemplateOverride(trigger);
+  if (override) return applyTemplateVars(override, user, extra);
+  return buildDefaultMessage(trigger, user, extra);
+}
+
+export function messageCatalogDefault(trigger) {
+  return buildDefaultMessage(
+    trigger,
+    { name: 'Student', user_uid: 'DM-12345' },
+    SAMPLE_EXTRA,
+  );
 }

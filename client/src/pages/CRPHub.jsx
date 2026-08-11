@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 import { ArrowRight, Calendar, ClipboardList, LogIn, Map, Target } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
+import { crpPath, parseCrpPath } from '../utils/pathRoutes';
 import CmsPageSections from '../components/CmsPageSections';
 import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 import CRPExplorePage from './CRPExplorePage';
@@ -33,26 +34,23 @@ export default function CRPHub() {
   const fg = d('freeGuidance') || {};
   const location = useLocation();
   const navigate = useNavigate();
-  const params = new URLSearchParams(location.search);
-  let tab = params.get('tab') || 'launchpad';
-  const audience = params.get('audience') || 'college-students';
+  const parsed = parseCrpPath(location.pathname, location.search);
+  let tab = parsed.tab || 'launchpad';
+  const audience = parsed.audience || 'college-students';
+
+  useEffect(() => {
+    if (parsed.redirect) {
+      navigate(parsed.redirect, { replace: true, preventScrollReset: true });
+    }
+  }, [parsed.redirect, navigate]);
 
   if (AUDIENCE_IDS.includes(tab)) tab = 'pathways';
 
-  useEffect(() => {
-    const p = new URLSearchParams(location.search);
-    const raw = p.get('tab');
-    if (raw === 'overview') {
-      p.set('tab', 'launchpad');
-      navigate({ pathname: '/crp', search: `?${p.toString()}` }, { replace: true, preventScrollReset: true });
-    }
-  }, [location.search, navigate]);
-
   const setTab = (tabId) => {
-    const next = new URLSearchParams();
-    next.set('tab', tabId);
-    if (tabId === 'pathways') next.set('audience', audience);
-    navigate({ pathname: '/crp', search: `?${next.toString()}` }, { replace: true, preventScrollReset: true });
+    navigate(crpPath(tabId, { audience: tabId === 'pathways' ? audience : undefined }), {
+      replace: true,
+      preventScrollReset: true,
+    });
   };
 
   const { lead, accent } = splitHubTitle(cmsText(cms, 'heroTitle', hub.title || 'Training & Placement'));

@@ -22,10 +22,10 @@ export const footerPrograms = [
   { to: '/programs/class-11-12', label: 'Class 11-12' },
   { to: '/programs/college-students', label: 'College Students' },
   { to: '/programs/working-professionals', label: 'Working Professionals' },
-  { to: '/counselling?tab=dmit', label: 'Brain Mapping' },
-  { to: '/counselling?tab=psychometric', label: 'Skill Mapping' },
-  { to: '/counselling?tab=combo', label: 'Brain Mapping + Skill Mapping' },
-  { to: '/counselling?tab=why', label: 'Why Career Counselling' },
+  { to: '/counselling/brain-mapping', label: 'Brain Mapping' },
+  { to: '/counselling/skill-mapping', label: 'Skill Mapping' },
+  { to: '/counselling/combo', label: 'Brain Mapping + Skill Mapping' },
+  { to: '/counselling/why', label: 'Why Career Counselling' },
   { to: '/crp', label: 'AI Career Launchpad' },
 ];
 
@@ -53,8 +53,7 @@ export const WHATSAPP_AGENT_PHONE = (
 
 const BUSINESS_WHATSAPP_PHONE = '919680102276';
 
-const AGENT_PREFILL =
-  'Hi Dream Mantra, I would like to know more about career counselling.';
+const DEFAULT_JOIN_MSG = 'join dream-mantra';
 
 export const footerSocial = {
   whatsapp: `https://wa.me/${BUSINESS_WHATSAPP_PHONE}`,
@@ -63,20 +62,20 @@ export const footerSocial = {
   facebook: 'https://www.facebook.com/dreammantra',
 };
 
-export function getWhatsAppHref(message = AGENT_PREFILL) {
+export function getWhatsAppHref(message = DEFAULT_JOIN_MSG) {
   const text = encodeURIComponent(message);
   return `https://wa.me/${BUSINESS_WHATSAPP_PHONE}?text=${text}`;
 }
 
 /**
  * WhatsApp agent / sandbox join link.
+ * Default prefill is always "join dream-mantra" so Esh replies with menu instantly.
  * @param {{ text?: string, sandbox?: boolean, joinCode?: string }} [opts]
  */
 export function getWhatsAppAgentLink({ text, sandbox = false, joinCode } = {}) {
-  if (sandbox) {
-    const code = (joinCode || 'dream-mantra').trim();
-    const msg = /^join\s+/i.test(code) ? code : `join ${code}`;
-    return `https://wa.me/${WHATSAPP_AGENT_PHONE}?text=${encodeURIComponent(msg)}`;
-  }
-  return getWhatsAppHref(text || AGENT_PREFILL);
+  const code = (joinCode || 'dream-mantra').trim();
+  const joinMsg = /^join\s+/i.test(code) ? code : `join ${code}`;
+  const msg = text || joinMsg;
+  const phone = sandbox ? WHATSAPP_AGENT_PHONE : WHATSAPP_AGENT_PHONE;
+  return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
 }

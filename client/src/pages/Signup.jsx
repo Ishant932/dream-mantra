@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { dashboardPath } from '../utils/pathRoutes';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User, Mail, Lock, Phone, Sparkles, ArrowRight, CheckCircle2, Loader2 } from 'lucide-react';
@@ -24,7 +24,7 @@ export default function Signup() {
   const returnTo = typeof location.state?.from === 'string' ? location.state.from : '';
   const postAuthPath = () => {
     if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) return returnTo;
-    return slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard';
+    return slotId ? dashboardPath('book', { slotId }) : '/dashboard/book-now';
   };
 
   useEffect(() => {

@@ -15,6 +15,7 @@ import { useLang } from '../context/LanguageContext';
 import { paymentsApi } from '../api';
 import { useUserVouchers } from '../hooks/useUserVouchers';
 import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
+import { marketplacePath, parseMarketplacePath } from '../utils/pathRoutes';
 import CmsPageSections from '../components/CmsPageSections';
 
 const fade = {
@@ -54,11 +55,9 @@ export default function MarketplaceHub() {
   }, []);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const raw = params.get('tab');
-    if (raw && LEGACY_TO_VERTICAL[raw]) {
-      params.set('tab', LEGACY_TO_VERTICAL[raw]);
-      navigate({ pathname: location.pathname, search: `?${params.toString()}` }, { replace: true, preventScrollReset: true });
+    const parsed = parseMarketplacePath(location.pathname, location.search);
+    if (parsed.redirect) {
+      navigate(parsed.redirect, { replace: true, preventScrollReset: true });
     }
   }, [location.pathname, location.search, navigate]);
 
@@ -154,7 +153,13 @@ export default function MarketplaceHub() {
           </motion.blockquote>
         )}
 
-        <SubTabs tabs={marketplaceTabs} defaultTab="counselling" id="marketplace">
+        <SubTabs
+          tabs={marketplaceTabs}
+          defaultTab="counselling"
+          id="marketplace"
+          pathForTab={marketplacePath}
+          tabFromPath={(pathname, search) => parseMarketplacePath(pathname, search).tab}
+        >
           {(tab) => (
             <>
               {tab === 'counselling' && (
@@ -181,10 +186,10 @@ export default function MarketplaceHub() {
                       <h2 className="text-xl sm:text-2xl font-bold text-theme-primary mb-2">{trainingCopy.programTitle || 'Training & Placement'}</h2>
                       <p className="text-sm text-theme-muted leading-relaxed max-w-2xl">{trainingCopy.programDesc}</p>
                       <div className="flex flex-wrap gap-3 mt-4">
-                        <Link to="/crp?tab=launchpad" className="btn-primary inline-flex items-center gap-2 text-sm">
+                        <Link to="/crp/launchpad" className="btn-primary inline-flex items-center gap-2 text-sm">
                           {trainingCopy.exploreCta || 'Explore Launchpad'} <ArrowRight className="w-4 h-4" />
                         </Link>
-                        <Link to="/crp?tab=readiness" className="btn-outline inline-flex items-center gap-2 text-sm">Personalised Career Readiness Program</Link>
+                        <Link to="/crp/readiness" className="btn-outline inline-flex items-center gap-2 text-sm">Personalised Career Readiness Program</Link>
                       </div>
                     </div>
                   </motion.div>
@@ -219,7 +224,7 @@ export default function MarketplaceHub() {
                         <GuidanceLink to="/contact#guidance" className="btn-primary inline-flex items-center gap-2">
                           {d('freeGuidance')?.cta || 'Book a free guidance call'} <ArrowRight className="w-4 h-4" />
                         </GuidanceLink>
-                        <Link to="/crp?tab=launchpad" className="btn-outline inline-flex items-center gap-2">
+                        <Link to="/crp/launchpad" className="btn-outline inline-flex items-center gap-2">
                           {trainingCopy.exploreCta || 'Explore Launchpad'}
                         </Link>
                         <Link to="/signup" className="page-next-step__auth inline-flex items-center gap-2">

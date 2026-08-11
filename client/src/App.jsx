@@ -69,18 +69,18 @@ export default function App() {
           <Routes>
             <Route element={<Layout />}>
               <Route index element={<Home />} />
-              <Route path="counselling" element={<CounsellingHub />} />
+              <Route path="counselling/*" element={<CounsellingHub />} />
               <Route path="counsellors" element={<Navigate to="/" replace />} />
               <Route path="pillars" element={<Navigate to="/" replace />} />
-              <Route path="crp" element={<CRPPage />} />
-              <Route path="crp/explore" element={<Navigate to="/crp?tab=launchpad" replace />} />
+              <Route path="crp/*" element={<CRPPage />} />
+              <Route path="crp/explore" element={<Navigate to="/crp/launchpad" replace />} />
               <Route path="crp/launch" element={<CRPLaunchRedirect />} />
               <Route path="careers" element={<CareersPage />} />
               <Route path="careers/pathways" element={<DegreePathwaysPage />} />
               <Route path="careers/:slug" element={<CareerDetailPage />} />
               <Route path="blog" element={<BlogPage />} />
               <Route path="blog/:slug" element={<BlogPostPage />} />
-              <Route path="marketplace" element={<MarketplaceHub />} />
+              <Route path="marketplace/*" element={<MarketplaceHub />} />
               <Route path="study-abroad" element={<Navigate to="/" replace />} />
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />
@@ -88,15 +88,15 @@ export default function App() {
               <Route path="policies" element={<Policies />} />
               <Route path="privacy" element={<Navigate to="/" replace />} />
               <Route path="assessments" element={<AssessmentsHub />} />
-              <Route path="assessments/dmit" element={<Navigate to="/counselling?tab=dmit" replace />} />
-              <Route path="assessments/psychometric" element={<Navigate to="/counselling?tab=psychometric" replace />} />
-              <Route path="assessments/dmit-psychometric" element={<Navigate to="/counselling?tab=combo" replace />} />
-              <Route path="assessments/why-dreams-mantra" element={<Navigate to="/counselling?tab=why" replace />} />
+              <Route path="assessments/dmit" element={<Navigate to="/counselling/brain-mapping" replace />} />
+              <Route path="assessments/psychometric" element={<Navigate to="/counselling/skill-mapping" replace />} />
+              <Route path="assessments/dmit-psychometric" element={<Navigate to="/counselling/combo" replace />} />
+              <Route path="assessments/why-dreams-mantra" element={<Navigate to="/counselling/why" replace />} />
               <Route path="assessments/:slug" element={<AssessmentPage />} />
               <Route path="programs/:slug" element={<ProgramPage />} />
               <Route path="partner/:slug" element={<PartnerPage />} />
               <Route
-                path="dashboard"
+                path="dashboard/*"
                 element={
                   <ProtectedRoute userOnly>
                     <UserDashboard />

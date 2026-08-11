@@ -2,7 +2,14 @@ import { getData, saveData } from '../database.js';
 import { sendTextMessage, sendTemplateForRow } from './client.js';
 import { buildTemplatePayload } from './templates.js';
 import { resolveUserPhone } from './phone.js';
-import { dedupHours, isWhatsAppEnabled } from './config.js';
+import { dedupHours as envDedupHours, isWhatsAppEnabled } from './config.js';
+import { getWhatsAppTiming } from './adminConfig.js';
+
+function dedupHours() {
+  const env = envDedupHours();
+  if (Number.isFinite(env) && env > 0 && process.env.WHATSAPP_DEDUP_HOURS) return env;
+  return getWhatsAppTiming('dedup_hours', 48);
+}
 
 function ensureOutbox() {
   const data = getData();

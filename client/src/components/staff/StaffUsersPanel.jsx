@@ -10,6 +10,7 @@ import { DashCard } from '../DashboardUI';
 import AdminSectionExport from '../AdminSectionExport';
 import UserActionsMenu from '../UserActionsMenu';
 import AdminPasswordCard from '../admin/AdminPasswordCard';
+import AdminBulkUsersPanel from '../admin/AdminBulkUsersPanel';
 
 const CLASS_FILTER_OPTIONS = ['All classes', ...programs.map((p) => p.title)];
 const STREAM_FILTER_OPTIONS = ['All streams', 'Science', 'Commerce', 'Arts', 'Humanities', 'Undecided'];
@@ -297,6 +298,9 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
 
   return (
     <>
+      {allowAccountActions && (
+        <AdminBulkUsersPanel onError={onError} onComplete={() => loadUsers()} />
+      )}
       <AdminUserProfileModal
         open={profileOpen}
         user={profileUser}

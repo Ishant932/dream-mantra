@@ -34,6 +34,7 @@ import AdminMessagesPanel from '../components/MessagesPanel';
 import AdminBlogPanel from '../components/AdminBlogPanel';
 import AdminStudioPanel from '../components/admin/AdminStudioPanel';
 import AdminPageCatalogPanel from '../components/admin/AdminPageCatalogPanel';
+import AdminWhatsAppPanel from '../components/admin/AdminWhatsAppPanel';
 import { useFlashNotice } from '../hooks/useFlashNotice';
 import DashboardB2BBanner from '../components/DashboardB2BBanner';
 import { getAdminDashboardNextStep, ADMIN_NEXT_STEP_ACTIONS } from '../utils/dashboardNextStep';
@@ -53,6 +54,7 @@ const ADMIN_TABS = [
   { id: 'blogs', label: 'Blogs', desc: 'Create & publish website articles' },
   { id: 'landing-pages', label: 'Landing Pages', desc: 'Internal campaign landing pages' },
   { id: 'site-pages', label: 'Website Copy', desc: 'Edit live page text across the site' },
+  { id: 'whatsapp', label: 'WhatsApp Messages', desc: 'Twilio auto-replies, notifications & reminder timings' },
   { id: 'settings', label: 'Community & Links', desc: 'Community schedule, agewise combos & resources' },
 ];
 
@@ -432,6 +434,7 @@ export default function AdminDashboard() {
 
               {tab === 'landing-pages' && <AdminStudioPanel />}
               {tab === 'site-pages' && <AdminPageCatalogPanel onNotice={setNotice} onError={setError} />}
+              {tab === 'whatsapp' && <AdminWhatsAppPanel onNotice={setNotice} onError={setError} />}
 
               {tab === 'settings' && (
                 <div className="space-y-4 w-full max-w-none">

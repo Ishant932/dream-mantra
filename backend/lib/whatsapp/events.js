@@ -16,7 +16,7 @@ import {
 } from '../moduleAccess.js';
 import { resolveAssessmentSlug } from '../moduleCatalog.js';
 
-const HOUR = 60 * 60 * 1000;
+import { getWhatsAppTimingMs } from './adminConfig.js';
 
 async function mirrorToEmail(trigger, user, body) {
   if (!user?.email || !body) return;
@@ -134,9 +134,9 @@ export function onUserRegistered(user, { whatsappOptIn = true } = {}) {
     if (!canSend(fresh)) return;
 
     await sendNow('registration_success', fresh);
-    scheduleText('welcome_step2', fresh, 2 * HOUR);
-    scheduleText('welcome_step3', fresh, 24 * HOUR);
-    scheduleText('welcome_step4', fresh, 48 * HOUR);
+    scheduleText('welcome_step2', fresh, getWhatsAppTimingMs('welcome_step2_hours', 2));
+    scheduleText('welcome_step3', fresh, getWhatsAppTimingMs('welcome_step3_hours', 24));
+    scheduleText('welcome_step4', fresh, getWhatsAppTimingMs('welcome_step4_hours', 48));
   });
 }
 
@@ -152,7 +152,7 @@ export function onProfileUpdated(user) {
 export function onPaymentPending(user, assessment) {
   fire(() => {
     if (!canSend(user) || !assessment) return;
-    scheduleText('payment_reminder', user, 6 * HOUR, {
+    scheduleText('payment_reminder', user, getWhatsAppTimingMs('payment_schedule_delay_hours', 6), {
       moduleTitle: assessment.type || assessment.product_slug,
       paymentUrl: `${siteUrl()}/payment/${assessment.id}`,
     });

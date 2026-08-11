@@ -9,16 +9,23 @@ export default function SubTabs({
   id = 'tabs',
   orientation = 'horizontal',
   paramName = 'tab',
-  scrollOnChange = false,
+  pathForTab = null,
+  tabFromPath = null,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
   const rootRef = useRef(null);
   const params = new URLSearchParams(location.search);
-  const active = params.get(paramName) || defaultTab || tabs[0]?.id;
+  const active = tabFromPath
+    ? tabFromPath(location.pathname, location.search)
+    : params.get(paramName) || defaultTab || tabs[0]?.id;
   const isVertical = orientation === 'vertical';
 
   const setTab = (tabId) => {
+    if (pathForTab) {
+      navigate(pathForTab(tabId), { replace: true, preventScrollReset: true });
+      return;
+    }
     const next = new URLSearchParams(location.search);
     next.set(paramName, tabId);
     navigate(

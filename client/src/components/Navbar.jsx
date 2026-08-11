@@ -23,7 +23,7 @@ const buildMainNav = (t, counsellingMega, crpMega, counsellingCommon = [], commo
   },
   {
     label: t('nav.crp'),
-    to: '/crp?tab=launchpad',
+    to: '/crp/launchpad',
     highlight: true,
     mega: crpMega,
   },
@@ -271,6 +271,14 @@ export default function Navbar({ scrolled = false }) {
               <div className="nav-mobile-drawer-header">
                 <span className="nav-mobile-drawer-title">{t('nav.menu')}</span>
                 <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={toggle}
+                    className="lang-toggle"
+                    aria-label={lang === 'en' ? 'Switch to Hindi' : 'Switch to English'}
+                  >
+                    {lang === 'en' ? 'हिंदी' : 'EN'}
+                  </button>
                   <ThemeToggle compact />
                   <button
                   type="button"

@@ -36,7 +36,7 @@ function BookNowModal({ open, onClose }) {
     return () => { document.body.style.overflow = prev; };
   }, [open]);
 
-  const bookTarget = user ? '/dashboard?tab=assess' : null;
+  const bookTarget = user ? '/dashboard/book-now' : null;
 
   useEffect(() => {
     if (open && user && bookTarget) {
@@ -85,7 +85,7 @@ function BookNowModal({ open, onClose }) {
         signupInterest,
       });
       onClose();
-      navigate('/dashboard?tab=assess');
+      navigate('/dashboard/book-now');
     } catch (err) {
       setError(err.message || 'Could not create account');
     } finally {

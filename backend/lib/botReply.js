@@ -77,7 +77,7 @@ async function askGemini(message, history, lang) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: `${SITE_CONTEXT}\n\n${buildGeminiSiteContext()}` }] },
         contents,
-        generationConfig: { temperature: 0.3, maxOutputTokens: 800, topP: 0.9 },
+        generationConfig: { temperature: 0.3, maxOutputTokens: 1200, topP: 0.9 },
       }),
     }
   );

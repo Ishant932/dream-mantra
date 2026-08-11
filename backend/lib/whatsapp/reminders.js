@@ -12,11 +12,11 @@ import {
   journeyProgressPercent,
 } from '../moduleAccess.js';
 
-const HOUR = 60 * 60 * 1000;
+import { getWhatsAppTiming } from './adminConfig.js';
 
 function hoursSince(iso) {
   if (!iso) return Infinity;
-  return (Date.now() - new Date(iso).getTime()) / HOUR;
+  return (Date.now() - new Date(iso).getTime()) / (60 * 60 * 1000);
 }
 
 function formatSessionDateTime(iso) {
@@ -38,7 +38,7 @@ export function scanProfileReminders() {
   for (const user of users) {
     if (!userMayReceiveWhatsApp(user)) continue;
     if (!isProfileIncomplete(user)) continue;
-    if (hoursSince(user.created_at) < 24) continue;
+    if (hoursSince(user.created_at) < getWhatsAppTiming('profile_reminder_min_account_hours', 24)) continue;
     if (hasRecentOutbox(user.id, 'profile_reminder')) continue;
 
     const row = queueFromTemplate('profile_reminder', user);
@@ -60,8 +60,10 @@ export function scanPaymentReminders() {
     if (!userMayReceiveWhatsApp(user)) continue;
 
     const age = hoursSince(assessment.created_at || assessment.updated_at);
-    if (age < 6) continue;
-    const trigger = age >= 24 ? 'payment_reminder_24h' : 'payment_reminder_6h';
+    const firstHours = getWhatsAppTiming('payment_reminder_first_hours', 6);
+    const secondHours = getWhatsAppTiming('payment_reminder_second_hours', 24);
+    if (age < firstHours) continue;
+    const trigger = age >= secondHours ? 'payment_reminder_24h' : 'payment_reminder_6h';
     if (hasRecentOutbox(user.id, trigger)) continue;
 
     const payload = {
@@ -76,7 +78,7 @@ export function scanPaymentReminders() {
     }
 
     const pay = payments.find((p) => Number(p.assessment_id) === Number(assessment.id));
-    if (pay?.submitted_at && pay.payment_status !== 'confirmed' && hoursSince(pay.submitted_at) >= 12) {
+    if (pay?.submitted_at && pay.payment_status !== 'confirmed' && hoursSince(pay.submitted_at) >= getWhatsAppTiming('payment_proof_pending_hours', 12)) {
       if (!hasRecentOutbox(user.id, 'payment_proof_pending')) {
         const proofRow = queueFromTemplate('payment_proof_pending', user, {
           moduleTitle: assessment.type,
@@ -98,7 +100,7 @@ export function scanSessionReminders() {
   for (const c of consultations) {
     if (!c.scheduled_at) continue;
     const scheduled = new Date(c.scheduled_at).getTime();
-    const hoursUntil = (scheduled - now) / HOUR;
+    const hoursUntil = (scheduled - now) / (60 * 60 * 1000);
     if (hoursUntil < 0 || hoursUntil > 25) continue;
 
     const user = users.find((u) => Number(u.id) === Number(c.user_id));
@@ -126,7 +128,7 @@ export function scanTestReminders() {
   for (const assessment of data.assessments || []) {
     if (!isAssessmentFullyPaid(assessment)) continue;
     if (isPaidModuleActionComplete(assessment)) continue;
-    if (hoursSince(assessment.paid_at || assessment.updated_at) < 48) continue;
+    if (hoursSince(assessment.paid_at || assessment.updated_at) < getWhatsAppTiming('test_reminder_hours_after_pay', 48)) continue;
 
     const user = users.find((u) => Number(u.id) === Number(assessment.user_id));
     if (!userMayReceiveWhatsApp(user)) continue;
@@ -156,8 +158,8 @@ export function scanJourneyStatusReminders() {
     );
     if (!paid.length) continue;
     if (hasCompletedAllPaidModuleTests(assessments)) continue;
-    if (hoursSince(user.created_at) < 24) continue;
-    if (hasRecentOutbox(user.id, 'journey_status', 72)) continue;
+    if (hoursSince(user.created_at) < getWhatsAppTiming('profile_reminder_min_account_hours', 24)) continue;
+    if (hasRecentOutbox(user.id, 'journey_status', getWhatsAppTiming('journey_status_dedup_hours', 72))) continue;
 
     const row = queueFromTemplate('journey_status', user, {
       statusSummary: getUserJourneyStatus(user, assessments),
@@ -180,7 +182,7 @@ export function scanCommunityReminders() {
 
     const progress = assessment.progress || {};
     if (progress.communityJoined || progress.flow?.communityDone) continue;
-    if (hoursSince(assessment.paid_at) < 24) continue;
+    if (hoursSince(assessment.paid_at) < getWhatsAppTiming('community_invite_hours_after_pay', 24)) continue;
 
     const user = users.find((u) => Number(u.id) === Number(assessment.user_id));
     if (!userMayReceiveWhatsApp(user)) continue;
@@ -201,7 +203,7 @@ export function scanReadinessScheduleReminders() {
     if (assessment.status !== 'paid' && assessment.payment_status !== 'confirmed' && assessment.payment_confirmed !== true) continue;
     const slug = String(assessment.product_slug || '').toLowerCase();
     if (slug !== 'career-readiness') continue;
-    if (hoursSince(assessment.paid_at || assessment.updated_at) < 48) continue;
+    if (hoursSince(assessment.paid_at || assessment.updated_at) < getWhatsAppTiming('readiness_schedule_hours_after_pay', 48)) continue;
 
     const progress = assessment.progress || {};
     const sessionsBooked = Number(progress.sessionsBooked || progress.programSessionsBooked || 0);
@@ -209,7 +211,7 @@ export function scanReadinessScheduleReminders() {
 
     const user = users.find((u) => Number(u.id) === Number(assessment.user_id));
     if (!userMayReceiveWhatsApp(user)) continue;
-    if (hasRecentOutbox(user.id, 'career_readiness_schedule_reminder', 72)) continue;
+    if (hasRecentOutbox(user.id, 'career_readiness_schedule_reminder', getWhatsAppTiming('journey_status_dedup_hours', 72))) continue;
 
     const row = queueFromTemplate('career_readiness_schedule_reminder', user);
     if (row) queued += 1;

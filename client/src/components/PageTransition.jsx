@@ -1,9 +1,10 @@
-import { useRef, useEffect } from 'react';
 import { useLocation, useOutlet } from 'react-router-dom';
+import { useLang } from '../context/LanguageContext';
 
-/** Route outlet — no remount key to avoid tab/page flicker */
+/** Route outlet — remount on language change so all copy refreshes */
 export default function PageTransition() {
   const outlet = useOutlet();
+  const { lang } = useLang();
 
-  return <div className="page-enter">{outlet}</div>;
+  return <div className="page-enter" key={lang}>{outlet}</div>;
 }

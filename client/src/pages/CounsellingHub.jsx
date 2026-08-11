@@ -1,5 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useLang } from '../context/LanguageContext';
+import { counsellingPath, parseCounsellingPath } from '../utils/pathRoutes';
 import GuidanceCTA from '../components/GuidanceCTA';
 import { useGuidanceModal } from '../context/GuidanceModalContext';
 import { programs as programImages } from '../data/content';
@@ -83,36 +84,36 @@ export default function CounsellingHub() {
   const { openGuidance } = useGuidanceModal();
   const cms = usePageCatalog('counselling');
 
-  const params = new URLSearchParams(location.search);
-  const tab = params.get('tab') || 'overview';
+  const parsed = parseCounsellingPath(location.pathname, location.search);
+  const tab = parsed.tab || 'overview';
+  const programAge = parsed.age || null;
 
-  const ages = useMemo(
-    () => d('programs').map((p, i) => ({ ...programImages[i], ...p })),
-    [d],
-  );
+  useEffect(() => {
+    if (parsed.redirect) {
+      navigate(parsed.redirect, { replace: true, preventScrollReset: true });
+    }
+  }, [parsed.redirect, navigate]);
 
   useEffect(() => {
     const p = new URLSearchParams(location.search);
     if (p.get('pathway') === 'institutions') {
-      navigate({ pathname: '/counselling', search: '?tab=institutions' }, { replace: true, preventScrollReset: true });
-      return;
-    }
-    if (p.get('tab') === 'process') {
-      navigate({ pathname: '/counselling', search: '?tab=overview' }, { replace: true, preventScrollReset: true });
+      navigate(counsellingPath('institutions'), { replace: true, preventScrollReset: true });
       return;
     }
     if (p.get('tab') === 'book') {
-      navigate({ pathname: '/counselling', search: '?tab=overview' }, { replace: true, preventScrollReset: true });
+      navigate(counsellingPath('overview'), { replace: true, preventScrollReset: true });
       openGuidance();
     }
   }, [location.search, navigate, openGuidance]);
 
   const setTab = (tabId) => {
-    navigate(
-      { pathname: '/counselling', search: `?tab=${tabId}` },
-      { replace: true, preventScrollReset: true },
-    );
+    navigate(counsellingPath(tabId), { replace: true, preventScrollReset: true });
   };
+
+  const ages = useMemo(
+    () => d('programs').map((p, i) => ({ ...programImages[i], ...p })),
+    [d],
+  );
 
   const counsellingTitle = splitCounsellingTitle(cmsText(cms, 'heroTitle', counsellingPage.title));
   const counsellingSubtitle = cmsText(cms, 'heroSubtitle', counsellingPage.subtitle);
@@ -278,7 +279,7 @@ export default function CounsellingHub() {
                       <Link
                         key={age.slug}
                         role="listitem"
-                        to={`/counselling?tab=programs&age=${age.slug}`}
+                        to={counsellingPath('programs', { age: age.slug })}
                         preventScrollReset
                         className={`counselling-overview__age-card counselling-overview__age-card--${style.tone}`}
                       >

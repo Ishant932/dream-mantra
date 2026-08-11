@@ -105,7 +105,7 @@ export function landingSignupCheckout({ name, email, phone, password, productSlu
   const landings = getAllStudioLandings();
   const landing = landings.find((l) => l.slug === studioSlug);
   const slug = productSlug || landing?.productSlug;
-  if (!slug || !landings.some((l) => l.productSlug === slug)) {
+  if (!slug || !buildModuleSelection(slug, false)) {
     throw new Error('Invalid landing program');
   }
 

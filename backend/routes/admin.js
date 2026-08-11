@@ -63,6 +63,14 @@ import {
 } from '../lib/studioLandingEditor.js';
 import { listPageCatalog, getPageCatalog, updatePageCatalog } from '../lib/pageCatalog.js';
 import { getCopyOverrideTrees, listCopyPatches, updateCopyPatches } from '../lib/copyOverrides.js';
+import {
+  getWhatsAppAdminConfig,
+  updateWhatsAppAdminConfig,
+  WHATSAPP_TRIGGER_META,
+  DEFAULT_WHATSAPP_TIMING,
+} from '../lib/whatsapp/adminConfig.js';
+import { messageCatalogDefault } from '../lib/whatsapp/catalog.js';
+import { bulkUserCsvTemplate, importBulkUsers, parseBulkUserCsv } from '../lib/bulkUserImport.js';
 
 const router = Router();
 router.use(authRequired, adminRequired);
@@ -518,6 +526,59 @@ router.put('/page-catalog/:slug', (req, res) => {
     res.json({ page });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to save page' });
+  }
+});
+
+router.get('/whatsapp-config', (_req, res) => {
+  try {
+    const config = getWhatsAppAdminConfig();
+    const defaults = {};
+    for (const t of WHATSAPP_TRIGGER_META) {
+      defaults[t.id] = messageCatalogDefault(t.id) || '';
+    }
+    res.json({ config, defaults, timingLabels: DEFAULT_WHATSAPP_TIMING });
+  } catch (e) {
+    res.status(500).json({ message: e.message || 'Failed to load WhatsApp config' });
+  }
+});
+
+router.patch('/whatsapp-config', (req, res) => {
+  try {
+    const templates = req.body?.templates && typeof req.body.templates === 'object' ? req.body.templates : {};
+    const timing = req.body?.timing && typeof req.body.timing === 'object' ? req.body.timing : {};
+    const config = updateWhatsAppAdminConfig({ templates, timing });
+    res.json({ config });
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to save WhatsApp config' });
+  }
+});
+
+router.get('/users/bulk-template', (_req, res) => {
+  res.type('text/csv').send(bulkUserCsvTemplate());
+});
+
+router.post('/users/bulk-import', async (req, res) => {
+  try {
+    const csv = req.body?.csv;
+    const rows = Array.isArray(req.body?.users)
+      ? req.body.users
+      : csv
+        ? parseBulkUserCsv(csv)
+        : [];
+    if (!rows.length && !req.body?.userIds?.length) {
+      return res.status(400).json({ message: 'No users to import' });
+    }
+    const result = importBulkUsers({
+      rows,
+      userIds: req.body?.userIds,
+      moduleSlugs: req.body?.moduleSlugs || [],
+      approvePayments: !!req.body?.approvePayments,
+      adminId: req.user.id,
+    });
+    await flushDatabase();
+    res.status(201).json(result);
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Bulk import failed' });
   }
 });
 

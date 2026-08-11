@@ -1,0 +1,1 @@
+import{j as a}from"./motion-DMW-7OZn.js";import{j as e,N as r}from"./vendor-Z1G8FAI1.js";import{a as m}from"./pathRoutes-s-7cqQxw.js";function p(){const[s]=e(),t=s.get("tab")||"dmit";return a.jsx(r,{to:m(t),replace:!0})}export{p as default};
