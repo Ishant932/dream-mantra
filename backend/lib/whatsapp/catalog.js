@@ -6,12 +6,17 @@ import { siteUrl } from './config.js';
 import {
   banner,
   bullet,
+  contactBlock,
   cta,
   fireBar,
   miniPulse,
   priceTag,
   progressBar,
   sparkleBar,
+  starTrail,
+  trustBadge,
+  waveBar,
+  animatedDivider,
 } from './format.js';
 
 export function supportLine() {
@@ -24,6 +29,20 @@ export function messageCatalog(trigger, user, extra = {}) {
   const base = siteUrl();
 
   const messages = {
+    sandbox_join_prompt: `${waveBar()}
+${banner('Connect with Dream Mantra', '💬', '🚀')}
+
+Hi! To start chatting with *Esh* (our AI career counsellor) on WhatsApp:
+
+📲 Send this exact message:
+👉 *${extra.joinPhrase || 'join dream-mantra'}*
+
+${animatedDivider()}
+${trustBadge()}
+
+_After you join, ask about Brain Mapping, Skill Mapping, counselling, or pricing — we're here 24/7!_
+${sparkleBar()}`,
+
     registration_success: `${sparkleBar()}
 ${banner('Welcome to Dream Mantra', '🎉', '🎉')}
 
@@ -32,19 +51,22 @@ Your *Dream Mantra* account is *LIVE* ✅
 
 🆔 *Dreams ID:* \`${uid}\`
 📊 Journey: ${progressBar(25)}
+${trustBadge()}
 
 ${fireBar()}
 *What you can do right now:*
-${bullet('🧠', 'Brain Mapping — discover your strengths')}
-${bullet('🎯', 'Skill Mapping — map skills to careers')}
-${bullet('💼', '1:1 Career Counselling')}
-${bullet('🤖', 'AI Career Launchpad community')}
+${bullet('🧠', 'Brain Mapping (₹1,999) — fingerprint-based talent mapping')}
+${bullet('🎯', 'Skill Mapping (₹699) — personality + career fit')}
+${bullet('💼', '1:1 Career Counselling — included in combo packages')}
+${bullet('🤖', 'AI Career Launchpad (₹1,499) — community + mentorship')}
 
 ${cta('Open your dashboard', `${base}/dashboard`)}
 ${cta('Explore modules & pricing', `${base}/dashboard?tab=assess`)}
+${cta('Book free guidance call', `${base}/contact`)}
 
-💬 Reply *MENU* for quick options
-🤖 Ask *Esh* anything — careers, courses, counselling!
+${contactBlock(base)}
+💬 Reply *MENU* for quick options · Type *HELP* for human support
+${starTrail()}
 ${sparkleBar()}`,
 
     welcome_step1: `${miniPulse('👋', '✨', '🌟')}
@@ -143,12 +165,18 @@ ${banner('Payment confirmed!', '✅', '🎊')}
 *${name}*, you're in! 🚀
 
 🎁 *${extra.moduleTitle || 'Your module'}* is now *ACTIVE*
+🆔 Dreams ID: \`${uid}\`
 
-${bullet('📊', 'Dashboard updated')}
-${bullet('📝', 'Tests unlocked')}
-${bullet('📅', 'Book counselling when ready')}
+${bullet('📊', 'Dashboard updated with your purchase')}
+${bullet('📝', 'Tests & reports unlocked')}
+${bullet('📅', 'Book counselling when profile + tests are ready')}
+${bullet('📱', 'We will WhatsApp you at every step')}
 
 ${cta('Go to dashboard', `${base}/dashboard?tab=assess`)}
+${cta('Complete profile (2 min)', `${base}/dashboard`)}
+
+${contactBlock(base)}
+${starTrail()}
 ${sparkleBar()}`,
 
     payment_proof_pending: `${banner('Proof received', '📋', '⏳')}
@@ -164,18 +192,22 @@ We'll WhatsApp you the moment it's approved! 🔔`,
 
     session_reminder: `${banner('Counselling reminder', '📅', '🔔')}
 
-Hi *${name}*! Your session is coming up ⏰
+Hi *${name}*! Your Dream Mantra session is coming up ⏰
 
 🗓️ *Date:* ${extra.sessionDate || 'See dashboard'}
-🕐 *Time:* ${extra.sessionTime || 'See dashboard'}
+🕐 *Time:* ${extra.sessionTime || 'See dashboard'} *(IST)*
 
-${bullet('💻', 'Join from dashboard link')}
-${bullet('📝', 'Keep your Dreams ID handy')}
-${bullet('🎯', 'List 2–3 career questions')}
+*Before you join:*
+${bullet('💻', 'Open dashboard → Counselling → My booked sessions')}
+${bullet('📝', 'Keep your Dreams ID handy: `' + (uid || 'see dashboard') + '`')}
+${bullet('🎯', 'List 2–3 career questions for your counsellor')}
+${bullet('👨‍👩‍👧', 'Parents welcome to join the session')}
 
-${cta('Open session details', `${base}/dashboard?tab=book`)}
+${cta('Open session details & join link', `${base}/dashboard?tab=counselling`)}
 
-_Good luck — you've got this!_ 🌟`,
+${contactBlock(base)}
+_Good luck — you've got this!_ ${miniPulse('🌟', '💪')}
+${starTrail()}`,
 
     report_ready: `${banner('Report ready!', '📄', '✨')}
 
@@ -227,17 +259,23 @@ ${cta('View booking & join link', `${base}/dashboard?tab=book`)}
 ${sparkleBar()}`,
 
     chat_welcome: `${sparkleBar()}
-${banner("I'm Esh — your AI counsellor", '🤖', '✨')}
+${banner("I'm Esh — Dream Mantra AI Counsellor", '🤖', '✨')}
 
-Dream Mantra's 24/7 career buddy at your service! 💬
+${waveBar()}
+Your 24/7 career buddy — streams, Brain Mapping, Skill Mapping, counselling & more! 💬
+
+${trustBadge()}
 
 *Quick menu — reply with a number:*
-1️⃣ 💎 Modules & pricing
-2️⃣ 📅 Book counselling
-3️⃣ 🆔 My Dreams ID
-4️⃣ 🆘 Talk to support
+1️⃣ 💎 Modules & pricing (Brain / Skill / Combo)
+2️⃣ 📅 Book counselling session
+3️⃣ 🆔 My Dreams ID & dashboard
+4️⃣ 🆘 Talk to our team
 
-Or just *type your question* — careers, courses, payments, anything! 🚀
+Or *type your question* — careers, courses, payments, Class 9–12 streams, anything! 🚀
+
+${contactBlock(base)}
+${starTrail()}
 ${sparkleBar()}`,
 
     test_complete: `${fireBar()}

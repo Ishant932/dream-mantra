@@ -60,8 +60,8 @@ export default function Chatbot() {
         role: 'bot',
         text:
           lang === 'hi'
-            ? `नमस्ते! मैं ${BOT_NAME} हूँ — Dream Mantra की AI काउंसलर। Streams, Brain Mapping, careers और counselling — कुछ भी पूछें!`
-            : `Hi! I'm ${BOT_NAME}, your AI career counsellor at Dream Mantra. Ask about streams, Brain Mapping, careers, AI Launchpad, or book a free session!`,
+            ? `नमस्ते! मैं ${BOT_NAME} हूँ — Dream Mantra की AI काउंसलर। Streams, Brain Mapping, careers और counselling — कुछ भी पूछें!\n\nWhatsApp पर चैट करें — पहले *join dream-mantra* भेजें, फिर अपना सवाल पूछें।`
+            : `Hi! I'm ${BOT_NAME}, your AI career counsellor at Dream Mantra. Ask about streams, Brain Mapping, careers, AI Launchpad, or book a free session!\n\nOn WhatsApp: send *join dream-mantra* first, then chat with Esh 24/7.`,
       },
     ]);
   }, [lang]);

@@ -26583,13 +26583,14 @@ html.aurora .dash-sidebar-panel--hero-match {
   padding: 0.75rem 1rem;
   font-weight: 800;
   color: #fff;
-  background: linear-gradient(135deg, #e8512e, #7c3aed, #2563eb);
-  box-shadow: 0 10px 24px rgba(124, 58, 237, 0.28);
+  background: linear-gradient(145deg, #ea580c, #f59e0b);
+  border: 1px solid #fb923c;
+  box-shadow: 0 10px 24px rgba(234, 88, 12, 0.28);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 .guidance-modal__submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 14px 28px rgba(124, 58, 237, 0.35);
+  box-shadow: 0 14px 28px rgba(234, 88, 12, 0.35);
 }
 .guidance-modal__aside {
   display: flex;
@@ -27939,9 +27940,14 @@ html.aurora .dash-sidebar-panel--hero-match {
 .guidance-modal__ring--purple,
 .guidance-modal__ring--blue { display: none; }
 .free-guidance-form--modal .btn-primary,
-.guidance-modal__panel--pro .btn-primary {
+.guidance-modal__panel--pro .btn-primary,
+.guidance-modal__submit {
   background: linear-gradient(145deg, #ea580c, #f59e0b) !important;
   border-color: #fb923c !important;
+  box-shadow: 0 10px 24px rgba(234, 88, 12, 0.28) !important;
+}
+.guidance-modal__submit:hover:not(:disabled) {
+  box-shadow: 0 14px 28px rgba(234, 88, 12, 0.35) !important;
 }
 
 /* Training session dropdown form */

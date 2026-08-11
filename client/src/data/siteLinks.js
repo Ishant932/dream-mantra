@@ -74,7 +74,7 @@ export function getWhatsAppHref(message = AGENT_PREFILL) {
  */
 export function getWhatsAppAgentLink({ text, sandbox = false, joinCode } = {}) {
   if (sandbox) {
-    const code = (joinCode || 'join atomic-later').trim();
+    const code = (joinCode || 'dream-mantra').trim();
     const msg = /^join\s+/i.test(code) ? code : `join ${code}`;
     return `https://wa.me/${WHATSAPP_AGENT_PHONE}?text=${encodeURIComponent(msg)}`;
   }

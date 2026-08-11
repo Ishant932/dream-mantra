@@ -8,6 +8,22 @@ export function fireBar() {
   return '🔥 ═══════════════════ 🔥';
 }
 
+export function waveBar() {
+  return '🌊 〰️〰️〰️〰️〰️〰️〰️ 🌊';
+}
+
+export function starTrail() {
+  return '⭐ · ✨ · 💫 · ✨ · ⭐';
+}
+
+export function animatedDivider() {
+  return '━━━ ✦ ━━━ ✦ ━━━';
+}
+
+export function trustBadge() {
+  return '🏛️ _Trusted by Assam Government, Bombay High Court & families across 30+ countries._';
+}
+
 export function banner(title, left = '🌟', right = '🌟') {
   return `${left} *${String(title).toUpperCase()}* ${right}`;
 }
@@ -33,4 +49,11 @@ export function priceTag(name, price, perk = '') {
 
 export function miniPulse(...emojis) {
   return emojis.join('✨');
+}
+
+export function contactBlock(base) {
+  return `${bullet('📞', '9680102276')}
+${bullet('📧', 'info@dreammantra.in')}
+${bullet('🌐', base)}
+${bullet('🕐', 'Mon–Sat 11am–7pm IST')}`;
 }

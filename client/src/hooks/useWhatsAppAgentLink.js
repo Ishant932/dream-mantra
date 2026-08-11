@@ -15,7 +15,7 @@ export function useWhatsAppAgentLink() {
         if (cancelled) return;
         setHref(getWhatsAppAgentLink({
           sandbox: wa.sandbox !== false,
-          joinCode: wa.sandboxJoinCode || 'join atomic-later',
+          joinCode: wa.sandboxJoinCode || 'dream-mantra',
         }));
       } catch {
         /* keep default */

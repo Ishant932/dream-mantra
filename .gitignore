@@ -30,6 +30,9 @@ Thumbs.db
 *.swp
 *.swo
 
+# Local preview / dev tooling
+.freebuff/
+
 # Playwright / test artifacts
 test-results/
 playwright-report/

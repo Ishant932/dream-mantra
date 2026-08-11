@@ -154,5 +154,5 @@ export function isSandboxMode() {
 }
 
 export function sandboxJoinCode() {
-  return process.env.TWILIO_WHATSAPP_SANDBOX_CODE?.trim() || '';
+  return process.env.TWILIO_WHATSAPP_SANDBOX_CODE?.trim() || 'dream-mantra';
 }

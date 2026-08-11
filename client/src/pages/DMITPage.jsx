@@ -57,7 +57,11 @@ export default function DMITPage({ compact = false }) {
                 </>
               )}
             </h1>
-            <p className="text-base text-sand-600 dark:text-sand-300 mb-8 leading-relaxed">{heroDesc}</p>
+            <p className="text-base text-sand-600 dark:text-sand-300 mb-4 leading-relaxed">{heroDesc}</p>
+            <p className="text-sm font-semibold text-amber-800 dark:text-amber-200 mb-6 flex items-start gap-2 leading-relaxed">
+              <Shield className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" aria-hidden />
+              Trusted by Assam Government, Bombay High Court &amp; families across 30+ countries.
+            </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/signup" className="btn-primary text-base px-8 py-4">{hero.bookTest}</Link>
               <GuidanceCTA className="btn-outline">{hero.freeConsultation}</GuidanceCTA>

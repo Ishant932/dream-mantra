@@ -3,10 +3,9 @@ import { normalizeProfile } from '../profile.js';
 import { getBotReply } from '../botReply.js';
 import { sendTextMessage } from './client.js';
 import { findUserByWhatsAppId, fromWhatsAppId } from './phone.js';
-import { isWhatsAppEnabled } from './config.js';
-import { siteUrl } from './config.js';
+import { getWhatsAppPublicConfig, isWhatsAppEnabled, siteUrl } from './config.js';
 import { messageCatalog, supportLine } from './catalog.js';
-import { banner, bullet, cta, miniPulse, priceTag, sparkleBar } from './format.js';
+import { banner, bullet, cta, miniPulse, sparkleBar } from './format.js';
 import { processOutbox } from './outbox.js';
 
 function ensureConvos() {
@@ -30,6 +29,7 @@ function upsertConversation(waId, patch) {
       lang: 'en',
       opt_in: false,
       greeted: false,
+      sandbox_joined: false,
       history: [],
       last_inbound_at: null,
       last_outbound_at: null,
@@ -47,6 +47,27 @@ function pushHistory(convo, role, text) {
   const history = Array.isArray(convo.history) ? convo.history : [];
   history.push({ role, text: String(text).slice(0, 500), at: new Date().toISOString() });
   convo.history = history.slice(-12);
+}
+
+function sandboxJoinPhrase() {
+  const { sandboxJoinCode } = getWhatsAppPublicConfig();
+  const code = (sandboxJoinCode || 'dream-mantra').trim();
+  return /^join\s+/i.test(code) ? code : `join ${code}`;
+}
+
+function isSandboxJoinMessage(text) {
+  const trimmed = text.trim();
+  const upper = trimmed.toUpperCase();
+  if (!upper.startsWith('JOIN ')) return false;
+
+  const phrase = sandboxJoinPhrase();
+  const normalized = trimmed.toLowerCase().replace(/\s+/g, ' ');
+  const expected = phrase.toLowerCase().replace(/\s+/g, ' ');
+
+  if (normalized === expected) return true;
+  if (/join\s+dream[\s-]?mantra/i.test(trimmed)) return true;
+  if (/join\s+atomic/i.test(trimmed)) return true;
+  return false;
 }
 
 function menuReply(lang) {
@@ -78,6 +99,7 @@ function helpReply(lang) {
   if (lang === 'hi') {
     return `${banner('सहायता', '🆘', '✨')}
 ${bullet('📧', supportLine())}
+${bullet('📞', '9680102276')}
 ${bullet('🌐', `${base}/contact`)}
 ${bullet('🕐', 'Mon–Sat 11am–7pm IST')}
 
@@ -85,6 +107,7 @@ ${cta('Contact form', `${base}/contact`)}`;
   }
   return `${banner('Dream Mantra Support', '🆘', '✨')}
 ${bullet('📧', supportLine())}
+${bullet('📞', '9680102276')}
 ${bullet('🌐', `${base}/contact`)}
 ${bullet('🕐', 'Mon–Sat 11am–7pm IST')}
 
@@ -109,12 +132,12 @@ function menuSelection(num, user, lang) {
   switch (num) {
     case '1':
       return lang === 'hi'
-        ? `${banner('Modules & Pricing', '💎', '🔥')}\n\n${priceTag('Brain Mapping', '₹1,999')}\n${priceTag('Skill Mapping', '₹699')}\n${priceTag('Combo + Counselling', '₹2,999')}\n${priceTag('AI Career Launchpad', '₹1,499')}\n\n${cta('खरीदें', `${base}/dashboard?tab=assess`)}`
-        : `${banner('Modules & Pricing', '💎', '🔥')}\n\n${priceTag('Brain Mapping', '₹1,999', 'Personality + career fit')}\n${priceTag('Skill Mapping', '₹699', 'Skills → roles')}\n${priceTag('Combo + Counselling', '₹2,999', 'Best value')}\n${priceTag('AI Career Launchpad', '₹1,499', 'Community access')}\n\n${cta('Browse & pay', `${base}/dashboard?tab=assess`)}\n${cta('All programs', `${base}/programs`)}`;
+        ? `${banner('Modules & Pricing', '💎', '🔥')}\n\n${bullet('🧠', 'Brain Mapping — ₹1,999')}\n${bullet('🎯', 'Skill Mapping — ₹699')}\n${bullet('💎', 'Combo + Counselling — ₹2,999')}\n${bullet('🤖', 'AI Career Launchpad — ₹1,499')}\n\n${cta('खरीदें', `${base}/dashboard?tab=assess`)}`
+        : `${banner('Modules & Pricing', '💎', '🔥')}\n\n${bullet('🧠', 'Brain Mapping — ₹1,999 (fingerprint talent mapping)')}\n${bullet('🎯', 'Skill Mapping — ₹699 (personality + career fit)')}\n${bullet('💎', 'Combo + Counselling — ₹2,999 (best value)')}\n${bullet('🤖', 'AI Career Launchpad — ₹1,499 (community access)')}\n\n${cta('Browse & pay', `${base}/dashboard?tab=assess`)}\n${cta('All programs', `${base}/programs`)}`;
     case '2':
       return lang === 'hi'
-        ? `${banner('Counselling', '📅', '✨')}\n\nPayment confirm के बाद Book tab से बुक करें:\n${cta('Book session', `${base}/dashboard?tab=book`)}`
-        : `${banner('Book Counselling', '📅', '✨')}\n\n${bullet('1️⃣', 'Confirm payment on dashboard')}\n${bullet('2️⃣', 'Dashboard → *Book* tab')}\n${bullet('3️⃣', 'Pick slot & get link')}\n\n${cta('Book now', `${base}/dashboard?tab=book`)}`;
+        ? `${banner('Counselling', '📅', '✨')}\n\nPayment confirm के बाद Book tab से बुक करें:\n${cta('Book session', `${base}/dashboard?tab=counselling`)}`
+        : `${banner('Book Counselling', '📅', '✨')}\n\n${bullet('1️⃣', 'Confirm payment on dashboard')}\n${bullet('2️⃣', 'Complete profile + required tests')}\n${bullet('3️⃣', 'Dashboard → Counselling → pick slot')}\n\n${cta('Book now', `${base}/dashboard?tab=counselling`)}`;
     case '3':
       return idReply(user, lang);
     case '4':
@@ -162,6 +185,33 @@ export async function handleInboundMessage({ from, text, messageId }) {
 
   pushHistory(convo, 'user', text);
 
+  const waConfig = getWhatsAppPublicConfig();
+  const joinPhrase = sandboxJoinPhrase();
+  const isJoin = isSandboxJoinMessage(text);
+
+  if (waConfig.sandbox && !convo.sandbox_joined && !isJoin) {
+    const prompt = messageCatalog('sandbox_join_prompt', user || { name: 'there' }, { joinPhrase });
+    if (prompt) {
+      pushHistory(convo, 'assistant', prompt);
+      convo.last_outbound_at = new Date().toISOString();
+      saveData();
+      if (isWhatsAppEnabled()) {
+        try {
+          await sendTextMessage(waId, prompt);
+        } catch (err) {
+          console.error('[whatsapp] sandbox join prompt failed:', err.message);
+          return { ok: false, reason: err.message, reply: prompt };
+        }
+      }
+      return { ok: true, reply: prompt, userId: user?.id || null, messageId, sandboxGate: true };
+    }
+  }
+
+  if (isJoin) {
+    convo.sandbox_joined = true;
+    convo.greeted = true;
+  }
+
   if (user) {
     const profile = normalizeProfile(user.profile);
     if (!profile.whatsappOptIn) {
@@ -169,7 +219,6 @@ export async function handleInboundMessage({ from, text, messageId }) {
         profile: { ...profile, whatsappOptIn: true },
       });
     }
-    // User just connected (sandbox join / first message) — flush any pending welcome msgs now
     try {
       await processOutbox({ limit: 30, userId: user.id });
     } catch (err) {
@@ -178,8 +227,6 @@ export async function handleInboundMessage({ from, text, messageId }) {
   }
 
   const replies = [];
-  const upper = text.trim().toUpperCase();
-  const isJoin = upper.startsWith('JOIN ');
 
   if (!convo.greeted && !isJoin) {
     convo.greeted = true;
@@ -193,13 +240,11 @@ export async function handleInboundMessage({ from, text, messageId }) {
       replyText = await buildReply(text, user, convo);
     } catch (err) {
       console.error('[whatsapp] reply error:', err.message);
-      replyText = `Oops — hit a snag 😅\n\nReply *MENU* for options or *HELP* for our team.`;
+      replyText = `Oops — hit a snag 😅\n\nReply *MENU* for options or *HELP* for our team (9680102276).`;
     }
-  } else if (user) {
-    // After sandbox join confirmation, greet with Esh welcome
-    convo.greeted = true;
-    replyText = messageCatalog('registration_success', user)
-      || messageCatalog('chat_welcome', user)
+  } else {
+    replyText = messageCatalog('registration_success', user || { name: 'there' })
+      || messageCatalog('chat_welcome', user || { name: 'there' })
       || null;
   }
 
@@ -227,5 +272,5 @@ export async function handleInboundMessage({ from, text, messageId }) {
 }
 
 export function markOptIn(userId, waId) {
-  return upsertConversation(waId, { user_id: Number(userId), opt_in: true });
+  return upsertConversation(waId, { user_id: Number(userId), opt_in: true, sandbox_joined: true });
 }
