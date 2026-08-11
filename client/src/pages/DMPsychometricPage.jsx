@@ -9,7 +9,7 @@ import {
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
 import CounsellingProcessTimeline from '../components/CounsellingProcessTimeline';
-import MappingHeroCollage from '../components/MappingHeroCollage';
+import MappingHeroShowcase from '../components/MappingHeroShowcase';
 import CmsPageSections from '../components/CmsPageSections';
 import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 
@@ -60,9 +60,9 @@ export default function DMPsychometricPage({ compact = false }) {
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="relative">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-amber-300/25 to-emerald-300/20 blur-2xl animate-breathe" />
             <div className="relative max-w-sm mx-auto">
-              <MappingHeroCollage
-                images={IMAGES.comboCollage}
-                alts={[hero.dmitAlt, hero.psychometricAlt]}
+              <MappingHeroShowcase
+                variant="combo"
+                alt={hero.dmitAlt || hero.psychometricAlt}
               />
               {hero.mergeCard && (
               <motion.div

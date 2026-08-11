@@ -189,41 +189,26 @@ h1, h2, h3, h4, .font-heading {
   background: linear-gradient(160deg, #fef3c7 0%, #ffedd5 50%, #fff7ed 100%);
 }
 
-/* Age-wise stage cards */
-.age-stage-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem;
-}
-.age-stage-card {
-  background: rgba(255,255,255,0.85);
+/* Pathway pills */
+.pathway-pill {
+  background: rgba(255,255,255,0.7);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(249,115,22,0.2);
-  border-radius: 0.9rem;
-  padding: 0.9rem 1rem;
+  border-radius: 9999px;
+  padding: 0.85rem 1.25rem;
+  font-size: 0.9rem;
+  color: #334155;
   box-shadow: 0 6px 18px rgba(0,0,0,0.04);
   transition: transform 0.3s ease;
 }
-.age-stage-card:hover {
-  transform: translateY(-3px);
+.pathway-pill:hover {
+  transform: translateX(6px);
 }
-.age-stage-card .stage-icon {
-  font-size: 1.25rem;
-  margin-bottom: 0.3rem;
-  display: block;
-}
-.age-stage-card .stage-class {
-  font-weight: 800;
-  font-size: 0.9rem;
-  color: #0f172a;
-  display: block;
-}
-.age-stage-card .stage-name {
-  font-size: 0.8rem;
-  font-weight: 700;
+.pathway-pill i {
   color: #f97316;
-  display: block;
-  margin-top: 0.15rem;
+  margin-right: 0.5rem;
+  width: 1.1rem;
+  text-align: center;
 }
 
 /* Modern highlights/outcomes table */

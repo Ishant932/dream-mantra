@@ -9,7 +9,7 @@ import {
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
 import DermatoglyphicsDeepDive from '../components/DermatoglyphicsDeepDive';
-import MappingHeroCollage from '../components/MappingHeroCollage';
+import MappingHeroShowcase from '../components/MappingHeroShowcase';
 import CmsPageSections from '../components/CmsPageSections';
 import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 
@@ -64,7 +64,7 @@ export default function DMITPage({ compact = false }) {
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>
-            <MappingHeroCollage images={IMAGES.dmitCollage} alts={[hero.imageAlt]} />
+            <MappingHeroShowcase variant="brain" alt={hero.imageAlt} />
           </motion.div>
         </div>
       </section>

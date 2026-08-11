@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
-import MappingHeroCollage from '../components/MappingHeroCollage';
+import MappingHeroShowcase from '../components/MappingHeroShowcase';
 import CmsPageSections from '../components/CmsPageSections';
 import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 
@@ -94,7 +94,7 @@ export default function PsychometricPage({ compact = false }) {
             className="relative"
           >
             <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-amber-400/25 to-orange-500/15 blur-xl animate-breathe" />
-            <MappingHeroCollage images={IMAGES.psychoCollage} alts={[hero.imageAlt]} />
+            <MappingHeroShowcase variant="skill" alt={hero.imageAlt} />
           </motion.div>
         </div>
       </section>

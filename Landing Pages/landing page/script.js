@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- 1. TYPING EFFECT (Crazy Auto-Type Animation) ---
   const typedTextElement = document.getElementById('typed-text');
   if (typedTextElement) {
-    const words = ["Clear Path", "Confident Choice", "Bright Future", "Right Direction"];
+    const words = ["Career Roadmap", "Interview Success", "Dream Job Offer", "Professional Brand"];
     let wordIndex = 0;
     let charIndex = 0;
     let isDeleting = false;
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // WhatsApp link generation (no password included, for security)
       const whatsappMsg = encodeURIComponent(
-        `Hi Esha Ma'am! I just signed up via the Landing Page.\n\n👤 Name: ${name}\n📧 Email: ${email}\n📱 Phone: ${phone}\n\nPlease help me complete my checkout!`
+        `Hi Esha Ma'am! I just joined via the Landing Page.\n\n👤 Name: ${name}\n📧 Email: ${email}\n📱 Phone: ${phone}\n\nPlease confirm my slot & bonus placement kit!`
       );
 
       const whatsappBtn = document.getElementById('success-whatsapp-btn');
