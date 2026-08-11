@@ -10,7 +10,7 @@ import PersonPhoto from '../components/PersonPhoto';
 import AboutCertifications from '../components/AboutCertifications';
 import { useAboutContent } from '../i18n/useSiteContent';
 import { useLang } from '../context/LanguageContext';
-import { usePageCatalog } from '../hooks/usePageCatalog';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 import CmsFullPage from '../components/CmsFullPage';
 import CmsPageSections from '../components/CmsPageSections';
 
@@ -39,16 +39,16 @@ export default function About() {
     { title: about.missionVision.purposeTitle, text: missionVision.purpose, icon: '💡' },
   ];
 
-  if (cms?.fullHtml?.trim()) {
+  if (cms?.hasCustom && cms?.fullHtml?.trim()) {
     return <CmsFullPage cms={cms} fallbackImage={IMAGES.counselling} />;
   }
 
   return (
     <>
       <PageHero
-        title={cms?.heroTitle || about.hero.title}
-        subtitle={cms?.heroSubtitle || about.hero.subtitle}
-        image={cms?.heroImage || IMAGES.counselling}
+        title={cmsText(cms, 'heroTitle', about.hero.title)}
+        subtitle={cmsText(cms, 'heroSubtitle', about.hero.subtitle)}
+        image={cmsText(cms, 'heroImage', IMAGES.counselling)}
         cta={fg.cta || about.cta?.button}
         ctaLink="/contact#guidance"
       />

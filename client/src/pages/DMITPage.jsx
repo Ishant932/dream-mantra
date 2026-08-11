@@ -9,6 +9,9 @@ import {
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
 import DermatoglyphicsDeepDive from '../components/DermatoglyphicsDeepDive';
+import MappingHeroCollage from '../components/MappingHeroCollage';
+import CmsPageSections from '../components/CmsPageSections';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 
 const fade = {
   initial: { opacity: 0, y: 24 },
@@ -31,7 +34,10 @@ export default function DMITPage({ compact = false }) {
   const { d } = useLang();
   const page = d('pages.dmit');
   const hero = page.hero;
+  const cms = usePageCatalog('brain-mapping');
   const [deepDiveOpen, setDeepDiveOpen] = useState(false);
+  const heroTitle = cmsText(cms, 'heroTitle', '');
+  const heroDesc = cmsText(cms, 'intro', hero.desc);
 
   return (
     <div className={`overflow-hidden dmit-page dm-saas dm-overview-tints${compact ? ' counselling-embed' : ''}`}>
@@ -43,18 +49,22 @@ export default function DMITPage({ compact = false }) {
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" /> {hero.badge}
             </span>
             <h1 className="home-headline text-sand-900 dark:text-amber-50 mb-4">
-              {hero.titleBefore}{' '}
-              <span className="gradient-text text-pop">{hero.titleHighlight}</span>
-              {hero.titleAfter ? ` ${hero.titleAfter}` : ''}
+              {heroTitle || (
+                <>
+                  {hero.titleBefore}{' '}
+                  <span className="gradient-text text-pop">{hero.titleHighlight}</span>
+                  {hero.titleAfter ? ` ${hero.titleAfter}` : ''}
+                </>
+              )}
             </h1>
-            <p className="text-base text-sand-600 dark:text-sand-300 mb-8 leading-relaxed">{hero.desc}</p>
+            <p className="text-base text-sand-600 dark:text-sand-300 mb-8 leading-relaxed">{heroDesc}</p>
             <div className="flex flex-wrap gap-4">
               <Link to="/signup" className="btn-primary text-base px-8 py-4">{hero.bookTest}</Link>
               <GuidanceCTA className="btn-outline">{hero.freeConsultation}</GuidanceCTA>
             </div>
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }}>
-            <img src={IMAGES.dmit} alt={hero.imageAlt} className="rounded-3xl shadow-2xl ring-1 ring-amber-200/50 w-full aspect-[4/3] object-cover" />
+            <MappingHeroCollage images={IMAGES.dmitCollage} alts={[hero.imageAlt]} />
           </motion.div>
         </div>
       </section>
@@ -374,6 +384,7 @@ export default function DMITPage({ compact = false }) {
         </motion.div>
       </section>
       <DermatoglyphicsDeepDive open={deepDiveOpen} onClose={() => setDeepDiveOpen(false)} />
+      <CmsPageSections cms={cms} />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import PageHero from '../components/PageHero';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
-import { usePageCatalog } from '../hooks/usePageCatalog';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 import CmsFullPage from '../components/CmsFullPage';
 
 function SectionBody({ section }) {
@@ -51,16 +51,16 @@ export default function Terms({ pageKey = 'pages.terms', titleOverride, cmsSlug 
   const { d } = useLang();
   const page = d(pageKey) || d('pages.terms') || {};
   const cms = usePageCatalog(cmsSlug || CMS_SLUGS[pageKey]);
-  const heroTitle = cms?.heroTitle || titleOverride || page.title || 'Policies';
-  const heroSubtitle = cms?.heroSubtitle || page.subtitle;
-  const heroImage = cms?.heroImage || IMAGES.counselling;
-  const intro = cms?.intro || page.intro || '';
-  const sections = cms?.sections?.length
+  const heroTitle = cmsText(cms, 'heroTitle', titleOverride || page.title || 'Policies');
+  const heroSubtitle = cmsText(cms, 'heroSubtitle', page.subtitle);
+  const heroImage = cmsText(cms, 'heroImage', IMAGES.counselling);
+  const intro = cmsText(cms, 'intro', page.intro || '');
+  const sections = cms?.hasCustom && cms?.sections?.length
     ? cms.sections.map((s) => ({ title: s.title, content: s.content, image: s.image }))
     : (page.sections || []);
   const disclaimer = page.disclaimer || { title: 'Disclaimer', p1: '', p2: '' };
 
-  if (cms?.fullHtml?.trim()) {
+  if (cms?.hasCustom && cms?.fullHtml?.trim()) {
     return <CmsFullPage cms={{ ...cms, heroTitle, heroSubtitle, heroImage }} />;
   }
 

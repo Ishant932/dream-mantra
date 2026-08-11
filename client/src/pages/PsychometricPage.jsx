@@ -8,6 +8,9 @@ import {
 } from 'lucide-react';
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
+import MappingHeroCollage from '../components/MappingHeroCollage';
+import CmsPageSections from '../components/CmsPageSections';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 
 const fade = {
   initial: { opacity: 0, y: 28 },
@@ -46,6 +49,9 @@ export default function PsychometricPage({ compact = false }) {
   const { d } = useLang();
   const page = d('pages.psychometric');
   const hero = page.hero;
+  const cms = usePageCatalog('skill-mapping');
+  const heroTitle = cmsText(cms, 'heroTitle', '');
+  const heroDesc = cmsText(cms, 'intro', hero.desc);
   const tests = d('data.psychometricTests');
   const profileCovers = d('data.psychoProfileCovers');
   const process = d('data.psychoProcess');
@@ -65,10 +71,12 @@ export default function PsychometricPage({ compact = false }) {
               <Sparkles className="w-4 h-4" /> {hero.badge}
             </span>
             <h1 className="hero-title text-theme-primary mb-4">
-              {hero.titleBefore} <span className="gradient-text">{hero.titleHighlight}</span>
+              {heroTitle || (
+                <>{hero.titleBefore} <span className="gradient-text">{hero.titleHighlight}</span></>
+              )}
             </h1>
             <p className="text-base md:text-lg text-sand-600 dark:text-sand-300 mb-3 leading-relaxed">
-              {hero.desc}
+              {heroDesc}
             </p>
             <p className="text-sm text-sand-500 dark:text-sand-400 mb-8">
               {hero.subdesc}
@@ -86,22 +94,7 @@ export default function PsychometricPage({ compact = false }) {
             className="relative"
           >
             <div className="absolute -inset-3 rounded-3xl bg-gradient-to-br from-amber-400/25 to-orange-500/15 blur-xl animate-breathe" />
-            <motion.div
-              className="relative rounded-3xl overflow-hidden shadow-2xl ring-2 ring-amber-200/50"
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <img
-                src={IMAGES.psychometric || IMAGES.skillMapping}
-                alt={hero.imageAlt}
-                className="w-full aspect-[4/3] object-cover"
-              />
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-tr from-amber-600/20 via-transparent to-orange-500/15 pointer-events-none"
-                animate={{ opacity: [0.4, 0.7, 0.4] }}
-                transition={{ duration: 4, repeat: Infinity }}
-              />
-            </motion.div>
+            <MappingHeroCollage images={IMAGES.psychoCollage} alts={[hero.imageAlt]} />
           </motion.div>
         </div>
       </section>
@@ -389,6 +382,7 @@ export default function PsychometricPage({ compact = false }) {
           </div>
         </motion.div>
       </section>
+      <CmsPageSections cms={cms} />
     </div>
   );
 }

@@ -14,7 +14,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import { paymentsApi } from '../api';
 import { useUserVouchers } from '../hooks/useUserVouchers';
-import { usePageCatalog } from '../hooks/usePageCatalog';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 import CmsPageSections from '../components/CmsPageSections';
 
 const fade = {
@@ -135,9 +135,9 @@ export default function MarketplaceHub() {
   return (
     <>
       <PageHero
-        title={cms?.heroTitle || marketplacePage.title}
-        subtitle={cms?.heroSubtitle || marketplacePage.subtitle}
-        image={cms?.heroImage || IMAGES.marketplace || IMAGES.skills || IMAGES.professional}
+        title={cmsText(cms, 'heroTitle', marketplacePage.title)}
+        subtitle={cmsText(cms, 'heroSubtitle', marketplacePage.subtitle)}
+        image={cmsText(cms, 'heroImage', IMAGES.marketplace || IMAGES.skills || IMAGES.professional)}
         cta={marketplacePage.cta || d('freeGuidance')?.cta}
         ctaLink="/contact#guidance"
       />

@@ -1,7 +1,8 @@
 import { ExternalLink } from 'lucide-react';
 
-/** CMS-managed sections block — shown when admin saves content in Site Pages */
+/** CMS-managed sections — only after admin saves live copy for this page */
 export default function CmsPageSections({ cms, className = '' }) {
+  if (!cms?.hasCustom) return null;
   if (!cms?.sections?.length && !cms?.intro) return null;
   return (
     <section className={`py-12 bg-[var(--bg-elevated)] ${className}`}>

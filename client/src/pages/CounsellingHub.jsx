@@ -5,8 +5,8 @@ import { useGuidanceModal } from '../context/GuidanceModalContext';
 import { programs as programImages } from '../data/content';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo } from 'react';
-import { usePageCatalog } from '../hooks/usePageCatalog';
 import CmsPageSections from '../components/CmsPageSections';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 import AgePathwaysSection, { InstitutionsPathways } from '../components/AgePathwaysSection';
 import HomeHowDreamzWorks from '../components/HomeHowDreamzWorks';
 import HomeWhyCounselling from '../components/HomeWhyCounselling';
@@ -114,7 +114,8 @@ export default function CounsellingHub() {
     );
   };
 
-  const counsellingTitle = splitCounsellingTitle(counsellingPage.title);
+  const counsellingTitle = splitCounsellingTitle(cmsText(cms, 'heroTitle', counsellingPage.title));
+  const counsellingSubtitle = cmsText(cms, 'heroSubtitle', counsellingPage.subtitle);
   const nextStepTitle = counsellingPage.nextStepTitle || 'Ready for personal guidance?';
   const nextStepDesc =
     counsellingPage.nextStepDesc ||
@@ -181,7 +182,7 @@ export default function CounsellingHub() {
                 <span className="counselling-masthead__title-accent">{counsellingTitle.accent}</span>
               ) : null}
             </h1>
-            <p className="counselling-masthead__subtitle">{counsellingPage.subtitle}</p>
+            <p className="counselling-masthead__subtitle">{counsellingSubtitle}</p>
             <div className="counselling-masthead__actions">
               <GuidanceCTA className="counselling-masthead__btn counselling-masthead__btn--primary">
                 <Calendar className="w-4 h-4" aria-hidden />
@@ -197,6 +198,7 @@ export default function CounsellingHub() {
         </motion.div>
       </header>
 
+      <CmsPageSections cms={cms} className="!py-8" />
       <div className="counselling-hub-page__body max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="counselling-shell counselling-shell--guide">
         <nav className="counselling-tabs" aria-label="Counselling sections" role="tablist">

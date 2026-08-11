@@ -8,7 +8,7 @@ import FooterLocations from '../components/FooterLocations';
 import { footerSocial } from '../data/siteLinks';
 import { useLang } from '../context/LanguageContext';
 import { useGuidanceModal } from '../context/GuidanceModalContext';
-import { usePageCatalog } from '../hooks/usePageCatalog';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 import CmsFullPage from '../components/CmsFullPage';
 import CmsPageSections from '../components/CmsPageSections';
 
@@ -51,16 +51,16 @@ export default function Contact() {
     { icon: Clock, label: contact.hours, value: t('footer.hours') },
   ];
 
-  if (cms?.fullHtml?.trim()) {
+  if (cms?.hasCustom && cms?.fullHtml?.trim()) {
     return <CmsFullPage cms={cms} fallbackImage={CONTACT_HERO_IMAGE} />;
   }
 
   return (
     <>
       <PageHero
-        title={cms?.heroTitle || contact.title}
-        subtitle={cms?.heroSubtitle || contact.subtitle}
-        image={cms?.heroImage || CONTACT_HERO_IMAGE}
+        title={cmsText(cms, 'heroTitle', contact.title)}
+        subtitle={cmsText(cms, 'heroSubtitle', contact.subtitle)}
+        image={cmsText(cms, 'heroImage', CONTACT_HERO_IMAGE)}
         className="contact-page-hero"
         showBrandTag={false}
       />

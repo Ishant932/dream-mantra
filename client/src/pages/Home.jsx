@@ -16,6 +16,8 @@ import { partners as partnerTypes } from '../data/content';
 import { useHomeContent } from '../i18n/useSiteContent';
 import { useLang } from '../context/LanguageContext';
 import { isMobilePerf, isPhoneViewport } from '../utils/mobilePerf';
+import CmsPageSections from '../components/CmsPageSections';
+import { usePageCatalog } from '../hooks/usePageCatalog';
 
 const TestimonialMarquee = lazy(() => import('../components/TestimonialMarquee'));
 const CertificationsShowcase = lazy(() => import('../components/CertificationsShowcase'));
@@ -73,6 +75,7 @@ export default function Home() {
   const [pillarIdx, setPillarIdx] = useState(0);
   const [sessionIdx, setSessionIdx] = useState(0);
   const [showMoreSections, setShowMoreSections] = useState(!phone);
+  const cms = usePageCatalog('home');
 
   const teamToShow = phone ? managementTeam.slice(0, 1) : managementTeam;
   const MotionBox = motion.div;
@@ -81,6 +84,7 @@ export default function Home() {
   return (
     <>
       <HomeHero />
+      <CmsPageSections cms={cms} className="!py-8" />
       <HomeDivider />
       <HomeTrustBar />
       <HomeDivider />

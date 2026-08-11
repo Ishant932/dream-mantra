@@ -50,6 +50,7 @@ function mergePage(slug, stored = {}) {
     sections: stored.sections?.length ? stored.sections : (defaults.sections || []),
     fullHtml: stored.fullHtml || defaults.fullHtml || '',
     updated_at: stored.updated_at || null,
+    hasCustom: Boolean(stored.updated_at),
   };
 }
 

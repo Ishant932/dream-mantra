@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect } from 'react';
 import { ArrowRight, Calendar, ClipboardList, LogIn, Map, Target } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
+import CmsPageSections from '../components/CmsPageSections';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 import CRPExplorePage from './CRPExplorePage';
 import CRReadinessPage from './CRReadinessPage';
 import CRPLaunchPage from './CRPLaunchPage';
@@ -27,6 +29,7 @@ export default function CRPHub() {
   const { d } = useLang();
   const crpTabs = d('data.crpTabs') || [];
   const hub = d('pages.crp.hub') || {};
+  const cms = usePageCatalog('crp');
   const fg = d('freeGuidance') || {};
   const location = useLocation();
   const navigate = useNavigate();
@@ -52,7 +55,8 @@ export default function CRPHub() {
     navigate({ pathname: '/crp', search: `?${next.toString()}` }, { replace: true, preventScrollReset: true });
   };
 
-  const { lead, accent } = splitHubTitle(hub.title || 'Training & Placement');
+  const { lead, accent } = splitHubTitle(cmsText(cms, 'heroTitle', hub.title || 'Training & Placement'));
+  const hubSubtitle = cmsText(cms, 'heroSubtitle', hub.subtitle || 'From learning to landing your dream job.');
 
   return (
     <div className={`crp-studio crp-studio--${tab} no-reveal`}>
@@ -61,7 +65,7 @@ export default function CRPHub() {
         <motion.div className="crp-studio__masthead-inner" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <div className="crp-studio__masthead-copy">
             <motion.h1 className="crp-studio__title font-accent">{lead} {accent ? <span className="crp-studio__title-accent">{accent}</span> : null}</motion.h1>
-            <motion.p className="crp-studio__subtitle">{hub.subtitle || 'From learning to landing your dream job.'}</motion.p>
+            <motion.p className="crp-studio__subtitle">{hubSubtitle}</motion.p>
             <motion.div className="crp-studio__masthead-actions">
               <GuidanceCTA className="crp-studio__btn crp-studio__btn--primary">
                 <Calendar className="w-4 h-4" /> {hub.cta || fg.cta || 'Book a free guidance call'} <ArrowRight className="w-4 h-4" />
@@ -87,6 +91,7 @@ export default function CRPHub() {
         })}
       </motion.nav>
 
+      <CmsPageSections cms={cms} className="!py-6" />
       <div className="crp-studio__canvas" role="tabpanel">
         <AnimatePresence mode="wait">
           <motion.div key={tab} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }}>

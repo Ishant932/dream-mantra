@@ -4,6 +4,8 @@ import { motion, useReducedMotion, AnimatePresence } from 'framer-motion';
 import { BookOpen, ArrowRight, Calendar, Sparkles, PenLine } from 'lucide-react';
 import { blogApi } from '../api';
 import { isMobilePerf } from '../utils/mobilePerf';
+import CmsPageSections from '../components/CmsPageSections';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 
 const container = {
   hidden: { opacity: 0 },
@@ -146,6 +148,7 @@ export default function BlogPage() {
   const [loading, setLoading] = useState(true);
   const reduce = useReducedMotion();
   const lite = isMobilePerf();
+  const cms = usePageCatalog('blog');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -221,8 +224,12 @@ export default function BlogPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
           >
-            Career insights &{' '}
-            <span className="gradient-text blog-hero-gradient-text">guidance</span>
+            {cmsText(cms, 'heroTitle', '') || (
+              <>
+                Career insights &{' '}
+                <span className="gradient-text blog-hero-gradient-text">guidance</span>
+              </>
+            )}
           </motion.h1>
 
           <motion.p
@@ -231,7 +238,7 @@ export default function BlogPage() {
             animate={{ opacity: 0.85 }}
             transition={{ delay: 0.35 }}
           >
-            Articles on career counselling, stream selection, assessments, and student success from the Dream Mantra team.
+            {cmsText(cms, 'intro', 'Articles on career counselling, stream selection, assessments, and student success from the Dream Mantra team.')}
           </motion.p>
 
           {!loading && posts.length > 0 && (
@@ -284,6 +291,7 @@ export default function BlogPage() {
             </motion.div>
           )}
         </AnimatePresence>
+        <CmsPageSections cms={cms} className="!py-8" />
       </div>
     </div>
   );

@@ -52,7 +52,7 @@ const ADMIN_TABS = [
   { id: 'leads', label: 'Guidance Calls', desc: 'Free guidance call requests' },
   { id: 'blogs', label: 'Blogs', desc: 'Create & publish website articles' },
   { id: 'landing-pages', label: 'Landing Pages', desc: 'Internal campaign landing pages' },
-  { id: 'site-pages', label: 'Site Pages', desc: 'Terms, About, policies & content' },
+  { id: 'site-pages', label: 'Website Copy', desc: 'Edit live page text across the site' },
   { id: 'settings', label: 'Community & Links', desc: 'Community schedule, agewise combos & resources' },
 ];
 

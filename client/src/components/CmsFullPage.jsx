@@ -3,7 +3,7 @@ import { IMAGES } from '../data/content';
 
 /** When admin saves fullHtml, the entire page body is replaced site-wide */
 export default function CmsFullPage({ cms, fallbackImage }) {
-  if (!cms?.fullHtml?.trim()) return null;
+  if (!cms?.hasCustom || !cms?.fullHtml?.trim()) return null;
   return (
     <>
       {(cms.heroTitle || cms.heroSubtitle) && (

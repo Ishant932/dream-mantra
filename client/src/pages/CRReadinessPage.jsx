@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Clock, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronDown, Clock, Sparkles } from 'lucide-react';
 import GuidanceCTA from '../components/GuidanceCTA';
 import { useLang } from '../context/LanguageContext';
+import { isPhoneViewport } from '../utils/mobilePerf';
+import CmsPageSections from '../components/CmsPageSections';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 import { CRPStatsStrip, statIcons } from '../components/crp/crpShared';
 import {
   READINESS_HERO,
@@ -92,8 +96,13 @@ function OutputBox({ label, text, tone }) {
 }
 
 export default function CRReadinessPage({ compact = false }) {
-  const { d } = useLang();
+  const { d, t } = useLang();
   const fg = d('freeGuidance') || {};
+  const cms = usePageCatalog('career-readiness');
+  const phone = isPhoneViewport();
+  const [showMore, setShowMore] = useState(!phone);
+  const heroTitle = cmsText(cms, 'heroTitle', READINESS_HERO.title);
+  const heroSubtitle = cmsText(cms, 'heroSubtitle', READINESS_HERO.subtitle);
   const statItems = [
     { label: '8 Sessions', sub: 'Live training', icon: statIcons[0] },
     { label: 'Reviews', sub: 'LinkedIn + CV + Naukri', icon: statIcons[1] },
@@ -118,10 +127,10 @@ export default function CRReadinessPage({ compact = false }) {
             <Sparkles className="w-4 h-4" /> {READINESS_HERO.badge}
           </span>
           <h2 className={compact ? 'crp-launchpad__heading' : 'section-title'}>
-            {READINESS_HERO.title}
+            {heroTitle}
           </h2>
           <p className={compact ? 'crp-launchpad__intro-sub' : 'text-lg mt-3 max-w-3xl mx-auto'}>
-            {READINESS_HERO.subtitle}
+            {heroSubtitle}
           </p>
         </div>
         <div className={compact ? 'crp-launchpad__meta' : 'flex justify-center gap-3 mt-6'}>
@@ -172,7 +181,7 @@ export default function CRReadinessPage({ compact = false }) {
       <ToneSection
         tone="orange"
         title={READINESS_SYSTEM.title}
-        className="mt-6"
+        className="mt-4"
       >
         {READINESS_SYSTEM.paragraphs.map((p) => (
           <p key={p} className="crp-readiness-full__para">{p}</p>
@@ -188,7 +197,7 @@ export default function CRReadinessPage({ compact = false }) {
         </div>
       </ToneSection>
 
-      <ToneSection tone="orange" title="What's included?" eyebrow="Program inclusions" className="mt-6">
+      <ToneSection tone="orange" title="What's included?" eyebrow="Program inclusions" className="mt-4">
         <ul className="crp-outcomes-cards">
           {READINESS_INCLUDED.map((item, i) => {
             const { title, desc } = parseIncluded(item);
@@ -210,7 +219,22 @@ export default function CRReadinessPage({ compact = false }) {
         </ul>
       </ToneSection>
 
-      <div className="crp-launchpad__sprints mt-8">
+      {phone && !showMore && (
+        <div className="mobile-home-more-wrap">
+          <button
+            type="button"
+            className="mobile-home-more-btn"
+            onClick={() => setShowMore(true)}
+          >
+            {t('mobileNav.showMore')}
+            <ChevronDown className="w-4 h-4" aria-hidden />
+          </button>
+        </div>
+      )}
+
+      {showMore && (
+      <>
+      <div className="crp-launchpad__sprints mt-5">
         <div className="crp-launchpad__section-head">
           <h2 className="crp-launchpad__section-title">The 8-Session Career Journey</h2>
         </div>
@@ -273,7 +297,7 @@ export default function CRReadinessPage({ compact = false }) {
         title="Personal Profile Reviews"
         subtitle="Your career profile shouldn't just exist. It should work for you."
         eyebrow="Profile reviews"
-        className="mt-8"
+        className="mt-5"
       >
         <p className="crp-readiness-full__para">
           Your professional profiles are often the first impression recruiters get. That&apos;s why the program includes personalised profile reviews.
@@ -435,7 +459,7 @@ export default function CRReadinessPage({ compact = false }) {
       </ToneSection>
 
       <motion.div
-        className="dash-overview-section dash-overview-section--orange crp-readiness-full__final-cta mt-8 text-center"
+        className="dash-overview-section dash-overview-section--orange crp-readiness-full__final-cta mt-5 text-center"
         {...fadeUp}
       >
         <h3 className="dash-overview-section__title">Your career should not be left to guesswork.</h3>
@@ -453,6 +477,9 @@ export default function CRReadinessPage({ compact = false }) {
           </GuidanceCTA>
         </div>
       </motion.div>
+      <CmsPageSections cms={cms} />
+      </>
+      )}
     </section>
   );
 }

@@ -9,6 +9,9 @@ import {
 import { IMAGES } from '../data/content';
 import { useLang } from '../context/LanguageContext';
 import CounsellingProcessTimeline from '../components/CounsellingProcessTimeline';
+import MappingHeroCollage from '../components/MappingHeroCollage';
+import CmsPageSections from '../components/CmsPageSections';
+import { cmsText, usePageCatalog } from '../hooks/usePageCatalog';
 
 const fade = {
   initial: { opacity: 0, y: 24 },
@@ -26,6 +29,9 @@ export default function DMPsychometricPage({ compact = false }) {
   const { d } = useLang();
   const page = d('pages.dmitPsychometric');
   const hero = page.hero;
+  const cms = usePageCatalog('combo');
+  const heroTitle = cmsText(cms, 'heroTitle', hero.title);
+  const heroDesc = cmsText(cms, 'intro', hero.desc);
   const steps = d('data.comboSteps');
   const compare = d('data.comboCompare');
   const benefits = d('data.comboBenefits');
@@ -41,10 +47,10 @@ export default function DMPsychometricPage({ compact = false }) {
               <GitMerge className="w-4 h-4" /> {hero.badge}
             </span>
             <h1 className="hero-title mb-4">
-              <span className="gradient-text">{hero.title}</span>
+              <span className="gradient-text">{heroTitle}</span>
             </h1>
             <p className="text-base md:text-lg text-sand-600 dark:text-sand-300 leading-relaxed mb-4">
-              {hero.desc}
+              {heroDesc}
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/signup" className="btn-primary px-7 py-3.5">{hero.bookCombo}</Link>
@@ -53,32 +59,18 @@ export default function DMPsychometricPage({ compact = false }) {
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="relative">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-amber-300/25 to-emerald-300/20 blur-2xl animate-breathe" />
-            <div className="relative grid grid-cols-2 gap-3">
-              <motion.div
-                className="relative rounded-2xl overflow-hidden shadow-xl aspect-square"
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                whileHover={{ scale: 1.03 }}
-              >
-                <img src={IMAGES.comboMind || IMAGES.dmit} alt={hero.dmitAlt} className="w-full h-full object-cover" />
-                <span className="absolute bottom-2 left-2 text-xs font-bold px-2 py-1 rounded-lg bg-emerald-900/75 text-amber-50">Brain Mapping</span>
-              </motion.div>
-              <motion.div
-                className="relative rounded-2xl overflow-hidden shadow-xl aspect-square"
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-                whileHover={{ scale: 1.03 }}
-              >
-                <img src={IMAGES.comboSkill || IMAGES.skillMapping || IMAGES.psychometric} alt={hero.psychometricAlt} className="w-full h-full object-cover" />
-                <span className="absolute bottom-2 left-2 text-xs font-bold px-2 py-1 rounded-lg bg-amber-900/75 text-amber-50">Skill Mapping</span>
-              </motion.div>
+            <div className="relative max-w-sm mx-auto">
+              <MappingHeroCollage
+                images={IMAGES.comboCollage}
+                alts={[hero.dmitAlt, hero.psychometricAlt]}
+              />
               {hero.mergeCard && (
               <motion.div
-                className="col-span-2 glass-card p-4 flex items-center gap-3 combo-merge-card"
+                className="glass-card p-3 mt-3 flex items-center gap-3 combo-merge-card"
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 3, repeat: Infinity }}
               >
-                <Sparkles className="w-8 h-8 text-amber-600 shrink-0" />
+                <Sparkles className="w-7 h-7 text-amber-600 shrink-0" />
                 <p className="text-sm font-semibold text-theme-body">{hero.mergeCard}</p>
               </motion.div>
               )}
@@ -246,6 +238,7 @@ export default function DMPsychometricPage({ compact = false }) {
           </div>
         </motion.div>
       </section>
+      <CmsPageSections cms={cms} />
     </div>
   );
 }
