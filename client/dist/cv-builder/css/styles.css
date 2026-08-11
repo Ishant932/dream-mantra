@@ -13,6 +13,17 @@
   body{margin:0;font-family:'Segoe UI',Arial,Helvetica,sans-serif;background:var(--bg);color:var(--ink);}
   .app{display:grid;grid-template-columns:420px 1fr;min-height:100vh;}
   @media (max-width:1000px){.app{grid-template-columns:1fr;}}
+  @media (max-width:768px){
+    .editor{padding:12px;max-height:none;overflow:visible;}
+    .preview-wrap{padding:12px;max-height:none;overflow:visible;}
+    .page{width:100%;max-width:100%;min-height:auto;padding:28px 20px;transform:none;box-shadow:0 2px 12px rgba(0,0,0,.08);}
+    .row2,.settings-grid,.template-grid{grid-template-columns:1fr;}
+    .tabbar{flex-wrap:wrap;}
+    .tabbar button{font-size:11px;padding:5px 8px;}
+    .brand h1{font-size:14px;}
+    .section-block{padding:10px;margin-bottom:10px;}
+    .download-bar{position:static;}
+  }
 
   /* ---------- EDITOR PANEL ---------- */
   .editor{background:var(--panel-bg);border-right:1px solid var(--line);padding:20px;overflow-y:auto;max-height:100vh;}

@@ -24,4 +24,28 @@
     <changefreq>weekly</changefreq>
     <priority>0.88</priority>
   </url>
+  <url>
+    <loc>https://dreammantra.in/studio/counselling-guidance</loc>
+    <lastmod>2026-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://dreammantra.in/studio/brain-mapping-guidance</loc>
+    <lastmod>2026-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://dreammantra.in/studio/skill-mapping-guidance</loc>
+    <lastmod>2026-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
+  <url>
+    <loc>https://dreammantra.in/studio/brain-skill-mapping-guidance</loc>
+    <lastmod>2026-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.88</priority>
+  </url>
 </urlset>

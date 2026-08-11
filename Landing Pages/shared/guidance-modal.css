@@ -1,0 +1,121 @@
+.guidance-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.72);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+.guidance-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+.guidance-modal-panel {
+  position: relative;
+  width: min(100%, 28rem);
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: 1.25rem;
+  background: #fff;
+  padding: 1.5rem 1.25rem 1.35rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.28);
+}
+.guidance-modal-close {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  color: #64748b;
+  cursor: pointer;
+}
+.guidance-modal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: #fff7ed;
+  color: #c2410c;
+  font-size: 0.72rem;
+  font-weight: 800;
+  margin-bottom: 0.65rem;
+}
+.guidance-modal-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #0f172a;
+  text-align: center;
+}
+.guidance-modal-sub {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: #64748b;
+  text-align: center;
+  line-height: 1.45;
+}
+.guidance-form-field {
+  margin-bottom: 0.75rem;
+}
+.guidance-form-field label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.3rem;
+}
+.guidance-form-field input,
+.guidance-form-field textarea {
+  width: 100%;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  font-size: 0.88rem;
+  background: #f8fafc;
+}
+.guidance-form-field textarea {
+  min-height: 5.5rem;
+  resize: vertical;
+}
+.guidance-form-submit {
+  width: 100%;
+  margin-top: 0.35rem;
+  border: none;
+  border-radius: 0.85rem;
+  padding: 0.9rem 1rem;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.guidance-form-submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+.guidance-form-msg {
+  margin-top: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.65rem;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+.guidance-form-msg--ok {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+}
+.guidance-form-msg--err {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}

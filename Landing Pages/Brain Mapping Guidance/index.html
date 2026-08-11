@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brain Mapping — Free Guidance Call</title>
+  <meta name="description" content="Brain Mapping reveals your inborn potential through fingerprint analysis — validated in 30+ countries, endorsed by Assam Government & Bombay High Court.">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { brandOrange: '#f97316', brandAmber: '#f59e0b', brandGreen: '#14342a' } } }
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="/studio/shared/responsive.css">
+</head>
+<body class="relative bg-slate-50 text-slate-900 antialiased selection:bg-orange-500 selection:text-white overflow-x-hidden" data-dm-studio="brain-mapping-guidance" data-dm-product="dmit">
+
+  <div id="scroll-progress" class="scroll-progress"></div>
+
+  <div class="crazy-bg" aria-hidden="true">
+    <div class="blob blob-orange"></div>
+    <div class="blob blob-amber"></div>
+    <div class="blob blob-green"></div>
+    <div class="bg-grid"></div>
+    <div class="sparkle-field">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <!-- STICKY FLASH-OFFER TIMER BAR -->
+  <div class="flash-timer-bar" id="flash-timer-bar">
+    <div class="flash-timer-inner">
+      <span class="flash-brand">Dream Mantra</span>
+      <div class="flash-timer-center">
+        <span class="flash-icon"><i class="fa-solid fa-fire"></i></span>
+        <span class="flash-label"><strong>Flash Offer:</strong> Limited slots — offer ends in</span>
+        <div class="flip-clock" aria-live="off">
+          <div class="flip-box" id="ft-m1">1</div>
+          <div class="flip-box" id="ft-m2">0</div>
+          <span class="flip-colon">:</span>
+          <div class="flip-box" id="ft-s1">4</div>
+          <div class="flip-box" id="ft-s2">5</div>
+        </div>
+        <button type="button" class="flash-timer-cta js-open-guidance-modal">Book a Free Guidance Call</button>
+      </div>
+      <img src="assets/logo.png" alt="Dream Mantra" class="flash-logo">
+    </div>
+  </div>
+
+  <!-- 1. HERO BANNER -->
+  <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">
+    <div class="grid lg:grid-cols-12 gap-12 items-center">
+
+      <div class="lg:col-span-7 space-y-6 reveal">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-100 border border-orange-200 text-orange-700 text-xs sm:text-sm font-bold">
+          <i class="fa-solid fa-microscope"></i>
+          <span>Validated in 30+ Countries — Neuroscience-Based</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-slate-900 leading-[1.1] font-heading">
+          Reveal Your Inborn
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-500 gradient-text-flow">
+            <span id="typed-text"></span><span class="typing-cursor"></span>
+          </span>
+        </h1>
+
+        <p class="text-slate-600 text-lg sm:text-xl max-w-2xl leading-relaxed">
+          Brain Mapping maps your inborn brain potential through fingerprint analysis — trusted by Assam Government & Bombay High Court. Guided by <strong>Esha Lohiya</strong>.
+        </p>
+
+        <div class="pt-4">
+          <button type="button" class="btn-pulse-glow js-open-guidance-modal text-white px-8 py-4 rounded-xl font-extrabold text-lg tracking-wide inline-flex items-center gap-3 shadow-xl">
+            <i class="fa-solid fa-bolt text-amber-200"></i>
+            <span>Book a Free Guidance Call</span>
+          </button>
+          <p class="text-xs font-semibold text-slate-500 mt-3"><i class="fa-solid fa-fire text-orange-500"></i> Painless. No exams. No pressure.</p>
+        </div>
+      </div>
+
+      <div class="lg:col-span-5 relative reveal-right delay-200">
+        <div class="image-tilt relative mx-auto max-w-md">
+          <div class="photo-cutout-frame relative mx-auto">
+            <img src="assets/esha-new.png" alt="Esha Lohiya" class="w-full h-full object-cover object-top">
+          </div>
+          <div class="absolute -bottom-6 -left-6 bg-white shadow-xl border border-slate-100 rounded-xl p-4 flex items-center gap-3">
+            <div class="h-10 w-10 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-lg">
+              <i class="fa-solid fa-fingerprint"></i>
+            </div>
+            <div>
+              <p class="text-sm font-extrabold text-slate-900">Esha Lohiya</p>
+              <p class="text-[10px] font-bold text-slate-500 uppercase">Certified Brain Mapping Counsellor</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-center text-xs sm:text-sm font-bold text-slate-700 mt-14">
+          <span class="text-orange-600">Founder, Dream Mantra</span> | Former Key Accounts Manager, Naukri.com
+        </p>
+        <p class="text-center text-[11px] sm:text-xs italic text-slate-400 mt-1">
+          Brain Mapping • Multiple Intelligence • Individual Potential Discovery
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 sm:gap-8 max-w-3xl mx-auto mt-16 reveal delay-300">
+      <div class="text-center quick-stat">
+        <p class="text-3xl sm:text-4xl font-black text-orange-500 font-heading"><span class="count-up" data-target="30" data-suffix="+">0</span></p>
+        <p class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase mt-1">Countries Validated</p>
+      </div>
+      <div class="text-center quick-stat" style="animation-delay: 0.3s">
+        <p class="text-3xl sm:text-4xl font-black text-amber-500 font-heading"><span class="count-up" data-target="35" data-suffix="">0</span></p>
+        <p class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase mt-1">Page Report</p>
+      </div>
+      <div class="text-center quick-stat" style="animation-delay: 0.6s">
+        <p class="text-3xl sm:text-4xl font-black text-emerald-500 font-heading"><span class="count-up" data-target="8" data-suffix="">0</span></p>
+        <p class="text-[11px] sm:text-xs font-bold text-slate-500 uppercase mt-1">Intelligences Mapped</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. BENEFITS -->
+  <section class="relative z-10 py-12 bg-white border-y border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8 reveal">
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading">What Brain Mapping Reveals</h2>
+        <p class="text-slate-500 mt-2">Your inborn wiring — without exams, pressure, or labels.</p>
+      </div>
+
+      <div id="what-you-get-grid" class="grid md:grid-cols-3 gap-5">
+        <div class="glass-card glass-card-hover p-6 rounded-3xl text-center space-y-2 reveal delay-100">
+          <div class="benefit-icon h-14 w-14 mx-auto rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-brain"></i>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Natural Learning Style</h3>
+          <p class="text-sm text-slate-600">Memory type, cognitive functioning & information processing patterns.</p>
+        </div>
+
+        <div class="glass-card glass-card-hover p-6 rounded-3xl text-center space-y-2 reveal delay-200">
+          <div class="benefit-icon h-14 w-14 mx-auto rounded-2xl bg-amber-100 text-amber-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-diagram-project"></i>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">8 Multiple Intelligences</h3>
+          <p class="text-sm text-slate-600">Distribution across Gardner's 8 intelligence types, fingerprint-mapped.</p>
+        </div>
+
+        <div class="glass-card glass-card-hover p-6 rounded-3xl text-center space-y-2 reveal delay-300">
+          <div class="benefit-icon h-14 w-14 mx-auto rounded-2xl bg-emerald-100 text-emerald-500 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900">Inborn Strengths & Career Fit</h3>
+          <p class="text-sm text-slate-600">Early understanding of suitable skills, streams & career directions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MID-PAGE CTA BANNER 1 -->
+  <section class="relative z-10 py-4">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="cta-banner relative overflow-hidden rounded-[2rem] p-8 sm:p-10 text-center reveal">
+        <h3 class="text-2xl sm:text-3xl font-black text-white font-heading">Unlock Your Inborn Potential</h3>
+        <p class="text-orange-50 mt-2 max-w-lg mx-auto text-sm sm:text-base">A painless, science-backed process from fingerprint scan to expert counselling.</p>
+        <button type="button" class="js-open-guidance-modal mt-6 inline-flex items-center gap-2 bg-white text-orange-600 px-8 py-3.5 rounded-full font-extrabold text-base shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all">
+          <i class="fa-solid fa-bolt"></i> Book a Free Guidance Call
+        </button>
+        <span class="urgency-microcopy-light"><i class="fa-solid fa-hourglass-half"></i> Limited slots — book a free guidance call to secure your slot</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee-container shadow-inner my-8">
+    <div class="marquee-content">
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Assam Govt Endorsed</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Bombay High Court Endorsed</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> 30+ Countries Validated</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Genetics-Based</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Neuroscience-Backed</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Assam Govt Endorsed</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Bombay High Court Endorsed</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> 30+ Countries Validated</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Genetics-Based</div>
+      <div class="marquee-item"><i class="fa-solid fa-star"></i> Neuroscience-Backed</div>
+    </div>
+  </div>
+
+  <!-- 3. WHY DREAM MANTRA -->
+  <section class="relative z-10 py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6 reveal-left">
+          <span class="text-sm font-bold text-orange-500 uppercase tracking-widest">Scientific Foundation</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading">Not A Guess. <br/>A Genetic Fingerprint.</h2>
+          <ul class="space-y-4">
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-orange-500 mt-1"></i>
+              <p class="text-slate-600 text-sm"><strong class="text-slate-900">Genetics:</strong> Fingerprint patterns are genetically inherited and unique to every individual.</p>
+            </li>
+            <li class="flex items-start gap-3">
+              <i class="fa-solid fa-check-circle text-orange-500 mt-1"></i>
+              <p class="text-slate-600 text-sm"><strong class="text-slate-900">Neuroscience:</strong> Each finger corresponds to specific brain lobes and neural functions.</p>
+            </li>
+          </ul>
+        </div>
+        <div class="grid grid-cols-2 gap-4 reveal-right delay-200">
+          <div class="stat-tile tilt-card">
+            <span class="text-2xl">🖐️</span>
+            <p class="text-3xl font-black text-orange-500 font-heading mt-1">10</p>
+            <p class="text-xs font-bold text-slate-500 uppercase mt-1">Fingers Analyzed</p>
+          </div>
+          <div class="stat-tile tilt-card">
+            <span class="text-2xl">⏱️</span>
+            <p class="text-3xl font-black text-amber-500 font-heading mt-1">3-7</p>
+            <p class="text-xs font-bold text-slate-500 uppercase mt-1">Days To Report</p>
+          </div>
+          <div class="stat-tile tilt-card">
+            <span class="text-2xl">🗣️</span>
+            <p class="text-3xl font-black text-emerald-500 font-heading mt-1">EN/HI</p>
+            <p class="text-xs font-bold text-slate-500 uppercase mt-1">English & Hindi</p>
+          </div>
+          <div class="stat-tile tilt-card">
+            <span class="text-2xl">📖</span>
+            <p class="text-3xl font-black text-slate-900 font-heading mt-1">35-Page</p>
+            <p class="text-xs font-bold text-slate-500 uppercase mt-1">Detailed Report</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IS THIS FOR -->
+  <section class="relative z-10 py-16 section-bg-vibrant overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-10 items-center">
+        <div class="reveal-left order-2 lg:order-1">
+          <span class="text-sm font-bold text-orange-600 uppercase tracking-widest">Age Wise Pathways</span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading mt-2 multicolor-text">Every Life Stage Benefits</h2>
+          <div class="age-stage-grid mt-6">
+            <div class="age-stage-card"><span class="stage-icon">🌟</span><span class="stage-class">Class 1-5</span><span class="stage-name">Talent Discovery Stage</span></div>
+            <div class="age-stage-card"><span class="stage-icon">🔍</span><span class="stage-class">Class 6-8</span><span class="stage-name">Self Discovery Stage</span></div>
+            <div class="age-stage-card"><span class="stage-icon">🎯</span><span class="stage-class">Class 9-10</span><span class="stage-name">Stream Selection Stage</span></div>
+            <div class="age-stage-card"><span class="stage-icon">🚀</span><span class="stage-class">Class 11-12</span><span class="stage-name">Career Direction Stage</span></div>
+            <div class="age-stage-card"><span class="stage-icon">🎓</span><span class="stage-class">College/University</span><span class="stage-name">Career Confirmation Stage</span></div>
+            <div class="age-stage-card"><span class="stage-icon">💼</span><span class="stage-class">Working Professionals</span><span class="stage-name">Career Growth Stage</span></div>
+          </div>
+        </div>
+        <div class="reveal-right order-1 lg:order-2 relative">
+          <img src="assets/cta-students.png" alt="Students and working professionals" class="w-full max-w-md mx-auto drop-shadow-2xl">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEET YOUR COUNSELLOR -->
+  <section class="relative z-10 py-10">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="coach-card reveal">
+        <div class="coach-card-photo">
+          <img src="assets/esha-new.png" alt="Esha Lohiya">
+        </div>
+        <div class="coach-card-info">
+          <p class="coach-card-tagline">I will guide your Brain Mapping journey</p>
+          <h3>Esha <span>Lohiya</span></h3>
+          <p class="coach-card-role">Certified Brain Mapping Counsellor</p>
+          <p class="coach-card-subrole">Founder, Dream Mantra | Former Key Accounts Manager, Naukri.com</p>
+          <p class="coach-card-subrole-tagline">Brain Mapping • Multiple Intelligence • Individual Potential Discovery</p>
+          <div class="coach-card-stars">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. HOW IS IT DONE -->
+  <section class="relative z-10 py-16 bg-white">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10 reveal">
+        <span class="text-sm font-bold text-orange-500 uppercase tracking-widest">Step By Step</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading mt-2 multicolor-text">How Is It Done?</h2>
+        <p class="text-slate-500 mt-2">A painless, science-backed process from fingerprint scan to expert counselling.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div class="session-card reveal delay-100">
+          <div class="session-num">1</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">Fingerprint Scanning</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>Painless, hygienic digital scanning</li>
+            <li><i class="fa-solid fa-check"></i>All 10 fingers analyzed</li>
+          </ul>
+        </div>
+        <div class="session-card reveal delay-200">
+          <div class="session-num">2</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">Scientific Analysis</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>Fingerprint & brain analysis (3-7 days)</li>
+            <li><i class="fa-solid fa-check"></i>Multiple parameters calculated</li>
+          </ul>
+        </div>
+        <div class="session-card reveal delay-300">
+          <div class="session-num">3</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">Detailed Report</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>35-page personalized report</li>
+            <li><i class="fa-solid fa-check"></i>Visual charts & easy interpretations</li>
+          </ul>
+        </div>
+        <div class="session-card reveal delay-400">
+          <div class="session-num">4</div>
+          <h4 class="font-bold text-slate-900 mt-3 text-sm">Expert Counselling</h4>
+          <ul class="session-bullets">
+            <li><i class="fa-solid fa-check"></i>One-on-one with certified counsellor</li>
+            <li><i class="fa-solid fa-check"></i>Personalized strategies & roadmap</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MID-PAGE CTA BANNER 2 -->
+  <section class="relative z-10 py-4">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="cta-banner cta-banner-alt relative overflow-hidden rounded-[2rem] p-8 sm:p-10 text-center reveal">
+        <h3 class="text-2xl sm:text-3xl font-black text-slate-900 font-heading">35 Pages<br>One Lifetime Of Clarity</h3>
+        <p class="text-slate-600 mt-2 max-w-lg mx-auto text-sm sm:text-base">Fingerprints don't lie — and they never change.</p>
+        <button type="button" class="btn-pulse-glow js-open-guidance-modal mt-6 inline-flex items-center gap-2 text-white px-8 py-3.5 rounded-full font-extrabold text-base shadow-xl">
+          <i class="fa-solid fa-bolt text-amber-200"></i> Book a Free Guidance Call
+        </button>
+        <span class="urgency-microcopy" style="display:block; margin-top:0.6rem;"><i class="fa-solid fa-hourglass-half"></i> Limited slots — book a free guidance call to secure your slot</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. PROGRAM HIGHLIGHTS + OUTCOMES -->
+  <section class="relative z-10 py-16 section-bg-vibrant-2">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="modern-table reveal">
+        <div class="modern-table-header">
+          <div class="mt-col mt-col-highlight"><i class="fa-solid fa-star"></i> Report Highlights</div>
+          <div class="mt-col mt-col-outcome"><i class="fa-solid fa-brain"></i> The 8 Intelligences</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>🧬</span> Brain Mapping Introduction & Personality</div>
+          <div class="mt-cell"><span>📖</span> Word Smart — Linguistic</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>🧠</span> Brain Lobes & Their Functions</div>
+          <div class="mt-cell"><span>🔢</span> Number Smart — Logical-Mathematical</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>🖐️</span> My Finger Print Analysis</div>
+          <div class="mt-cell"><span>🎵</span> Music Smart — Musical</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>⚖️</span> Brain Dominance — Left vs Right</div>
+          <div class="mt-cell"><span>🎨</span> Picture Smart — Visual-Spatial</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>📊</span> Graph of Multiple Intelligence</div>
+          <div class="mt-cell"><span>🏃</span> Body Smart — Bodily-Kinesthetic</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>🎯</span> My Quotients (EQ, IQ, AQ, CQ)</div>
+          <div class="mt-cell"><span>👥</span> People Smart — Interpersonal</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>📚</span> My Learning Styles (VAK)</div>
+          <div class="mt-cell"><span>🧘</span> Self Smart — Intrapersonal</div>
+        </div>
+        <div class="modern-table-row">
+          <div class="mt-cell"><span>💼</span> Career Options & Career Graph</div>
+          <div class="mt-cell"><span>🌿</span> Nature Smart — Naturalistic</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. SUCCESS STORIES -->
+  <section class="relative z-10 py-16 bg-white border-y border-slate-100 overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-5 gap-8 items-center mb-10">
+        <div class="lg:col-span-2 text-center lg:text-left reveal-left">
+          <img src="assets/cta-growth.png" alt="Career growth" class="w-48 sm:w-56 mx-auto lg:mx-0 drop-shadow-xl">
+        </div>
+        <div class="lg:col-span-3 text-center lg:text-left reveal-right">
+          <h2 class="text-2xl sm:text-4xl font-extrabold text-slate-900 font-heading multicolor-text whitespace-nowrap">Success Stories</h2>
+          <p class="text-slate-500 mt-2">Real families who discovered inborn strengths through fingerprints.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-marquee">
+      <div class="testimonial-track testimonial-track-left">
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"We finally understood why our daughter learns best through pictures, not lectures."</p><p class="testimonial-name">Kavita R.</p><p class="testimonial-role role-pink">Parent, Class 5</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"No exams, no stress — just a scan and a report that explained everything."</p><p class="testimonial-name">Sanjay P.</p><p class="testimonial-role role-teal">Parent, Class 8</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"The 35-page report was so detailed, it felt like they truly knew my son."</p><p class="testimonial-name">Meena T.</p><p class="testimonial-role role-purple">Parent, Class 3</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"As a working adult, I discovered leadership strength I never knew I had."</p><p class="testimonial-name">Arjun D.</p><p class="testimonial-role role-blue">Working Professional</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"Knowing it's court-endorsed and government-backed gave us real confidence."</p><p class="testimonial-name">Ritu S.</p><p class="testimonial-role role-orange">Parent, Class 10</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"My child's confidence changed the moment we stopped comparing him to toppers."</p><p class="testimonial-name">Vivek K.</p><p class="testimonial-role role-green">Parent, Class 7</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"The counsellor explained brain dominance in a way even I could understand."</p><p class="testimonial-name">Alka M.</p><p class="testimonial-role role-indigo">Parent, Class 1</p></div>
+        <!-- duplicate for seamless loop -->
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"We finally understood why our daughter learns best through pictures, not lectures."</p><p class="testimonial-name">Kavita R.</p><p class="testimonial-role role-pink">Parent, Class 5</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"No exams, no stress — just a scan and a report that explained everything."</p><p class="testimonial-name">Sanjay P.</p><p class="testimonial-role role-teal">Parent, Class 8</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"The 35-page report was so detailed, it felt like they truly knew my son."</p><p class="testimonial-name">Meena T.</p><p class="testimonial-role role-purple">Parent, Class 3</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"As a working adult, I discovered leadership strength I never knew I had."</p><p class="testimonial-name">Arjun D.</p><p class="testimonial-role role-blue">Working Professional</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"Knowing it's court-endorsed and government-backed gave us real confidence."</p><p class="testimonial-name">Ritu S.</p><p class="testimonial-role role-orange">Parent, Class 10</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"My child's confidence changed the moment we stopped comparing him to toppers."</p><p class="testimonial-name">Vivek K.</p><p class="testimonial-role role-green">Parent, Class 7</p></div>
+        <div class="testimonial-card"><div class="testimonial-stars">★★★★★</div><p class="testimonial-quote">"The counsellor explained brain dominance in a way even I could understand."</p><p class="testimonial-name">Alka M.</p><p class="testimonial-role role-indigo">Parent, Class 1</p></div>
+      </div>
+    </div>
+    <p class="text-center text-xs text-slate-400 mt-6">*Sample testimonials shown for illustration — swap in real participant feedback when available.</p>
+  </section>
+
+  <!-- 7. FAQ -->
+  <section class="relative z-10 py-16 section-bg-vibrant-2">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-10 reveal">
+        <span class="text-sm font-bold text-orange-500 uppercase tracking-widest">Got Questions?</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 font-heading mt-2 multicolor-text">Frequently Asked Questions</h2>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-5">
+        <div class="faq-item faq-card faq-card-1 faq-always-open reveal delay-100">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-fingerprint"></i></div>
+            <h4>What is Brain Mapping?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-orange-400 mt-0.5"></i><span>Dermatoglyphics Multiple Intelligence Test</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-orange-400 mt-0.5"></i><span>Maps inborn brain potential through fingerprint analysis</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-2 faq-always-open reveal delay-150">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-list-check"></i></div>
+            <h4>How is it done?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>Painless 10-finger digital scan</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>35-page report in 3-7 days + counselling session</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-3 faq-always-open reveal delay-200">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-user-graduate"></i></div>
+            <h4>Who needs Brain Mapping?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-0.5"></i><span>Every stage — Class 1 to working professionals</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-blue-500 mt-0.5"></i><span>From talent discovery to career confirmation</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-4 faq-always-open reveal delay-250">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-shield-halved"></i></div>
+            <h4>Is it scientifically validated?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-fuchsia-500 mt-0.5"></i><span>Based on genetics, neuroscience & global research</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-fuchsia-500 mt-0.5"></i><span>Aligns with Howard Gardner's Multiple Intelligence Theory</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-1 faq-always-open reveal delay-300">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-landmark"></i></div>
+            <h4>Is it government endorsed?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-orange-400 mt-0.5"></i><span>Assam Government introduced it in schools (BTC)</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-orange-400 mt-0.5"></i><span>Recommended by Bombay High Court's Child Psychologist</span></li>
+            </ul>
+          </div>
+        </div>
+        <div class="faq-item faq-card faq-card-2 faq-always-open reveal delay-350">
+          <div class="faq-header">
+            <div class="faq-icon-badge"><i class="fa-solid fa-star"></i></div>
+            <h4>How is it different from exams?</h4>
+          </div>
+          <div class="faq-answer">
+            <ul class="space-y-1.5">
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>Measures inborn potential, not memorised performance</span></li>
+              <li class="flex items-start gap-2"><i class="fa-solid fa-check text-emerald-500 mt-0.5"></i><span>Cannot be coached or faked — fingerprint based, valid for life</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. FINAL CTA -->
+  <section class="relative z-10 py-16">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="cta-banner relative overflow-hidden rounded-[2.5rem] p-10 sm:p-14 text-center reveal">
+        <h2 class="text-3xl sm:text-4xl font-black text-white font-heading">Unlock Your Inborn Potential</h2>
+        <p class="text-orange-50 mt-2 max-w-md mx-auto">Mon–Sat 11am–7pm · Jaipur & Pan-India (Online) · Sign up online, then complete checkout</p>
+        <button type="button" class="js-open-guidance-modal mt-8 inline-flex items-center gap-2 bg-white text-orange-600 px-10 py-4 rounded-full font-extrabold text-lg shadow-xl hover:-translate-y-1 hover:shadow-2xl transition-all">
+          <span>Book a Free Guidance Call</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <span class="urgency-microcopy-light"><i class="fa-solid fa-hourglass-half"></i> Limited slots — book a free guidance call to secure your slot</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. BRAND STATEMENT -->
+  <section class="relative z-10 py-10 bg-white border-t border-slate-100">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center reveal">
+      <img src="assets/logo.png" alt="Dream Mantra" class="h-10 w-10 object-contain mx-auto mb-3">
+      <p class="text-sm sm:text-base font-bold text-slate-700 leading-relaxed">
+        <span class="text-orange-600">Dream Mantra</span> is India's leading Brain Mapping platform — the only one that pairs fingerprint-based science with Skill Mapping & expert counselling for a complete, lifelong picture of your potential.
+      </p>
+    </div>
+  </section>
+
+  <!-- 10. FOOTER -->
+  <footer class="relative z-10 bg-slate-900 py-8 text-center text-slate-400 text-xs">
+    <div class="max-w-7xl mx-auto px-4 space-y-2">
+      <p><i class="fa-solid fa-phone text-orange-500"></i> Call us: <a href="tel:+919680102276" class="text-white font-semibold hover:text-orange-400 transition">+91 9680102276</a></p>
+      <p>© 2026 Dream Mantra. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/919680102276" target="_blank" class="whatsapp-float bg-emerald-500 text-white h-14 w-14 rounded-full flex items-center justify-center text-2xl shadow-xl">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <!-- Book a Free Guidance Call MODAL -->
+  
+  <div id="guidance-modal-overlay" class="guidance-modal-overlay" aria-hidden="true">
+    <div class="guidance-modal-panel" role="dialog" aria-modal="true" aria-labelledby="guidance-modal-title">
+      <button type="button" id="guidance-modal-close-btn" class="guidance-modal-close" aria-label="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <div class="text-center">
+        <span class="guidance-modal-badge"><i class="fa-solid fa-phone"></i> Free guidance call</span>
+        <h2 id="guidance-modal-title" class="guidance-modal-title">Book a Free Guidance Call</h2>
+        <p class="guidance-modal-sub">Share your details. A Dream Mantra counsellor will call you back — Mon–Sat, 11 AM – 7 PM.</p>
+      </div>
+      <form id="guidance-form" class="max-w-md mx-auto" novalidate>
+        <div class="guidance-form-field">
+          <label for="gf-name">Full name</label>
+          <input type="text" id="gf-name" required placeholder="Your name">
+        </div>
+        <div class="guidance-form-field">
+          <label for="gf-email">Email</label>
+          <input type="email" id="gf-email" required placeholder="your@email.com">
+        </div>
+        <div class="guidance-form-field">
+          <label for="gf-phone">Mobile / WhatsApp</label>
+          <input type="tel" id="gf-phone" placeholder="10-digit number">
+        </div>
+        <div class="guidance-form-field">
+          <label for="gf-message">How can we help?</label>
+          <textarea id="gf-message" placeholder="Tell us about your goals or questions…"></textarea>
+        </div>
+        <button type="submit" class="guidance-form-submit">Book a Free Guidance Call</button>
+        <p id="guidance-form-msg" class="guidance-form-msg" hidden></p>
+      </form>
+    </div>
+  </div>
+
+  <link rel="stylesheet" href="/studio/shared/guidance-modal.css">
+  <script src="script.js"></script>
+  <script src="/studio/shared/guidance-modal.js"></script>
+</body>
+</html>

@@ -17,6 +17,10 @@ const STUDIO_LANDINGS = [
   { path: '/studio/brain-mapping', label: 'Brain Mapping', priority: '0.9' },
   { path: '/studio/counselling', label: 'Counselling', priority: '0.9' },
   { path: '/studio/training-and-placement', label: 'Training & Placement', priority: '0.88' },
+  { path: '/studio/counselling-guidance', label: 'Counselling Guidance', priority: '0.88' },
+  { path: '/studio/brain-mapping-guidance', label: 'Brain Mapping Guidance', priority: '0.88' },
+  { path: '/studio/skill-mapping-guidance', label: 'Skill Mapping Guidance', priority: '0.88' },
+  { path: '/studio/brain-skill-mapping-guidance', label: 'Brain + Skill Mapping Guidance', priority: '0.88' },
 ];
 
 const PROGRAM_SLUGS = [

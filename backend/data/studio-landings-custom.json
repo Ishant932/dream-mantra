@@ -4,5 +4,33 @@
     "label": "landing page",
     "folder": "landing page",
     "productSlug": "career-readiness"
+  },
+  {
+    "slug": "counselling-guidance",
+    "label": "Counselling Guidance",
+    "folder": "Counselling Guidance",
+    "productSlug": "dmit-psychometric",
+    "guidance": true
+  },
+  {
+    "slug": "brain-mapping-guidance",
+    "label": "Brain Mapping Guidance",
+    "folder": "Brain Mapping Guidance",
+    "productSlug": "dmit",
+    "guidance": true
+  },
+  {
+    "slug": "skill-mapping-guidance",
+    "label": "Skill Mapping Guidance",
+    "folder": "Skill Mapping Guidance",
+    "productSlug": "psychometric",
+    "guidance": true
+  },
+  {
+    "slug": "brain-skill-mapping-guidance",
+    "label": "Brain Skill Mapping Guidance",
+    "folder": "Brain Skill Mapping Guidance",
+    "productSlug": "dmit-psychometric",
+    "guidance": true
   }
 ]
