@@ -1,1 +1,0 @@
-import{j as i}from"./motion-DMW-7OZn.js";import r from"./Terms-VI4hB0qF.js";import"./vendor-Z1G8FAI1.js";import"./PageHero-CPkLg2Pk.js";import"./index-Bha_dC-t.js";import"./icons-K_q4DaoY.js";import"./usePageCatalog-Ci22T5GY.js";import"./CmsFullPage-whCri2t0.js";function c(){return i.jsx(r,{pageKey:"pages.policies",titleOverride:"Policies"})}export{c as default};

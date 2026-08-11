@@ -27108,13 +27108,92 @@ html.aurora .dash-sidebar-panel--hero-match {
   .mapping-polaroid { width: 8.1rem; }
 }
 
-/* Immersive mapping hero showcase (brain / skill / combo) */
-.mapping-showcase {
-  position: relative;
-  width: min(100%, 24rem);
-  height: 22rem;
-  margin: 0 auto;
+.mapping-showcase--banner {
+  width: 100%;
+  max-width: none;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+  overflow: visible;
 }
+.mapping-showcase--banner .mapping-showcase__banner {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 12.5rem;
+  max-height: 24rem;
+  border-radius: 1.35rem;
+  overflow: hidden;
+  border: 3px solid #fff;
+  box-shadow: 0 22px 50px rgba(15, 31, 61, 0.2);
+}
+.mapping-showcase--banner .mapping-showcase__banner-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.mapping-showcase--banner .mapping-showcase__banner-overlay {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 0.65rem 0.85rem 0.75rem;
+  background: linear-gradient(180deg, transparent, rgba(15, 31, 61, 0.88));
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+.mapping-showcase--banner .mapping-showcase__banner-caption {
+  margin: 0;
+  font-size: clamp(0.62rem, 2.2vw, 0.78rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #fff;
+  flex: 1 1 100%;
+}
+.mapping-showcase--banner .mapping-showcase__banner-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.mapping-showcase--banner .mapping-showcase__chip {
+  padding: 0.22rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: none;
+  animation: none;
+}
+.mapping-showcase--brain.mapping-showcase--banner .mapping-showcase__glow {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.45), transparent 70%);
+}
+.mapping-showcase--skill.mapping-showcase--banner .mapping-showcase__glow {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.4), transparent 70%);
+}
+.mapping-showcase--combo.mapping-showcase--banner .mapping-showcase__glow {
+  background: radial-gradient(circle, rgba(124, 58, 237, 0.35), rgba(5, 150, 105, 0.25) 55%, transparent 72%);
+}
+@media (min-width: 1024px) {
+  .mapping-showcase--banner .mapping-showcase__banner {
+    min-height: 16rem;
+    max-height: 26rem;
+  }
+}
+@media (max-width: 640px) {
+  .mapping-showcase--banner .mapping-showcase__banner {
+    min-height: 11rem;
+    aspect-ratio: 16 / 10;
+  }
+}
+
 .mapping-showcase__aura {
   position: absolute;
   inset: 8% 6%;

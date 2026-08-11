@@ -130,6 +130,29 @@ export function assessmentGrantsSlotBooking(assessment) {
 export function hasCounsellingAccess(assessments = []) {
   return getConfirmedPaidAssessments(assessments).some(assessmentGrantsSlotBooking);
 }
+
+export function hasPaidCounsellingTopup(assessments = []) {
+  return getConfirmedPaidAssessments(assessments).some(
+    (a) => resolveAssessmentSlug(a) === 'counselling-topup',
+  );
+}
+
+/** Whether this product path should show counselling tab + journey steps. */
+export function productGrantsCounselling(assessments = [], productSlug, activeAssessment = null) {
+  if (productSlug === 'dmit-psychometric') return true;
+  const a = activeAssessment
+    || getConfirmedPaidAssessments(assessments).find((x) => resolveAssessmentSlug(x) === productSlug);
+  if (a && assessmentHasCounselling(a)) return true;
+  if (hasPaidCounsellingTopup(assessments)) return true;
+  return false;
+}
+
+/** Original purchase included counselling (not top-up only). */
+export function purchaseHadCounsellingPackage(assessment) {
+  if (!assessment || !isAssessmentUnlocked(assessment)) return false;
+  if (resolveAssessmentSlug(assessment) === 'counselling-topup') return false;
+  return assessmentHasCounselling(assessment);
+}
 export function getProcessGuideIdsForAssessment(assessment) {
   if (!isAssessmentUnlocked(assessment)) return [];
   const slug = resolveAssessmentSlug(assessment);

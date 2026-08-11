@@ -48,6 +48,13 @@ import { programPageForSlug } from '../utils/routes';
 
 const CareerLibraryExplorer = lazyWithRetry(() => import('../components/CareerLibraryExplorer'));
 
+function CareerLibraryPrefetch() {
+  useEffect(() => {
+    prefetchCareers();
+  }, []);
+  return null;
+}
+
 function TabLoader() {
   return (
     <div className="flex items-center justify-center py-16">
@@ -201,7 +208,6 @@ export default function UserDashboard() {
     const isCancelled = () => cancelled;
 
     load(token, isCancelled);
-    prefetchCareers();
 
     return () => {
       cancelled = true;
@@ -621,6 +627,7 @@ export default function UserDashboard() {
 
               {tab === 'careers' && (
                 <Suspense fallback={<TabLoader />}>
+                  <CareerLibraryPrefetch />
                   <div className="dash-embed-host">
                     <CareerLibraryExplorer embedded />
                   </div>
@@ -682,6 +689,7 @@ export default function UserDashboard() {
                       bookingProps={bookingProps}
                       onBook={() => goCheckout(counsellingProductSlug)}
                       onAdditionalCounselling={goAdditionalCounselling}
+                      assessments={data.assessments || []}
                       profileCompletion={profileCompletion}
                       {...profilePanelProps}
                       token={token}

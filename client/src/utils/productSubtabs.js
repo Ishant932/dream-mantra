@@ -1,13 +1,23 @@
 /** Product-specific dashboard subtabs */
 
-export function getCounsellingSubtabs(focus) {
+export function getCounsellingSubtabs(focus, includesCounselling = true) {
   const journey = { id: 'journey', label: 'Your Journey', lock: true };
   const profile = { id: 'profile', label: 'Profile', lock: true };
   const takeTest = { id: 'take-test', label: 'Take test', lock: true };
   const counselling = { id: 'counselling', label: 'Counselling', lock: true };
   const report = { id: 'report', label: 'Report', lock: true };
-  if (focus === 'brain') return [journey, profile, counselling, report];
-  if (focus === 'skill') return [journey, profile, takeTest, report];
+  if (focus === 'brain') {
+    const tabs = [journey, profile];
+    if (includesCounselling) tabs.push(counselling);
+    tabs.push(report);
+    return tabs;
+  }
+  if (focus === 'skill') {
+    const tabs = [journey, profile, takeTest];
+    if (includesCounselling) tabs.push(counselling);
+    tabs.push(report);
+    return tabs;
+  }
   if (focus === 'combo') return [journey, profile, takeTest, counselling, report];
   return [journey, counselling, report];
 }

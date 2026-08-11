@@ -8,6 +8,11 @@ import CommunityLinksPanel from './CommunityLinksPanel';
 import SessionBookingPanel from './SessionBookingPanel';
 import { getCounsellingSubtabs, getTrainingSubtabs } from '../../utils/productSubtabs';
 import { counsellingPrerequisitesMet, hasInitialCounsellingComplete } from '../../utils/counsellingStatus';
+import {
+  hasPaidCounsellingTopup,
+  productGrantsCounselling,
+  purchaseHadCounsellingPackage,
+} from '../../utils/moduleAccess';
 import { DashCard } from '../DashboardUI';
 
 function LockedCard({ onBook }) {
@@ -29,13 +34,22 @@ const REPORT_TAB = 'report';
 export function CounsellingProductPanel({
   focus, paid, subtab, onSubtab, careerPath, reports = [], bookingProps, journeyCtx, onBook,
   displayUser, profile, onProfileSave, profileSaving, token, onTestProgressSaved, profileCompletion = 0,
-  onAdditionalCounselling,
+  onAdditionalCounselling, assessments = [],
 }) {
-  const subtabs = getCounsellingSubtabs(focus);
-  const progress = careerPath?.activeAssessment?.progress || {};
+  const activeAssessment = careerPath?.activeAssessment;
+  const productSlug = careerPath?.productSlug;
+  const includesCounselling = productGrantsCounselling(assessments, productSlug, activeAssessment);
+  const hasTopup = hasPaidCounsellingTopup(assessments);
+  const showAdditionalCounselling = purchaseHadCounsellingPackage(activeAssessment) || focus === 'combo';
+  const subtabs = getCounsellingSubtabs(focus, includesCounselling);
+  const progress = activeAssessment?.progress || {};
   const consultations = bookingProps?.bookings || [];
-  const counsellingUnlocked = counsellingPrerequisitesMet(focus, progress, profileCompletion >= 80 || !!profile?.setupComplete)
-    || hasInitialCounsellingComplete(consultations);
+  const profileReady = profileCompletion >= 80 || !!profile?.setupComplete;
+  const counsellingUnlocked = includesCounselling && (
+    hasTopup
+    || counsellingPrerequisitesMet(focus, progress, profileReady)
+    || hasInitialCounsellingComplete(consultations)
+  );
   const locked = (tab) => {
     if (tab.lock && !paid) return true;
     if (tab.id === 'counselling' && paid && !counsellingUnlocked) return true;
@@ -66,9 +80,20 @@ export function CounsellingProductPanel({
       <div className="dash-panel-surface dash-panel-surface--product">
         {(overviewMode || !paid) && <DashboardProductOverview focus={focus} onBook={onBook} paid={paid} />}
         {paid && subtab === 'journey' && (
-          <ProductJourneySteps focus={focus} paid={paid} progress={progress} slug={slug} {...journeyCtx}
-            onProfile={() => onSubtab('profile')} onBookCounselling={() => onSubtab('counselling')} onTakeTest={() => onSubtab('take-test')} onReports={() => onSubtab('report')}
-            onAdditionalCounselling={onAdditionalCounselling} />
+          <ProductJourneySteps
+            focus={focus}
+            paid={paid}
+            progress={progress}
+            slug={slug}
+            includesCounselling={includesCounselling}
+            showAdditionalCounselling={showAdditionalCounselling}
+            {...journeyCtx}
+            onProfile={() => onSubtab('profile')}
+            onBookCounselling={() => onSubtab('counselling')}
+            onTakeTest={() => onSubtab('take-test')}
+            onReports={() => onSubtab('report')}
+            onAdditionalCounselling={onAdditionalCounselling}
+          />
         )}
         {paid && subtab === 'profile' && (
           <ProfileWizardPanel user={displayUser} profile={profile} onSave={onProfileSave} saving={profileSaving} />

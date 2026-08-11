@@ -59,7 +59,7 @@ export default function DMPsychometricPage({ compact = false }) {
           </motion.div>
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.15 }} className="relative">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-amber-300/25 to-emerald-300/20 blur-2xl animate-breathe" />
-            <div className="relative max-w-sm mx-auto">
+            <div className="relative w-full max-w-none">
               <MappingHeroShowcase
                 variant="combo"
                 alt={hero.dmitAlt || hero.psychometricAlt}
