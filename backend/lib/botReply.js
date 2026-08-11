@@ -13,7 +13,7 @@ export const BOT_KNOWLEDGE = [
   { keys: ['cost', 'price', 'fees', '1999', '699', '2999'], en: 'Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | Launchpad ₹1,499. Dashboard → Book Now.', hi: 'Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999.' },
   { keys: ['dashboard', 'book now', 'modules'], en: 'Dashboard: Book Now, Counselling, Training & Placement, Support, Career Library. dreammantra.in/dashboard', hi: 'Dashboard: Book Now, Counselling, Training.' },
   { keys: ['what is dmit', 'dmit kya', 'brain mapping'], en: '**Brain Mapping** — fingerprint inborn talent analysis. ₹1,999 | /counselling?tab=dmit | 9680102276', hi: 'Brain Mapping — fingerprint analysis' },
-  { keys: ['skill mapping', 'mbti', 'disc', 'riasec'], en: 'Skill Mapping: MBTI, DISC, RIASEC, Big 5. ₹699 | /counselling?tab=psychometric', hi: 'Skill Mapping — psychometric tests' },
+  { keys: ['skill mapping', 'psychometric', 'career interest'], en: 'Skill Mapping: 7 assessments from ₹699 | /counselling?tab=psychometric', hi: 'Skill Mapping — 7 assessments' },
   { keys: ['contact', 'phone', '9680102276'], en: '📞 9680102276 | info@dreammantra.in | Mon-Sat 11am-7pm', hi: '9680102276 | info@dreammantra.in' },
   { keys: ['payment', 'pending payment', 'pay'], en: 'Pay from Dashboard → Book Now. Razorpay or UPI proof.', hi: 'Book Now से pay करें।' },
   { keys: ['book', 'consultation', 'slot'], en: 'Book counselling: Dashboard → Counselling after payment. 9680102276', hi: 'Payment के बाद Counselling tab' },

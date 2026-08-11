@@ -1,0 +1,1 @@
+import{c as a}from"./vendor-Z1G8FAI1.js";import{q as n}from"./index-Bgq1LfXK.js";function u(t){const[r,e]=a.useState(null);return a.useEffect(()=>{t&&n.get(t).then(s=>e(s.page||null)).catch(()=>e(null))},[t]),r}export{u};

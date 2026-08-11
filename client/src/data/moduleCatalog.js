@@ -33,7 +33,7 @@ export const MODULE_CATALOG = [
     title: 'Skill Mapping',
     price: 699,
     optionalCounselling: true,
-    description: 'MBTI, DISC, RIASEC, Big 5, VAK & multiple frameworks for personality & career fit.',
+    description: '7 assessments for personality, work style, learning style, talents & career fit.',
     icon: '🧠',
   },
   {
@@ -75,8 +75,8 @@ export const MODULE_CATALOG = [
 ];
 
 export const SKILL_MAPPING_BANDS = [
-  { id: 'class-6-8', label: 'Class 6–8', subtitle: 'VAK & MIT · ~35 mins total' },
-  { id: 'class-9-12', label: 'Class 9–12', subtitle: '5 tests · VAK, DISC, RIASEC, MIT, MBTI' },
+  { id: 'class-6-8', label: 'Class 6–8', subtitle: 'Learning Style & Multiple Talents · ~35 mins total' },
+  { id: 'class-9-12', label: 'Class 9–12', subtitle: '5 assessments included' },
   { id: 'professionals', label: 'Adults / Professionals', subtitle: '6 tests · incl. Career Understanding' },
 ];
 
@@ -84,8 +84,8 @@ export const SKILL_MAPPING_BANDS = [
 export const SKILL_MAPPING_TESTS = [
   {
     id: 'vak',
-    title: '📚 Learning Style Assessment (VAK)',
-    shortTitle: '📚 VAK',
+    title: '📚 Learning Style Assessment',
+    shortTitle: '📚 Learning Style',
     desc: 'Discovers how you learn and retain information most effectively.',
     duration: '5 mins',
     bands: ['class-6-8', 'class-9-12'],
@@ -95,8 +95,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'mit',
-    title: '🌟 Multiple Talents Assessment (Multiple Intelligences Theory - MIT)',
-    shortTitle: 'MIT',
+    title: '🌟 Multiple Talents Assessment',
+    shortTitle: 'Multiple Talents',
     desc: 'Identifies your strongest multiple abilities and areas of intelligence.',
     duration: '30 mins',
     bands: ['class-6-8', 'class-9-12', 'professionals'],
@@ -106,8 +106,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'disc',
-    title: '🤝 Professional Behaviour & Work Style Analysis (DISC)',
-    shortTitle: 'DISC',
+    title: '🤝 Professional Behaviour & Work Style Analysis',
+    shortTitle: 'Professional Behaviour',
     desc: 'Understands how you communicate, collaborate, and respond in different situations.',
     duration: '10 mins',
     bands: ['class-9-12', 'professionals'],
@@ -117,8 +117,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'riasec',
-    title: '🧠 Career Interest Assessment (RIASEC)',
-    shortTitle: 'RIASEC',
+    title: '🧠 Career Interest Assessment',
+    shortTitle: 'Career Interest',
     desc: 'Finds the careers and work environments that match your interests.',
     duration: '10 mins',
     bands: ['class-9-12', 'professionals'],
@@ -128,8 +128,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'mbti',
-    title: '👤 Personality Assessment (MBTI – Myers-Briggs Type Indicator)',
-    shortTitle: 'MBTI',
+    title: '👤 Personality Assessment',
+    shortTitle: 'Personality',
     desc: 'Helps you understand your personality type, work style, and preferences.',
     duration: '15 mins',
     bands: ['class-9-12', 'professionals'],
@@ -139,8 +139,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'big5',
-    title: '💡 Workplace Personality & Success Factors Analysis (Big Five Personality Traits)',
-    shortTitle: 'Big Five',
+    title: '💡 Workplace Personality & Success Factors Analysis',
+    shortTitle: 'Workplace Personality',
     desc: 'Identifies your core personality traits, behavioural patterns, and strengths.',
     duration: '15 mins',
     bands: ['professionals'],

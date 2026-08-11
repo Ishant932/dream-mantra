@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Plus, Save, Trash2, Map, FileText, Eye, ChevronUp, ChevronDown } from 'lucide-react';
+import { Plus, Save, Trash2, Map, Eye, ChevronUp, ChevronDown, Search, ExternalLink } from 'lucide-react';
 import AdminPanelHeader from '../AdminPanelHeader';
 import { useAuth } from '../../context/AuthContext';
 import { adminApi } from '../../api';
@@ -8,10 +8,10 @@ import { CmsPreviewLink } from '../CmsPageSections';
 
 const SITE_GROUPS = [
   { id: 'main', label: 'Main Site', icon: '🏠', slugs: ['home', 'about', 'contact'] },
-  { id: 'counselling', label: 'Counselling', icon: '🧠', slugs: ['brain-mapping', 'skill-mapping', 'combo', 'counselling'] },
-  { id: 'training', label: 'Training', icon: '🚀', slugs: ['crp', 'career-readiness'] },
-  { id: 'explore', label: 'Explore & Book', icon: '📚', slugs: ['marketplace', 'careers', 'blog'] },
-  { id: 'legal', label: 'Legal', icon: '📜', slugs: ['terms', 'policies', 'privacy', 'refund'] },
+  { id: 'counselling', label: 'Counselling & Assessments', icon: '🧠', slugs: ['brain-mapping', 'skill-mapping', 'combo', 'counselling'] },
+  { id: 'training', label: 'Training & CRP', icon: '🚀', slugs: ['crp', 'career-readiness'] },
+  { id: 'explore', label: 'Explore & Careers', icon: '📚', slugs: ['marketplace', 'careers', 'blog'] },
+  { id: 'legal', label: 'Legal & Policies', icon: '📜', slugs: ['terms', 'policies', 'privacy', 'refund'] },
 ];
 
 const EMPTY_SECTION = { title: '', content: '', image: '' };
@@ -38,6 +38,7 @@ export default function AdminPageCatalogPanel({ onNotice, onError }) {
   const [form, setForm] = useState({ heroTitle: '', heroSubtitle: '', heroImage: '', intro: '', sections: [] });
   const [saving, setSaving] = useState(false);
   const [view, setView] = useState('map');
+  const [query, setQuery] = useState('');
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -69,6 +70,19 @@ export default function AdminPageCatalogPanel({ onNotice, onError }) {
   const page = pageMap[active];
   const previewDoc = useMemo(() => buildPreviewHtml(form, page?.label), [form, page]);
 
+  const filteredGroups = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return SITE_GROUPS;
+    return SITE_GROUPS.map((g) => ({
+      ...g,
+      slugs: g.slugs.filter((slug) => {
+        const p = pageMap[slug];
+        if (!p) return false;
+        return [p.label, p.route, slug].some((v) => String(v || '').toLowerCase().includes(q));
+      }),
+    })).filter((g) => g.slugs.length);
+  }, [query, pageMap]);
+
   const save = async () => {
     setSaving(true);
     try {
@@ -90,37 +104,102 @@ export default function AdminPageCatalogPanel({ onNotice, onError }) {
     return { ...f, sections: next };
   });
 
+  const openEditor = (slug) => {
+    setActive(slug);
+    setView('edit');
+  };
+
   return (
     <div className="space-y-4 admin-site-map">
-      <AdminPanelHeader title="Site Pages CMS" subtitle="Edit hero, titles & every section — changes go live instantly." />
+      <AdminPanelHeader
+        title="Site Pages CMS"
+        subtitle={`${pages.length} editable pages · grouped site map with live preview`}
+      />
 
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2 items-center">
         <button type="button" onClick={() => setView('map')} className={`subtab-btn ${view === 'map' ? 'active' : ''}`}>
           <Map className="w-3.5 h-3.5 inline mr-1" /> Site map
         </button>
         {page && view === 'edit' && (
           <span className="text-sm font-bold text-amber-800 self-center">Editing: {page.label}</span>
         )}
+        {view === 'map' && (
+          <div className="relative flex-1 min-w-[200px] max-w-sm ml-auto">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-sand-400" />
+            <input
+              className="input-field w-full !pl-9 !py-2"
+              placeholder="Search pages by name or route…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+        )}
       </div>
 
-      {view === 'map' && SITE_GROUPS.map((g) => (
-        <div key={g.id} className="admin-site-map__group">
-          <h3 className="admin-site-map__group-title"><span>{g.icon}</span> {g.label}</h3>
-          <div className="admin-site-map__grid">
-            {g.slugs.map((slug) => {
-              const p = pageMap[slug];
-              if (!p) return null;
-              return (
-                <button key={slug} type="button" className={`admin-site-map__card${active === slug ? ' is-active' : ''}`}
-                  onClick={() => { setActive(slug); setView('edit'); }}>
-                  <p className="font-bold text-sm">{p.label}</p>
-                  <p className="admin-site-map__card-route">{p.route}</p>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+      {view === 'map' && (
+        <>
+          <DashCard className="!p-0 overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="bg-amber-50/80 text-left text-xs uppercase tracking-wide text-amber-900">
+                  <tr>
+                    <th className="px-4 py-3">Page</th>
+                    <th className="px-4 py-3">Route</th>
+                    <th className="px-4 py-3">Sections</th>
+                    <th className="px-4 py-3 text-right">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredGroups.flatMap((g) => g.slugs.map((slug) => {
+                    const p = pageMap[slug];
+                    if (!p) return null;
+                    return (
+                      <tr key={slug} className="border-t border-sand-100 hover:bg-amber-50/40">
+                        <td className="px-4 py-3">
+                          <span className="text-xs text-sand-500 block">{g.icon} {g.label}</span>
+                          <span className="font-bold text-slate-800">{p.label}</span>
+                        </td>
+                        <td className="px-4 py-3 font-mono text-xs text-slate-600">{p.route}</td>
+                        <td className="px-4 py-3 text-sand-600">{p.sections?.length || 0}</td>
+                        <td className="px-4 py-3">
+                          <div className="flex justify-end gap-2">
+                            <button type="button" className="btn-outline !py-1 !px-2 text-xs" onClick={() => openEditor(slug)}>
+                              Edit
+                            </button>
+                            <a href={p.route} target="_blank" rel="noreferrer" className="btn-outline !py-1 !px-2 text-xs inline-flex items-center gap-1">
+                              <ExternalLink className="w-3 h-3" /> Open
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }))}
+                </tbody>
+              </table>
+            </div>
+          </DashCard>
+
+          {filteredGroups.map((g) => (
+            <div key={g.id} className="admin-site-map__group">
+              <h3 className="admin-site-map__group-title"><span>{g.icon}</span> {g.label}</h3>
+              <div className="admin-site-map__grid">
+                {g.slugs.map((slug) => {
+                  const p = pageMap[slug];
+                  if (!p) return null;
+                  return (
+                    <button key={slug} type="button" className={`admin-site-map__card${active === slug ? ' is-active' : ''}`}
+                      onClick={() => openEditor(slug)}>
+                      <p className="font-bold text-sm">{p.label}</p>
+                      <p className="admin-site-map__card-route">{p.route}</p>
+                      <p className="admin-site-map__card-meta">{p.sections?.length || 0} sections</p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </>
+      )}
 
       {view === 'edit' && page && (
         <div className="admin-cms-editor">

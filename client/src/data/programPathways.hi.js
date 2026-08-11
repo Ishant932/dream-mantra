@@ -13,7 +13,7 @@ const mindMapping = {
 const skillMapping = {
   id: 'psychometric',
   name: 'Skill Mapping',
-  tagline: 'MBTI, DISC, RIASEC, Big 5, VAK, MIT & more — personality, interests aur career fit.',
+  tagline: 'Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making — personality, interests aur career fit.',
   link: '/counselling?tab=psychometric',
   productSlug: 'psychometric',
   purchasePath: '/dashboard?tab=assess&shop=psychometric',

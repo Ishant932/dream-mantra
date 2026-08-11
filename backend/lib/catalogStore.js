@@ -27,7 +27,7 @@ export const BASE_MODULE_CATALOG = [
     price: 699,
     optionalCounselling: true,
     icon: '🧠',
-    description: 'MBTI, DISC, RIASEC, Big 5, VAK & multiple frameworks for personality & career fit.',
+    description: '7 assessments for personality, work style, learning style, talents & career fit.',
     counsellingAddon: { ...DEFAULT_COUNSELLING_ADDON },
   },
   {

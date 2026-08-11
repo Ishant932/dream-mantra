@@ -147,8 +147,8 @@ function DetailModal({ c, onClose }) {
             <DetailRow label="Work environment" value={c.workEnvironment} />
             <DetailRow label="A typical day" value={c.typicalDay} />
             <DetailRow label="Personality fit" value={c.personalityFit} />
-            <DetailRow label="RIASEC" value={c.riasec} />
-            <DetailRow label="MBTI fit" value={c.mbti} />
+            <DetailRow label="Career Interest" value={c.riasec} />
+            <DetailRow label="Personality fit" value={c.mbti} />
             <DetailRow label="Intelligence type" value={c.multipleIntelligence} />
             <DetailRow label="Future outlook" value={c.futureOutlook} />
             <DetailRow label="Progression path" value={c.progressionPath} />

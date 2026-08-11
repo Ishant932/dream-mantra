@@ -4,7 +4,7 @@ export const PSYCHOMETRIC_TESTS = [
   {
     id: 'riasec',
     icon: '🧠',
-    name: '🧠 Career Interest Assessment (RIASEC)',
+    name: '🧠 Career Interest Assessment',
     developer: 'Dr. John Holland (1959)',
     summary: 'Finds the careers and work environments that match your interests.',
     pairs: ['Realistic', 'Investigative', 'Artistic', 'Social', 'Enterprising', 'Conventional'],
@@ -14,7 +14,7 @@ export const PSYCHOMETRIC_TESTS = [
   {
     id: 'mit',
     icon: '🌟',
-    name: '🌟 Multiple Talents Assessment (Multiple Intelligences Theory - MIT)',
+    name: '🌟 Multiple Talents Assessment',
     developer: 'Dr. Howard Gardner (1983), Harvard University',
     summary: 'Identifies your strongest multiple abilities and areas of intelligence.',
     pairs: ['Logical–Mathematical', 'Linguistic', 'Musical', 'Interpersonal', 'Intrapersonal'],
@@ -24,7 +24,7 @@ export const PSYCHOMETRIC_TESTS = [
   {
     id: 'mbti',
     icon: '👤',
-    name: '👤 Personality Assessment (MBTI – Myers-Briggs Type Indicator)',
+    name: '👤 Personality Assessment',
     developer: 'Isabel Briggs Myers & Katharine Briggs (1943)',
     summary: 'Helps you understand your personality type, work style, and preferences.',
     pairs: ['Introversion / Extraversion', 'Sensing / Intuition', 'Thinking / Feeling', 'Judging / Perceiving'],
@@ -34,7 +34,7 @@ export const PSYCHOMETRIC_TESTS = [
   {
     id: 'vak',
     icon: '📚',
-    name: '📚 Learning Style Assessment (VAK)',
+    name: '📚 Learning Style Assessment',
     developer: 'VARK model by Neil Fleming (1987)',
     summary: 'Discovers how you learn and retain information most effectively.',
     pairs: ['Visual', 'Auditory', 'Kinesthetic'],
@@ -44,7 +44,7 @@ export const PSYCHOMETRIC_TESTS = [
   {
     id: 'disc',
     icon: '🤝',
-    name: '🤝 Professional Behaviour & Work Style Analysis (DISC)',
+    name: '🤝 Professional Behaviour & Work Style Analysis',
     developer: 'Dr. William Moulton Marston (1928)',
     summary: 'Understands how you communicate, collaborate, and respond in different situations.',
     pairs: ['Dominance', 'Influence', 'Steadiness', 'Conscientiousness'],
@@ -54,7 +54,7 @@ export const PSYCHOMETRIC_TESTS = [
   {
     id: 'big5',
     icon: '💡',
-    name: '💡 Workplace Personality & Success Factors Analysis (Big Five Personality Traits)',
+    name: '💡 Workplace Personality & Success Factors Analysis',
     developer: 'Lewis Goldberg (1981), Costa & McCrae (1985)',
     summary: 'Identifies your core personality traits, behavioural patterns, and strengths.',
     pairs: ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism'],
@@ -64,7 +64,7 @@ export const PSYCHOMETRIC_TESTS = [
   {
     id: 'jung',
     icon: '🎯',
-    name: '🎯 Decision-Making & Thinking Style Assessment (Carl Jung Personality Test)',
+    name: '🎯 Decision-Making & Thinking Style Assessment',
     developer: 'Carl Gustav Jung (1921)',
     summary: 'Explains how you think, process information, and make decisions.',
     pairs: ['Energy: Introvert / Extrovert', 'Perception: Sensing / Intuition', 'Decision: Thinking / Feeling'],

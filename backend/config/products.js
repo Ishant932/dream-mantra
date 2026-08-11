@@ -16,7 +16,7 @@ export const PRODUCTS = {
     price: 699,
     optionalCounselling: true,
     testPath: '/dashboard/test/psychometric',
-    description: 'MBTI, DISC, RIASEC, Big 5, VAK & multiple frameworks for personality & career fit.',
+    description: '7 assessments for personality, work style, learning style, talents & career fit.',
   },
   'dmit-psychometric': {
     slug: 'dmit-psychometric',

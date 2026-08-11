@@ -73,7 +73,7 @@
       alert(err.message || 'Something went wrong. Please try again.');
       if (submitBtn) {
         submitBtn.disabled = false;
-        submitBtn.innerHTML = '<span>BOOK NOW</span><i class="fa-solid fa-arrow-right"></i>';
+        submitBtn.innerHTML = '<span>JOIN NOW</span><i class="fa-solid fa-arrow-right"></i>';
       }
     }
   };

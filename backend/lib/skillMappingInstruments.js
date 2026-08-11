@@ -5,14 +5,17 @@ export const SKILL_MAPPING_INSTRUMENT_IDS = [
 ];
 
 export const SKILL_MAPPING_INSTRUMENT_META = {
-  RIASEC: { testId: 'riasec', label: '🧠 Career Interest Assessment (RIASEC)' },
-  MIT: { testId: 'mit', label: '🌟 Multiple Talents Assessment (Multiple Intelligences Theory - MIT)' },
-  MBTI: { testId: 'mbti', label: '👤 Personality Assessment (MBTI – Myers-Briggs Type Indicator)' },
-  VAK: { testId: 'vak', label: '📚 Learning Style Assessment (VAK)' },
-  DISC: { testId: 'disc', label: '🤝 Professional Behaviour & Work Style Analysis (DISC)' },
-  BIG5: { testId: 'big5', label: '💡 Workplace Personality & Success Factors Analysis (Big Five Personality Traits)' },
-  CARL_JUNG: { testId: 'carl_jung', label: '🎯 Decision-Making & Thinking Style Assessment (Carl Jung Personality Test)' },
+  RIASEC: { testId: 'riasec', label: '🧠 Career Interest Assessment' },
+  MIT: { testId: 'mit', label: '🌟 Multiple Talents Assessment' },
+  MBTI: { testId: 'mbti', label: '👤 Personality Assessment' },
+  VAK: { testId: 'vak', label: '📚 Learning Style Assessment' },
+  DISC: { testId: 'disc', label: '🤝 Professional Behaviour & Work Style Analysis' },
+  BIG5: { testId: 'big5', label: '💡 Workplace Personality & Success Factors Analysis' },
+  CARL_JUNG: { testId: 'carl_jung', label: '🎯 Decision-Making & Thinking Style Assessment' },
 };
+
+export const SKILL_MAPPING_SUITE_LABEL =
+  'Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making assessments';
 
 export function normalizeInstrumentIds(ids = []) {
   const set = new Set();

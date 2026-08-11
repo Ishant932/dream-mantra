@@ -91,13 +91,13 @@ export const assessments = [
     title: 'Skill Mapping',
     titleHi: 'Skill Mapping',
     icon: '📊',
-    subtitle: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
+    subtitle: '7 Frameworks: 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making',
     image: IMAGES.psychometric,
     points: [
-      'MBTI personality profiling',
-      'DISC behavioural assessment',
-      'RIASEC career interest mapping',
-      'Big 5, VAK learning style, MIT, Jung archetypes',
+      'Personality Assessment profiling',
+      'Professional Behaviour & Work Style Analysis',
+      'Career Interest Assessment mapping',
+      'Workplace Personality, Learning Style, Multiple Talents & Decision-Making assessments',
     ],
   },
   {

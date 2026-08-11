@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // WhatsApp link generation (no password included, for security)
       const whatsappMsg = encodeURIComponent(
-        `Hi Esha Ma'am! I just booked a guidance call via the Landing Page.\n\n👤 Name: ${name}\n📧 Email: ${email}\n📱 Phone: ${phone}\n\nPlease confirm my free guidance call slot!`
+        `Hi Esha Ma'am! I just signed up via the Landing Page.\n\n👤 Name: ${name}\n📧 Email: ${email}\n📱 Phone: ${phone}\n\nPlease help me complete my checkout!`
       );
 
       const whatsappBtn = document.getElementById('success-whatsapp-btn');

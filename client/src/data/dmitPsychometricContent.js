@@ -17,7 +17,7 @@ export const COMBO_STEPS = [
   {
     step: '02',
     title: 'Skill Mapping',
-    desc: 'Online assessment (30–45 min) across 7 frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung.',
+    desc: 'Online assessment (30–45 min) across 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making.',
     icon: '📊',
     link: '/counselling?tab=psychometric',
   },
@@ -52,7 +52,7 @@ export const COMBO_COMPARE = [
   {
     aspect: 'Frameworks',
     dmit: 'Fingerprint-based multiple intelligence mapping',
-    psychometric: 'MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
+    psychometric: '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making',
     combo: 'All of the above in one integrated profile',
   },
   {
@@ -76,10 +76,10 @@ export const COMBO_REPORT_INCLUDES = [
   'Brain Mapping inborn potential & brain lobe analysis',
   'Learning style (Visual / Auditory / Kinesthetic)',
   'Multiple intelligence mapping',
-  'MBTI personality type & preferences',
-  'DISC behavioural style profile',
-  'RIASEC career interest codes',
-  'Big Five trait analysis',
+  'Personality type & preferences',
+  'Professional Behaviour style profile',
+  'Career Interest alignment',
+  'Workplace Personality trait analysis',
   'Stream & career recommendations',
   'SWOT analysis from combined data',
   '1-on-1 counsellor interpretation session',

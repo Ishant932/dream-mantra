@@ -14,7 +14,7 @@ export const dreamzPromise = {
 };
 
 export const howDreamzWorks = [
-  { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Brain Mapping fingerprint scanning + Skill Mapping (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)' },
+  { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Brain Mapping fingerprint scanning + Skill Mapping (7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making)' },
   { step: 2, icon: '🔬', title: 'ANALYZE', desc: 'Neuroscience-backed analysis by certified counsellors — Govt of India aligned, NLP trained' },
   { step: 3, icon: '🎯', title: 'GUIDE', desc: 'Personalized roadmap for academics, career & life success — from Class 1 to First Job' },
 ];
@@ -30,7 +30,7 @@ export const whoWeGuide = [
 
 export const featuredAssessments = [
   { title: 'Brain Mapping', desc: 'Fingerprint Analysis, Inborn Potential Mapping', link: '/counselling?tab=dmit', icon: '🔬' },
-  { title: 'Skill Mapping', desc: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', link: '/counselling?tab=psychometric', icon: '📊' },
+  { title: 'Skill Mapping', desc: '7 Frameworks: 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making', link: '/counselling?tab=psychometric', icon: '📊' },
   { title: 'Brain Mapping + Skill Mapping', desc: 'Complete inborn + acquired talent profile', link: '/counselling?tab=combo', icon: '🧬' },
 ];
 

@@ -5,14 +5,18 @@ export const SKILL_MAPPING_INSTRUMENT_IDS = [
 ];
 
 export const SKILL_MAPPING_INSTRUMENT_META = {
-  RIASEC: { testId: 'riasec', short: 'RIASEC', emoji: '🧠', label: '🧠 Career Interest Assessment (RIASEC)' },
-  MIT: { testId: 'mit', short: 'MIT', emoji: '🌟', label: '🌟 Multiple Talents Assessment (Multiple Intelligences Theory - MIT)' },
-  MBTI: { testId: 'mbti', short: 'MBTI', emoji: '👤', label: '👤 Personality Assessment (MBTI – Myers-Briggs Type Indicator)' },
-  VAK: { testId: 'vak', short: 'VAK', emoji: '📚', label: '📚 Learning Style Assessment (VAK)' },
-  DISC: { testId: 'disc', short: 'DISC', emoji: '🤝', label: '🤝 Professional Behaviour & Work Style Analysis (DISC)' },
-  BIG5: { testId: 'big5', short: 'Big Five', emoji: '💡', label: '💡 Workplace Personality & Success Factors Analysis (Big Five Personality Traits)' },
-  CARL_JUNG: { testId: 'carl_jung', short: 'Carl Jung', emoji: '🎯', label: '🎯 Decision-Making & Thinking Style Assessment (Carl Jung Personality Test)' },
+  RIASEC: { testId: 'riasec', short: 'Career Interest', emoji: '🧠', label: '🧠 Career Interest Assessment' },
+  MIT: { testId: 'mit', short: 'Multiple Talents', emoji: '🌟', label: '🌟 Multiple Talents Assessment' },
+  MBTI: { testId: 'mbti', short: 'Personality', emoji: '👤', label: '👤 Personality Assessment' },
+  VAK: { testId: 'vak', short: 'Learning Style', emoji: '📚', label: '📚 Learning Style Assessment' },
+  DISC: { testId: 'disc', short: 'Professional Behaviour', emoji: '🤝', label: '🤝 Professional Behaviour & Work Style Analysis' },
+  BIG5: { testId: 'big5', short: 'Workplace Personality', emoji: '💡', label: '💡 Workplace Personality & Success Factors Analysis' },
+  CARL_JUNG: { testId: 'carl_jung', short: 'Decision-Making', emoji: '🎯', label: '🎯 Decision-Making & Thinking Style Assessment' },
 };
+
+/** Short list for marketing copy */
+export const SKILL_MAPPING_SUITE_LABEL =
+  'Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making assessments';
 
 export function formatInstrumentList(ids = []) {
   return (ids || [])

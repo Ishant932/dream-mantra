@@ -382,7 +382,7 @@ export const siteEn = {
         'Stop guessing. Get science-backed clarity with Brain Mapping, Skill Mapping & certified counsellors — no pressure, no comparison, just clarity.',
       solutionPoints: [
         'Brain Mapping — fingerprint science validated in 30+ countries',
-        'Skill Mapping — 7 frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
+        'Skill Mapping — 7 frameworks: 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making',
         '1000+ career library with education paths, salaries & roadmaps',
         '1-on-1 sessions with Govt & IIT Madras certified counsellors',
         'Jaipur centres (Raja Park, Shastri Nagar, Nirman Nagar) + Pan-India online',
@@ -674,12 +674,12 @@ export const siteEn = {
       {
         slug: 'psychometric',
         title: 'Skill Mapping',
-        subtitle: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
+        subtitle: '7 Frameworks: 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making',
         points: [
-          'MBTI personality profiling',
-          'DISC behavioural assessment',
-          'RIASEC career interest mapping',
-          'Big 5, VAK learning style, MIT, Jung archetypes',
+          'Personality Assessment profiling',
+          'Professional Behaviour & Work Style Analysis',
+          'Career Interest Assessment mapping',
+          'Workplace Personality, Learning Style, Multiple Talents & Decision-Making assessments',
         ],
       },
       {
@@ -710,7 +710,7 @@ export const siteEn = {
 
     products: [
       { slug: 'dmit', title: 'Brain Mapping', description: 'Fingerprint-based inborn talent mapping' },
-      { slug: 'psychometric', title: 'Skill Mapping', description: 'MBTI, DISC, RIASEC & 7 frameworks' },
+      { slug: 'psychometric', title: 'Skill Mapping', description: '7 assessments for personality, interests & career fit' },
       { slug: 'dmit-psychometric', title: 'Brain + Skill Mapping', description: 'Complete nature + nurture profile' },
       { slug: 'crp-test', title: 'AI Career Launchpad Training', description: 'Job readiness for college & freshers' },
       { slug: 'career-readiness', title: 'Personalised Career Readiness Program', description: 'Brain + Skill Mapping, training & placement' },
@@ -1127,13 +1127,13 @@ export const siteEn = {
         ],
       },
       howDreamzWorks: [
-        { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Brain Mapping fingerprint scanning + Skill Mapping (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)' },
+        { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Brain Mapping fingerprint scanning + Skill Mapping (7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making)' },
         { step: 2, icon: '🔬', title: 'ANALYZE', desc: 'Neuroscience-backed analysis by certified counsellors — Govt of India aligned, NLP trained' },
         { step: 3, icon: '🎯', title: 'GUIDE', desc: 'Personalized roadmap for academics, career & life success — from Class 1 to First Job' },
       ],
       featuredAssessments: [
         { title: 'Brain Mapping', desc: 'Fingerprint Analysis, Inborn Potential Mapping', link: '/counselling?tab=dmit', icon: '🔬' },
-        { title: 'Skill Mapping', desc: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', link: '/counselling?tab=psychometric', icon: '📊' },
+        { title: 'Skill Mapping', desc: '7 Frameworks: 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making', link: '/counselling?tab=psychometric', icon: '📊' },
         { title: 'Brain Mapping + Skill Mapping', desc: 'Complete inborn + acquired talent profile', link: '/counselling?tab=combo', icon: '🧬' },
       ],
       whyDifferent: [
@@ -1221,13 +1221,13 @@ export const siteEn = {
     ],
 
     psychometricTests: [
-      { id: 'mbti', icon: '🧠', name: 'MBTI Personality Indicator', developer: 'Isabel Briggs Myers & Katharine Briggs (1943)', summary: 'Categorises personality across four preference pairs to reveal study habits, decision-making style, and career environment fit.', pairs: ['Introversion / Extraversion', 'Sensing / Intuition', 'Thinking / Feeling', 'Judging / Perceiving'], outcome: '16 personality types for clearer self-understanding', color: 'amber' },
-      { id: 'disc', icon: '⚡', name: 'DISC Personality Model', developer: 'Dr. William Moulton Marston (1928)', summary: 'Explains behaviour across four styles — widely used in education, leadership, and communication profiling.', pairs: ['Dominance — assertive, result-driven', 'Influence — expressive, social', 'Steadiness — calm, cooperative', 'Conscientiousness — analytical, precise'], outcome: 'Behavioural style map for teamwork & leadership', color: 'orange' },
-      { id: 'big5', icon: '📊', name: 'Big Five Personality Model', developer: 'Lewis Goldberg (1981), Costa & McCrae (1985)', summary: 'The most scientifically validated personality framework used in modern psychology today.', pairs: ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism'], outcome: 'Trait-based profile for academic & career fit', color: 'green' },
-      { id: 'vak', icon: '👁️', name: 'VAK Learning Style Model', developer: 'VARK model by Neil Fleming (1987)', summary: 'Identifies preferred learning modes to improve retention, focus, and academic performance.', pairs: ['Visual — images & diagrams', 'Auditory — listening & discussion', 'Kinesthetic — activities & movement'], outcome: 'Personalised study strategy recommendations', color: 'gold' },
-      { id: 'mit', icon: '🎯', name: 'Multiple Intelligences (MIT)', developer: 'Dr. Howard Gardner (1983), Harvard University', summary: 'Intelligence is multidimensional — talent exists beyond academic marks alone.', pairs: ['Logical–Mathematical', 'Linguistic', 'Musical', 'Bodily–Kinesthetic', 'Visual–Spatial', 'Interpersonal', 'Intrapersonal', 'Naturalistic', 'Existential'], outcome: 'Talent mapping beyond exam scores', color: 'amber' },
-      { id: 'riasec', icon: '🧭', name: 'RIASEC Career Interest Model', developer: 'Dr. John Holland (1959)', summary: 'Links personality with career interests through six types — one of the most trusted frameworks worldwide.', pairs: ['Realistic — practical, technical', 'Investigative — analytical, scientific', 'Artistic — creative, expressive', 'Social — helping, teaching', 'Enterprising — leadership, business', 'Conventional — organised, structured'], outcome: 'Career interest alignment & shortlisting', color: 'orange' },
-      { id: 'jung', icon: '🔮', name: 'Carl Jung Psychological Types', developer: 'Carl Gustav Jung (1921)', summary: 'Foundation theory for many modern personality assessments — energy, perception, and decision styles.', pairs: ['Energy: Introvert / Extrovert', 'Perception: Sensing / Intuition', 'Decision: Thinking / Feeling'], outcome: 'Deep cognitive & personality insight', color: 'green' },
+      { id: 'mbti', icon: '🧠', name: 'Personality Assessment', developer: 'Isabel Briggs Myers & Katharine Briggs (1943)', summary: 'Categorises personality across four preference pairs to reveal study habits, decision-making style, and career environment fit.', pairs: ['Introversion / Extraversion', 'Sensing / Intuition', 'Thinking / Feeling', 'Judging / Perceiving'], outcome: '16 personality types for clearer self-understanding', color: 'amber' },
+      { id: 'disc', icon: '⚡', name: 'Professional Behaviour & Work Style Analysis', developer: 'Dr. William Moulton Marston (1928)', summary: 'Explains behaviour across four styles — widely used in education, leadership, and communication profiling.', pairs: ['Dominance — assertive, result-driven', 'Influence — expressive, social', 'Steadiness — calm, cooperative', 'Conscientiousness — analytical, precise'], outcome: 'Behavioural style map for teamwork & leadership', color: 'orange' },
+      { id: 'big5', icon: '📊', name: 'Workplace Personality & Success Factors Analysis', developer: 'Lewis Goldberg (1981), Costa & McCrae (1985)', summary: 'The most scientifically validated personality framework used in modern psychology today.', pairs: ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism'], outcome: 'Trait-based profile for academic & career fit', color: 'green' },
+      { id: 'vak', icon: '👁️', name: 'Learning Style Assessment', developer: 'VARK model by Neil Fleming (1987)', summary: 'Identifies preferred learning modes to improve retention, focus, and academic performance.', pairs: ['Visual — images & diagrams', 'Auditory — listening & discussion', 'Kinesthetic — activities & movement'], outcome: 'Personalised study strategy recommendations', color: 'gold' },
+      { id: 'mit', icon: '🎯', name: 'Multiple Talents Assessment', developer: 'Dr. Howard Gardner (1983), Harvard University', summary: 'Intelligence is multidimensional — talent exists beyond academic marks alone.', pairs: ['Logical–Mathematical', 'Linguistic', 'Musical', 'Bodily–Kinesthetic', 'Visual–Spatial', 'Interpersonal', 'Intrapersonal', 'Naturalistic', 'Existential'], outcome: 'Talent mapping beyond exam scores', color: 'amber' },
+      { id: 'riasec', icon: '🧭', name: 'Career Interest Assessment', developer: 'Dr. John Holland (1959)', summary: 'Links personality with career interests through six types — one of the most trusted frameworks worldwide.', pairs: ['Realistic — practical, technical', 'Investigative — analytical, scientific', 'Artistic — creative, expressive', 'Social — helping, teaching', 'Enterprising — leadership, business', 'Conventional — organised, structured'], outcome: 'Career interest alignment & shortlisting', color: 'orange' },
+      { id: 'jung', icon: '🔮', name: 'Decision-Making & Thinking Style Assessment', developer: 'Carl Gustav Jung (1921)', summary: 'Foundation theory for many modern personality assessments — energy, perception, and decision styles.', pairs: ['Energy: Introvert / Extrovert', 'Perception: Sensing / Intuition', 'Decision: Thinking / Feeling'], outcome: 'Deep cognitive & personality insight', color: 'green' },
     ],
     psychoProblems: [
       'Confusion about career direction',
@@ -1262,15 +1262,15 @@ export const siteEn = {
       {
         age: 'Class 6–8',
         tag: 'Self Discovery Stage',
-        frameworks: ['MIT', 'VAK'],
+        frameworks: ['Multiple Talents', 'Learning Style'],
         problem: 'Students study hard but marks don\'t improve — often because how they\'re taught doesn\'t match how their brain naturally learns.',
-        solution: 'MIT & VAK reveal intelligence types and learning style (Visual, Auditory, Kinesthetic) — so study methods, activities, and confidence-building align with who they really are.',
+        solution: 'Multiple Talents & Learning Style assessments reveal intelligence types and learning preferences — so study methods, activities, and confidence-building align with who they really are.',
         program: '/programs/class-6-8',
       },
       {
         age: 'Class 9–12',
         tag: 'Stream & Career Selection',
-        frameworks: ['MIT', 'MBTI', 'VAK', 'RIASEC', 'DISC'],
+        frameworks: ['Multiple Talents', 'Personality', 'Learning Style', 'Career Interest', 'Professional Behaviour'],
         problem: 'Stream choices driven by marks, peer pressure, or trends — not by personality, interests, or behavioural fit.',
         solution: 'Five frameworks map how they learn, think, behave, and what careers naturally attract them — science-backed stream and subject decisions.',
         program: '/programs/class-9-10',
@@ -1278,7 +1278,7 @@ export const siteEn = {
       {
         age: 'College Students',
         tag: 'Degree & Career Clarity',
-        frameworks: ['MIT', 'MBTI', 'RIASEC', 'DISC', 'Big 5'],
+        frameworks: ['Multiple Talents', 'Personality', 'Career Interest', 'Professional Behaviour', 'Workplace Personality'],
         problem: 'Many students realise mid-degree that their field doesn\'t fit — leading to wasted time, low motivation, or costly switches.',
         solution: 'Five deep frameworks confirm degree fit, internship direction, and job readiness — before placement season or a painful pivot.',
         program: '/programs/college-students',
@@ -1286,9 +1286,9 @@ export const siteEn = {
       {
         age: 'Working Professionals',
         tag: 'Career Growth & Switch',
-        frameworks: ['MIT', 'MBTI', 'RIASEC', 'DISC', 'Big 5'],
+        frameworks: ['Multiple Talents', 'Personality', 'Career Interest', 'Professional Behaviour', 'Workplace Personality'],
         problem: 'Stuck in roles that drain energy — a mismatch between natural strengths, personality, and daily work demands.',
-        solution: 'Big 5, MBTI, RIASEC & DISC together reveal ideal roles, leadership style, and whether a career switch makes scientific sense.',
+        solution: 'Workplace Personality, Personality, Career Interest & Professional Behaviour assessments together reveal ideal roles, leadership style, and whether a career switch makes scientific sense.',
         program: '/programs/working-professionals',
       },
     ],
@@ -1301,14 +1301,14 @@ export const siteEn = {
 
     comboSteps: [
       { step: '01', title: 'Brain Mapping', desc: 'Fingerprint scanning maps your inborn potential — learning styles, memory patterns, intelligence types. Validated in 30+ countries.', icon: '🔬', link: '/counselling?tab=dmit' },
-      { step: '02', title: 'Skill Mapping', desc: 'Online assessment (30–45 min) across 7 frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung.', icon: '📊', link: '/counselling?tab=psychometric' },
+      { step: '02', title: 'Skill Mapping', desc: 'Online assessment (30–45 min) across 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making.', icon: '📊', link: '/counselling?tab=psychometric' },
       { step: '03', title: 'Combined Report', desc: 'Single holistic report merging inborn (Brain Mapping) + acquired (Skill Mapping) insights — your complete talent profile.', icon: '📋' },
       { step: '04', title: 'Expert Counselling', desc: 'Certified Dream Mantra counsellor interprets both reports in a dedicated session and builds your personalised career roadmap.', icon: '💬' },
     ],
     comboCompare: [
       { aspect: 'What it maps', dmit: 'Inborn / genetic potential via fingerprints', psychometric: 'Current personality, interests & behaviour', combo: 'Complete nature + nurture picture' },
       { aspect: 'Best for', dmit: 'Early talent discovery (Class 1–8), learning style', psychometric: 'Stream & career decisions (Class 9+)', combo: 'Stream selection, career direction, course correction' },
-      { aspect: 'Frameworks', dmit: 'Fingerprint-based multiple intelligence mapping', psychometric: 'MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', combo: 'All of the above in one integrated profile' },
+      { aspect: 'Frameworks', dmit: 'Fingerprint-based multiple intelligence mapping', psychometric: '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making', combo: 'All of the above in one integrated profile' },
       { aspect: 'Output', dmit: '28-page inborn talent report', psychometric: 'Multi-framework personality report', combo: 'Combined report + counsellor interpretation session' },
     ],
     comboBenefits: [
@@ -1323,10 +1323,10 @@ export const siteEn = {
       'Brain Mapping inborn potential & brain lobe analysis',
       'Learning style (Visual / Auditory / Kinesthetic)',
       'Multiple intelligence mapping',
-      'MBTI personality type & preferences',
-      'DISC behavioural style profile',
-      'RIASEC career interest codes',
-      'Big Five trait analysis',
+      'Personality type & preferences',
+      'Professional Behaviour style profile',
+      'Career Interest alignment',
+      'Workplace Personality trait analysis',
       'Stream & career recommendations',
       'SWOT analysis from combined data',
       '1-on-1 counsellor interpretation session',
@@ -1377,9 +1377,9 @@ export const siteEn = {
       title: 'Acquired Talent (Skill Mapping)',
       subtitle: '7 assessment frameworks',
       description:
-        'Understand personality, interests, and behavioural traits through MBTI, DISC, RIASEC, Big 5, VAK, MIT, and Jung — the gold standard for stream and career decisions after Class 8.',
+        'Understand personality, interests, and behavioural traits through our 7 assessments — the gold standard for stream and career decisions after Class 8.',
       features: [
-        'MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
+        '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making',
         'Personality-career alignment',
         'Best for Class 9–12 & college',
         'AI-assisted interpretation',
@@ -1582,7 +1582,7 @@ export const siteEn = {
         },
         psychometric: {
           title: '📊 Skill Mapping',
-          desc: 'MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung — 7 frameworks in one suite.',
+          desc: '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making — 7 frameworks in one suite.',
           takeAssessment: 'Get Started',
         },
         process: {
@@ -1744,7 +1744,7 @@ export const siteEn = {
         },
         psychometric: {
           title: '📊 Skill Mapping — The Nurture Side',
-          desc: '7 frameworks — MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung — mapping current personality, interests, and behavioural patterns shaped by experience.',
+          desc: '7 frameworks — 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making — mapping current personality, interests, and behavioural patterns shaped by experience.',
         },
       },
       missionVision: {
@@ -1916,7 +1916,7 @@ export const siteEn = {
           {
             title: 'Step 2: Skill Mapping (Acquired Talent)',
             desc: 'Psychometric tests measure personality traits, soft skills, and technical skills matched to career paths and industry demand.',
-            bullets: ['MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung', 'Leadership, communication, and problem-solving insight'],
+            bullets: ['7 integrated assessments', 'Leadership, communication, and problem-solving insight'],
           },
           {
             title: 'Step 3: Combined Mapping',

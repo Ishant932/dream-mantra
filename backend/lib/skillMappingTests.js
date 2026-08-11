@@ -7,8 +7,8 @@ import { formatInstrumentList } from './skillMappingInstruments.js';
 export const SKILL_MAPPING_TESTS = [
   {
     id: 'vak',
-    title: '📚 Learning Style Assessment (VAK)',
-    shortTitle: 'VAK',
+    title: '📚 Learning Style Assessment',
+    shortTitle: 'Learning Style',
     desc: 'Learning style assessment — Visual, Auditory, or Kinesthetic preferences.',
     duration: '5 mins',
     bands: ['class-6-8', 'class-9-12'],
@@ -18,8 +18,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'mit',
-    title: '🌟 Multiple Talents Assessment (Multiple Intelligences Theory - MIT)',
-    shortTitle: 'MIT',
+    title: '🌟 Multiple Talents Assessment',
+    shortTitle: 'Multiple Talents',
     desc: 'Multiple Intelligence Assessment — logical, linguistic, creative, social & practical strengths.',
     duration: '30 mins',
     bands: ['class-6-8', 'class-9-12', 'professionals'],
@@ -29,8 +29,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'disc',
-    title: '🤝 Professional Behaviour & Work Style Analysis (DISC)',
-    shortTitle: 'DISC',
+    title: '🤝 Professional Behaviour & Work Style Analysis',
+    shortTitle: 'Professional Behaviour',
     desc: 'Behavioural style assessment — Dominance, Influence, Steadiness & Conscientiousness.',
     duration: '10 mins',
     bands: ['class-9-12', 'professionals'],
@@ -40,8 +40,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'riasec',
-    title: '🧠 Career Interest Assessment (RIASEC)',
-    shortTitle: 'RIASEC',
+    title: '🧠 Career Interest Assessment',
+    shortTitle: 'Career Interest',
     desc: 'Career interest mapping — Realistic, Investigative, Artistic, Social, Enterprising & Conventional.',
     duration: '10 mins',
     bands: ['class-9-12', 'professionals'],
@@ -51,8 +51,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'mbti',
-    title: '👤 Personality Assessment (MBTI – Myers-Briggs Type Indicator)',
-    shortTitle: 'MBTI',
+    title: '👤 Personality Assessment',
+    shortTitle: 'Personality',
     desc: 'Personality type indicator — how you learn, decide, and work best across 16 types.',
     duration: '15 mins',
     bands: ['class-9-12', 'professionals'],
@@ -62,8 +62,8 @@ export const SKILL_MAPPING_TESTS = [
   },
   {
     id: 'big5',
-    title: '💡 Workplace Personality & Success Factors Analysis (Big Five Personality Traits)',
-    shortTitle: 'Big 5',
+    title: '💡 Workplace Personality & Success Factors Analysis',
+    shortTitle: 'Workplace Personality',
     desc: 'Five-factor personality profile — openness, conscientiousness, extraversion, agreeableness & neuroticism.',
     duration: '15 mins',
     bands: ['professionals'],

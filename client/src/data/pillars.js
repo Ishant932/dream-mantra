@@ -23,9 +23,9 @@ export const pillars = [
     icon: '📊',
     color: 'from-orange-600 to-red-500',
     description:
-      'Understand personality, interests, and behavioural traits through MBTI, DISC, RIASEC, Big 5, VAK, MIT, and Jung — the gold standard for stream and career decisions after Class 8.',
+      'Understand personality, interests, and behavioural traits through our 7 assessments — the gold standard for stream and career decisions after Class 8.',
     features: [
-      'MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
+      '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making',
       'Personality-career alignment',
       'Best for Class 9–12 & college',
       'AI-assisted interpretation',

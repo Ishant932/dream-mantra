@@ -660,12 +660,12 @@ export const siteHi = {
       {
         slug: 'psychometric',
         title: 'Skill Mapping',
-        subtitle: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
+        subtitle: '7 Frameworks: 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making',
         points: [
-          'MBTI personality profiling',
-          'DISC behavioural assessment',
-          'RIASEC career interest mapping',
-          'Big 5, VAK learning style, MIT, Jung archetypes',
+          'Personality Assessment profiling',
+          'Professional Behaviour & Work Style Analysis',
+          'Career Interest Assessment mapping',
+          'Workplace Personality, Learning Style, Multiple Talents & Decision-Making assessments',
         ],
       },
       {
@@ -696,7 +696,7 @@ export const siteHi = {
 
     products: [
       { slug: 'dmit', title: 'Brain Mapping', description: 'Fingerprint-based inborn talent mapping' },
-      { slug: 'psychometric', title: 'Skill Mapping', description: 'MBTI, DISC, RIASEC और 7 frameworks' },
+      { slug: 'psychometric', title: 'Skill Mapping', description: '7 assessments for personality, interests & career fit' },
       { slug: 'crp-test', title: 'AI Career Launchpad Training', description: 'College और freshers के लिए job readiness' },
     ],
 
@@ -1048,13 +1048,13 @@ export const siteHi = {
         ],
       },
       howDreamzWorks: [
-        { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Brain Mapping fingerprint scanning + Skill Mapping (MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung)' },
+        { step: 1, icon: '📊', title: 'ASSESS', desc: 'Scientific Brain Mapping fingerprint scanning + Skill Mapping (7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making)' },
         { step: 2, icon: '🔬', title: 'ANALYZE', desc: 'Certified counsellors द्वारा neuroscience-backed analysis — Govt of India aligned, NLP trained' },
         { step: 3, icon: '🎯', title: 'GUIDE', desc: 'Academics, career और life success के लिए personalised roadmap — Class 1 से First Job तक' },
       ],
       featuredAssessments: [
         { title: 'Brain Mapping', desc: 'Fingerprint Analysis, Inborn Potential Mapping', link: '/counselling?tab=dmit', icon: '🔬' },
-        { title: 'Skill Mapping', desc: '7 Frameworks: MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', link: '/counselling?tab=psychometric', icon: '📊' },
+        { title: 'Skill Mapping', desc: '7 Frameworks: 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making', link: '/counselling?tab=psychometric', icon: '📊' },
         { title: 'Brain Mapping + Skill Mapping', desc: 'Complete inborn + acquired talent profile', link: '/counselling?tab=combo', icon: '🧬' },
       ],
       whyDifferent: [
@@ -1142,13 +1142,13 @@ export const siteHi = {
 
 
     psychometricTests: [
-      { id: 'mbti', icon: '🧠', name: 'MBTI Personality Indicator', developer: 'Isabel Briggs Myers & Katharine Briggs (1943)', summary: 'Personality को चार preference pairs में categorise करके study habits, decision-making style और career environment fit reveal करता है।', pairs: ['Introversion / Extraversion', 'Sensing / Intuition', 'Thinking / Feeling', 'Judging / Perceiving'], outcome: '16 personality types — clearer self-understanding', color: 'amber' },
-      { id: 'disc', icon: '⚡', name: 'DISC Personality Model', developer: 'Dr. William Moulton Marston (1928)', summary: 'Behaviour को चार styles में explain करता है — education, leadership और communication profiling में widely used।', pairs: ['Dominance — assertive, result-driven', 'Influence — expressive, social', 'Steadiness — calm, cooperative', 'Conscientiousness — analytical, precise'], outcome: 'Teamwork और leadership के लिए behavioural style map', color: 'orange' },
-      { id: 'big5', icon: '📊', name: 'Big Five Personality Model', developer: 'Lewis Goldberg (1981), Costa & McCrae (1985)', summary: 'Modern psychology में सबसे scientifically validated personality framework।', pairs: ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism'], outcome: 'Academic और career fit के लिए trait-based profile', color: 'green' },
-      { id: 'vak', icon: '👁️', name: 'VAK Learning Style Model', developer: 'VARK model by Neil Fleming (1987)', summary: 'Preferred learning modes identify करके retention, focus और academic performance improve करता है।', pairs: ['Visual — images & diagrams', 'Auditory — listening & discussion', 'Kinesthetic — activities & movement'], outcome: 'Personalised study strategy recommendations', color: 'gold' },
-      { id: 'mit', icon: '🎯', name: 'Multiple Intelligences (MIT)', developer: 'Dr. Howard Gardner (1983), Harvard University', summary: 'Intelligence multidimensional है — talent academic marks से परे भी exist करता है।', pairs: ['Logical–Mathematical', 'Linguistic', 'Musical', 'Bodily–Kinesthetic', 'Visual–Spatial', 'Interpersonal', 'Intrapersonal', 'Naturalistic', 'Existential'], outcome: 'Exam scores से परे talent mapping', color: 'amber' },
-      { id: 'riasec', icon: '🧭', name: 'RIASEC Career Interest Model', developer: 'Dr. John Holland (1959)', summary: 'Personality को career interests से link करता है — worldwide सबसे trusted frameworks में से एक।', pairs: ['Realistic — practical, technical', 'Investigative — analytical, scientific', 'Artistic — creative, expressive', 'Social — helping, teaching', 'Enterprising — leadership, business', 'Conventional — organised, structured'], outcome: 'Career interest alignment और shortlisting', color: 'orange' },
-      { id: 'jung', icon: '🔮', name: 'Carl Jung Psychological Types', developer: 'Carl Gustav Jung (1921)', summary: 'Modern personality assessments की foundation theory — energy, perception और decision styles।', pairs: ['Energy: Introvert / Extrovert', 'Perception: Sensing / Intuition', 'Decision: Thinking / Feeling'], outcome: 'Deep cognitive और personality insight', color: 'green' },
+      { id: 'mbti', icon: '🧠', name: 'Personality Assessment', developer: 'Isabel Briggs Myers & Katharine Briggs (1943)', summary: 'Personality को चार preference pairs में categorise करके study habits, decision-making style और career environment fit reveal करता है।', pairs: ['Introversion / Extraversion', 'Sensing / Intuition', 'Thinking / Feeling', 'Judging / Perceiving'], outcome: '16 personality types — clearer self-understanding', color: 'amber' },
+      { id: 'disc', icon: '⚡', name: 'Professional Behaviour & Work Style Analysis', developer: 'Dr. William Moulton Marston (1928)', summary: 'Behaviour को चार styles में explain करता है — education, leadership और communication profiling में widely used।', pairs: ['Dominance — assertive, result-driven', 'Influence — expressive, social', 'Steadiness — calm, cooperative', 'Conscientiousness — analytical, precise'], outcome: 'Teamwork और leadership के लिए behavioural style map', color: 'orange' },
+      { id: 'big5', icon: '📊', name: 'Workplace Personality & Success Factors Analysis', developer: 'Lewis Goldberg (1981), Costa & McCrae (1985)', summary: 'Modern psychology में सबसे scientifically validated personality framework।', pairs: ['Openness', 'Conscientiousness', 'Extraversion', 'Agreeableness', 'Neuroticism'], outcome: 'Academic और career fit के लिए trait-based profile', color: 'green' },
+      { id: 'vak', icon: '👁️', name: 'Learning Style Assessment', developer: 'VARK model by Neil Fleming (1987)', summary: 'Preferred learning modes identify करके retention, focus और academic performance improve करता है।', pairs: ['Visual — images & diagrams', 'Auditory — listening & discussion', 'Kinesthetic — activities & movement'], outcome: 'Personalised study strategy recommendations', color: 'gold' },
+      { id: 'mit', icon: '🎯', name: 'Multiple Talents Assessment', developer: 'Dr. Howard Gardner (1983), Harvard University', summary: 'Intelligence multidimensional है — talent academic marks से परे भी exist करता है।', pairs: ['Logical–Mathematical', 'Linguistic', 'Musical', 'Bodily–Kinesthetic', 'Visual–Spatial', 'Interpersonal', 'Intrapersonal', 'Naturalistic', 'Existential'], outcome: 'Exam scores से परे talent mapping', color: 'amber' },
+      { id: 'riasec', icon: '🧭', name: 'Career Interest Assessment', developer: 'Dr. John Holland (1959)', summary: 'Personality को career interests से link करता है — worldwide सबसे trusted frameworks में से एक।', pairs: ['Realistic — practical, technical', 'Investigative — analytical, scientific', 'Artistic — creative, expressive', 'Social — helping, teaching', 'Enterprising — leadership, business', 'Conventional — organised, structured'], outcome: 'Career interest alignment और shortlisting', color: 'orange' },
+      { id: 'jung', icon: '🔮', name: 'Decision-Making & Thinking Style Assessment', developer: 'Carl Gustav Jung (1921)', summary: 'Modern personality assessments की foundation theory — energy, perception और decision styles।', pairs: ['Energy: Introvert / Extrovert', 'Perception: Sensing / Intuition', 'Decision: Thinking / Feeling'], outcome: 'Deep cognitive और personality insight', color: 'green' },
     ],
     psychoProblems: [
       'Career direction में confusion',
@@ -1220,14 +1220,14 @@ export const siteHi = {
 
     comboSteps: [
       { step: '01', title: 'Brain Mapping', desc: 'Fingerprint scanning inborn potential map करती है — learning styles, memory patterns, intelligence types. 30+ countries में validated.', icon: '🔬', link: '/counselling?tab=dmit' },
-      { step: '02', title: 'Skill Mapping', desc: '7 frameworks में online assessment (30–45 min): MBTI, DISC, RIASEC, Big 5, VAK, MIT & Jung.', icon: '📊', link: '/counselling?tab=psychometric' },
+      { step: '02', title: 'Skill Mapping', desc: '7 frameworks में online assessment (30–45 min): 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making.', icon: '📊', link: '/counselling?tab=psychometric' },
       { step: '03', title: 'Combined Report', desc: 'Inborn (Brain Mapping) + acquired (Skill Mapping) insights merge — complete talent profile.', icon: '📋' },
       { step: '04', title: 'Expert Counselling', desc: 'Certified Dream Mantra counsellor दोनों reports interpret करके personalised career roadmap बनाता है।', icon: '💬', link: '/contact#guidance' },
     ],
     comboCompare: [
       { aspect: 'क्या map करता है', dmit: 'Fingerprints से inborn / genetic potential', psychometric: 'Current personality, interests और behaviour', combo: 'Complete nature + nurture picture' },
       { aspect: 'Best for', dmit: 'Early talent discovery (Class 1–8), learning style', psychometric: 'Stream और career decisions (Class 9+)', combo: 'Stream selection, career direction, course correction' },
-      { aspect: 'Frameworks', dmit: 'Fingerprint-based multiple intelligence mapping', psychometric: 'MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung', combo: 'All of the above एक integrated profile में' },
+      { aspect: 'Frameworks', dmit: 'Fingerprint-based multiple intelligence mapping', psychometric: '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making', combo: 'All of the above एक integrated profile में' },
       { aspect: 'Output', dmit: '28-page inborn talent report', psychometric: 'Multi-framework personality report', combo: 'Combined report + counsellor interpretation session' },
     ],
     comboBenefits: [
@@ -1294,9 +1294,9 @@ export const siteHi = {
       title: 'Acquired Talent (Skill Mapping)',
       subtitle: '7 assessment frameworks',
       description:
-        'MBTI, DISC, RIASEC, Big 5, VAK, MIT और Jung के माध्यम से personality, interests और behavioural traits समझें — Class 8 के बाद stream और career decisions के लिए gold standard।',
+        '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making के माध्यम से personality, interests और behavioural traits समझें — Class 8 के बाद stream और career decisions के लिए gold standard।',
       features: [
-        'MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung',
+        '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making',
         'Personality-career alignment',
         'Class 9–12 और college के लिए best',
         'AI-assisted interpretation',
@@ -1499,7 +1499,7 @@ export const siteHi = {
         },
         psychometric: {
           title: '📊 Skill Mapping',
-          desc: 'MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung — 7 frameworks एक suite में।',
+          desc: '7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making — 7 frameworks एक suite में।',
           takeAssessment: 'Test लें',
         },
         process: {
@@ -1660,7 +1660,7 @@ export const siteHi = {
         },
         psychometric: {
           title: '📊 Skill Mapping — Nurture Side',
-          desc: '7 frameworks — MBTI, DISC, RIASEC, Big 5, VAK, MIT, Jung — current personality, interests और experience से shaped behavioural patterns map करते हैं।',
+          desc: '7 frameworks — 7 assessments: Career Interest, Multiple Talents, Personality, Learning Style, Professional Behaviour, Workplace Personality & Decision-Making — current personality, interests और experience से shaped behavioural patterns map करते हैं।',
         },
       },
       missionVision: {
