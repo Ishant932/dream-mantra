@@ -23,7 +23,14 @@ export function isPaidModuleActionComplete(assessment) {
   if (slug === 'dmit-psychometric') {
     return !!p.fingerprintDone && (p.step === FLOW_STEPS.COMPLETE || !!p.completedAt);
   }
-  if (slug === 'psychometric') return p.step === FLOW_STEPS.COMPLETE || !!p.completedAt;
+  if (slug === 'psychometric') {
+    const tests = p.skillTestProgress;
+    if (tests && typeof tests === 'object') {
+      const vals = Object.values(tests);
+      if (vals.length && vals.every((t) => t?.status === 'completed')) return true;
+    }
+    return p.step === FLOW_STEPS.COMPLETE || !!p.completedAt || !!p.testsDone;
+  }
   if (slug === 'crp-test') return !!p.communityJoined;
   return p.step === FLOW_STEPS.COMPLETE || !!p.completedAt;
 }

@@ -116,6 +116,7 @@ export function resolveAssessmentSlug(assessment) {
   if (t.includes('mind') && t.includes('skill')) return 'dmit-psychometric';
   if (t.includes('brain mapping') || t.includes('dmit')) return 'dmit';
   if (t.includes('skill mapping') || t.includes('psychometric')) return 'psychometric';
+  if (t.includes('career readiness') || t.includes('readiness program')) return 'career-readiness';
   if (t.includes('launchpad') || t.includes('crp') || t.includes('ai career')) return 'crp-test';
   if (t.includes('counselling') && t.includes('additional')) return 'counselling-topup';
   return null;
@@ -125,7 +126,7 @@ export function requiresSkillMappingBand(slugOrAssessment) {
   const slug = typeof slugOrAssessment === 'string'
     ? slugOrAssessment
     : resolveAssessmentSlug(slugOrAssessment);
-  return slug === 'psychometric' || slug === 'dmit-psychometric' || slug === 'career-readiness';
+  return slug === 'psychometric' || slug === 'dmit-psychometric';
 }
 
 export function normalizeSkillMappingBand(band) {

@@ -177,7 +177,10 @@ export default function PaymentPage() {
   const payment = order?.payment;
 
   useEffect(() => {
-    if (order && !order.gatewayEnabled) setAdminPanelOpen(true);
+    if (order && !order.gatewayEnabled) {
+      setAdminPanelOpen(true);
+      setPaymentMethod('admin');
+    }
   }, [order?.gatewayEnabled]);
   const isConfirmed = payment?.payment_status === 'confirmed';
   const isSubmitted = !!payment?.submitted_at;
@@ -509,6 +512,11 @@ export default function PaymentPage() {
                 Payment Ref: {payment.payment_reference_id}
               </p>
             )}
+            {payment?.user_note && (
+              <p className="text-sm text-left rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 mb-4">
+                <span className="font-bold">Admin note: </span>{payment.user_note}
+              </p>
+            )}
             <div className="flex items-center justify-center gap-2 text-sm text-amber-700 mb-6">
               <RefreshCw className="w-4 h-4 animate-spin" />
               Checking status automatically…
@@ -672,10 +680,16 @@ export default function PaymentPage() {
 
               <section className="payment-page__card">
                 <h3 className="payment-page__section-title">Payment</h3>
+                {payment?.user_note && (
+                  <div className="payment-page__admin-message">
+                    <p className="font-bold text-sm mb-1">Message from admin</p>
+                    <p className="text-sm">{payment.user_note}</p>
+                  </div>
+                )}
                 <button
                   type="button"
-                  onClick={() => { setPaymentMethod('razorpay'); setError(''); }}
-                  className={`payment-page__method payment-page__method--razorpay${paymentMethod === 'razorpay' ? ' payment-page__method--active' : ''}`}
+                  onClick={() => { setPaymentMethod('razorpay'); setAdminPanelOpen(false); setError(''); }}
+                  className={`payment-page__method payment-page__method--razorpay${paymentMethod === 'razorpay' && !adminPanelOpen ? ' payment-page__method--active' : ''}`}
                 >
                   <CreditCard className="w-5 h-5 shrink-0" />
                   <div className="text-left min-w-0 flex-1">
@@ -686,7 +700,7 @@ export default function PaymentPage() {
                   </div>
                 </button>
 
-                {paymentMethod === 'razorpay' && (
+                {paymentMethod === 'razorpay' && !adminPanelOpen && (
                   <p className="payment-page__razorpay-hint">
                     <Shield className="w-4 h-4 shrink-0 text-brand-500" />
                     Secured by Razorpay — access unlocks after successful payment.
@@ -695,12 +709,14 @@ export default function PaymentPage() {
 
                 <button
                   type="button"
-                  className={`payment-page__admin-toggle${adminPanelOpen ? ' is-open' : ''}`}
-                  onClick={() => setAdminPanelOpen((v) => !v)}
+                  className={`payment-page__method payment-page__method--admin${adminPanelOpen ? ' payment-page__method--active' : ''}`}
+                  onClick={() => { setAdminPanelOpen(true); setPaymentMethod('admin'); setError(''); }}
                 >
                   <UserCheck className="w-5 h-5 shrink-0" />
-                  <span className="font-bold text-sm">ADMIN APPROVAL</span>
-                  <span className="text-xs opacity-70">Manual verification if you paid offline</span>
+                  <div className="text-left min-w-0 flex-1">
+                    <p className="font-bold text-sm">Pay with Admin Approval</p>
+                    <p className="text-xs text-sand-500 mt-0.5">UPI / offline — upload proof for verification</p>
+                  </div>
                 </button>
 
                 {adminPanelOpen && (
@@ -762,12 +778,13 @@ export default function PaymentPage() {
                       ? 'Admin verifies within 24 hours after you submit proof'
                       : paymentMethod === 'razorpay'
                         ? 'Instant unlock after successful Razorpay payment'
-                        : 'Choose Razorpay or open Admin Approval below'}
+                        : 'Choose Razorpay or Pay with Admin Approval'}
                   </li>
                 </ul>
 
                 {error && <p className="payment-page__error">{error}</p>}
 
+                {!adminPanelOpen && (
                 <button
                   type="button"
                   onClick={handleGatewayPay}
@@ -776,6 +793,7 @@ export default function PaymentPage() {
                 >
                   {paying ? 'Processing…' : `Pay with Razorpay · ${formatPrice(finalPrice)}`}
                 </button>
+                )}
 
                 <div className="payment-page__footer-actions">
                   <button

@@ -11,7 +11,7 @@ export const SKILL_MAPPING_INSTRUMENT_META = {
   VAK: { testId: 'vak', label: '📚 Learning Style Assessment' },
   DISC: { testId: 'disc', label: '🤝 Professional Behaviour & Work Style Analysis' },
   BIG5: { testId: 'big5', label: '💡 Workplace Personality & Success Factors Analysis' },
-  CARL_JUNG: { testId: 'carl_jung', label: '🎯 Decision-Making & Thinking Style Assessment' },
+  CARL_JUNG: { testId: 'career-understanding', label: '🎯 Decision-Making & Thinking Style Assessment' },
 };
 
 export const SKILL_MAPPING_SUITE_LABEL =

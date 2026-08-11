@@ -16,6 +16,13 @@ const STATUS_OPTIONS = [
   { value: 'refunded', label: 'Refunded' },
 ];
 
+const STATUS_CHANGE_OPTIONS = [
+  { value: 'pending', label: 'Pending' },
+  { value: 'confirmed', label: 'Confirmed' },
+  { value: 'failed', label: 'Failed' },
+  { value: 'refunded', label: 'Refunded' },
+];
+
 function StatusBadge({ status }) {
   const map = {
     confirmed: { cls: 'bg-emerald-100 text-emerald-800', icon: CheckCircle2, label: 'Confirmed' },
@@ -57,7 +64,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
   const [order, setOrder] = useState('desc');
   const [page, setPage] = useState(1);
   const [actionId, setActionId] = useState(null);
-  const [adminNotes, setAdminNotes] = useState({});
+  const [userComments, setUserComments] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [editForm, setEditForm] = useState({ amount: '', adminNote: '', userNote: '' });
   const [reassignId, setReassignId] = useState(null);
@@ -97,8 +104,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
     try {
       await adminApi.updatePayment(token, paymentId, {
         status,
-        adminNote: adminNotes[paymentId] || '',
-        userNote: userNote || undefined,
+        userNote: userNote || userComments[paymentId] || undefined,
       });
       onNotice?.(`Payment marked as ${status}`);
       setFailModal(null);
@@ -113,7 +119,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
 
   const openFailModal = (payment) => {
     setFailModal(payment);
-    setFailNote('');
+    setFailNote(userComments[payment.id] || '');
   };
 
   const confirmFail = () => {
@@ -140,8 +146,8 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
     setEditingId(p.id);
     setEditForm({
       amount: String(p.amount ?? ''),
-      adminNote: p.admin_note || adminNotes[p.id] || '',
-      userNote: p.user_note || '',
+      adminNote: '',
+      userNote: p.user_note || userComments[p.id] || '',
     });
   };
 
@@ -150,12 +156,20 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
     setEditForm({ amount: '', adminNote: '', userNote: '' });
   };
 
+  const changeStatus = (payment, nextStatus) => {
+    if (!nextStatus || nextStatus === payment.payment_status) return;
+    if (nextStatus === 'failed') {
+      openFailModal(payment);
+      return;
+    }
+    handleStatus(payment.id, nextStatus, userComments[payment.id] || '');
+  };
+
   const saveEdit = async (paymentId) => {
     setActionId(paymentId);
     try {
       await adminApi.updatePayment(token, paymentId, {
         amount: editForm.amount ? Number(editForm.amount) : undefined,
-        adminNote: editForm.adminNote,
         userNote: editForm.userNote,
       });
       onNotice?.('Payment details updated');
@@ -263,12 +277,29 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                   ) : null}
                 </div>
               )}
-              <div className="flex flex-wrap gap-2">
+              <textarea
+                placeholder="Add a comment for the user…"
+                value={userComments[p.id] ?? p.user_note ?? ''}
+                onChange={(e) => setUserComments((prev) => ({ ...prev, [p.id]: e.target.value }))}
+                rows={2}
+                className="input-field !py-1.5 !text-xs w-full resize-none"
+              />
+              <div className="flex flex-wrap gap-2 items-center">
+                <select
+                  className="input-field !py-1.5 !text-xs w-auto"
+                  value={p.payment_status}
+                  disabled={actionId === p.id}
+                  onChange={(e) => changeStatus(p, e.target.value)}
+                >
+                  {STATUS_CHANGE_OPTIONS.map((o) => (
+                    <option key={o.value} value={o.value}>{o.label}</option>
+                  ))}
+                </select>
                 {p.payment_status !== 'confirmed' && (
                   <button type="button" disabled={actionId === p.id} onClick={() => handleStatus(p.id, 'confirmed')} className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white">Confirm</button>
                 )}
                 {p.payment_status === 'pending' && (
-                  <button type="button" disabled={actionId === p.id} onClick={() => openFailModal(p)} className="text-xs font-bold px-2 py-1.5 rounded-lg bg-red-100 text-red-700">Mark Failed</button>
+                  <button type="button" disabled={actionId === p.id} onClick={() => openFailModal(p)} className="text-xs font-bold px-2 py-1.5 rounded-lg bg-red-100 text-red-700">Reject</button>
                 )}
               </div>
             </div>
@@ -363,14 +394,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                     {editingId === p.id ? (
                       <div className="space-y-2 text-left">
                         <textarea
-                          placeholder="Internal admin note…"
-                          value={editForm.adminNote}
-                          onChange={(e) => setEditForm({ ...editForm, adminNote: e.target.value })}
-                          rows={2}
-                          className="input-field !py-1.5 !text-xs w-full resize-none"
-                        />
-                        <textarea
-                          placeholder="Note visible to user (optional)…"
+                          placeholder="Comment for the user…"
                           value={editForm.userNote}
                           onChange={(e) => setEditForm({ ...editForm, userNote: e.target.value })}
                           rows={2}
@@ -397,13 +421,24 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                     ) : (
                       <>
                     <textarea
-                      placeholder="Internal admin note…"
-                      value={adminNotes[p.id] ?? p.admin_note ?? ''}
-                      onChange={(e) => setAdminNotes((prev) => ({ ...prev, [p.id]: e.target.value }))}
+                      placeholder="Add a comment for the user (sent if you reject)…"
+                      value={userComments[p.id] ?? p.user_note ?? ''}
+                      onChange={(e) => setUserComments((prev) => ({ ...prev, [p.id]: e.target.value }))}
                       rows={2}
                       className="input-field !py-1.5 !text-xs mb-2 w-full resize-none"
                     />
-                    <div className="flex flex-wrap gap-1 justify-end">
+                    <div className="flex flex-wrap gap-1 justify-end items-center">
+                      <select
+                        className="input-field !py-1.5 !text-xs w-auto"
+                        value={p.payment_status}
+                        disabled={actionId === p.id}
+                        onChange={(e) => changeStatus(p, e.target.value)}
+                        title="Change payment status"
+                      >
+                        {STATUS_CHANGE_OPTIONS.map((o) => (
+                          <option key={o.value} value={o.value}>{o.label}</option>
+                        ))}
+                      </select>
                       <button
                         type="button"
                         onClick={() => startEdit(p)}
@@ -428,19 +463,10 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                           onClick={() => openFailModal(p)}
                           className="text-xs font-bold px-2 py-1 rounded-lg bg-red-100 text-red-700"
                         >
-                          Mark Failed
+                          Reject
                         </button>
                       )}
                       {p.payment_status === 'confirmed' && (
-                        <>
-                        <button
-                          type="button"
-                          disabled={actionId === p.id}
-                          onClick={() => handleStatus(p.id, 'refunded')}
-                          className="text-xs font-bold px-2 py-1 rounded-lg bg-sand-200 text-sand-700"
-                        >
-                          Mark Refunded
-                        </button>
                         <button
                           type="button"
                           onClick={() => { setReassignId(p.id); setReassignUserId(String(p.user_id || '')); }}
@@ -448,7 +474,6 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                         >
                           <Pencil className="w-3 h-3" /> Edit user
                         </button>
-                        </>
                       )}
                       {reassignId === p.id && (
                         <div className="mt-2 space-y-2 text-left">
@@ -494,8 +519,8 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
       {failModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60" onClick={() => setFailModal(null)}>
           <div className="bg-[var(--bg-elevated)] rounded-xl p-5 max-w-md w-full shadow-xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="font-bold text-lg mb-2">Mark payment as failed</h3>
-            <p className="text-sm opacity-70 mb-3">This message will be sent to <strong>{failModal.user_name}</strong>.</p>
+            <h3 className="font-bold text-lg mb-2">Reject payment</h3>
+            <p className="text-sm opacity-70 mb-3">This comment will be sent to <strong>{failModal.user_name}</strong> and shown on their checkout page.</p>
             <textarea
               className="input-field w-full text-sm resize-none"
               rows={4}

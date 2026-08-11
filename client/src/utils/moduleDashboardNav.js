@@ -39,10 +39,25 @@ export function getModuleDashboardRoute(assessment, action = 'default') {
   return { tab: 'assess', hubView: 'active' };
 }
 
+export function moduleActionLabel(assessment, action) {
+  const slug = resolveAssessmentSlug(assessment);
+  if (action === 'test') {
+    if (slug === 'crp-test') return 'Community';
+    if (slug === 'career-readiness') return 'Schedule Session';
+    return 'Take test';
+  }
+  if (action === 'book') {
+    if (slug === 'career-readiness') return 'Schedule Session';
+    return 'Book session';
+  }
+  return 'Open';
+}
+
 export function moduleActionFlags(assessment) {
   const slug = resolveAssessmentSlug(assessment);
+  const isReadiness = slug === 'career-readiness';
   return {
-    showTest: !!(slug && moduleHasTakeTest(slug)),
+    showTest: !!(slug && moduleHasTakeTest(slug) && !isReadiness),
     showProcess: slug !== 'counselling-topup',
     showBook: assessmentGrantsSlotBooking(assessment),
   };

@@ -36,7 +36,14 @@ function stepDone(id, ctx) {
   if (id === 'team_connect') return paid;
   if (id === 'profile') return profileComplete || !!progress.profileComplete;
   if (id === 'fingerprints') return !!progress.fingerprintDone;
-  if (id === 'take_test') return progress.step === 'complete' || !!progress.completedAt || !!progress.testsDone;
+  if (id === 'take_test') {
+    const tests = progress.skillTestProgress;
+    if (tests && typeof tests === 'object') {
+      const vals = Object.values(tests);
+      if (vals.length && vals.every((t) => t?.status === 'completed')) return true;
+    }
+    return progress.step === 'complete' || !!progress.completedAt || !!progress.testsDone;
+  }
   if (id === 'book_counselling') return hasBooking;
   if (id === 'counselling_done') return counsellingDone;
   if (id === 'reports') return hasReport;

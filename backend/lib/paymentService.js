@@ -412,6 +412,7 @@ export function updatePaymentStatus(paymentId, status, { adminId, adminNote, use
   if (status === 'refunded') {
     pay.status = 'refunded';
     pay.refunded_at = now;
+    if (userNote) pay.user_note = userNote;
     if (adminNote) pay.admin_note = adminNote;
     if (adminId) pay.confirmed_by_admin_id = adminId;
     if (assessment) {
@@ -419,6 +420,17 @@ export function updatePaymentStatus(paymentId, status, { adminId, adminNote, use
       assessment.test_link = null;
       assessment.paid_at = null;
     }
+    saveData();
+    if (assessment?.user_id && userNote) {
+      notifyUser(assessment.user_id, {
+        type: 'payment',
+        title: 'Payment refunded',
+        body: userNote,
+        link: `/payment/${assessment.id}`,
+        meta: { assessmentId: assessment.id, paymentId: pay.id },
+      });
+    }
+    return { payment: enrichPaymentRow(pay), assessment };
   }
 
   saveData();

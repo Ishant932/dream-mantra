@@ -4,7 +4,7 @@ import {
   ChevronLeft, ChevronRight, Calendar, Clock, MapPin, Video, Plus, Trash2,
   Sparkles, Link2, Save, Pencil,
 } from 'lucide-react';
-import { istDateKeyFromIso, slotToForm } from '../utils/slotForm';
+import { istDateKeyFromIso, istTodayKey, isSlotBeforeToday, slotToForm } from '../utils/slotForm';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -85,8 +85,20 @@ export default function SlotCalendar({
     return map;
   }, [slots]);
 
-  const daySlots = slotsByDay[selectedDay] || [];
-  const openSlotsCount = slots.filter((s) => s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1)).length;
+  const todayKey = istTodayKey();
+  const visibleDaySlots = useMemo(() => {
+    const list = slotsByDay[selectedDay] || [];
+    if (mode === 'user') {
+      return list.filter((s) => !isSlotBeforeToday(s) && s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1));
+    }
+    return list.filter((s) => !(s.status === 'open' && isSlotBeforeToday(s) && (s.booked_count || 0) < (s.capacity || 1)));
+  }, [slotsByDay, selectedDay, mode]);
+  const daySlots = visibleDaySlots;
+  const openSlotsCount = slots.filter((s) => (
+    s.status === 'open'
+    && (s.booked_count || 0) < (s.capacity || 1)
+    && !isSlotBeforeToday(s)
+  )).length;
 
   useEffect(() => {
     setForm((prev) => ({ ...prev, date: selectedDay }));
@@ -162,7 +174,11 @@ export default function SlotCalendar({
                   const inMonth = d.getMonth() === viewMonth;
                   const isToday = key === localDateKey(today);
                   const isSelected = key === selectedDay;
-                  const openCount = (slotsByDay[key] || []).filter((s) => s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1)).length;
+                  const openCount = (slotsByDay[key] || []).filter((s) => (
+                    s.status === 'open'
+                    && (s.booked_count || 0) < (s.capacity || 1)
+                    && key >= todayKey
+                  )).length;
                   const hasSlots = (slotsByDay[key]?.length || 0) > 0;
                   return (
                     <motion.button

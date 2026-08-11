@@ -26,7 +26,7 @@ import {
   assessmentGrantsSlotBooking,
   moduleHasTakeTest,
 } from '../utils/moduleAccess';
-import { moduleActionFlags } from '../utils/moduleDashboardNav';
+import { moduleActionFlags, moduleActionLabel } from '../utils/moduleDashboardNav';
 
 function formatPrice(n) {
   return `₹${Number(n || 0).toLocaleString('en-IN')}`;
@@ -194,7 +194,7 @@ function UnpaidModuleCard({ module, selected, onSelect, onClear, addCounselling,
   );
 }
 
-function PaidModuleActions({ onGoProcess, onGoTest, onGoBook, showTakeTest = true, showProcess = true, showBook = false }) {
+function PaidModuleActions({ onGoProcess, onGoTest, onGoBook, showTakeTest = true, showProcess = true, showBook = false, testLabel = 'Take test', bookLabel = 'Book session' }) {
   return (
     <div className="flex flex-wrap gap-3 pt-4 border-t border-[var(--border-subtle)]">
       {showProcess && (
@@ -204,12 +204,12 @@ function PaidModuleActions({ onGoProcess, onGoTest, onGoBook, showTakeTest = tru
       )}
       {showTakeTest && (
         <button type="button" onClick={onGoTest} className="modules-order-btn modules-order-btn--ghost">
-          <ClipboardList className="w-4 h-4" /> Take test
+          <ClipboardList className="w-4 h-4" /> {testLabel}
         </button>
       )}
       {showBook && (
         <button type="button" onClick={onGoBook} className="modules-order-btn modules-order-btn--primary">
-          <MessageCircle className="w-4 h-4" /> Book session
+          <MessageCircle className="w-4 h-4" /> {bookLabel}
         </button>
       )}
     </div>
@@ -526,12 +526,12 @@ export default function ModulesPanel({
                     )}
                     {showTest && (
                       <button type="button" onClick={() => openModule(a, 'test')} className="modules-order-btn modules-order-btn--primary">
-                        <ClipboardList className="w-4 h-4" /> {slug === 'crp-test' ? 'Community' : 'Take test'}
+                        <ClipboardList className="w-4 h-4" /> {moduleActionLabel(a, 'test')}
                       </button>
                     )}
                     {showBook && (
                       <button type="button" onClick={() => openModule(a, 'book')} className="modules-order-btn modules-order-btn--primary">
-                        <MessageCircle className="w-4 h-4" /> Book session
+                        <MessageCircle className="w-4 h-4" /> {moduleActionLabel(a, 'book')}
                       </button>
                     )}
                   </div>
@@ -547,6 +547,8 @@ export default function ModulesPanel({
               showTakeTest={!!activeShowTest}
               showProcess={activeShowProcess}
               showBook={!!activeShowBook}
+              testLabel={moduleActionLabel(activePaid, 'test')}
+              bookLabel={moduleActionLabel(activePaid, 'book')}
             />
           )}
         </DashCard>

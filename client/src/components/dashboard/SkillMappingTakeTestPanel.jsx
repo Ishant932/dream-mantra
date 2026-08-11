@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { SKILL_MAPPING_INSTRUMENTS, instrumentLabel } from '../../data/testPortalData';
+import { userApi } from '../../api';
 import '../../styles/test-portal.css';
 
 const PAGE_SIZE = 15;
@@ -8,6 +9,33 @@ function statusLabel(status) {
   if (status === 'completed') return 'Completed';
   if (status === 'in_progress') return 'In progress';
   return 'Not started';
+}
+
+function instrumentStatus(answers = {}, total = 0) {
+  const count = Object.keys(answers).length;
+  if (total > 0 && count >= total) return 'completed';
+  if (count > 0) return 'in_progress';
+  return 'not_started';
+}
+
+function hydrateInstruments(base, saved = {}) {
+  return base.map((i) => {
+    const prev = saved?.[i.id] || {};
+    const answers = prev.answers && typeof prev.answers === 'object' ? prev.answers : {};
+    return {
+      ...i,
+      answers,
+      status: prev.status || instrumentStatus(answers, i.total),
+    };
+  });
+}
+
+function toProgressPayload(list) {
+  const out = {};
+  for (const i of list) {
+    out[i.id] = { status: i.status, answers: i.answers || {} };
+  }
+  return out;
 }
 
 function ProgressRing({ pct, complete }) {
@@ -42,14 +70,73 @@ function buildQuestions(instrument) {
   }));
 }
 
-export default function SkillMappingTakeTestPanel({ user, profile, instrumentIds = null }) {
-  const allowed = instrumentIds?.length ? new Set(instrumentIds.map((id) => String(id).toUpperCase())) : null;
-  const baseInstruments = SKILL_MAPPING_INSTRUMENTS.filter((i) => !allowed || allowed.has(i.id));
+export default function SkillMappingTakeTestPanel({
+  user,
+  profile,
+  instrumentIds = null,
+  assessmentId,
+  token,
+  savedProgress = null,
+  onProgressSaved,
+}) {
+  const allowedKey = instrumentIds?.length
+    ? instrumentIds.map((id) => String(id).toUpperCase()).sort().join(',')
+    : '';
+  const baseInstruments = useMemo(() => {
+    if (!allowedKey) return SKILL_MAPPING_INSTRUMENTS;
+    const allowed = new Set(allowedKey.split(','));
+    return SKILL_MAPPING_INSTRUMENTS.filter((i) => allowed.has(i.id));
+  }, [allowedKey]);
   const [activeId, setActiveId] = useState(null);
-  const [instruments, setInstruments] = useState(() =>
-    baseInstruments.map((i) => ({ ...i, status: 'not_started', answers: {} })),
-  );
+  const [instruments, setInstruments] = useState(() => hydrateInstruments(baseInstruments, savedProgress));
   const [pageStart, setPageStart] = useState(0);
+  const saveTimer = useRef(null);
+  const latestRef = useRef(instruments);
+  latestRef.current = instruments;
+
+  useEffect(() => {
+    setInstruments((prev) => {
+      const hydrated = hydrateInstruments(baseInstruments, savedProgress);
+      return hydrated.map((i) => {
+        const local = prev.find((p) => p.id === i.id);
+        if (!local) return i;
+        const localCount = Object.keys(local.answers || {}).length;
+        const savedCount = Object.keys(i.answers || {}).length;
+        return localCount >= savedCount ? { ...i, ...local, answers: local.answers, status: local.status } : i;
+      });
+    });
+  }, [baseInstruments, assessmentId]);
+
+  const persistProgress = async (list, { completeAll = false } = {}) => {
+    if (!token || !assessmentId) return;
+    const skillTestProgress = toProgressPayload(list);
+    const allDone = list.length > 0 && list.every((i) => i.status === 'completed');
+    try {
+      await userApi.updateAssessmentFlow(token, assessmentId, {
+        skillTestProgress,
+        testsDone: completeAll || allDone || undefined,
+      });
+      onProgressSaved?.();
+    } catch {
+      /* keep local progress even if save fails */
+    }
+  };
+
+  const scheduleSave = (list) => {
+    latestRef.current = list;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      persistProgress(list);
+    }, 400);
+  };
+
+  useEffect(() => () => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    const list = latestRef.current;
+    if (list?.length && token && assessmentId) {
+      persistProgress(list);
+    }
+  }, [token, assessmentId]);
 
   const academicStage = profile?.academicStage || profile?.classLevel || '';
   const active = instruments.find((i) => i.id === activeId);
@@ -58,28 +145,38 @@ export default function SkillMappingTakeTestPanel({ user, profile, instrumentIds
   const pct = active ? Math.round((answeredCount / active.total) * 100) : 0;
   const pageEnd = Math.min(pageStart + PAGE_SIZE, questions.length);
   const pageQuestions = questions.slice(pageStart, pageEnd);
-  const isComplete = active && answeredCount >= active.total;
+  const isComplete = active && (active.status === 'completed' || answeredCount >= active.total);
 
   const openInstrument = (id) => {
     setActiveId(id);
     setPageStart(0);
-    setInstruments((list) => list.map((i) => (
-      i.id === id && i.status === 'not_started' ? { ...i, status: 'in_progress' } : i
-    )));
+    setInstruments((list) => {
+      const next = list.map((i) => (
+        i.id === id && i.status === 'not_started' ? { ...i, status: 'in_progress' } : i
+      ));
+      scheduleSave(next);
+      return next;
+    });
   };
 
   const setAnswer = (qId, optIndex) => {
-    if (!active) return;
-    setInstruments((list) => list.map((i) => {
-      if (i.id !== active.id) return i;
-      const answers = { ...i.answers, [qId]: optIndex };
-      const count = Object.keys(answers).length;
-      return {
-        ...i,
-        answers,
-        status: count >= i.total ? 'completed' : 'in_progress',
-      };
-    }));
+    if (!active || active.status === 'completed') return;
+    setInstruments((list) => {
+      const next = list.map((i) => {
+        if (i.id !== active.id) return i;
+        const answers = { ...i.answers, [qId]: optIndex };
+        const count = Object.keys(answers).length;
+        const status = count >= i.total ? 'completed' : 'in_progress';
+        return { ...i, answers, status };
+      });
+      scheduleSave(next);
+      const updated = next.find((i) => i.id === active.id);
+      if (updated?.status === 'completed') {
+        if (saveTimer.current) clearTimeout(saveTimer.current);
+        persistProgress(next, { completeAll: next.every((i) => i.status === 'completed') });
+      }
+      return next;
+    });
   };
 
   const jumpToQuestion = (idx) => {
@@ -88,11 +185,17 @@ export default function SkillMappingTakeTestPanel({ user, profile, instrumentIds
     document.getElementById(`sm-q-${idx + 1}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
+  const exitToList = () => {
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    persistProgress(latestRef.current);
+    setActiveId(null);
+  };
+
   if (active) {
     const userInitial = (user?.name || 'U').trim().charAt(0).toUpperCase();
     return (
       <div className="test-portal-root">
-        <button type="button" className="btn btn-outline btn-pill" style={{ marginBottom: 12 }} onClick={() => setActiveId(null)}>← All tests</button>
+        <button type="button" className="btn btn-outline btn-pill" style={{ marginBottom: 12 }} onClick={exitToList}>← All tests</button>
         <div className="sm-screen">
           <div className="sm-grid">
             <aside className="sm-sidebar">
@@ -130,7 +233,7 @@ export default function SkillMappingTakeTestPanel({ user, profile, instrumentIds
                   </div>
                   <ul style={{ marginTop: 12 }}>
                     <li><span className="k">✓ Answered</span><span className="v">{answeredCount}</span></li>
-                    <li><span className="k">⏱ Remaining</span><span className="v">{active.total - answeredCount}</span></li>
+                    <li><span className="k">⏱ Remaining</span><span className="v">{Math.max(0, active.total - answeredCount)}</span></li>
                   </ul>
                 </div>
                 <div className="important-box">
@@ -172,37 +275,37 @@ export default function SkillMappingTakeTestPanel({ user, profile, instrumentIds
                   <div className="field"><label>Dream Mantra ID</label><input readOnly value={user?.user_uid || '—'} /></div>
                 </div>
               </div>
-              {isComplete ? (
-                <div className="question-card" style={{ textAlign: 'center', padding: 32 }}>
-                  <p className="font-display" style={{ fontSize: 20, fontWeight: 700 }}>Test completed!</p>
-                  <p className="sm-hint">Your responses have been saved. Continue with other assessments.</p>
-                </div>
-              ) : (
-                <div className="sm-questions-page">
-                  {pageQuestions.map((q) => (
-                    <div key={q.id} id={`sm-q-${q.id}`} className="question-card">
-                      <div className="q-number">{String(q.id).padStart(2, '0')}</div>
-                      <div className="q-body">
-                        <p className="q-prompt">{q.text}</p>
-                        <div className="q-options">
-                          {q.options.map((opt, i) => (
-                            <button
-                              key={opt}
-                              type="button"
-                              className={`q-option${active.answers[q.id] === i ? ' selected' : ''}`}
-                              onClick={() => setAnswer(q.id, i)}
-                            >
-                              <span className="q-letter">{String.fromCharCode(65 + i)}</span>
-                              <span className="q-option-label">{opt}</span>
-                              <span className={`q-check${active.answers[q.id] === i ? ' on' : ''}`}>{active.answers[q.id] === i ? '✓' : ''}</span>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+              {isComplete && (
+                <div className="question-card" style={{ textAlign: 'center', padding: 24, marginBottom: 12 }}>
+                  <p className="font-display" style={{ fontSize: 20, fontWeight: 700 }}>Test completed</p>
+                  <p className="sm-hint">Your responses are saved. You can review answers below or continue other tests.</p>
                 </div>
               )}
+              <div className="sm-questions-page">
+                {pageQuestions.map((q) => (
+                  <div key={q.id} id={`sm-q-${q.id}`} className="question-card">
+                    <div className="q-number">{String(q.id).padStart(2, '0')}</div>
+                    <div className="q-body">
+                      <p className="q-prompt">{q.text}</p>
+                      <div className="q-options">
+                        {q.options.map((opt, i) => (
+                          <button
+                            key={opt}
+                            type="button"
+                            className={`q-option${active.answers[q.id] === i ? ' selected' : ''}`}
+                            onClick={() => setAnswer(q.id, i)}
+                            disabled={isComplete}
+                          >
+                            <span className="q-letter">{String.fromCharCode(65 + i)}</span>
+                            <span className="q-option-label">{opt}</span>
+                            <span className={`q-check${active.answers[q.id] === i ? ' on' : ''}`}>{active.answers[q.id] === i ? '✓' : ''}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
           <div className="sm-footer">
@@ -212,11 +315,11 @@ export default function SkillMappingTakeTestPanel({ user, profile, instrumentIds
                 <div className="progress-bar-bg"><div className="progress-bar-fill" style={{ width: `${pct}%` }} /></div>
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-                <button type="button" className="btn btn-outline" onClick={() => setActiveId(null)}>Save & Exit</button>
+                <button type="button" className="btn btn-outline" onClick={exitToList}>Save & Exit</button>
                 {pageStart > 0 && (
                   <button type="button" className="btn btn-outline" onClick={() => setPageStart((p) => Math.max(0, p - PAGE_SIZE))}>← Previous</button>
                 )}
-                {pageEnd < active.total && !isComplete && (
+                {pageEnd < active.total && (
                   <button
                     type="button"
                     className="btn btn-primary"
@@ -236,7 +339,7 @@ export default function SkillMappingTakeTestPanel({ user, profile, instrumentIds
   return (
     <div className="test-portal-root">
       <h1 className="page-title font-display">Take test</h1>
-      <p className="page-subtitle">Start or continue your Skill Mapping tests. Status shows only here.</p>
+      <p className="page-subtitle">Start or continue your Skill Mapping tests. Completed tests stay here with a Completed badge.</p>
       {!academicStage ? (
         <div className="info-banner" style={{ marginTop: 12 }}>
           <p>Pick your academic / professional stage on your profile to set your class.</p>
@@ -248,27 +351,36 @@ export default function SkillMappingTakeTestPanel({ user, profile, instrumentIds
         Dream Mantra ID: <span className="val">{user?.user_uid || '—'}</span>
         <span className="sep">·</span> Your Dream Mantra ID is used on the test form.
       </div>
-      <div className="sm-subtabs" style={{ marginTop: 16 }}>
-        {instruments.map((i) => (
-          <button key={i.id} type="button" className="sm-subtab" onClick={() => openInstrument(i.id)}>
-            {instrumentLabel(i)}
-          </button>
-        ))}
-      </div>
-      <div className="instrument-grid" style={{ marginTop: 16 }}>
-        {instruments.map((i) => (
-          <div key={i.id} className={`instrument-card status-${i.status}`}>
-            <h2>{instrumentLabel(i)}</h2>
-            <p className="hint">{i.hint}</p>
-            <div className="instrument-footer">
-              <span className={`badge ${i.status}`}>{statusLabel(i.status)}</span>
-              <button type="button" className={`btn ${i.status === 'not_started' ? 'btn-primary' : 'btn-outline'}`} onClick={() => openInstrument(i.id)}>
-                {i.status === 'completed' ? 'Open' : i.status === 'in_progress' ? 'Continue' : 'Start test'}
+      {!instruments.length ? (
+        <div className="info-banner" style={{ marginTop: 16 }}>
+          <p>No tests are assigned to this purchase yet. Contact support if this looks wrong.</p>
+        </div>
+      ) : (
+        <>
+          <div className="sm-subtabs" style={{ marginTop: 16 }}>
+            {instruments.map((i) => (
+              <button key={i.id} type="button" className={`sm-subtab${i.status === 'completed' ? ' is-done' : ''}`} onClick={() => openInstrument(i.id)}>
+                {instrumentLabel(i)}
+                {i.status === 'completed' ? ' ✓' : ''}
               </button>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <div className="instrument-grid" style={{ marginTop: 16 }}>
+            {instruments.map((i) => (
+              <div key={i.id} className={`instrument-card status-${i.status}`}>
+                <h2>{instrumentLabel(i)}</h2>
+                <p className="hint">{i.hint}</p>
+                <div className="instrument-footer">
+                  <span className={`badge ${i.status}`}>{statusLabel(i.status)}</span>
+                  <button type="button" className={`btn ${i.status === 'not_started' ? 'btn-primary' : 'btn-outline'}`} onClick={() => openInstrument(i.id)}>
+                    {i.status === 'completed' ? 'Review' : i.status === 'in_progress' ? 'Continue' : 'Start test'}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

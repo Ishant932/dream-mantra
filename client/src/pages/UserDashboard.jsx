@@ -373,12 +373,8 @@ export default function UserDashboard() {
   }, [navigate]);
 
   const openModuleTest = useCallback((assessmentOrSlug) => {
-    const slug = typeof assessmentOrSlug === 'string'
-      ? assessmentOrSlug
-      : resolveAssessmentSlug(assessmentOrSlug);
-    const testSlug = testSlugFor(slug);
-    navigate(`/dashboard/test/${testSlug}`);
-  }, [navigate]);
+    openPaidModule(assessmentOrSlug, 'test');
+  }, [openPaidModule]);
 
   const goCheckout = useCallback(async (slug) => {
     if (!token || !slug) return;
@@ -663,6 +659,8 @@ export default function UserDashboard() {
                       bookingProps={bookingProps}
                       onBook={() => goCheckout(counsellingProductSlug)}
                       {...profilePanelProps}
+                      token={token}
+                      onTestProgressSaved={refreshDashboard}
                     />
                   </div>
               )}

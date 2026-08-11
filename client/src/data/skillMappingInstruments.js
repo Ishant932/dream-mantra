@@ -11,7 +11,7 @@ export const SKILL_MAPPING_INSTRUMENT_META = {
   VAK: { testId: 'vak', short: 'Learning Style', emoji: '📚', label: '📚 Learning Style Assessment' },
   DISC: { testId: 'disc', short: 'Professional Behaviour', emoji: '🤝', label: '🤝 Professional Behaviour & Work Style Analysis' },
   BIG5: { testId: 'big5', short: 'Workplace Personality', emoji: '💡', label: '💡 Workplace Personality & Success Factors Analysis' },
-  CARL_JUNG: { testId: 'carl_jung', short: 'Decision-Making', emoji: '🎯', label: '🎯 Decision-Making & Thinking Style Assessment' },
+  CARL_JUNG: { testId: 'career-understanding', short: 'Decision-Making', emoji: '🎯', label: '🎯 Decision-Making & Thinking Style Assessment' },
 };
 
 /** Short list for marketing copy */

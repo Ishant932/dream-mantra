@@ -285,34 +285,41 @@ router.delete('/leads/:id', (req, res) => {
 
 router.get('/modules', (req, res) => {
   try {
-    res.json({ modules: listModulesForAdmin() });
+    res.json({ modules: listModulesForAdmin().filter(Boolean) });
   } catch (e) {
     console.error('GET /admin/modules failed:', e);
     res.status(500).json({ message: e.message || 'Failed to load modules', modules: [] });
   }
 });
 
-router.post('/modules', (req, res) => {
+router.post('/modules', async (req, res) => {
   try {
     const module = upsertModule(req.body);
-    res.json({ module, modules: listModulesForAdmin() });
+    await flushDatabase();
+    res.json({ module, modules: listModulesForAdmin().filter(Boolean) });
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
 });
 
-router.patch('/modules/:slug', (req, res) => {
+router.patch('/modules/:slug', async (req, res) => {
   try {
     const module = upsertModule({ ...req.body, slug: req.params.slug });
-    res.json({ module, modules: listModulesForAdmin() });
+    await flushDatabase();
+    res.json({ module, modules: listModulesForAdmin().filter(Boolean) });
   } catch (e) {
     res.status(400).json({ message: e.message });
   }
 });
 
-router.delete('/modules/:slug', (req, res) => {
-  removeModule(req.params.slug);
-  res.json({ modules: listModulesForAdmin() });
+router.delete('/modules/:slug', async (req, res) => {
+  try {
+    removeModule(req.params.slug);
+    await flushDatabase();
+    res.json({ modules: listModulesForAdmin().filter(Boolean) });
+  } catch (e) {
+    res.status(400).json({ message: e.message });
+  }
 });
 
 router.get('/vouchers', (req, res) => {

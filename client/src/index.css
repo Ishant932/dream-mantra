@@ -25992,14 +25992,19 @@ html.aurora .dash-sidebar-panel--hero-match {
 
 @media (max-width: 767px) {
   .dash-hero-toolkit__scroll {
-    flex-wrap: wrap;
-    overflow-x: visible;
-    gap: 0.4rem;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    gap: 0.3rem;
+    width: 100%;
   }
   .dash-b2b-hero--user .dash-hero-toolkit__chip {
-    font-size: 0.78rem;
-    padding: 0.55rem 0.75rem;
-    line-height: 1.25;
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: clamp(0.58rem, 2.5vw, 0.72rem);
+    padding: 0.42rem 0.28rem;
+    line-height: 1.15;
+    white-space: normal;
+    text-align: center;
   }
   .dash-b2b-hero__unified-row { flex-direction: column; align-items: stretch; }
   .dash-hero-id { max-width: none; width: 100%; }
@@ -26240,6 +26245,23 @@ html.aurora .dash-sidebar-panel--hero-match {
 .payment-page__admin-toggle.is-open {
   border-color: #ea580c;
   background: #ffedd5;
+}
+.payment-page__method--admin {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+.payment-page__method--admin.payment-page__method--active {
+  border-color: #ea580c;
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+}
+.payment-page__admin-message {
+  margin-bottom: 0.85rem;
+  padding: 0.85rem 1rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(234, 88, 12, 0.35);
+  background: #fff7ed;
+  color: #9a3412;
+  text-align: left;
 }
 .payment-page__admin-panel {
   margin-top: 0.75rem;
@@ -27058,3 +27080,63 @@ html.aurora .dash-sidebar-panel--hero-match {
 }
 .cms-full-page img { max-width: 100%; border-radius: 0.75rem; }
 .cms-full-page .cms-block { margin: 1.5rem 0; }
+
+/* Mobile: keep user dashboard tabs in one straight line */
+@media (max-width: 767px) {
+  html, body { overflow-x: hidden; }
+  .dash-b2b-hero--unified .dash-hero-toolkit {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+  .dash-b2b-hero--unified .dash-hero-toolkit__scroll {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    width: 100%;
+    gap: 0.28rem;
+    -webkit-overflow-scrolling: touch;
+  }
+  .dash-b2b-hero--unified .dash-hero-toolkit__chip {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    white-space: normal;
+    text-align: center;
+    font-size: clamp(0.55rem, 2.35vw, 0.7rem) !important;
+    padding: 0.4rem 0.2rem !important;
+    line-height: 1.15;
+  }
+  .dash-product-path-rail,
+  .dash-subtab-rail {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+  .dash-product-path-rail__chip,
+  .dash-subtab-rail__chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .dash-panel-surface,
+  .dash-sidebar-panel,
+  .payment-page__card,
+  .modules-hub-card {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  .admin-data-table { min-width: 640px; }
+  .sm-grid {
+    display: grid;
+    grid-template-columns: 1fr !important;
+  }
+  .sm-sidebar { order: 2; }
+  .sm-footer-inner { flex-wrap: wrap; gap: 0.5rem; }
+  .instrument-grid { grid-template-columns: 1fr; }
+  .payment-page__method,
+  .payment-page__method--admin {
+    width: 100%;
+  }
+  .navbar, .site-header, .nav-inner { max-width: 100%; }
+}

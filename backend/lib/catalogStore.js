@@ -258,20 +258,23 @@ export function getActiveModuleCatalog() {
 export function listModulesForAdmin() {
   ensureSiteSettings();
   const data = getData();
-  return ensureCatalogModulesArray(data).map(enrichCatalogModule);
+  return ensureCatalogModulesArray(data).map(enrichCatalogModule).filter(Boolean);
 }
 
 export function upsertModule(input) {
   ensureSiteSettings();
   const data = getData();
   const catalog = ensureCatalogModulesArray(data);
-  const slug = input.slug?.trim() || slugify(input.title);
+  const title = String(input.title || '').trim();
+  if (!title) throw new Error('Module title is required');
+  const slug = input.slug?.trim() || slugify(title);
+  if (!slug) throw new Error('Module slug is required');
   const idx = catalog.findIndex((m) => m.slug === slug);
   const prev = idx >= 0 ? catalog[idx] : null;
   const baseMatch = BASE_MODULE_CATALOG.find((m) => m.slug === slug);
   const module = {
     slug,
-    title: String(input.title || '').trim() || 'New Module',
+    title,
     price: Math.max(0, Number(input.price) || 0),
     optionalCounselling: !!input.optionalCounselling,
     includesCounselling: !!input.includesCounselling,

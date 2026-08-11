@@ -256,7 +256,22 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
         ) : modules.length === 0 ? (
           <p className="text-sm opacity-60 py-6 text-center">No modules in catalog. Click &quot;Add module&quot; to create one.</p>
         ) : (
-          <div className="overflow-x-auto">
+          <>
+          <div className="md:hidden space-y-3">
+            {modules.filter((m) => m?.slug).map((m) => (
+              <div key={m.slug} className="rounded-xl border border-sand-200 dark:border-sand-700 p-4 space-y-2">
+                <p className="font-semibold">{m.icon ? `${m.icon} ` : ''}{m.title}</p>
+                <p className="text-xs font-mono opacity-60">{m.slug}</p>
+                <p className="font-semibold text-amber-700">₹{Number(m.price || 0).toLocaleString('en-IN')}</p>
+                {m.hidden && <span className="text-xs text-red-600 font-semibold">Hidden</span>}
+                <div className="flex gap-2 pt-1">
+                  <button type="button" onClick={() => startEdit(m)} className="text-xs font-bold px-3 py-1.5 rounded-lg border">Edit</button>
+                  <button type="button" onClick={() => remove(m.slug)} className="text-xs font-bold px-3 py-1.5 rounded-lg border text-red-700">Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-sm admin-data-table min-w-[640px]">
               <thead>
                 <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
@@ -268,7 +283,7 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
                 </tr>
               </thead>
               <tbody>
-                {modules.map((m) => (
+                {modules.filter((m) => m?.slug).map((m) => (
                   <tr key={m.slug} className="border-b border-sand-100 dark:border-sand-800/60 align-top">
                     <td className="py-3 px-2">
                       <p className="font-semibold">{m.icon ? `${m.icon} ` : ''}{m.title}</p>
@@ -298,6 +313,7 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
               </tbody>
             </table>
           </div>
+          </>
         )}
       </DashCard>
     </div>

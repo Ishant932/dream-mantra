@@ -27,7 +27,7 @@ const REPORT_TAB = 'report';
 
 export function CounsellingProductPanel({
   focus, paid, subtab, onSubtab, careerPath, reports = [], bookingProps, journeyCtx, onBook,
-  displayUser, profile, onProfileSave, profileSaving,
+  displayUser, profile, onProfileSave, profileSaving, token, onTestProgressSaved,
 }) {
   const subtabs = getCounsellingSubtabs(focus);
   const locked = (tab) => tab.lock && !paid;
@@ -66,6 +66,10 @@ export function CounsellingProductPanel({
             user={displayUser}
             profile={profile}
             instrumentIds={careerPath?.activeAssessment?.progress?.skillMappingInstruments}
+            assessmentId={careerPath?.activeAssessment?.id}
+            token={token}
+            savedProgress={careerPath?.activeAssessment?.progress?.skillTestProgress}
+            onProgressSaved={onTestProgressSaved}
           />
         )}
         {paid && subtab === 'counselling' && <CounsellingBookingPanel {...bookingProps} />}

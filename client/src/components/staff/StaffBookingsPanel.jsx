@@ -11,6 +11,7 @@ import ProfileSnapshot from './ProfileSnapshot';
 import AdminPanelHeader from '../AdminPanelHeader';
 import AdminSectionExport from '../AdminSectionExport';
 import BulkSlotsTool from './BulkSlotsTool';
+import { isSlotBeforeToday } from '../../utils/slotForm';
 
 const STATUS_OPTIONS = [
   { value: 'all', label: 'All statuses' },
@@ -87,7 +88,11 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
   }, [loadSlots, loadConsultations]);
 
   const openSlots = useMemo(
-    () => slots.filter((s) => s.status === 'open' && (s.booked_count || 0) < (s.capacity || 1)),
+    () => slots.filter((s) => (
+      s.status === 'open'
+      && (s.booked_count || 0) < (s.capacity || 1)
+      && !isSlotBeforeToday(s)
+    )),
     [slots]
   );
 

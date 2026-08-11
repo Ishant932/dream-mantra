@@ -242,7 +242,7 @@ export function getSkillMappingUrl(classLevel) {
 }
 
 export function hasSkillMappingTests(productSlug) {
-  return productSlug === 'psychometric' || productSlug === 'dmit-psychometric' || productSlug === 'career-readiness';
+  return productSlug === 'psychometric' || productSlug === 'dmit-psychometric';
 }
 
 export function getModuleBySlug(slug, catalog = MODULE_CATALOG) {

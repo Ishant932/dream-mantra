@@ -72,6 +72,10 @@ export function updateAssessmentFlow(assessmentId, userId, patch) {
   if (patch.answers) {
     progress.answers = { ...(progress.answers || {}), ...patch.answers };
   }
+  if (patch.skillTestProgress && typeof patch.skillTestProgress === 'object') {
+    progress.skillTestProgress = patch.skillTestProgress;
+  }
+  if (patch.testsDone === true) progress.testsDone = true;
   if (patch.completedAt) progress.completedAt = patch.completedAt;
 
   if (patch.skillMappingBand !== undefined) {

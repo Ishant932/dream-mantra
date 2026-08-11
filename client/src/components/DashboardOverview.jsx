@@ -9,6 +9,7 @@ import JourneyProgressBox from './JourneyProgressBox';
 import ProfileDetailsCard from './ProfileDetailsCard';
 import { dedupeAssessmentsBySlug, getAssessmentDisplayTitle } from '../utils/assessmentHelpers';
 import { getConfirmedPaidAssessments, isAssessmentUnlocked } from '../utils/moduleAccess';
+import { moduleActionFlags, moduleActionLabel } from '../utils/moduleDashboardNav';
 
 function QuickStat({ icon: Icon, label, value, accent }) {
   return (
@@ -154,19 +155,29 @@ export default function DashboardOverview({
             <p className="text-sm dash-card-meta">No active modules yet.</p>
           ) : (
             <ul className="space-y-2">
-              {dedupeAssessmentsBySlug(activeModules).slice(0, 3).map((a) => (
+              {dedupeAssessmentsBySlug(activeModules).slice(0, 3).map((a) => {
+                const { showTest, showBook } = moduleActionFlags(a);
+                return (
                 <li key={a.id} className="flex items-center justify-between gap-2 text-sm p-2 rounded-lg bg-sand-50 dark:bg-sand-800/50">
                   <span className="font-medium min-w-0 truncate">{getAssessmentDisplayTitle(a)}</span>
                   <span className="flex gap-1 shrink-0">
                     <button type="button" onClick={() => onOpenProgram?.(a)} className="text-xs font-semibold text-amber-600 inline-flex items-center gap-1">
                       <Play className="w-3 h-3" /> Process
                     </button>
-                    <button type="button" onClick={() => onOpenTest?.(a)} className="text-xs font-semibold text-emerald-700 inline-flex items-center gap-1">
-                      <FlaskConical className="w-3 h-3" /> Test
-                    </button>
+                    {showTest && (
+                      <button type="button" onClick={() => onOpenTest?.(a)} className="text-xs font-semibold text-emerald-700 inline-flex items-center gap-1">
+                        <FlaskConical className="w-3 h-3" /> {moduleActionLabel(a, 'test')}
+                      </button>
+                    )}
+                    {!showTest && showBook && (
+                      <button type="button" onClick={() => onOpenTest?.(a)} className="text-xs font-semibold text-emerald-700 inline-flex items-center gap-1">
+                        <Calendar className="w-3 h-3" /> {moduleActionLabel(a, 'book')}
+                      </button>
+                    )}
                   </span>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
           <button type="button" onClick={onBookModule} className="text-sm font-semibold text-amber-600 mt-3 inline-flex items-center gap-1">

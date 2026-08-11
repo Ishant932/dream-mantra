@@ -608,6 +608,8 @@ router.patch('/assessments/:id/flow', (req, res) => {
       communityJoined,
       processComplete,
       completedAt,
+      skillTestProgress,
+      testsDone,
     } = req.body;
     const flow = updateAssessmentFlow(req.params.id, req.user.id, {
       step,
@@ -618,6 +620,8 @@ router.patch('/assessments/:id/flow', (req, res) => {
       communityJoined,
       processComplete,
       completedAt,
+      skillTestProgress,
+      testsDone,
     });
     res.json(flow);
   } catch (e) {
