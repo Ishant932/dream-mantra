@@ -21845,8 +21845,8 @@ html.aurora .dash-b2b-layout .dash-mobile-tab-select {
 
 html.dark .dash-root.dash-b2b.dash-root-user,
 html.aurora .dash-root.dash-b2b.dash-root-user {
-  background: linear-gradient(160deg, #3d1a0a 0%, #5c2d12 45%, #7c3d18 100%) !important;
-  color: #fef3c7;
+  background: linear-gradient(160deg, #ea580c 0%, #f97316 45%, #fb923c 100%) !important;
+  color: #fff7ed;
 }
 html.dark .dash-root.dash-b2b.dash-root-admin,
 html.aurora .dash-root.dash-b2b.dash-root-admin {
@@ -23975,10 +23975,10 @@ html.aurora .dash-b2b .dash-mobile-deck--admin .dash-mobile-deck__flip-face--fro
   box-shadow: 0 12px 40px rgba(16, 185, 129, 0.25) !important;
 }
 .dash-b2b-hero--cockpit.dash-b2b-hero--user {
-  background: linear-gradient(135deg, #451a03 0%, #78350f 50%, #b45309 100%) !important;
+  background: linear-gradient(135deg, #ea580c 0%, #f97316 45%, #fb923c 100%) !important;
   color: #fffbeb !important;
-  border-color: rgba(251, 191, 36, 0.45) !important;
-  box-shadow: 0 12px 40px rgba(245, 158, 11, 0.28) !important;
+  border-color: rgba(255, 237, 213, 0.55) !important;
+  box-shadow: 0 12px 40px rgba(249, 115, 22, 0.32) !important;
 }
 .dash-b2b-hero__orb {
   position: absolute;
@@ -27301,34 +27301,48 @@ html.aurora .dash-sidebar-panel--hero-match {
     min-width: 0;
   }
   .dash-b2b-hero--unified .dash-hero-toolkit__scroll {
-    display: flex !important;
-    flex-wrap: nowrap !important;
-    overflow-x: auto;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
     width: 100%;
-    gap: 0.28rem;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: visible !important;
+    flex-wrap: wrap !important;
   }
   .dash-b2b-hero--unified .dash-hero-toolkit__chip {
-    flex: 1 1 0 !important;
+    flex: 1 1 auto !important;
     min-width: 0 !important;
     max-width: none !important;
     white-space: normal;
     text-align: center;
-    font-size: clamp(0.55rem, 2.35vw, 0.7rem) !important;
-    padding: 0.4rem 0.2rem !important;
-    line-height: 1.15;
+    font-size: clamp(0.62rem, 2.8vw, 0.74rem) !important;
+    padding: 0.45rem 0.25rem !important;
+    line-height: 1.2;
+    overflow: visible;
+  }
+  .dash-b2b-hero--admin .dash-hero-toolkit__scroll {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.3rem;
+    overflow-x: visible !important;
   }
   .dash-product-path-rail,
   .dash-subtab-rail {
-    flex-wrap: nowrap !important;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.35rem;
+    overflow-x: visible !important;
+    flex-wrap: wrap !important;
     width: 100%;
   }
   .dash-product-path-rail__chip,
   .dash-subtab-rail__chip {
-    flex: 0 0 auto;
-    white-space: nowrap;
+    flex: 1 1 auto;
+    white-space: normal;
+    text-align: center;
+    min-width: 0;
+    font-size: 0.72rem;
+    line-height: 1.2;
+    padding: 0.45rem 0.35rem;
   }
   .dash-panel-surface,
   .dash-sidebar-panel,
@@ -27527,4 +27541,71 @@ html.aurora .dash-sidebar-panel--hero-match {
 .psycho-page.counselling-embed > section:not(:first-child) {
   padding-top: 3.5rem;
   padding-bottom: 3.5rem;
+}
+
+/* Guidance & book-now — orange-only accents */
+.guidance-modal__title--orange { color: #ea580c !important; }
+.guidance-modal__intent--red,
+.guidance-modal__intent--purple,
+.guidance-modal__intent--green,
+.guidance-modal__intent--blue {
+  border-color: rgba(249, 115, 22, 0.45) !important;
+  color: #c2410c !important;
+  background: #fff7ed !important;
+}
+.guidance-modal__intent--red.guidance-modal__intent--active,
+.guidance-modal__intent--purple.guidance-modal__intent--active,
+.guidance-modal__intent--green.guidance-modal__intent--active,
+.guidance-modal__intent--blue.guidance-modal__intent--active {
+  background: linear-gradient(145deg, #ea580c, #f59e0b) !important;
+  color: #fff !important;
+  border-color: #fb923c !important;
+  box-shadow: 0 6px 16px rgba(234, 88, 12, 0.35) !important;
+}
+.guidance-modal__ring--purple,
+.guidance-modal__ring--blue { display: none; }
+.free-guidance-form--modal .btn-primary,
+.guidance-modal__panel--pro .btn-primary {
+  background: linear-gradient(145deg, #ea580c, #f59e0b) !important;
+  border-color: #fb923c !important;
+}
+
+/* Training session dropdown form */
+.session-schedule-form .session-form-row {
+  margin-bottom: 0.85rem;
+}
+.session-form-row__label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #9a3412;
+  margin-bottom: 0.35rem;
+}
+.session-form-row--done {
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.75rem;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  margin-bottom: 0.65rem;
+}
+
+/* CV maker & career library — mobile responsive embeds */
+@media (max-width: 767px) {
+  .app-embed--career .app-embed__frame,
+  .app-embed--cv .app-embed__frame {
+    min-height: 72vh;
+    height: 72vh;
+    width: 100%;
+    border-radius: 0.75rem;
+  }
+  .dash-embed-host {
+    width: 100%;
+    overflow-x: hidden;
+  }
+  .dash-mobile-deck--user {
+    background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%) !important;
+  }
+  .dash-mobile-deck--user .dash-mobile-deck__aurora {
+    background: radial-gradient(circle at 30% 20%, rgba(255, 237, 213, 0.35), transparent 55%) !important;
+  }
 }

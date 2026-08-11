@@ -1,6 +1,7 @@
 import { getData, saveData } from './database.js';
 import { userHasCounsellingAccess } from './userAccess.js';
 import { normalizeProfile } from './profile.js';
+import { autoCompletePastConsultations } from './counsellingStatus.js';
 
 export function ensureSlotsInitialized() {
   const data = getData();
@@ -330,6 +331,19 @@ export function bookMockInterviewSessions(userId, sessions = [], notes = '', use
   });
   if (core.length < 8) {
     throw new Error('Book all 8 career readiness sessions before mock interviews');
+  }
+  autoCompletePastConsultations(core);
+  const istToday = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+  istToday.setHours(0, 0, 0, 0);
+  const allPast = core.every((c) => {
+    if (c.status === 'completed' || c.status === 'done') return true;
+    if (!c.scheduled_at) return false;
+    const sessionDay = new Date(new Date(c.scheduled_at).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+    sessionDay.setHours(0, 0, 0, 0);
+    return sessionDay < istToday;
+  });
+  if (!allPast) {
+    throw new Error('Mock interviews unlock after all 8 sessions are completed');
   }
 
   const already = new Set(existing.map((c) => Number(c.session_number)));

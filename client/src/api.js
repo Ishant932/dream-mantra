@@ -317,11 +317,15 @@ export const adminApi = {
   getPageCatalog: (token, slug) => request(`/admin/page-catalog/${slug}`, { headers: headers(token) }),
   updatePageCatalog: (token, slug, body) =>
     request(`/admin/page-catalog/${slug}`, { method: 'PUT', headers: headers(token), body: JSON.stringify(body) }),
+  copyOverrides: (token) => request('/admin/copy-overrides', { headers: headers(token) }),
+  updateCopyOverrides: (token, body) =>
+    request('/admin/copy-overrides', { method: 'PUT', headers: headers(token), body: JSON.stringify(body) }),
 };
 
 export const pagesApi = {
   list: () => request('/pages'),
   get: (slug) => request(`/pages/${slug}`),
+  copyOverrides: () => request('/pages/copy-overrides'),
 };
 
 export const counsellorApi = {

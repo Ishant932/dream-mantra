@@ -28,6 +28,10 @@ import {
   isAssessmentUnlocked,
   resolveAssessmentSlug,
 } from '../utils/moduleAccess';
+import {
+  getCounsellingBookings,
+  hasInitialCounsellingComplete,
+} from '../utils/counsellingStatus';
 import { canCancelAssessment } from '../utils/assessmentHelpers';
 import { hasSkillMappingTests } from '../data/moduleCatalog';
 import { prefetchCareers } from '../utils/loadCareers';
@@ -365,6 +369,15 @@ export default function UserDashboard() {
 
   const goToCounsellingTopUp = () => goTab('assess', '&shop=counselling-topup');
 
+  const goAdditionalCounselling = useCallback(() => {
+    if (canShowCounsellingTopUp(data.assessments || [], data.consultations || [])) {
+      goToCounsellingTopUp();
+    } else {
+      setCounsellingSubtab('counselling');
+      goTab('counselling', `&focus=${counsellingFocus}&subtab=counselling`);
+    }
+  }, [data.assessments, data.consultations, counsellingFocus, goTab]);
+
   const openProgramPage = useCallback((assessmentOrSlug) => {
     const slug = typeof assessmentOrSlug === 'string'
       ? assessmentOrSlug
@@ -487,10 +500,15 @@ export default function UserDashboard() {
     const testSlug = testSlugFor(slug);
     const assessment = findAssessmentForSlug(data.assessments || [], slug);
     const progress = assessment?.progress || {};
+    const counsellingBookings = getCounsellingBookings(data.consultations || []);
+    const counsellingDone = hasInitialCounsellingComplete(data.consultations || []);
+    const additionalCounsellingBooked = counsellingBookings.length > 1
+      || data.assessments?.some((a) => resolveAssessmentSlug(a) === 'counselling-topup' && isAssessmentUnlocked(a));
     return {
       hasReport: (data.reports || []).some((r) => r.report_link && (!r.product_slug || r.product_slug === slug || r.product_slug === testSlug)),
-      hasBooking: (data.consultations || []).some((c) => c.status !== 'cancelled' && (!c.booking_type || c.booking_type === 'counselling')),
-      counsellingDone: (data.consultations || []).some((c) => c.status === 'completed' || c.status === 'done'),
+      hasBooking: counsellingBookings.length > 0,
+      counsellingDone,
+      additionalCounsellingBooked,
       profileComplete: profileCompletion >= 80 || !!data.profile?.setupComplete,
       sessionsBooked: programSessionBookings.length,
       sessionTarget: 8,
@@ -499,6 +517,7 @@ export default function UserDashboard() {
       onFingerprints: () => navigate('/dashboard/test/dmit'),
       onTakeTest: () => openModuleTest(slug),
       onReports: () => goTab('reports'),
+      onAdditionalCounselling: goAdditionalCounselling,
     };
   };
 
@@ -659,6 +678,8 @@ export default function UserDashboard() {
                       reports={counsellingReports}
                       bookingProps={bookingProps}
                       onBook={() => goCheckout(counsellingProductSlug)}
+                      onAdditionalCounselling={goAdditionalCounselling}
+                      profileCompletion={profileCompletion}
                       {...profilePanelProps}
                       token={token}
                       onTestProgressSaved={refreshDashboard}

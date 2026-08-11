@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { DashCard } from './DashboardUI';
 import SlotCalendar from './SlotCalendar';
 import UserBookingsPanel from './UserBookingsPanel';
-import PurchaseJourneyStrip from './PurchaseJourneyStrip';
 import { COUNSELLING_TOPUP_PRICE } from '../data/moduleCatalog';
 
 const ease = [0.22, 1, 0.36, 1];
@@ -67,8 +66,7 @@ export default function CounsellingBookingPanel({
         )}
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45, ease }}>
           <DashCard className="!p-6 sm:!p-8" glow={false} hover={false}>
-            <PurchaseJourneyStrip activeStep="choose" />
-            <div className="text-center mt-6">
+            <div className="text-center mt-2">
               <motion.div
                 className="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center mx-auto mb-4"
                 animate={{ scale: [1, 1.05, 1] }}
@@ -104,15 +102,6 @@ export default function CounsellingBookingPanel({
   return (
     <div className="space-y-8">
       {topUpBanner}
-
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
-        <DashCard className="!p-4 sm:!p-5 border-emerald-200/50" glow={false} hover={false}>
-          <PurchaseJourneyStrip activeStep="book" compact />
-          <p className="text-xs dash-card-meta mt-3 text-center">
-            Counselling unlocked — select a slot below and confirm your booking.
-          </p>
-        </DashCard>
-      </motion.div>
 
       <div className="slot-booking-layout slot-booking-layout--large">
         <motion.div

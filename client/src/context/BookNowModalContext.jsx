@@ -50,6 +50,20 @@ function BookNowModal({ open, onClose }) {
       setError('Enter email or phone');
       return;
     }
+    const phoneDigits = phone.replace(/\D/g, '');
+    const mobile = phoneDigits.length === 12 && phoneDigits.startsWith('91')
+      ? phoneDigits.slice(2)
+      : phoneDigits.length === 11 && phoneDigits.startsWith('0')
+        ? phoneDigits.slice(1)
+        : phoneDigits;
+    if (phone.trim() && !/^[6-9]\d{9}$/.test(mobile)) {
+      setError('Please enter a valid 10-digit mobile number');
+      return;
+    }
+    if (!phone.trim()) {
+      setError('Mobile number is required');
+      return;
+    }
     if (password.length < 6) {
       setError('Password must be at least 6 characters');
       return;
@@ -63,7 +77,7 @@ function BookNowModal({ open, onClose }) {
       await register({
         name: name.trim(),
         email: email.trim() || undefined,
-        phone: phone.trim() || undefined,
+        phone: mobile,
         password,
         whatsappOptIn: true,
       });
@@ -94,13 +108,13 @@ function BookNowModal({ open, onClose }) {
               <span className="guidance-modal__badge guidance-modal__badge--pro">
                 <Calendar className="w-3.5 h-3.5 inline" /> Book now
               </span>
-              <h2 className="guidance-modal__title">Create account & pick your program</h2>
+              <h2 className="guidance-modal__title guidance-modal__title--orange">Create account & pick your program</h2>
               <p className="guidance-modal__sub">Sign up in seconds, then choose your age pathway and module checkout.</p>
             </div>
             <form onSubmit={handleSubmit} className="space-y-3 px-1">
               <input className="input-field w-full" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} required />
               <input className="input-field w-full" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              <input className="input-field w-full" type="tel" placeholder="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+              <input className="input-field w-full" type="tel" placeholder="10-digit mobile number *" value={phone} onChange={(e) => setPhone(e.target.value)} required inputMode="numeric" />
               <PasswordInput value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" className="input-field w-full" />
               <PasswordInput value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="Confirm password" className="input-field w-full" />
               {error && <p className="text-sm text-red-600">{error}</p>}

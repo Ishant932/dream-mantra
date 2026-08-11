@@ -44,6 +44,7 @@ import {
   countUnreadForUser,
 } from '../lib/messages.js';
 import { listUserCvs, upsertUserCv, deleteUserCv } from '../lib/userCvs.js';
+import { syncAutoCompleteConsultationsForUser } from '../lib/counsellingStatus.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const careersPath = path.join(__dirname, '../../client/public/data/careers.json');
@@ -69,6 +70,7 @@ router.get('/dashboard', (req, res) => {
   let counsellingAccess = false;
 
   try {
+    syncAutoCompleteConsultationsForUser(req.user.id);
     consultations = (db
       .prepare('SELECT * FROM consultations WHERE user_id = ? ORDER BY created_at DESC')
       .all(req.user.id) || [])

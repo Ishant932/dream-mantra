@@ -7,6 +7,7 @@ import SkillMappingTakeTestPanel from './SkillMappingTakeTestPanel';
 import CommunityLinksPanel from './CommunityLinksPanel';
 import SessionBookingPanel from './SessionBookingPanel';
 import { getCounsellingSubtabs, getTrainingSubtabs } from '../../utils/productSubtabs';
+import { counsellingPrerequisitesMet, hasInitialCounsellingComplete } from '../../utils/counsellingStatus';
 import { DashCard } from '../DashboardUI';
 
 function LockedCard({ onBook }) {
@@ -27,16 +28,24 @@ const REPORT_TAB = 'report';
 
 export function CounsellingProductPanel({
   focus, paid, subtab, onSubtab, careerPath, reports = [], bookingProps, journeyCtx, onBook,
-  displayUser, profile, onProfileSave, profileSaving, token, onTestProgressSaved,
+  displayUser, profile, onProfileSave, profileSaving, token, onTestProgressSaved, profileCompletion = 0,
+  onAdditionalCounselling,
 }) {
   const subtabs = getCounsellingSubtabs(focus);
-  const locked = (tab) => tab.lock && !paid;
+  const progress = careerPath?.activeAssessment?.progress || {};
+  const consultations = bookingProps?.bookings || [];
+  const counsellingUnlocked = counsellingPrerequisitesMet(focus, progress, profileCompletion >= 80 || !!profile?.setupComplete)
+    || hasInitialCounsellingComplete(consultations);
+  const locked = (tab) => {
+    if (tab.lock && !paid) return true;
+    if (tab.id === 'counselling' && paid && !counsellingUnlocked) return true;
+    return false;
+  };
   const pick = (id) => {
     const tab = subtabs.find((t) => t.id === id);
     if (tab && locked(tab)) return;
     onSubtab(id);
   };
-  const progress = careerPath?.activeAssessment?.progress || {};
   const slug = careerPath?.productSlug;
   const overviewMode = !paid || showOverview(subtab);
   const validIds = subtabs.map((t) => t.id);
@@ -46,8 +55,10 @@ export function CounsellingProductPanel({
       {paid && (
         <div className="dash-subtab-rail dash-subtab-rail--product dash-subtab-rail--center dash-subtab-rail--lg">
           {subtabs.map((tab) => (
-            <button key={tab.id} type="button" className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}`} onClick={() => pick(tab.id)}>
-              {tab.label}
+            <button key={tab.id} type="button" disabled={locked(tab)}
+              className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}${locked(tab) ? ' is-locked' : ''}`}
+              onClick={() => pick(tab.id)}>
+              {tab.label}{locked(tab) ? ' 🔒' : ''}
             </button>
           ))}
         </div>
@@ -56,7 +67,8 @@ export function CounsellingProductPanel({
         {(overviewMode || !paid) && <DashboardProductOverview focus={focus} onBook={onBook} paid={paid} />}
         {paid && subtab === 'journey' && (
           <ProductJourneySteps focus={focus} paid={paid} progress={progress} slug={slug} {...journeyCtx}
-            onProfile={() => onSubtab('profile')} onBookCounselling={() => onSubtab('counselling')} onTakeTest={() => onSubtab('take-test')} onReports={() => onSubtab('report')} />
+            onProfile={() => onSubtab('profile')} onBookCounselling={() => onSubtab('counselling')} onTakeTest={() => onSubtab('take-test')} onReports={() => onSubtab('report')}
+            onAdditionalCounselling={onAdditionalCounselling} />
         )}
         {paid && subtab === 'profile' && (
           <ProfileWizardPanel user={displayUser} profile={profile} onSave={onProfileSave} saving={profileSaving} />
@@ -72,7 +84,15 @@ export function CounsellingProductPanel({
             onProgressSaved={onTestProgressSaved}
           />
         )}
-        {paid && subtab === 'counselling' && <CounsellingBookingPanel {...bookingProps} />}
+        {paid && subtab === 'counselling' && !counsellingUnlocked && (
+          <DashCard className="!p-6 text-center border-amber-200/80" glow={false} hover={false}>
+            <Lock className="w-10 h-10 text-amber-600 mx-auto mb-3 opacity-80" />
+            <h4 className="font-bold text-lg mb-2">Counselling locked</h4>
+            <p className="text-sm dash-card-meta mb-4">Complete your profile and required tests first. Counselling opens once you are ready to book.</p>
+            <button type="button" className="btn-primary" onClick={() => onSubtab('journey')}>View your journey</button>
+          </DashCard>
+        )}
+        {paid && subtab === 'counselling' && counsellingUnlocked && <CounsellingBookingPanel {...bookingProps} />}
         {paid && subtab === REPORT_TAB && (
           <div>
             <p className="font-semibold text-theme-primary mb-3">Your reports</p>
@@ -114,8 +134,10 @@ export function TrainingProductPanel({
       {paid && (
         <div className="dash-subtab-rail dash-subtab-rail--product dash-subtab-rail--center dash-subtab-rail--lg">
           {subtabs.map((tab) => (
-            <button key={tab.id} type="button" className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}`} onClick={() => pick(tab.id)}>
-              {tab.label}
+            <button key={tab.id} type="button" disabled={locked(tab)}
+              className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}${locked(tab) ? ' is-locked' : ''}`}
+              onClick={() => pick(tab.id)}>
+              {tab.label}{locked(tab) ? ' 🔒' : ''}
             </button>
           ))}
         </div>

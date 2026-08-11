@@ -1,17 +1,18 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2, Lock, ChevronRight, Fingerprint, ClipboardList, Calendar, FileText, Phone, Sparkles, UserCircle, Users, BookOpen, Layers, PenLine } from 'lucide-react';
+import { CheckCircle2, Lock, ChevronRight, Fingerprint, ClipboardList, Calendar, FileText, Phone, Sparkles, UserCircle, Users, BookOpen, Layers, PenLine, MessageCircle } from 'lucide-react';
+import { isConsultationComplete } from '../../utils/counsellingStatus';
 
 const ICONS = {
   enrol: Sparkles, team_connect: Phone, profile: UserCircle, fingerprints: Fingerprint,
   process: ClipboardList, take_test: ClipboardList, book_counselling: Calendar,
-  counselling_done: CheckCircle2, reports: FileText, community: Users,
-  schedule: Calendar, resources: BookOpen, details: Layers, cv: PenLine,
+  counselling_done: CheckCircle2, additional_counselling: MessageCircle, reports: FileText,
+  community: Users, schedule: Calendar, resources: BookOpen, details: Layers, cv: PenLine,
 };
 
 const CONFIG = {
-  brain: ['enrol', 'team_connect', 'profile', 'fingerprints', 'book_counselling', 'counselling_done', 'reports'],
+  brain: ['enrol', 'team_connect', 'profile', 'fingerprints', 'book_counselling', 'counselling_done', 'additional_counselling', 'reports'],
   skill: ['enrol', 'team_connect', 'profile', 'take_test', 'reports'],
-  combo: ['enrol', 'team_connect', 'profile', 'fingerprints', 'take_test', 'book_counselling', 'counselling_done', 'reports'],
+  combo: ['enrol', 'team_connect', 'profile', 'fingerprints', 'take_test', 'book_counselling', 'counselling_done', 'additional_counselling', 'reports'],
   launchpad: ['enrol', 'team_connect', 'community', 'resources', 'cv'],
   readiness: ['enrol', 'team_connect', 'schedule', 'resources', 'cv'],
 };
@@ -19,18 +20,20 @@ const CONFIG = {
 const LABELS = {
   enrol: 'Enrol & pay', team_connect: 'Dream Team connects with you', profile: 'Complete your profile',
   fingerprints: 'Give fingerprints (Brain Mapping)', take_test: 'Take Skill Mapping tests',
-  book_counselling: 'Book counselling session', counselling_done: 'Counselling completed', reports: 'View your report',
+  book_counselling: 'Book counselling session', counselling_done: 'Counselling completed',
+  additional_counselling: 'Additional counselling', reports: 'View your report',
   community: 'Join community', schedule: 'Schedule all 8 sessions', resources: 'Access resources', cv: 'Build your CV',
 };
 
 const HINTS = {
   team_connect: 'Our counsellor team will call/WhatsApp you within 24–48 hours after payment.',
-  schedule: 'Book all 8 sessions in one go — Session 1 first, then 2…8 in date order.',
+  schedule: 'Pick date & time for each session — Session 1 first, then 2…8 in order.',
   profile: 'Fill every step so counsellors and admin see your full details.',
+  additional_counselling: 'Book a follow-up counselling session after your first session is complete.',
 };
 
 function stepDone(id, ctx) {
-  const { paid, progress, hasReport, hasBooking, counsellingDone, profileComplete, sessionsBooked, sessionTarget } = ctx;
+  const { paid, progress, hasReport, hasBooking, counsellingDone, profileComplete, sessionsBooked, sessionTarget, additionalCounsellingBooked } = ctx;
   if (!paid) return id === 'enrol' ? false : false;
   if (id === 'enrol') return paid;
   if (id === 'team_connect') return paid;
@@ -46,6 +49,7 @@ function stepDone(id, ctx) {
   }
   if (id === 'book_counselling') return hasBooking;
   if (id === 'counselling_done') return counsellingDone;
+  if (id === 'additional_counselling') return !!additionalCounsellingBooked;
   if (id === 'reports') return hasReport;
   if (id === 'schedule') return sessionsBooked >= (sessionTarget || 8);
   if (id === 'community') return !!ctx.communityJoined;
@@ -55,7 +59,8 @@ function stepDone(id, ctx) {
 
 const ACTIONS = {
   profile: 'onProfile', fingerprints: 'onFingerprints', take_test: 'onTakeTest',
-  book_counselling: 'onBookCounselling', reports: 'onReports', community: 'onCommunity',
+  book_counselling: 'onBookCounselling', additional_counselling: 'onAdditionalCounselling',
+  reports: 'onReports', community: 'onCommunity',
   schedule: 'onSchedule', resources: 'onResources', cv: 'onCv',
 };
 
@@ -85,6 +90,7 @@ export default function ProductJourneySteps(props) {
           const Icon = ICONS[id] || FileText;
           const actionKey = ACTIONS[id];
           const action = !locked && !done && paid && actionKey ? props[actionKey] : null;
+          const showBookNow = id === 'additional_counselling' && ctx.counsellingDone && !done && paid && action;
           return (
             <motion.li key={id} className={`dash-journey-crazy__step${done ? ' is-done' : ''}${isNext ? ' is-next' : ''}${locked ? ' is-locked' : ''}`}
               initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.04 }}>
@@ -92,7 +98,15 @@ export default function ProductJourneySteps(props) {
               <div className="min-w-0 flex-1">
                 <p className="font-bold text-sm flex items-center gap-1">{LABELS[id]}{locked && <Lock className="w-3 h-3 opacity-50" />}</p>
                 {HINTS[id] && paid && <p className="text-xs dash-card-meta mt-1">{HINTS[id]}</p>}
-                {action && <button type="button" className="dash-journey-crazy__btn" onClick={action}>Continue <ChevronRight className="w-3.5 h-3.5" /></button>}
+                {showBookNow && (
+                  <button type="button" className="dash-journey-crazy__btn" onClick={action}>Book now <ChevronRight className="w-3.5 h-3.5" /></button>
+                )}
+                {action && !showBookNow && id !== 'additional_counselling' && (
+                  <button type="button" className="dash-journey-crazy__btn" onClick={action}>Continue <ChevronRight className="w-3.5 h-3.5" /></button>
+                )}
+                {id === 'additional_counselling' && !ctx.counsellingDone && paid && (
+                  <p className="text-xs dash-card-meta mt-1">Unlocks after your first counselling session is complete.</p>
+                )}
               </div>
             </motion.li>
           );

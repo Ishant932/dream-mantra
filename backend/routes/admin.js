@@ -62,6 +62,7 @@ import {
   deleteStudioLanding,
 } from '../lib/studioLandingEditor.js';
 import { listPageCatalog, getPageCatalog, updatePageCatalog } from '../lib/pageCatalog.js';
+import { getCopyOverrideTrees, listCopyPatches, updateCopyPatches } from '../lib/copyOverrides.js';
 
 const router = Router();
 router.use(authRequired, adminRequired);
@@ -483,6 +484,21 @@ router.delete('/studio-landings/:slug', (req, res) => {
     res.json({ ...result, landings: listStudioLandingsForAdmin() });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to delete landing page' });
+  }
+});
+
+router.get('/copy-overrides', (_req, res) => {
+  res.json({ patches: listCopyPatches(), trees: getCopyOverrideTrees() });
+});
+
+router.put('/copy-overrides', (req, res) => {
+  try {
+    const lang = req.body?.lang === 'hi' ? 'hi' : 'en';
+    const patches = req.body?.patches && typeof req.body.patches === 'object' ? req.body.patches : {};
+    const result = updateCopyPatches(lang, patches);
+    res.json(result);
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to save website text' });
   }
 });
 

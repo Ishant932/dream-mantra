@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import db, { repo, getData, flushDatabase } from '../db.js';
+import db, { repo, getData, saveData, flushDatabase } from '../db.js';
 import { authRequired } from '../middleware/auth.js';
 import { rateLimit } from '../middleware/rateLimit.js';
 import { generateTwoFactorSecret, qrCodeDataUrl, verifyTotp } from '../utils/totp.js';
@@ -117,7 +117,7 @@ function validatePassword(password) {
 
 // ─── Register ──────────────────────────────────────────────────────────────
 router.post('/register', (req, res) => {
-  const { name, email, phone, password, identifier, whatsappOptIn } = req.body;
+  const { name, email, phone, password, identifier, whatsappOptIn, signupInterest } = req.body;
   const trimmedName = name?.trim();
   const pwdErr = validatePassword(password);
   if (!trimmedName) return res.status(400).json({ message: 'Name is required' });
@@ -132,6 +132,19 @@ router.post('/register', (req, res) => {
     else userPhone = id;
   }
 
+  if (!userPhone) {
+    return res.status(400).json({ message: 'Mobile number is required' });
+  }
+  const phoneDigits = String(userPhone).replace(/\D/g, '');
+  const mobile = phoneDigits.length === 12 && phoneDigits.startsWith('91')
+    ? phoneDigits.slice(2)
+    : phoneDigits.length === 11 && phoneDigits.startsWith('0')
+      ? phoneDigits.slice(1)
+      : phoneDigits;
+  if (!/^[6-9]\d{9}$/.test(mobile)) {
+    return res.status(400).json({ message: 'Enter a valid 10-digit mobile number' });
+  }
+  userPhone = mobile;
   if (!userEmail && !userPhone) {
     return res.status(400).json({ message: 'Email or phone number is required' });
   }
@@ -150,6 +163,22 @@ router.post('/register', (req, res) => {
     ).run(trimmedName, userEmail, userPhone, hash, 'user');
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
+    if (signupInterest) {
+      const interestLabels = {
+        counselling: 'Counselling',
+        training: 'Training & Placement',
+        placement: 'Placement',
+        other: 'Not sure yet',
+      };
+      const label = interestLabels[signupInterest] || signupInterest;
+      const data = getData();
+      const row = data.users.find((u) => u.id === user.id);
+      if (row) {
+        row.profile = normalizeProfile({ ...row.profile, signupInterest, howHeard: label });
+        saveData();
+        user.profile = row.profile;
+      }
+    }
     const token = signToken(user);
     onUserRegistered(user, { whatsappOptIn: whatsappOptIn !== false && !!userPhone });
     res.status(201).json({

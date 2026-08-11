@@ -339,13 +339,12 @@ export default function SkillMappingTakeTestPanel({
   return (
     <div className="test-portal-root">
       <h1 className="page-title font-display">Take test</h1>
-      <p className="page-subtitle">Start or continue your Skill Mapping tests. Completed tests stay here with a Completed badge.</p>
-      {!academicStage ? (
+      {academicStage ? (
+        <p className="page-subtitle" style={{ marginTop: 8 }}>Your class: <strong>{academicStage}</strong></p>
+      ) : (
         <div className="info-banner" style={{ marginTop: 12 }}>
           <p>Pick your academic / professional stage on your profile to set your class.</p>
         </div>
-      ) : (
-        <p className="page-subtitle" style={{ marginTop: 12 }}>Your class: <strong>{academicStage}</strong></p>
       )}
       <div className="dreamz-banner" style={{ marginTop: 12 }}>
         Dream Mantra ID: <span className="val">{user?.user_uid || '—'}</span>
@@ -356,30 +355,20 @@ export default function SkillMappingTakeTestPanel({
           <p>No tests are assigned to this purchase yet. Contact support if this looks wrong.</p>
         </div>
       ) : (
-        <>
-          <div className="sm-subtabs" style={{ marginTop: 16 }}>
-            {instruments.map((i) => (
-              <button key={i.id} type="button" className={`sm-subtab${i.status === 'completed' ? ' is-done' : ''}`} onClick={() => openInstrument(i.id)}>
-                {instrumentLabel(i)}
-                {i.status === 'completed' ? ' ✓' : ''}
-              </button>
-            ))}
-          </div>
-          <div className="instrument-grid" style={{ marginTop: 16 }}>
-            {instruments.map((i) => (
-              <div key={i.id} className={`instrument-card status-${i.status}`}>
-                <h2>{instrumentLabel(i)}</h2>
-                <p className="hint">{i.hint}</p>
-                <div className="instrument-footer">
-                  <span className={`badge ${i.status}`}>{statusLabel(i.status)}</span>
-                  <button type="button" className={`btn ${i.status === 'not_started' ? 'btn-primary' : 'btn-outline'}`} onClick={() => openInstrument(i.id)}>
-                    {i.status === 'completed' ? 'Review' : i.status === 'in_progress' ? 'Continue' : 'Start test'}
-                  </button>
-                </div>
+        <div className="instrument-grid" style={{ marginTop: 16 }}>
+          {instruments.map((i, idx) => (
+            <div key={i.id} className={`instrument-card status-${i.status}`}>
+              <h2>Test {idx + 1}</h2>
+              <p className="hint">{i.total} questions</p>
+              <div className="instrument-footer">
+                <span className={`badge ${i.status}`}>{statusLabel(i.status)}</span>
+                <button type="button" className={`btn ${i.status === 'not_started' ? 'btn-primary' : 'btn-outline'}`} onClick={() => openInstrument(i.id)}>
+                  {i.status === 'completed' ? 'Review' : i.status === 'in_progress' ? 'Continue' : 'Start test'}
+                </button>
               </div>
-            ))}
-          </div>
-        </>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

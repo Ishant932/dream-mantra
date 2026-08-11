@@ -65,7 +65,7 @@ async function loadConfig(){
 const state = {
   template: 'classic',
   settings: {colorTheme:'navygold', primary:'#0b2545', accent:'#c6a15b', fontPair:'atsClassic', lineHeight:1.5, paraGap:16, dateFormat:'mmmYYYY'},
-  personal: {name:'Your Name', title:'Professional Title', email:'you@email.com', phone:'+91 00000 00000', location:'Jaipur, India', linkedin:'', portfolio:'', github:''},
+  personal: {name:'Your Name', title:'Professional Title', email:'you@email.com', phone:'+91 00000 00000', location:'Jaipur, India', linkedin:'', portfolio:'', github:'', photo:''},
   summary: '',
   experience: [],
   education: [],
@@ -534,33 +534,54 @@ function buildRepeatBlock(cfg){
   return block;
 }
 
+function photoSrc(){
+  return state.misc.photo || state.personal.photo || '';
+}
+
+function setPhoto(dataUrl){
+  state.misc.photo = dataUrl || '';
+  state.personal.photo = dataUrl || '';
+}
+
+function buildPhotoBlock(afterChange){
+  const block=document.createElement('div'); block.className='section-block';
+  block.innerHTML=`<h2><span>Profile photo</span></h2>`;
+  const row=document.createElement('div'); row.className='photo-upload';
+  const label=document.createElement('label'); label.className='photo-upload-btn';
+  label.textContent='Upload photo';
+  const input=document.createElement('input');
+  input.type='file'; input.accept='image/png,image/jpeg,image/webp,image/gif';
+  input.addEventListener('change',()=>{
+    const file=input.files && input.files[0]; if(!file) return;
+    if(file.size>5*1024*1024){ alert('Please use a photo under 5 MB'); return; }
+    const reader=new FileReader();
+    reader.onload=()=>{ setPhoto(reader.result); render(); if(afterChange) afterChange(); persistCv(); };
+    reader.readAsDataURL(file);
+  });
+  label.appendChild(input);
+  row.appendChild(label);
+  const src=photoSrc();
+  if(src){
+    const img=document.createElement('img'); img.src=src; img.alt='Photo preview'; img.className='photo-preview';
+    row.appendChild(img);
+    const rm=document.createElement('button'); rm.type='button'; rm.className='add-btn'; rm.textContent='Remove photo';
+    rm.addEventListener('click',()=>{ setPhoto(''); render(); if(afterChange) afterChange(); persistCv(); });
+    row.appendChild(rm);
+  }
+  block.appendChild(row);
+  const hint=document.createElement('p'); hint.className='hint';
+  hint.textContent='JPG, PNG or WebP · under 5 MB. Shown on your CV header.';
+  block.appendChild(hint);
+  return block;
+}
+
 function renderMiscForm(){
   formHost.innerHTML='';
   const note=document.createElement('p'); note.className='hint'; note.style.margin='0 0 12px';
   note.textContent='Everything below is optional and situational. Leave a field blank and it simply won\'t appear on your CV. Note: photo, date of birth, marital status, gender and nationality can trigger bias filters in many Western ATS systems — fill these in only if standard for the role/region you\'re applying to.';
   formHost.appendChild(note);
 
-  const photoBlock=document.createElement('div'); photoBlock.className='section-block';
-  photoBlock.innerHTML=`<h2><span>Photo</span></h2>`;
-  const photoField=document.createElement('div'); photoField.className='field';
-  const photoInput=document.createElement('input'); photoInput.type='file'; photoInput.accept='image/*';
-  photoInput.addEventListener('change', e=>{
-    const file=e.target.files[0]; if(!file) return;
-    const reader=new FileReader();
-    reader.onload=()=>{ state.misc.photo=reader.result; render(); renderMiscForm(); };
-    reader.readAsDataURL(file);
-  });
-  photoField.appendChild(photoInput);
-  photoBlock.appendChild(photoField);
-  if(state.misc.photo){
-    const prevImg=document.createElement('img'); prevImg.src=state.misc.photo;
-    prevImg.style.cssText='width:60px;height:60px;object-fit:cover;border-radius:50%;margin-top:8px;display:block;';
-    photoBlock.appendChild(prevImg);
-    const rm=document.createElement('button'); rm.className='add-btn'; rm.style.marginTop='8px'; rm.textContent='Remove Photo';
-    rm.addEventListener('click',()=>{state.misc.photo=''; render(); renderMiscForm();});
-    photoBlock.appendChild(rm);
-  }
-  formHost.appendChild(photoBlock);
+  formHost.appendChild(buildPhotoBlock(()=>renderMiscForm()));
 
   const pd=document.createElement('div'); pd.className='section-block';
   pd.innerHTML=`<h2><span>Personal Details</span></h2>`;
@@ -636,6 +657,7 @@ function renderForm(){
     row3.appendChild(fieldRow('Portfolio / Website', p.portfolio, v=>p.portfolio=v));
     block.appendChild(row3);
     block.appendChild(fieldRow('GitHub / Other Link', p.github, v=>p.github=v));
+    block.appendChild(buildPhotoBlock(()=>renderForm()));
   }
   else if(section.type==='text'){
     if(section.key==='summary'){
@@ -886,7 +908,7 @@ function render(){
   const tpl=state.template;
   document.querySelector('.app').className='app tpl-'+tpl;
 
-  const photoTag = state.misc.photo ? `<img src="${state.misc.photo}" alt="photo" style="width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid var(--c-accent);flex-shrink:0;">` : '';
+  const photoTag = photoSrc() ? `<img src="${photoSrc()}" alt="photo" style="width:84px;height:84px;border-radius:50%;object-fit:cover;border:2px solid var(--c-accent);flex-shrink:0;">` : '';
   const headerHTML=`
     <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:18px;">
       <div style="flex:1;">
@@ -902,8 +924,8 @@ function render(){
     pageEl.innerHTML = `<div class="head-band">${headerHTML}</div><div class="body-pad">${sectionsHTML()}</div>`;
   } else if(tpl==='sidebar'){
     const sideBits=[];
-    if(state.misc.photo){
-      sideBits.push(`<img src="${state.misc.photo}" alt="photo" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid var(--c-accent);margin-bottom:14px;display:block;">`);
+    if(photoSrc()){
+      sideBits.push(`<img src="${photoSrc()}" alt="photo" style="width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid var(--c-accent);margin-bottom:14px;display:block;">`);
     }
     sideBits.push(`<h1 class="name">${esc(p.name||'Your Name')}</h1><div class="title-line">${esc(p.title||'')}</div>`);
     const contactList=[p.email?linkify(p.email):'',p.phone?esc(p.phone):'',p.location?esc(p.location):'',p.linkedin?linkify(p.linkedin,'LinkedIn'):'',p.portfolio?linkify(p.portfolio,'Portfolio'):'',p.github?linkify(p.github,'GitHub'):''].filter(Boolean);
@@ -933,7 +955,71 @@ function render(){
   } else {
     pageEl.innerHTML = headerHTML + sectionsHTML();
   }
+  persistCv();
 }
+
+let persistTimer;
+let persistEnabled = false;
+let applyingSaved = false;
+function persistCv(){
+  if (!persistEnabled || applyingSaved) return;
+  try {
+    const {score}=computeATSScore();
+    const payload={ form: state, template_id: state.template, ats_score: score, name: state.personal.name };
+    if (window.parent && window.parent !== window) {
+      clearTimeout(persistTimer);
+      persistTimer = setTimeout(()=>{
+        window.parent.postMessage({ type: 'dm-cv-save', payload }, '*');
+      }, 900);
+    }
+  } catch (e) { /* ignore persist errors */ }
+}
+
+function applySaved(payload){
+  const form = payload?.form || payload;
+  if (!form || typeof form !== 'object') return;
+  applyingSaved = true;
+  Object.keys(form).forEach((k)=>{
+    if (form[k] != null && typeof form[k] === 'object' && !Array.isArray(form[k]) && state[k] && typeof state[k] === 'object' && !Array.isArray(state[k])) {
+      Object.assign(state[k], form[k]);
+    } else if (form[k] !== undefined) {
+      state[k] = form[k];
+    }
+  });
+  if (state.personal.photo && !state.misc.photo) state.misc.photo = state.personal.photo;
+  if (state.misc.photo && !state.personal.photo) state.personal.photo = state.misc.photo;
+  renderTabs();
+  renderForm();
+  render();
+  applyingSaved = false;
+  persistEnabled = true;
+}
+
+function downloadCvPdf(){
+  const page = document.getElementById('page');
+  const name = (state.personal.name || 'CV').replace(/[^\w\-]+/g,'_').slice(0,40) || 'CV';
+  persistCv();
+  if (window.html2pdf && page) {
+    window.html2pdf().set({
+      margin: 8,
+      filename: name + '.pdf',
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: { scale: 2, useCORS: true, logging: false },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['css', 'legacy'] },
+    }).from(page).save();
+    return;
+  }
+  window.print();
+}
+window.downloadCvPdf = downloadCvPdf;
+
+window.addEventListener('message', (e)=>{
+  const data = e.data;
+  if (!data || typeof data !== 'object') return;
+  if (data.type === 'dm-cv-load') applySaved(data.payload);
+  if (data.type === 'dm-cv-download') downloadCvPdf();
+});
 
 async function bootstrap(){
   if (new URLSearchParams(location.search).get('embed') === '1') {
@@ -945,5 +1031,9 @@ async function bootstrap(){
   renderTabs();
   renderForm();
   render();
+  if (window.parent && window.parent !== window) {
+    window.parent.postMessage({ type: 'dm-cv-ready' }, '*');
+  }
+  setTimeout(()=>{ persistEnabled = true; }, 1800);
 }
 bootstrap();

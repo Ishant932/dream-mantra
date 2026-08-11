@@ -92,7 +92,14 @@ export function landingSignupCheckout({ name, email, phone, password, productSlu
   const pwd = String(password || '');
 
   if (!trimmedName || trimmedName.length < 2) throw new Error('Please enter your name');
-  if (!userEmail && !userPhone) throw new Error('Please enter email or phone');
+  const phoneDigits = String(userPhone || '').replace(/\D/g, '');
+  const mobile = phoneDigits.length === 12 && phoneDigits.startsWith('91')
+    ? phoneDigits.slice(2)
+    : phoneDigits.length === 11 && phoneDigits.startsWith('0')
+      ? phoneDigits.slice(1)
+      : phoneDigits;
+  if (!/^[6-9]\d{9}$/.test(mobile)) throw new Error('Enter a valid 10-digit mobile number');
+  const normalizedPhone = mobile;
   if (pwd.length < 6) throw new Error('Password must be at least 6 characters');
 
   const landings = getAllStudioLandings();
@@ -105,8 +112,8 @@ export function landingSignupCheckout({ name, email, phone, password, productSlu
   let user = userEmail
     ? db.prepare('SELECT * FROM users WHERE email = ?').get(userEmail)
   : null;
-  if (!user && userPhone) {
-    user = db.prepare('SELECT * FROM users WHERE phone = ?').get(userPhone);
+  if (!user && normalizedPhone) {
+    user = db.prepare('SELECT * FROM users WHERE phone = ?').get(normalizedPhone);
   }
   if (!user && userEmail) {
     user = findUserByLoginIdentifier(userEmail);
@@ -120,7 +127,7 @@ export function landingSignupCheckout({ name, email, phone, password, productSlu
     const hash = bcrypt.hashSync(pwd, 10);
     const result = db
       .prepare('INSERT INTO users (name, email, phone, password, role) VALUES (?, ?, ?, ?, ?)')
-      .run(trimmedName, userEmail, userPhone, hash, 'user');
+      .run(trimmedName, userEmail, normalizedPhone, hash, 'user');
     user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid);
     onUserRegistered(user, { whatsappOptIn: true });
   }

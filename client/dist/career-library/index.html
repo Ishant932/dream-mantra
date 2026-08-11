@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dream Mantra — Career Library</title>
+  <title>Career Library — Dream Mantra</title>
+  <meta name="description" content="Explore 1,200+ career pathways, entrance exams, and education routes — powered by Dream Mantra."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
@@ -11,99 +12,111 @@
 </head>
 <body>
 
-</head>
-<body>
-
-<header class="hdr">
-  <div class="hdr-inner">
-    <p class="hdr-lbl">Dream Mantra</p>
-    <h1>Career Library</h1>
-    <p class="hdr-sub">Every degree, stream, subject and exam — 1,211+ pathways mapped from Class 10</p>
-    <div class="stats" id="hdr-stats"></div>
+<!-- ══ HEADER ════════════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Dream Mantra · Career Guidance</div>
+    <h1 class="header-title">Career Library</h1>
+    <p class="header-sub">Explore 1,200+ careers — degrees, entrance exams, salaries, and education paths</p>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search" autocomplete="off" spellcheck="false"
+        placeholder="Search careers — e.g. Full Stack Developer, Doctor, CA…" aria-label="Search careers"/>
+      <button class="search-clear" id="search-clear" aria-label="Clear search">✕</button>
+    </div>
   </div>
 </header>
 
-<!-- TABS -->
-<div class="tabs-wrap">
-  <div class="tabs" id="tabs"></div>
+<!-- Stats strip -->
+<div class="stats-strip">
+  <div class="stats-inner" id="stats-strip"></div>
 </div>
 
-<!-- PAGE -->
-<div class="page">
-  <div class="ctrl-row" id="ctrl-row">
-    <input class="srch" id="srch" type="text" placeholder="Search…"/>
-    <select class="srt" id="srt">
-      <option value="rel">Sort: Relevance</option>
-      <option value="ai">Most AI-resilient</option>
-      <option value="demand">Highest demand</option>
-      <option value="az">A – Z</option>
+<!-- ══ QUICK CATEGORY CHIPS ══════════════════════════════════════════════════ -->
+<div class="browse-row">
+  <div class="browse-inner">
+    <span class="f-label">Browse by</span>
+    <button class="cat-chip active" data-cat="tech" type="button">💻 Technology</button>
+    <button class="cat-chip" data-cat="health" type="button">🏥 Healthcare</button>
+    <button class="cat-chip" data-cat="biz" type="button">💼 Business</button>
+    <button class="cat-chip" data-cat="finance" type="button">📈 Finance</button>
+    <button class="cat-chip" data-cat="creative" type="button">🎨 Creative</button>
+    <button class="cat-chip" data-cat="science" type="button">🔬 Science</button>
+    <button class="cat-chip" data-cat="edu" type="button">📚 Education</button>
+    <button class="cat-chip" data-cat="govt" type="button">⚖️ Govt / Law</button>
+    <button class="cat-chip" data-cat="defence" type="button">🛡️ Defence</button>
+    <button class="cat-chip" data-cat="agri" type="button">🌾 Agriculture</button>
+    <button class="cat-chip" data-cat="hospitality" type="button">🏨 Hospitality</button>
+    <button class="cat-chip" data-cat="sports" type="button">🏅 Sports</button>
+  </div>
+</div>
+
+<!-- ══ FILTER BAR ═════════════════════════════════════════════════════════════ -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <span class="f-label">Filters</span>
+    <select class="f-select" id="f-stream" aria-label="Filter by stream">
+      <option value="">All Streams</option>
     </select>
-    <button class="mob-btn" id="mob-btn" onclick="openDrw()">Filters</button>
-  </div>
-  <div class="chips" id="chips"></div>
-  <div class="body-row">
-    <aside class="side" id="side">
-      <div class="f-head">
-        <span class="f-title">Filters</span>
-        <button class="clear-btn" onclick="clearAll()">Clear all</button>
-      </div>
-      <div id="side-filters"></div>
-    </aside>
-    <div class="res-area">
-      <div class="res-ct" id="res-ct"></div>
-      <div id="main-content"></div>
-      <div class="load-wrap" id="load-wrap" style="display:none">
-        <button class="load-btn" id="load-btn" onclick="loadMore()">Show more</button>
-      </div>
+    <select class="f-select" id="f-cluster" aria-label="Filter by field">
+      <option value="">All Fields</option>
+    </select>
+    <select class="f-select" id="f-level" aria-label="Filter by education level">
+      <option value="">Any Level</option>
+    </select>
+    <select class="f-select" id="f-type" aria-label="Filter by qualification">
+      <option value="">All Qualifications</option>
+    </select>
+    <div class="filter-divider"></div>
+    <button class="clear-all" id="clear-all" type="button">Clear filters</button>
+    <div class="sort-wrap">
+      <span class="sort-lbl">Sort</span>
+      <select class="sort-sel" id="sort-sel" aria-label="Sort careers">
+        <option value="rel">Relevance</option>
+        <option value="demand">Demand</option>
+        <option value="az">A–Z</option>
+        <option value="salary">Salary</option>
+      </select>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="overlay" id="modal" style="display:none" onclick="closeModal()">
-  <div class="modal" onclick="event.stopPropagation()">
-    <div class="m-hdr">
-      <div class="m-top">
-        <div style="flex:1;padding-right:10px">
-          <div class="m-cl" id="mcl"></div>
-          <div class="m-name" id="mnm"></div>
-          <div class="m-meta" id="mmt"></div>
-        </div>
-        <button class="m-close" onclick="closeModal()">&#x2715;</button>
-      </div>
-      <div class="m-badges" id="mbdg"></div>
-    </div>
-    <div class="m-body">
-      <p class="m-desc" id="mdsc"></p>
-      <div id="mmtr"></div>
-      <dl id="mdl"></dl>
-      <p class="m-note">Salaries, demand and personality mappings are indicative field-level guidance. Verify fees, eligibility and exam details on official sources before making decisions.</p>
-    </div>
+<!-- ══ MAIN ═══════════════════════════════════════════════════════════════════ -->
+<main class="main">
+  <div class="results-row">
+    <span class="result-count" id="result-count"></span>
+  </div>
+
+  <!-- Career grid -->
+  <div class="career-grid" id="career-grid"></div>
+
+  <!-- Empty state -->
+  <div class="empty" id="empty-state">
+    <div class="empty-icon">🔍</div>
+    <h3>No careers found</h3>
+    <p>Try a different search term or remove some filters.</p>
+    <button class="empty-clear" id="empty-clear">Clear all filters</button>
+  </div>
+
+  <!-- Load more -->
+  <div class="load-wrap" id="load-wrap" style="display:none;">
+    <button class="load-btn" id="load-more">Load more careers</button>
+  </div>
+</main>
+
+<!-- ══ CAREER MODAL ════════════════════════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true">
+  <div class="modal" id="modal">
+    <div id="modal-content"></div>
   </div>
 </div>
 
-<!-- Drawer -->
-<div class="drw-ov" id="drw-ov" onclick="closeDrw()">
-  <div class="drw" onclick="event.stopPropagation()">
-    <div class="drw-hd">
-      <span class="drw-tit">Filters</span>
-      <button class="drw-x" onclick="closeDrw()">&#x2715;</button>
-    </div>
-    <div id="drw-filters"></div>
-    <button class="drw-apply" id="drw-apply" onclick="closeDrw()">Show results</button>
-  </div>
-</div>
-
-  <!-- DATA FILES (load first) -->
-  <script src="data/careers-data.js"></script>
-  <script src="data/exams-data.js"></script>
-  <script src="data/clusters-data.js"></script>
-  <script src="data/meta-data.js"></script>
-
-  <!-- APP LOGIC -->
-  <script src="js/app.js"></script>
-  <script src="js/exams.js"></script>
-  <script src="js/clusters.js"></script>
-
+<!-- ══ DATA SCRIPTS ════════════════════════════════════════════════════════════ -->
+<script src="data/careers-data.js"></script>
+<script src="data/exams-data.js"></script>
+<script src="data/clusters-data.js"></script>
+<script src="data/meta-data.js"></script>
+<script src="js/clusters.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>

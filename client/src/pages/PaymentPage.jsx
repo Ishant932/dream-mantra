@@ -209,7 +209,7 @@ export default function PaymentPage() {
   const ensureAdminBandBeforeSubmit = async () => {
     if (!needsSkillBand) return true;
     if (!skillMappingBand) {
-      setError('Please select an agewise bifurcation combo before submitting.');
+      setError('Please select a test package before submitting.');
       return false;
     }
     try {
@@ -322,7 +322,7 @@ export default function PaymentPage() {
 
       const bandLabel = getSkillMappingComboLabel(skillMappingBand, skillCombos);
       const noteParts = [
-        bandLabel ? `Age bifurcation: ${bandLabel}` : '',
+        bandLabel ? `Test package: ${bandLabel}` : '',
         userNote.trim(),
       ].filter(Boolean);
 
@@ -368,7 +368,8 @@ export default function PaymentPage() {
       const created = await paymentsApi.createOrder(
         token,
         Number(assessmentId),
-        couponApplied?.code || undefined
+        couponApplied?.code || undefined,
+        needsSkillBand ? skillMappingBand : undefined,
       );
 
       if (created.alreadyPaid) {
@@ -669,9 +670,9 @@ export default function PaymentPage() {
                     combos={skillCombos}
                     value={skillMappingBand}
                     onChange={handleSkillBandChange}
-                    lockedComboId={order?.assessment?.progress?.skillMappingComboId || order?.assessment?.progress?.skillMappingBand}
-                    title="Agewise Bifurcation (required)"
-                    hint="Select the test package for this student. This cannot be changed after payment."
+                    lockedComboId={isConfirmed ? (order?.assessment?.progress?.skillMappingComboId || order?.assessment?.progress?.skillMappingBand) : null}
+                    title="Test Package (required)"
+                    hint="Choose the test package for this student. You can change it until payment is completed."
                   />
                 </section>
               )}
@@ -748,17 +749,6 @@ export default function PaymentPage() {
                         <input className="input-field !py-2.5 w-full" placeholder="UPI / bank reference" value={paymentReferenceId} onChange={(e) => setPaymentReferenceId(e.target.value)} maxLength={120} />
                         <label className="payment-page__field-label">Note (optional)</label>
                         <input className="input-field !py-2.5 w-full" placeholder="Any extra details" value={userNote} onChange={(e) => setUserNote(e.target.value)} maxLength={500} />
-                        {needsSkillBand && (
-                        <div className="payment-page__admin-band">
-                          <SkillMappingComboPicker
-                            combos={skillCombos}
-                            value={skillMappingBand}
-                            onChange={handleSkillBandChange}
-                            title="Agewise Bifurcation (required)"
-                            hint="Select the test package for this student. Payment cannot be submitted without this."
-                          />
-                        </div>
-                        )}
                         <button type="button" onClick={handleAdminSubmit} disabled={paying} className="btn-primary payment-page__admin-submit-btn w-full mt-2">
                           {paying ? 'Submitting…' : `Submit for verification · ${formatPrice(finalPrice)}`}
                         </button>

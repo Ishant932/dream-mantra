@@ -33,6 +33,17 @@
     const email = document.getElementById('lf-email').value.trim();
     const phone = document.getElementById('lf-phone').value.trim();
     const password = document.getElementById('lf-password').value;
+    const phoneDigits = phone.replace(/\D/g, '');
+    const mobile = phoneDigits.length === 12 && phoneDigits.startsWith('91')
+      ? phoneDigits.slice(2)
+      : phoneDigits.length === 11 && phoneDigits.startsWith('0')
+        ? phoneDigits.slice(1)
+        : phoneDigits;
+    if (!/^[6-9]\d{9}$/.test(mobile)) {
+      alert('Please enter a valid 10-digit mobile number');
+      document.getElementById('lf-phone').focus();
+      return;
+    }
     const confirmPassword = document.getElementById('lf-confirm-password').value;
     const passwordError = document.getElementById('password-error');
     const submitBtn = leadForm.querySelector('button[type="submit"]');
@@ -56,7 +67,7 @@
         body: JSON.stringify({
           name,
           email,
-          phone,
+          phone: mobile,
           password,
           productSlug,
           studioSlug,

@@ -1,13 +1,24 @@
 import { createContext, useContext, useState, useCallback, useEffect, useMemo } from 'react';
 import { getMessages, translate, translateData } from '../i18n';
-import { loc } from '../i18n/utils';
+import { loc, mergeDeep } from '../i18n/utils';
+import { pagesApi } from '../api';
 
 const LanguageContext = createContext(null);
 
 export function LanguageProvider({ children }) {
   const [lang, setLang] = useState(() => localStorage.getItem('dm_lang') || 'en');
+  const [copyTrees, setCopyTrees] = useState({ en: {}, hi: {} });
 
-  const messages = useMemo(() => getMessages(lang), [lang]);
+  useEffect(() => {
+    pagesApi.copyOverrides()
+      .then((r) => setCopyTrees(r.trees || { en: {}, hi: {} }))
+      .catch(() => {});
+  }, []);
+
+  const messages = useMemo(
+    () => mergeDeep(getMessages(lang), copyTrees[lang] || copyTrees.en || {}),
+    [lang, copyTrees],
+  );
 
   useEffect(() => {
     document.documentElement.lang = lang === 'hi' ? 'hi' : 'en';
