@@ -33,7 +33,7 @@ MODULE PRICING (Dashboard → Book Now):
 • Skill Mapping — ₹699 (+ optional counselling add-on ₹699)
 • Brain + Skill Mapping Combo — ₹2,999 (counselling included)
 • AI Career Launchpad — ₹1,499
-• Career Readiness Program — full neuroscience + psychometrics + 5 sessions + placement (/crp?tab=readiness)
+• Career Readiness Program — full neuroscience + psychometrics + 8 live sessions + 2 mock interviews + placement (dreammantra.in/crp?tab=readiness) — ₹2,999
 • Additional Counselling Session (follow-up) — ₹999
 
 USER DASHBOARD:
@@ -119,6 +119,11 @@ RULES FOR ANSWERING:
 `;
 
 export const DREAMZ_KNOWLEDGE = [
+  {
+    keys: ['career readiness', 'readiness program', 'personalised career readiness', 'personalized career readiness', '8 session program', 'career launch program'],
+    en: 'Personalised Career Readiness Program — ₹2,999 at dreammantra.in/crp?tab=readiness. Includes Brain Mapping + Skill Mapping, counselling, 8 live sessions, 2 mock interviews, LinkedIn/CV/Naukri reviews, AI job search & placement support. Ask me "What is Career Readiness Program?" for full details!',
+    hi: 'Career Readiness Program ₹2999 — 8 sessions + 2 mocks + placement। dreammantra.in/crp?tab=readiness',
+  },
   {
     keys: ['about', 'about us', 'about dreamz', 'about Dream Mantra', 'who is dreamz', 'what is dreamz'],
     en: 'Dream Mantra (Dreamz Roadmap) is India\'s scientific education & career guidance platform. Tagline: "We are all unique keys, meant to unlock different doors." We guide from Class 1 to First Job using Brain Mapping & Skill Mapping assessments. Founded by Esha Lohiya — certified by Govt of India, IIT Madras, NLP. Free consultation: 9680102276 | /about',

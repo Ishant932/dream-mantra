@@ -6,7 +6,8 @@ export const MODULE_PRICING = {
   dmit: { title: 'Brain Mapping', price: 1999, counsellingAddon: 699 },
   psychometric: { title: 'Skill Mapping', price: 699, counsellingAddon: 699 },
   'dmit-psychometric': { title: 'Brain + Skill Mapping (Combo)', price: 2999, includesCounselling: true },
-  'crp-test': { title: 'AI Career Launchpad', price: 1499 },
+  'crp-test': { title: 'AI Career Launchpad', price: 1499, counsellingAddon: 0 },
+  'career-readiness': { title: 'Personalised Career Readiness Program', price: 2999, includesCounselling: true },
   'counselling-topup': { title: 'Additional Counselling Session', price: 999 },
 };
 
@@ -16,6 +17,7 @@ const PRICING_REPLY_EN = `MODULE PRICING (Dream Mantra Dashboard)
 • Skill Mapping — ₹699 (+ optional counselling add-on ₹699)
 • Brain + Skill Mapping (Combo) — ₹2,999 (counselling included)
 • AI Career Launchpad (CRP) — ₹1,499
+• Personalised Career Readiness Program — ₹2,999 (Brain + Skill Mapping + 8 live sessions + 2 mock interviews + placement)
 • Additional Counselling Session (follow-up) — ₹999
 
 HOW TO PURCHASE
@@ -104,7 +106,42 @@ export const EXACT_QA = [
       'what are the fees',
     ],
     en: PRICING_REPLY_EN,
-    hi: 'मूल्य: Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999, CRP ₹1499, Extra counselling ₹999। Dashboard → Modules से खरीदें। 9680102276',
+    hi: 'मूल्य: Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999, CRP ₹1499, Career Readiness ₹2999, Extra counselling ₹999। Dashboard → Modules से खरीदें। 9680102276',
+  },
+  {
+    patterns: [
+      'what is career readiness',
+      'career readiness program',
+      'personalised career readiness',
+      'personalized career readiness',
+      'readiness program details',
+      'readiness program price',
+      'pcrp program',
+      '8 session program',
+      'mock interview program',
+    ],
+    en: `PERSONALISED CAREER READINESS PROGRAM — ₹2,999
+
+Flagship end-to-end career launch from Dream Mantra.
+
+INCLUDES
+• Brain Mapping + Skill Mapping assessments
+• Expert counselling session included
+• 8 LIVE sessions: Know Yourself → Career Direction → Strategy → Branding → Job-Ready Profile → AI Job Search → Interview Mastery → Offer & Launch
+• 2 additional mock interviews with feedback
+• LinkedIn, CV/Resume & Naukri profile reviews
+• AI career toolkit, job-search system, salary negotiation, 90-day launch plan
+
+WHO: College students, graduates, early-career professionals, career switchers
+
+ENROL: dreammantra.in/dashboard?tab=assess&shop=career-readiness
+Details: dreammantra.in/crp?tab=readiness
+Landing: dreammantra.in/studio/personalized-career-readiness-program/
+
+After payment → Dashboard → Training & Placement → schedule all 8 sessions in order.
+
+9680102276 | info@dreammantra.in`,
+    hi: 'Career Readiness ₹2999 — Brain+Skill Mapping + 8 sessions + 2 mocks + placement। dreammantra.in/crp?tab=readiness | 9680102276',
   },
   {
     patterns: ['buy second module', 'another module', 'multiple modules', 'two modules', 'second module', 'first module pending', 'module disappeared', 'module removed', 'paid module pending', 'active module pending'],

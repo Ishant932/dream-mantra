@@ -5,10 +5,11 @@ import {
 import { SITE_CONTEXT, DREAMZ_KNOWLEDGE, matchDreamzKnowledge } from './dreamzKnowledge.js';
 import { matchExactQA, matchKeywordKnowledgeImproved } from './botKnowledge.js';
 import { formatBotReply } from './formatBotReply.js';
+import { searchSiteKnowledge, buildGeminiSiteContext } from './siteContentKnowledge.js';
 
 export const BOT_KNOWLEDGE = [
   ...DREAMZ_KNOWLEDGE,
-  { keys: ['career readiness', 'readiness program', 'crp readiness'], en: '**Career Readiness Program** — Brain + Skill Mapping, 5 training sessions, placement support. /crp?tab=readiness | Book Now', hi: 'Career Readiness Program — /crp?tab=readiness' },
+  { keys: ['career readiness', 'readiness program', 'personalised career readiness', 'personalized career readiness', 'pcrp'], en: 'See full Personalised Career Readiness Program details — ask "What is Career Readiness Program?" or visit dreammantra.in/crp?tab=readiness', hi: 'Career Readiness Program — dreammantra.in/crp?tab=readiness | ₹2999' },
   { keys: ['ai career launchpad', 'career launchpad', 'launchpad'], en: '**AI Career Launchpad** — 5 sessions. ₹1,499 | /crp?tab=launchpad | 9680102276', hi: 'AI Career Launchpad — /crp?tab=launchpad' },
   { keys: ['cost', 'price', 'fees', '1999', '699', '2999'], en: 'Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | Launchpad ₹1,499. Dashboard → Book Now.', hi: 'Brain Mapping ₹1999, Skill Mapping ₹699, Combo ₹2999.' },
   { keys: ['dashboard', 'book now', 'modules'], en: 'Dashboard: Book Now, Counselling, Training & Placement, Support, Career Library. dreammantra.in/dashboard', hi: 'Dashboard: Book Now, Counselling, Training.' },
@@ -23,6 +24,9 @@ function getLocalReply(message, lang) {
   const trimmed = message.trim();
   const exact = matchExactQA(trimmed, lang);
   if (exact) return { reply: exact, source: 'exact-qa' };
+
+  const siteHit = searchSiteKnowledge(trimmed, lang);
+  if (siteHit?.reply) return { reply: siteHit.reply, source: siteHit.source };
 
   const streamMatch = detectStreamFromMessage(trimmed);
   if (streamMatch) {
@@ -71,7 +75,7 @@ async function askGemini(message, history, lang) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SITE_CONTEXT }] },
+        systemInstruction: { parts: [{ text: `${SITE_CONTEXT}\n\n${buildGeminiSiteContext()}` }] },
         contents,
         generationConfig: { temperature: 0.3, maxOutputTokens: 800, topP: 0.9 },
       }),
@@ -85,11 +89,12 @@ async function askGemini(message, history, lang) {
 
 const FALLBACK_EN = `I'm Esh, Dream Mantra's AI counsellor.
 
-• Pricing — Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999 | CRP ₹1,499
+• Brain Mapping ₹1,999 | Skill Mapping ₹699 | Combo ₹2,999
+• AI Career Launchpad ₹1,499 | Personalised Career Readiness Program ₹2,999
 • Dashboard — dreammantra.in/dashboard
-• Book counselling — after payment confirmed
-• Reply MENU for quick options | HELP for human support
+• Career Readiness — dreammantra.in/crp?tab=readiness (8 sessions + 2 mock interviews)
 
+Reply MENU for quick options | HELP for human support
 Call 9680102276 | Mon–Sat 11am–7pm`;
 
 const FALLBACK_HI = `मैं एश, Dream Mantra की AI counsellor।

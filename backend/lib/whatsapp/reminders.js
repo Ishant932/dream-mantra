@@ -192,6 +192,31 @@ export function scanCommunityReminders() {
   return queued;
 }
 
+export function scanReadinessScheduleReminders() {
+  const data = getData();
+  const users = data.users || [];
+  let queued = 0;
+
+  for (const assessment of data.assessments || []) {
+    if (assessment.status !== 'paid' && assessment.payment_status !== 'confirmed' && assessment.payment_confirmed !== true) continue;
+    const slug = String(assessment.product_slug || '').toLowerCase();
+    if (slug !== 'career-readiness') continue;
+    if (hoursSince(assessment.paid_at || assessment.updated_at) < 48) continue;
+
+    const progress = assessment.progress || {};
+    const sessionsBooked = Number(progress.sessionsBooked || progress.programSessionsBooked || 0);
+    if (sessionsBooked >= 8) continue;
+
+    const user = users.find((u) => Number(u.id) === Number(assessment.user_id));
+    if (!userMayReceiveWhatsApp(user)) continue;
+    if (hasRecentOutbox(user.id, 'career_readiness_schedule_reminder', 72)) continue;
+
+    const row = queueFromTemplate('career_readiness_schedule_reminder', user);
+    if (row) queued += 1;
+  }
+  return queued;
+}
+
 export function runReminderScan() {
   return {
     profile: scanProfileReminders(),
@@ -200,5 +225,6 @@ export function runReminderScan() {
     test: scanTestReminders(),
     community: scanCommunityReminders(),
     journey: scanJourneyStatusReminders(),
+    readiness: scanReadinessScheduleReminders(),
   };
 }

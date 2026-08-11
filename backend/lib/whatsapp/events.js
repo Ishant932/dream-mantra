@@ -162,9 +162,13 @@ export function onPaymentPending(user, assessment) {
 export function onPaymentConfirmed(user, assessment) {
   fire(async () => {
     if (!canSend(user)) return;
-    await sendNow('payment_confirmed', user, {
-      moduleTitle: assessment?.type || assessment?.product_slug,
-    });
+    const slug = String(assessment?.product_slug || '').toLowerCase();
+    const moduleTitle = assessment?.type || assessment?.product_slug;
+    if (slug === 'career-readiness') {
+      await sendNow('career_readiness_intro', user, { moduleTitle });
+      return;
+    }
+    await sendNow('payment_confirmed', user, { moduleTitle });
   });
 }
 

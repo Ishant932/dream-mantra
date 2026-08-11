@@ -1,6 +1,7 @@
 import { getData, saveData, repo } from '../database.js';
 import { normalizeProfile } from '../profile.js';
 import { getBotReply } from '../botReply.js';
+import { searchSiteKnowledge } from '../siteContentKnowledge.js';
 import { sendTextMessage } from './client.js';
 import { findUserByWhatsAppId, fromWhatsAppId } from './phone.js';
 import { getWhatsAppPublicConfig, isWhatsAppEnabled, siteUrl } from './config.js';
@@ -133,7 +134,7 @@ function menuSelection(num, user, lang) {
     case '1':
       return lang === 'hi'
         ? `${banner('Modules & Pricing', '💎', '🔥')}\n\n${bullet('🧠', 'Brain Mapping — ₹1,999')}\n${bullet('🎯', 'Skill Mapping — ₹699')}\n${bullet('💎', 'Combo + Counselling — ₹2,999')}\n${bullet('🤖', 'AI Career Launchpad — ₹1,499')}\n\n${cta('खरीदें', `${base}/dashboard?tab=assess`)}`
-        : `${banner('Modules & Pricing', '💎', '🔥')}\n\n${bullet('🧠', 'Brain Mapping — ₹1,999 (fingerprint talent mapping)')}\n${bullet('🎯', 'Skill Mapping — ₹699 (personality + career fit)')}\n${bullet('💎', 'Combo + Counselling — ₹2,999 (best value)')}\n${bullet('🤖', 'AI Career Launchpad — ₹1,499 (community access)')}\n\n${cta('Browse & pay', `${base}/dashboard?tab=assess`)}\n${cta('All programs', `${base}/programs`)}`;
+        : `${banner('Modules & Pricing', '💎', '🔥')}\n\n${bullet('🧠', 'Brain Mapping — ₹1,999')}\n${bullet('🎯', 'Skill Mapping — ₹699')}\n${bullet('💎', 'Combo + Counselling — ₹2,999')}\n${bullet('🤖', 'AI Career Launchpad — ₹1,499')}\n${bullet('🎯', 'Personalised Career Readiness — ₹2,999 (8 sessions + 2 mocks)')}\n\n${cta('Browse & pay', `${base}/dashboard?tab=assess`)}\n${cta('Career Readiness program', `${base}/crp?tab=readiness`)}`;
     case '2':
       return lang === 'hi'
         ? `${banner('Counselling', '📅', '✨')}\n\nPayment confirm के बाद Book tab से बुक करें:\n${cta('Book session', `${base}/dashboard?tab=counselling`)}`
@@ -155,6 +156,10 @@ async function buildReply(text, user, convo) {
   if (upper === 'MENU' || upper === 'MENÚ' || upper === 'START') return menuReply(lang);
   if (upper === 'HELP' || upper === 'SUPPORT') return helpReply(lang);
   if (upper === 'ID' || upper === 'MY ID' || upper === 'DREAMS ID') return idReply(user, lang);
+  if (/^readiness$/i.test(trimmed) || /career\s*readiness/i.test(trimmed)) {
+    const hit = searchSiteKnowledge('career readiness program', lang);
+    if (hit?.reply) return hit.reply;
+  }
 
   if (/^[1-4]$/.test(trimmed)) {
     const picked = menuSelection(trimmed, user, lang);

@@ -96,17 +96,19 @@ _Tip:_ Complete profile → unlock tests, reports & counselling booking 🚀`,
 
     welcome_step3: `${banner('Pick your power-up', '💎', '🔥')}
 
-Hi *${name}*! Our most-loved career modules:
+Hi *${name}*! Our most-loved programs:
 
-${priceTag('Brain Mapping', '₹1,999', 'Deep personality + career fit')}
-${priceTag('Skill Mapping', '₹699', 'Skills → job roles')}
+${priceTag('Brain Mapping', '₹1,999', 'Fingerprint talent mapping')}
+${priceTag('Skill Mapping', '₹699', '7 psychometric frameworks')}
 ${priceTag('Combo + Counselling', '₹2,999', 'Best value — tests + session')}
-${priceTag('AI Career Launchpad', '₹1,499', 'Community + mentorship')}
+${priceTag('AI Career Launchpad', '₹1,499', '5 job-ready sessions')}
+${priceTag('Personalised Career Readiness', '₹2,999', '8 sessions + 2 mocks + placement')}
 
 ${cta('Browse & pay securely', `${base}/dashboard?tab=assess`)}
+${cta('Career Readiness details', `${base}/crp?tab=readiness`)}
 ${cta('See all programs', `${base}/programs`)}
 
-Reply *1* for full pricing breakdown 💬`,
+Reply *1* for full pricing · Ask about *Career Readiness* anytime 💬`,
 
     welcome_step4: `${banner('Book your session', '📅', '✨')}
 
@@ -332,6 +334,48 @@ ${extra.statusSummary || 'All paid module tests finished'}
 ${extra.modulesSummary || extra.moduleTitle || 'See admin panel'}
 
 ${cta('Open admin dashboard', `${base}/admin`)}`,
+
+    career_readiness_intro: `${fireBar()}
+${banner('Career Readiness Program activated!', '🎯', '🚀')}
+
+*${name}*, welcome to the *Personalised Career Readiness Program*! ${miniPulse('💼', '✨', '🌟')}
+
+🎁 *₹2,999 package now ACTIVE* — your complete career launch system:
+
+${bullet('🧠', 'Brain Mapping + Skill Mapping assessments')}
+${bullet('💼', 'Expert counselling session included')}
+${bullet('📅', '8 LIVE sessions — Know Yourself → … → Offer & Launch')}
+${bullet('🎤', '2 mock interviews with personalised feedback')}
+${bullet('🔗', 'LinkedIn, CV & Naukri profile reviews')}
+${bullet('🤖', 'AI-powered job search + interview mastery')}
+
+*Your next steps:*
+${bullet('1️⃣', 'Complete profile on dashboard')}
+${bullet('2️⃣', 'Finish Brain Mapping + Skill Mapping tests')}
+${bullet('3️⃣', 'Training tab → schedule all 8 sessions in order')}
+${bullet('4️⃣', 'After session 8 → book 2 mock interview slots')}
+
+${cta('Open Training dashboard', `${base}/dashboard?tab=training&focus=readiness`)}
+${cta('Program details', `${base}/crp?tab=readiness`)}
+
+${contactBlock(base)}
+${starTrail()}
+${sparkleBar()}`,
+
+    career_readiness_schedule_reminder: `${banner('Schedule your sessions', '📅', '⏰')}
+
+Hi *${name}*! Your *Career Readiness Program* is active — time to book your 8 live sessions! 🎯
+
+${progressBar(35)}
+${bullet('📋', 'Session 1 → Session 8 in order from Training tab')}
+${bullet('🎤', 'Mock interviews unlock after all 8 are scheduled')}
+${bullet('💡', 'Each session builds: clarity → direction → brand → job search → interviews → launch')}
+
+${cta('Schedule sessions now', `${base}/dashboard?tab=training&focus=readiness`)}
+${cta('View session list', `${base}/crp?tab=readiness`)}
+
+Questions? Reply *HELP* or ask Esh anything 💬
+${contactBlock(base)}`,
   };
 
   return messages[trigger] || null;
