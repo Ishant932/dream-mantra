@@ -28,7 +28,7 @@ const HINTS = {
   team_connect: 'Our counsellor team will call/WhatsApp you within 24–48 hours after payment.',
   schedule: 'Pick date & time for each session — Session 1 first, then 2…8 in order.',
   profile: 'Fill every step so counsellors and admin see your full details.',
-  additional_counselling: 'Book a follow-up counselling session after your first session is complete.',
+  additional_counselling: 'Purchase an additional counselling session (₹999), then book your follow-up slot.',
 };
 
 function filterJourneySteps(focus, includesCounselling, showAdditionalCounselling) {

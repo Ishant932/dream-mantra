@@ -23,6 +23,7 @@ import { profileStreamToFilter } from '../utils/careerStreams';
 import DashboardOverview from '../components/DashboardOverview';
 import { CounsellingProductPanel, TrainingProductPanel } from '../components/dashboard/DashboardProductPanel';
 import {
+  canBookCounsellingSession,
   canShowCounsellingTopUp,
   hasCounsellingAccess,
   isAssessmentUnlocked,
@@ -459,6 +460,7 @@ export default function UserDashboard() {
 
   const bookingProps = {
     counsellingAccess,
+    canBookCounselling: canBookCounsellingSession(data.assessments || [], data.consultations || []),
     onBrowseModules: () => goTab('assess'),
     showTopUpOffer: canShowCounsellingTopUp(data.assessments || [], data.consultations || []),
     onTopUpBook: goToCounsellingTopUp,

@@ -7,9 +7,9 @@ import SkillMappingTakeTestPanel from './SkillMappingTakeTestPanel';
 import CommunityLinksPanel from './CommunityLinksPanel';
 import SessionBookingPanel from './SessionBookingPanel';
 import { getCounsellingSubtabs, getTrainingSubtabs } from '../../utils/productSubtabs';
-import { counsellingPrerequisitesMet, hasInitialCounsellingComplete } from '../../utils/counsellingStatus';
+import { counsellingPrerequisitesMet, getCounsellingBookings } from '../../utils/counsellingStatus';
 import {
-  hasPaidCounsellingTopup,
+  canBookCounsellingSession,
   productGrantsCounselling,
   purchaseHadCounsellingPackage,
 } from '../../utils/moduleAccess';
@@ -39,17 +39,17 @@ export function CounsellingProductPanel({
   const activeAssessment = careerPath?.activeAssessment;
   const productSlug = careerPath?.productSlug;
   const includesCounselling = productGrantsCounselling(assessments, productSlug, activeAssessment);
-  const hasTopup = hasPaidCounsellingTopup(assessments);
   const showAdditionalCounselling = purchaseHadCounsellingPackage(activeAssessment) || focus === 'combo';
   const subtabs = getCounsellingSubtabs(focus, includesCounselling);
   const progress = activeAssessment?.progress || {};
   const consultations = bookingProps?.bookings || [];
+  const counsellingBookings = getCounsellingBookings(consultations);
   const profileReady = profileCompletion >= 80 || !!profile?.setupComplete;
-  const counsellingUnlocked = includesCounselling && (
-    hasTopup
-    || counsellingPrerequisitesMet(focus, progress, profileReady)
-    || hasInitialCounsellingComplete(consultations)
-  );
+  const prereqsMet = counsellingPrerequisitesMet(focus, progress, profileReady);
+  const canBookCounselling = includesCounselling
+    && prereqsMet
+    && canBookCounsellingSession(assessments, consultations);
+  const counsellingUnlocked = includesCounselling && (prereqsMet || counsellingBookings.length > 0);
   const locked = (tab) => {
     if (tab.lock && !paid) return true;
     if (tab.id === 'counselling' && paid && !counsellingUnlocked) return true;
@@ -117,7 +117,9 @@ export function CounsellingProductPanel({
             <button type="button" className="btn-primary" onClick={() => onSubtab('journey')}>View your journey</button>
           </DashCard>
         )}
-        {paid && subtab === 'counselling' && counsellingUnlocked && <CounsellingBookingPanel {...bookingProps} />}
+        {paid && subtab === 'counselling' && counsellingUnlocked && (
+          <CounsellingBookingPanel {...bookingProps} canBookCounselling={canBookCounselling} />
+        )}
         {paid && subtab === REPORT_TAB && (
           <div>
             <p className="font-semibold text-theme-primary mb-3">Your reports</p>

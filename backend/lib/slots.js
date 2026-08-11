@@ -1,5 +1,6 @@
 import { getData, saveData } from './database.js';
 import { userHasCounsellingAccess } from './userAccess.js';
+import { assertCanBookCounsellingSession } from './counsellingCredits.js';
 import { normalizeProfile } from './profile.js';
 import { autoCompletePastConsultations } from './counsellingStatus.js';
 
@@ -238,6 +239,7 @@ export function bookConsultationWithSlot(userId, { program, notes, slot_id }, us
   if (!userHasCounsellingAccess(userId)) {
     throw new Error('Counselling sessions unlock when you purchase a module with counselling.');
   }
+  assertCanBookCounsellingSession(userId);
   ensureSlotsInitialized();
   const data = getData();
   const slot = data.availability_slots.find((s) => s.id === Number(slot_id));

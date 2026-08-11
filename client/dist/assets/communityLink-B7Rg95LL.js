@@ -1,1 +1,0 @@
-function r(t){return t?typeof t=="string"?t.trim():String(t.url||"").trim():""}function e(t){return!t||typeof t=="string"?{url:r(t),title:"Community",description:"",start_at:null,end_at:null}:{url:String(t.url||"").trim(),title:t.title||"Community",description:t.description||"",start_at:t.start_at||null,end_at:t.end_at||null}}export{e as r};

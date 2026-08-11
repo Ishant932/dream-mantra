@@ -1,6 +1,7 @@
 import { getModuleBySlug, hasSkillMappingTests } from '../data/moduleCatalog';
 import { PROCESS_TAB_ORDER } from '../data/processGuides';
 import { FLOW_STEPS } from '../data/assessmentFlows';
+import { getCounsellingBookings } from './counsellingStatus';
 
 /** Paid and admin- or gateway-confirmed */
 export function isAssessmentUnlocked(assessment) {
@@ -98,10 +99,35 @@ export function hasCompletedAllPaidModuleTests(assessments = []) {
   return paid.every(isPaidModuleActionComplete);
 }
 
-/** Show ₹999 counselling top-up in shop / booking banner */
+/** Count paid counselling session credits (1 per module with counselling + 1 per top-up). */
+export function countCounsellingSessionCredits(assessments = []) {
+  let credits = 0;
+  for (const a of getConfirmedPaidAssessments(assessments)) {
+    const slug = resolveAssessmentSlug(a);
+    if (slug === 'counselling-topup') credits += 1;
+    else if (assessmentHasCounselling(a)) credits += 1;
+  }
+  return credits;
+}
+
+export function countUsedCounsellingBookings(consultations = []) {
+  return getCounsellingBookings(consultations).length;
+}
+
+export function getRemainingCounsellingCredits(assessments = [], consultations = []) {
+  return Math.max(0, countCounsellingSessionCredits(assessments) - countUsedCounsellingBookings(consultations));
+}
+
+export function canBookCounsellingSession(assessments = [], consultations = []) {
+  return getRemainingCounsellingCredits(assessments, consultations) > 0;
+}
+
+/** Show ₹999 counselling top-up after the included session credit is used. */
 export function canShowCounsellingTopUp(assessments = [], consultations = []) {
-  if (getConfirmedPaidAssessments(assessments).length > 0) return true;
-  return hasPriorCounsellingBooking(consultations) || hasCompletedAllPaidModuleTests(assessments);
+  if (!hasCounsellingAccess(assessments)) return false;
+  const used = countUsedCounsellingBookings(consultations);
+  if (used === 0) return false;
+  return getRemainingCounsellingCredits(assessments, consultations) <= 0;
 }
 
 export function userOwnsModule(assessments, slug) {

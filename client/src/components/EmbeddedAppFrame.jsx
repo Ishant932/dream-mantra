@@ -1,7 +1,7 @@
 import { forwardRef } from 'react';
 
 /** Full-page embed of standalone HTML apps */
-const EmbeddedAppFrame = forwardRef(function EmbeddedAppFrame({ src, title, className = '', embed = false }, ref) {
+const EmbeddedAppFrame = forwardRef(function EmbeddedAppFrame({ src, title, className = '', embed = false, style }, ref) {
   const url = embed && !src.includes('embed=') ? `${src}${src.includes('?') ? '&' : '?'}embed=1` : src;
   return (
     <iframe
@@ -9,6 +9,7 @@ const EmbeddedAppFrame = forwardRef(function EmbeddedAppFrame({ src, title, clas
       title={title}
       src={url}
       className={`embedded-app-frame ${className}`}
+      style={style}
       loading="lazy"
       referrerPolicy="same-origin"
     />

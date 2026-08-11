@@ -21,6 +21,7 @@ export default function CVMakerPanel() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState('');
+  const [frameHeight, setFrameHeight] = useState(null);
   const saveTimer = useRef(null);
 
   const loadSaved = useCallback(async () => {
@@ -72,6 +73,9 @@ export default function CVMakerPanel() {
       }
       if (data.type === 'dm-cv-ready') {
         pushLoadToFrame();
+      }
+      if (data.type === 'dm-cv-resize' && Number(data.height) > 0) {
+        setFrameHeight(Math.min(Math.max(Number(data.height) + 24, 640), 3200));
       }
     };
     window.addEventListener('message', onMsg);
@@ -149,6 +153,7 @@ export default function CVMakerPanel() {
           title="CV Builder"
           className="app-embed__frame"
           embed
+          style={frameHeight ? { height: `${frameHeight}px`, minHeight: `${frameHeight}px` } : undefined}
         />
       </div>
     </div>

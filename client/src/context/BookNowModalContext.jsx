@@ -26,6 +26,8 @@ function BookNowModal({ open, onClose }) {
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [signupInterest, setSignupInterest] = useState('counselling');
+  const signupIntents = fg.intents || [];
 
   useEffect(() => {
     if (!open) return undefined;
@@ -80,6 +82,7 @@ function BookNowModal({ open, onClose }) {
         phone: mobile,
         password,
         whatsappOptIn: true,
+        signupInterest,
       });
       onClose();
       navigate('/dashboard?tab=assess');
@@ -112,6 +115,23 @@ function BookNowModal({ open, onClose }) {
               <p className="guidance-modal__sub">Sign up in seconds, then choose your age pathway and module checkout.</p>
             </div>
             <form onSubmit={handleSubmit} className="space-y-3 px-1">
+              {signupIntents.length > 0 && (
+                <div>
+                  <p className="text-sm font-semibold text-sand-700 mb-2">{fg.intentLabel || 'What are you looking for?'}</p>
+                  <div className="flex flex-wrap gap-2" role="group" aria-label="Signup interest">
+                    {signupIntents.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setSignupInterest(item.id)}
+                        className={`guidance-modal__intent guidance-modal__intent--orange${signupInterest === item.id ? ' guidance-modal__intent--active' : ''}`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               <input className="input-field w-full" placeholder="Full name" value={name} onChange={(e) => setName(e.target.value)} required />
               <input className="input-field w-full" type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
               <input className="input-field w-full" type="tel" placeholder="10-digit mobile number *" value={phone} onChange={(e) => setPhone(e.target.value)} required inputMode="numeric" />

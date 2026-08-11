@@ -956,6 +956,7 @@ function render(){
     pageEl.innerHTML = headerHTML + sectionsHTML();
   }
   persistCv();
+  scheduleParentHeightNotify();
 }
 
 let persistTimer;
@@ -1021,6 +1022,22 @@ window.addEventListener('message', (e)=>{
   if (data.type === 'dm-cv-download') downloadCvPdf();
 });
 
+function notifyParentHeight() {
+  if (window.parent === window) return;
+  const h = Math.max(
+    document.documentElement.scrollHeight,
+    document.body.scrollHeight,
+    640,
+  );
+  window.parent.postMessage({ type: 'dm-cv-resize', height: h }, '*');
+}
+
+let resizeTimer;
+function scheduleParentHeightNotify() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(notifyParentHeight, 120);
+}
+
 async function bootstrap(){
   if (new URLSearchParams(location.search).get('embed') === '1') {
     document.body.classList.add('embed-mode');
@@ -1033,6 +1050,8 @@ async function bootstrap(){
   render();
   if (window.parent && window.parent !== window) {
     window.parent.postMessage({ type: 'dm-cv-ready' }, '*');
+    scheduleParentHeightNotify();
+    window.addEventListener('resize', scheduleParentHeightNotify);
   }
   setTimeout(()=>{ persistEnabled = true; }, 1800);
 }

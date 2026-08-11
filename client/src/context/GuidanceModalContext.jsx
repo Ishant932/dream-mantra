@@ -49,7 +49,7 @@ function GuidanceModal({ open, onClose }) {
               <span className="guidance-modal__badge guidance-modal__badge--pro">
                 {fg.badge || 'Free guidance call'}
               </span>
-              <h2 className="guidance-modal__title">{fg.formTitle || 'Book a free guidance call'}</h2>
+              <h2 className="guidance-modal__title guidance-modal__title--orange">{fg.formTitle || 'Book a free guidance call'}</h2>
               <p className="guidance-modal__sub">
                 {fg.formSubtitle || 'Share your details. A counsellor will call you back.'}
               </p>

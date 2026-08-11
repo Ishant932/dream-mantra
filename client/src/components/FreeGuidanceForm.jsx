@@ -11,8 +11,6 @@ const INTENT_PREFIX = {
   other: 'I need help choosing the right path',
 };
 
-const INTENT_TONES = ['red', 'purple', 'green', 'blue', 'orange'];
-
 export default function FreeGuidanceForm({
   className = '',
   showLoginHint = true,
@@ -106,8 +104,7 @@ export default function FreeGuidanceForm({
 
       {intents.length > 0 && (
         <div className="flex flex-wrap gap-2 mb-5" role="group" aria-label={fg.intentLabel}>
-          {intents.map((item, index) => {
-            const tone = INTENT_TONES[index % INTENT_TONES.length];
+          {intents.map((item) => {
             const isModal = variant === 'modal';
             const active = intent === item.id;
             return (
@@ -117,7 +114,7 @@ export default function FreeGuidanceForm({
                 onClick={() => applyIntentPrefill(item.id)}
                 className={
                   isModal
-                    ? `guidance-modal__intent guidance-modal__intent--${tone}${active ? ' guidance-modal__intent--active' : ''}`
+                    ? `guidance-modal__intent guidance-modal__intent--orange${active ? ' guidance-modal__intent--active' : ''}`
                     : `px-3 py-1.5 rounded-full text-xs font-semibold border transition ${
                         active
                           ? 'bg-amber-500 text-white border-amber-500'
