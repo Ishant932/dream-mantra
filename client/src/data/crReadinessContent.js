@@ -442,7 +442,7 @@ export const COMPLETE_EXPERIENCE = [
   { title: '90-Day Career Plan', desc: 'Start your next role with confidence.' },
 ];
 
-export const READINESS_TONES = ['orange'];
+export const READINESS_TONES = ['orange', 'green', 'purple', 'blue', 'red'];
 
 /** Unique Unsplash photos — not reused elsewhere on the site */
 const sessionPhoto = (id) =>

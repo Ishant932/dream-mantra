@@ -225,6 +225,78 @@ function buildSelects() {
   fillSelect(document.getElementById('f-cluster'), ALL_CLUSTERS);
   fillSelect(document.getElementById('f-level'), ALL_LEVELS);
   fillSelect(document.getElementById('f-type'), ALL_TYPES);
+  enhanceSelects();
+}
+
+function enhanceSelects() {
+  ['f-stream', 'f-cluster', 'f-level', 'f-type'].forEach(function(id) {
+    var sel = document.getElementById(id);
+    if (!sel || sel.dataset.enhanced === '1') return;
+    sel.dataset.enhanced = '1';
+    sel.classList.add('filter-dd__native');
+    var wrap = document.createElement('div');
+    wrap.className = 'filter-dd';
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'f-select filter-dd__btn';
+    btn.setAttribute('aria-haspopup', 'listbox');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.textContent = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent : 'Select';
+
+    var menu = document.createElement('div');
+    menu.className = 'filter-dd__menu';
+    menu.setAttribute('role', 'listbox');
+
+    function rebuildMenu() {
+      menu.innerHTML = '';
+      Array.prototype.forEach.call(sel.options, function(opt) {
+        var item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'filter-dd__opt' + (opt.value === sel.value ? ' is-active' : '');
+        item.textContent = opt.textContent;
+        item.addEventListener('click', function(e) {
+          e.stopPropagation();
+          sel.value = opt.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          btn.textContent = opt.textContent;
+          wrap.classList.remove('is-open');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+        menu.appendChild(item);
+      });
+    }
+    rebuildMenu();
+    wrap.appendChild(btn);
+    wrap.appendChild(menu);
+
+    btn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      var willOpen = !wrap.classList.contains('is-open');
+      document.querySelectorAll('.filter-dd.is-open').forEach(function(other) {
+        other.classList.remove('is-open');
+        var b = other.querySelector('.filter-dd__btn');
+        if (b) b.setAttribute('aria-expanded', 'false');
+      });
+      wrap.classList.toggle('is-open', willOpen);
+      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+    });
+    sel.addEventListener('change', function() {
+      var opt = sel.options[sel.selectedIndex];
+      btn.textContent = opt ? opt.textContent : 'Select';
+      btn.classList.toggle('active', !!sel.value);
+      rebuildMenu();
+    });
+  });
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.filter-dd.is-open').forEach(function(w) {
+      w.classList.remove('is-open');
+      var b = w.querySelector('.filter-dd__btn');
+      if (b) b.setAttribute('aria-expanded', 'false');
+    });
+  });
 }
 
 // ── UPDATE CLEAR BUTTON ──────────────────────────────────────────────────────

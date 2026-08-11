@@ -60,6 +60,28 @@ export default function CRPHub() {
 
   return (
     <div className={`crp-studio crp-studio--${tab} no-reveal`}>
+      <nav className="crp-studio__tabbar" aria-label="Training sections" role="tablist">
+        <div className="crp-studio__tabbar-inner">
+          {crpTabs.map((item) => {
+            const Icon = TAB_ICONS[item.id] || ClipboardList;
+            const active = tab === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                role="tab"
+                aria-selected={active}
+                className={`crp-studio__tab crp-studio__tab--${item.id}${active ? ' is-active' : ''}`}
+                onClick={() => setTab(item.id)}
+              >
+                <Icon className="w-4 h-4" aria-hidden />
+                <span>{TAB_GUIDE[item.id]?.title || item.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
+
       <header className="crp-studio__masthead">
         <div className="crp-studio__masthead-glow" aria-hidden />
         <motion.div className="crp-studio__masthead-inner" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -75,21 +97,6 @@ export default function CRPHub() {
           </div>
         </motion.div>
       </header>
-
-      <motion.nav className="crp-studio__switch" aria-label="Training sections">
-        {crpTabs.map((item, i) => {
-          const Icon = TAB_ICONS[item.id] || ClipboardList;
-          const active = tab === item.id;
-          return (
-            <motion.button key={item.id} type="button" role="tab" aria-selected={active}
-              className={`crp-studio__switch-item crp-studio__switch-item--${item.id}${active ? ' is-active' : ''}`}
-              onClick={() => setTab(item.id)} whileTap={{ scale: 0.985 }} style={{ transitionDelay: `${i * 40}ms` }}>
-              <span className="crp-studio__switch-icon"><Icon className="w-5 h-5" /></span>
-              <span className="crp-studio__switch-label">{TAB_GUIDE[item.id]?.title || item.label}</span>
-            </motion.button>
-          );
-        })}
-      </motion.nav>
 
       <CmsPageSections cms={cms} className="!py-6" />
       <div className="crp-studio__canvas" role="tabpanel">
