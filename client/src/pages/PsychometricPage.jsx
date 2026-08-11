@@ -99,35 +99,6 @@ export default function PsychometricPage({ compact = false }) {
         </div>
       </section>
 
-      {page.challenge && (
-        <section className="py-16 lg:py-24 why-challenge-wrap">
-          <div className="px-4">
-            <motion.div {...fade} className="why-challenge">
-              <div className="why-challenge__inner">
-                <div className="why-challenge__copy">
-                  <p className="why-challenge__label">{page.challenge.label}</p>
-                  <h2 className="why-challenge__title">{page.challenge.title}</h2>
-                  <p className="why-challenge__lede">{page.challenge.p1}</p>
-                  <p className="why-challenge__lede">
-                    {page.challenge.p2Before}
-                    <strong>{page.challenge.p2Highlight}</strong>
-                    {page.challenge.p2After}
-                  </p>
-                </div>
-                <div className="why-challenge__panel">
-                  <h3 className="why-challenge__panel-title">{page.challenge.problemsTitle}</h3>
-                  <ul className="why-challenge__list">
-                    {(d('data.psychoProblems') || []).map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </section>
-      )}
-
       <section className="py-16 lg:py-24 bg-gradient-to-b from-[var(--bg-elevated)] to-[var(--bg-base)]">
         <div className="max-w-7xl mx-auto px-4">
           <motion.div {...fade} className="text-center max-w-3xl mx-auto mb-10">

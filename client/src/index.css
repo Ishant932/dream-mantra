@@ -27609,3 +27609,116 @@ html.aurora .dash-sidebar-panel--hero-match {
     background: radial-gradient(circle at 30% 20%, rgba(255, 237, 213, 0.35), transparent 55%) !important;
   }
 }
+
+/* Dashboard section headings & book-program groups */
+.dash-section-heading {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.35rem, 3vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+.modules-catalog-section__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+.modules-catalog-section__desc {
+  margin: 0.25rem 0 0;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+.modules-payment-admin-note {
+  margin-top: 0.5rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.65rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: #991b1b;
+  background: #fef2f2;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+}
+
+/* Dark / aurora — readable text across dashboard & marketing surfaces */
+html.dark .dash-product-path-rail__chip:not(.dash-product-path-rail__chip--active),
+html.aurora .dash-product-path-rail__chip:not(.dash-product-path-rail__chip--active) {
+  color: var(--text-primary);
+}
+html.dark .dash-subtab-rail__chip:not(.is-active),
+html.aurora .dash-subtab-rail__chip:not(.is-active) {
+  color: var(--text-primary);
+}
+html.dark .modules-product-card__desc,
+html.aurora .modules-product-card__desc {
+  color: var(--text-secondary) !important;
+}
+html.dark .modules-product-card__title,
+html.aurora .modules-product-card__title {
+  color: var(--text-primary);
+}
+html.dark .dash-product-overview__lede,
+html.aurora .dash-product-overview__lede {
+  color: var(--text-secondary) !important;
+}
+html.dark .dash-overview-section__title,
+html.dark .dash-overview-card .font-bold,
+html.aurora .dash-overview-section__title,
+html.aurora .dash-overview-card .font-bold {
+  color: var(--text-primary) !important;
+}
+html.dark .modules-payment-admin-note,
+html.aurora .modules-payment-admin-note {
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.35);
+  border-color: rgba(248, 113, 113, 0.35);
+}
+html.dark .msg-panel--whatsapp,
+html.aurora .msg-panel--whatsapp {
+  background: rgba(28, 25, 23, 0.92) !important;
+  border-color: rgba(251, 191, 36, 0.25) !important;
+}
+html.dark .msg-panel--whatsapp .msg-panel__body,
+html.aurora .msg-panel--whatsapp .msg-panel__body {
+  background: rgba(41, 37, 36, 0.85);
+}
+html.dark .msg-panel--whatsapp .msg-bubble--own,
+html.aurora .msg-panel--whatsapp .msg-bubble--own {
+  background: rgba(255, 237, 213, 0.12) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(251, 191, 36, 0.28) !important;
+}
+html.dark .msg-panel--whatsapp .msg-bubble--other,
+html.aurora .msg-panel--whatsapp .msg-bubble--other {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(214, 211, 209, 0.2) !important;
+}
+html.dark .text-amber-700,
+html.aurora .text-amber-700 {
+  color: #fbbf24 !important;
+}
+html.dark .text-amber-800,
+html.aurora .text-amber-800 {
+  color: #fcd34d !important;
+}
+html.dark .text-red-700,
+html.aurora .text-red-700 {
+  color: #fca5a5 !important;
+}
+html.dark .text-emerald-800,
+html.aurora .text-emerald-800 {
+  color: #6ee7b7 !important;
+}
+html.dark .crp-studio__tab:not(.is-active),
+html.aurora .crp-studio__tab:not(.is-active) {
+  color: var(--text-primary);
+}
+html.dark .age-pathways-tab:not(.age-pathways-tab--active) .age-pathways-tab__title,
+html.aurora .age-pathways-tab:not(.age-pathways-tab--active) .age-pathways-tab__title {
+  color: var(--text-primary);
+}
+html.dark .age-pathways-tab:not(.age-pathways-tab--active) .age-pathways-tab__sub,
+html.aurora .age-pathways-tab:not(.age-pathways-tab--active) .age-pathways-tab__sub {
+  color: var(--text-secondary);
+}

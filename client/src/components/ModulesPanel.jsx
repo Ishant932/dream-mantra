@@ -120,6 +120,9 @@ function DeleteOrderButton({ onConfirm, loading, disabled }) {
   );
 }
 
+const COUNSELLING_CATALOG_SLUGS = ['dmit', 'psychometric', 'dmit-psychometric'];
+const TRAINING_CATALOG_SLUGS = ['crp-test', 'career-readiness'];
+
 function ModulesStatBar({ active, pending, completed }) {
   return (
     <div className="modules-stat-bar">
@@ -339,6 +342,11 @@ export default function ModulesPanel({
     if (mod.followUpOnly && !showCounsellingTopUp) return false;
     return true;
   });
+  const counsellingModules = catalogModules.filter((mod) => COUNSELLING_CATALOG_SLUGS.includes(mod.slug));
+  const trainingModules = catalogModules.filter((mod) => TRAINING_CATALOG_SLUGS.includes(mod.slug));
+  const otherCatalogModules = catalogModules.filter(
+    (mod) => !COUNSELLING_CATALOG_SLUGS.includes(mod.slug) && !TRAINING_CATALOG_SLUGS.includes(mod.slug),
+  );
   const hasConfirmed = confirmedAssessments.length > 0;
 
   const addCounselling = selectedSlug ? !!counsellingBySlug[selectedSlug] : false;
@@ -580,6 +588,11 @@ export default function ModulesPanel({
                       {pay?.submitted_at ? ' · Submitted for verification' : ' · Payment not completed'}
                     </p>
                     <PaymentStatusBadge status={pay?.payment_status || 'pending'} />
+                    {pay?.user_note && pay?.payment_status === 'failed' && (
+                      <p className="modules-payment-admin-note">
+                        <span className="font-semibold">Message from admin:</span> {pay.user_note}
+                      </p>
+                    )}
                   </div>
                   <div className="modules-order-row__actions">
                     <Link to={`/payment/${a.id}`} className="modules-order-btn modules-order-btn--primary">
@@ -629,6 +642,11 @@ export default function ModulesPanel({
                       {new Date(p.paid_at || p.submitted_at || p.created_at).toLocaleString('en-IN')}
                     </p>
                     <PaymentStatusBadge status={p.payment_status} />
+                    {p.user_note && (p.payment_status === 'failed' || p.payment_status === 'refunded') && (
+                      <p className="modules-payment-admin-note">
+                        <span className="font-semibold">Message from admin:</span> {p.user_note}
+                      </p>
+                    )}
                   </div>
                   <div className="modules-order-row__actions">
                     <p className="font-bold text-amber-600 modules-order-row__amount">{formatPrice(p.amount)}</p>
@@ -679,18 +697,62 @@ export default function ModulesPanel({
               No voucher codes are assigned to your account yet. Admin can share offers directly with you.
             </p>
           )}
-          <div className="space-y-3 mb-5">
-            {catalogModules.map((mod) => (
-              <UnpaidModuleCard
-                key={mod.slug}
-                module={mod}
-                selected={selectedSlug === mod.slug}
-                onSelect={() => setSelectedSlug(mod.slug)}
-                onClear={() => setSelectedSlug(null)}
-                addCounselling={!!counsellingBySlug[mod.slug]}
-                onCounsellingToggle={() => setCounsellingBySlug((prev) => ({ ...prev, [mod.slug]: !prev[mod.slug] }))}
-              />
-            ))}
+          <div className="modules-catalog-sections space-y-6 mb-5">
+            {counsellingModules.length > 0 && (
+              <section>
+                <h4 className="modules-catalog-section__title">Counselling</h4>
+                <p className="modules-catalog-section__desc">Brain Mapping, Skill Mapping, or the complete Brain + Skill combo.</p>
+                <div className="space-y-3 mt-3">
+                  {counsellingModules.map((mod) => (
+                    <UnpaidModuleCard
+                      key={mod.slug}
+                      module={mod}
+                      selected={selectedSlug === mod.slug}
+                      onSelect={() => setSelectedSlug(mod.slug)}
+                      onClear={() => setSelectedSlug(null)}
+                      addCounselling={!!counsellingBySlug[mod.slug]}
+                      onCounsellingToggle={() => setCounsellingBySlug((prev) => ({ ...prev, [mod.slug]: !prev[mod.slug] }))}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+            {trainingModules.length > 0 && (
+              <section>
+                <h4 className="modules-catalog-section__title">Training and Placement</h4>
+                <p className="modules-catalog-section__desc">Job-ready training programs with placement support.</p>
+                <div className="space-y-3 mt-3">
+                  {trainingModules.map((mod) => (
+                    <UnpaidModuleCard
+                      key={mod.slug}
+                      module={mod}
+                      selected={selectedSlug === mod.slug}
+                      onSelect={() => setSelectedSlug(mod.slug)}
+                      onClear={() => setSelectedSlug(null)}
+                      addCounselling={!!counsellingBySlug[mod.slug]}
+                      onCounsellingToggle={() => setCounsellingBySlug((prev) => ({ ...prev, [mod.slug]: !prev[mod.slug] }))}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+            {otherCatalogModules.length > 0 && (
+              <section>
+                <div className="space-y-3">
+                  {otherCatalogModules.map((mod) => (
+                    <UnpaidModuleCard
+                      key={mod.slug}
+                      module={mod}
+                      selected={selectedSlug === mod.slug}
+                      onSelect={() => setSelectedSlug(mod.slug)}
+                      onClear={() => setSelectedSlug(null)}
+                      addCounselling={!!counsellingBySlug[mod.slug]}
+                      onCounsellingToggle={() => setCounsellingBySlug((prev) => ({ ...prev, [mod.slug]: !prev[mod.slug] }))}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
           {selection && (
             <div className="modules-checkout-summary mb-4">

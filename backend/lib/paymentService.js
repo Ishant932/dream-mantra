@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { getData, saveData, repo } from './database.js';
 import { notifyUser, notifyAdmins } from './notifications.js';
+import { sendMessage } from './messages.js';
 import { onPaymentConfirmed } from './whatsapp/events.js';
 import { sendPaymentConfirmationEmail } from '../utils/mail.js';
 import { getProduct } from '../config/products.js';
@@ -404,6 +405,16 @@ export function updatePaymentStatus(paymentId, status, { adminId, adminNote, use
         link: `/payment/${assessment.id}`,
         meta: { assessmentId: assessment.id, paymentId: pay.id },
       });
+      try {
+        sendMessage({
+          userId: assessment.user_id,
+          senderRole: 'admin',
+          senderId: adminId || null,
+          body: `Payment verification failed.\n\n${reason}`,
+        });
+      } catch (err) {
+        console.error('payment fail support message:', err.message);
+      }
     }
 
     return { payment: enrichPaymentRow(pay), assessment };

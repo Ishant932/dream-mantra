@@ -63,6 +63,7 @@ import {
   DashAlert,
 } from '../components/DashboardUI';
 import DashboardB2BBanner from '../components/DashboardB2BBanner';
+import AgePathwaysWorkspace from '../components/AgePathwaysWorkspace';
 
 const COUNSELLING_PATHS = [
   { id: 'brain', label: 'Brain Mapping', slug: 'dmit' },
@@ -73,6 +74,7 @@ const COUNSELLING_PATHS = [
 const TRAINING_PATHS = [
   { id: 'launchpad', label: 'AI Career Launchpad', slug: 'crp-test' },
   { id: 'readiness', label: 'Personalised Career Readiness Program', slug: 'career-readiness' },
+  { id: 'pathways', label: 'Age Pathways', slug: null },
 ];
 
 export default function UserDashboard() {
@@ -651,6 +653,7 @@ export default function UserDashboard() {
 
               {tab === 'counselling' && (
                   <div className="space-y-3">
+                    <h2 className="dash-section-heading">Counselling</h2>
                     <div className="dash-product-path-rail dash-product-path-rail--inline dash-product-path-rail--center dash-product-path-rail--lg" role="tablist" aria-label="Counselling paths">
                       {COUNSELLING_PATHS.map((item) => {
                         const pathPaid = hasPaidAccessForSlug(data.assessments || [], item.slug);
@@ -689,13 +692,20 @@ export default function UserDashboard() {
 
               {tab === 'training' && (
                 <div className="dash-panel-clean space-y-3">
-                  <div className="dash-product-path-rail dash-product-path-rail--inline dash-product-path-rail--center dash-product-path-rail--lg" role="tablist">
+                  <h2 className="dash-section-heading">Training and Placement</h2>
+                  <div
+                    className="dash-product-path-rail dash-product-path-rail--inline dash-product-path-rail--center dash-product-path-rail--lg"
+                    role="tablist"
+                    aria-label="Training and placement programs"
+                  >
                     {TRAINING_PATHS.map((item) => {
-                      const pathPaid = hasPaidAccessForSlug(data.assessments || [], item.slug);
+                      const pathPaid = item.slug ? hasPaidAccessForSlug(data.assessments || [], item.slug) : true;
                       return (
                       <button
                         key={item.id}
                         type="button"
+                        role="tab"
+                        aria-selected={trainingFocus === item.id}
                         className={`dash-product-path-rail__chip${trainingFocus === item.id ? ' dash-product-path-rail__chip--active' : ''}${!pathPaid ? ' dash-product-path-rail__chip--locked' : ''}`}
                         onClick={() => { setTrainingFocus(item.id); setTrainingSubtab(null); }}
                       >
@@ -704,23 +714,29 @@ export default function UserDashboard() {
                       );
                     })}
                   </div>
-                  <TrainingProductPanel
-                    focus={trainingFocus}
-                    paid={trainingPaid}
-                    subtab={trainingSubtab}
-                    onSubtab={setTrainingSubtab}
-                    careerPath={trainingCareerPath}
-                    journeyCtx={makeJourneyCtx(trainingProductSlug)}
-                    bookingProps={bookingProps}
-                    resourcesPanel={<TrainingResourcesPanel token={token} resources={data.resources} />}
-                    cvPanel={<CVMakerPanel />}
-                    onBook={() => goCheckout(trainingProductSlug)}
-                    communityLink={data.communityLink}
-                    sessionBookingProps={sessionBookingProps}
-                    token={token}
-                    onCommunityJoined={refreshDashboard}
-                    {...profilePanelProps}
-                  />
+                  {trainingFocus === 'pathways' ? (
+                    <div className="dash-panel-surface dash-panel-surface--product">
+                      <AgePathwaysWorkspace />
+                    </div>
+                  ) : (
+                    <TrainingProductPanel
+                      focus={trainingFocus}
+                      paid={trainingPaid}
+                      subtab={trainingSubtab}
+                      onSubtab={setTrainingSubtab}
+                      careerPath={trainingCareerPath}
+                      journeyCtx={makeJourneyCtx(trainingProductSlug)}
+                      bookingProps={bookingProps}
+                      resourcesPanel={<TrainingResourcesPanel token={token} resources={data.resources} />}
+                      cvPanel={<CVMakerPanel />}
+                      onBook={() => goCheckout(trainingProductSlug)}
+                      communityLink={data.communityLink}
+                      sessionBookingProps={sessionBookingProps}
+                      token={token}
+                      onCommunityJoined={refreshDashboard}
+                      {...profilePanelProps}
+                    />
+                  )}
                 </div>
               )}
 
