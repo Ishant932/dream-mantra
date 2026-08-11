@@ -8393,12 +8393,17 @@ html.aurora .crp-params-detail {
 .crp-studio__switch-item.is-active .crp-studio__switch-blurb { opacity: 1; color: #334155; }
 .crp-studio__canvas {
   width: 100%;
-  max-width: min(96rem, 100%);
-  margin: 0 auto;
-  padding: 1.75rem clamp(1rem, 3.5vw, 2.75rem) 2.5rem;
+  max-width: none;
+  margin: 0;
+  padding: 1.75rem 0.85rem 2.5rem;
   position: relative;
   z-index: 3;
   min-height: 40vh;
+}
+@media (min-width: 768px) {
+  .crp-studio__canvas {
+    padding: 2.15rem 1.1rem 2.85rem;
+  }
 }
 .crp-studio--readiness .crp-studio__canvas {
   min-height: 50vh;
@@ -19080,13 +19085,17 @@ html.dark .leadership-card__contact-link--compact {
 .dm-saas.counselling-embed > section {
   background: var(--dm-bg) !important;
   background-image: none !important;
-  padding-top: 1.75rem !important;
-  padding-bottom: 1.75rem !important;
+  padding-top: 2.35rem !important;
+  padding-bottom: 2.35rem !important;
+}
+.dm-saas.counselling-embed > section > .max-w-7xl {
+  padding-left: 0.85rem !important;
+  padding-right: 0.85rem !important;
 }
 @media (min-width: 1024px) {
   .dm-saas.counselling-embed > section {
-    padding-top: 2rem !important;
-    padding-bottom: 2rem !important;
+    padding-top: 2.85rem !important;
+    padding-bottom: 2.85rem !important;
   }
 }
 .dm-saas.counselling-embed > section:nth-child(even) {
@@ -26908,8 +26917,8 @@ html.aurora .dash-sidebar-panel--hero-match {
 }
 
 /* CRP readiness polish */
-.crp-readiness-full__section { margin-bottom: 2.5rem; padding-top: 0.5rem; }
-.crp-readiness-full__lede { max-width: 42rem; }
+.crp-readiness-full__section { margin-bottom: 3.25rem; padding: 1.65rem 1.1rem 1.85rem; }
+.crp-readiness-full__lede { max-width: none; }
 .crp-readiness-flow { margin: 1rem 0 1.5rem; padding: 0.85rem; border-radius: 1rem; background: linear-gradient(135deg, #fff7ed, #fffbeb); border: 1px solid rgba(251, 191, 36, 0.35); }
 .crp-readiness-full__session--visual { border-radius: 1rem; border: 1px solid rgba(201, 168, 76, 0.25); padding: 0.85rem; background: #fff; transition: box-shadow 0.2s; }
 .crp-readiness-full__session--visual:hover { box-shadow: 0 8px 24px rgba(234, 88, 12, 0.1); }
@@ -27162,17 +27171,33 @@ html.aurora .dash-sidebar-panel--hero-match {
 
 /* Challenge section, checkout, CV, CRP stickers */
 .why-challenge {
-  padding: 0.25rem 0 0.5rem;
+  padding: 0;
+  width: 100%;
+  text-align: left;
 }
 .why-challenge__inner {
-  max-width: 46rem;
-  margin: 0 auto;
-  padding: 2rem 1.5rem 2.25rem;
-  border-radius: 1.35rem;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  padding: 1.5rem 1.15rem 1.65rem;
+  border-radius: 1.15rem;
   background: linear-gradient(180deg, #fffbeb 0%, #fff 72%);
   border: 1px solid rgba(245, 158, 11, 0.28);
   box-shadow: 0 12px 32px rgba(180, 83, 9, 0.06);
+  text-align: left;
 }
+@media (min-width: 900px) {
+  .why-challenge__inner {
+    grid-template-columns: minmax(0, 1.4fr) minmax(18rem, 0.9fr);
+    align-items: stretch;
+    gap: 1.75rem;
+    padding: 1.75rem 1.5rem;
+  }
+}
+.why-challenge__copy { min-width: 0; }
 .why-challenge__label {
   margin: 0 0 0.65rem;
   font-size: 0.72rem;
@@ -27188,19 +27213,23 @@ html.aurora .dash-sidebar-panel--hero-match {
   letter-spacing: -0.03em;
   line-height: 1.25;
   color: var(--text-primary, #1c1917);
+  text-align: left;
 }
 .why-challenge__lede {
   margin: 0 0 1rem;
   font-size: 1rem;
   line-height: 1.7;
   color: var(--text-secondary, #57534e);
+  max-width: none;
+  text-align: left;
 }
 .why-challenge__panel {
-  margin-top: 1.5rem;
+  margin-top: 0;
   padding: 1.15rem 1.25rem;
   border-radius: 1rem;
   background: #fff;
   border-left: 4px solid #ea580c;
+  height: 100%;
 }
 .why-challenge__panel-title {
   margin: 0 0 0.7rem;
@@ -27257,6 +27286,44 @@ html.aurora .dash-sidebar-panel--hero-match {
   border: 1px solid rgba(245, 158, 11, 0.35);
   background: #fffbeb;
 }
+
+.admin-pay-status {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.28rem;
+  min-width: 11.5rem;
+  text-align: left;
+}
+.admin-pay-status__label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #78716c;
+}
+.admin-pay-status__select {
+  width: 100%;
+  min-height: 2.15rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 0.65rem;
+  border: 1.5px solid #e7e5e4;
+  background: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #1c1917;
+}
+.admin-pay-status__select--pending { border-color: #f59e0b; background: #fffbeb; color: #92400e; }
+.admin-pay-status__select--confirmed { border-color: #10b981; background: #ecfdf5; color: #065f46; }
+.admin-pay-status__select--failed { border-color: #f87171; background: #fef2f2; color: #991b1b; }
+.admin-pay-status__select--refunded { border-color: #a8a29e; background: #f5f5f4; color: #44403c; }
+.admin-pay-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.45rem;
+}
+.admin-pay-status-row--end { justify-content: flex-end; }
 
 .crp-readiness-full__session-sticker {
   position: absolute !important;

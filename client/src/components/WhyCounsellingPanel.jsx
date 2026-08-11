@@ -73,14 +73,16 @@ export default function WhyCounsellingPanel({ compact = false }) {
       {d('pages.psychometric.challenge') && (
         <motion.section {...fade} className="why-saas__section why-challenge">
           <div className="why-challenge__inner">
-            <p className="why-challenge__label">{d('pages.psychometric.challenge.label')}</p>
-            <h3 className="why-challenge__title">{d('pages.psychometric.challenge.title')}</h3>
-            <p className="why-challenge__lede">{d('pages.psychometric.challenge.p1')}</p>
-            <p className="why-challenge__lede">
-              {d('pages.psychometric.challenge.p2Before')}
-              <strong>{d('pages.psychometric.challenge.p2Highlight')}</strong>
-              {d('pages.psychometric.challenge.p2After')}
-            </p>
+            <div className="why-challenge__copy">
+              <p className="why-challenge__label">{d('pages.psychometric.challenge.label')}</p>
+              <h3 className="why-challenge__title">{d('pages.psychometric.challenge.title')}</h3>
+              <p className="why-challenge__lede">{d('pages.psychometric.challenge.p1')}</p>
+              <p className="why-challenge__lede">
+                {d('pages.psychometric.challenge.p2Before')}
+                <strong>{d('pages.psychometric.challenge.p2Highlight')}</strong>
+                {d('pages.psychometric.challenge.p2After')}
+              </p>
+            </div>
             <div className="why-challenge__panel">
               <h4 className="why-challenge__panel-title">{d('pages.psychometric.challenge.problemsTitle')}</h4>
               <ul className="why-challenge__list">

@@ -39,6 +39,25 @@ function StatusBadge({ status }) {
   );
 }
 
+function PaymentStatusSelect({ value, disabled, onChange }) {
+  return (
+    <label className="admin-pay-status">
+      <span className="admin-pay-status__label">Payment status</span>
+      <select
+        className={`admin-pay-status__select admin-pay-status__select--${value || 'pending'}`}
+        value={value || 'pending'}
+        disabled={disabled}
+        onChange={(e) => onChange(e.target.value)}
+        title="Set Pending, Confirmed, Failed or Refunded"
+      >
+        {STATUS_CHANGE_OPTIONS.map((o) => (
+          <option key={o.value} value={o.value}>{o.label}</option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
 function ConfirmationBadge({ payment }) {
   const label = payment.confirmation_status || '—';
   const cls =
@@ -284,17 +303,12 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                 rows={2}
                 className="input-field !py-1.5 !text-xs w-full resize-none"
               />
-              <div className="flex flex-wrap gap-2 items-center">
-                <select
-                  className="input-field !py-1.5 !text-xs w-auto"
+              <div className="admin-pay-status-row">
+                <PaymentStatusSelect
                   value={p.payment_status}
                   disabled={actionId === p.id}
-                  onChange={(e) => changeStatus(p, e.target.value)}
-                >
-                  {STATUS_CHANGE_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
+                  onChange={(next) => changeStatus(p, next)}
+                />
                 {p.payment_status !== 'confirmed' && (
                   <button type="button" disabled={actionId === p.id} onClick={() => handleStatus(p.id, 'confirmed')} className="text-xs font-bold px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white">Confirm</button>
                 )}
@@ -427,18 +441,12 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                       rows={2}
                       className="input-field !py-1.5 !text-xs mb-2 w-full resize-none"
                     />
-                    <div className="flex flex-wrap gap-1 justify-end items-center">
-                      <select
-                        className="input-field !py-1.5 !text-xs w-auto"
+                    <div className="admin-pay-status-row admin-pay-status-row--end">
+                      <PaymentStatusSelect
                         value={p.payment_status}
                         disabled={actionId === p.id}
-                        onChange={(e) => changeStatus(p, e.target.value)}
-                        title="Change payment status"
-                      >
-                        {STATUS_CHANGE_OPTIONS.map((o) => (
-                          <option key={o.value} value={o.value}>{o.label}</option>
-                        ))}
-                      </select>
+                        onChange={(next) => changeStatus(p, next)}
+                      />
                       <button
                         type="button"
                         onClick={() => startEdit(p)}

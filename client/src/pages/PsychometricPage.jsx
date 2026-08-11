@@ -92,7 +92,7 @@ export default function PsychometricPage({ compact = false }) {
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
             >
               <img
-                src={IMAGES.studentsGroup || IMAGES.skillMapping}
+                src={IMAGES.psychometric || IMAGES.skillMapping}
                 alt={hero.imageAlt}
                 className="w-full aspect-[4/3] object-cover"
               />
@@ -108,17 +108,19 @@ export default function PsychometricPage({ compact = false }) {
 
       {page.challenge && (
         <section className="py-16 lg:py-24 why-challenge-wrap">
-          <div className="max-w-4xl mx-auto px-4">
+          <div className="px-4">
             <motion.div {...fade} className="why-challenge">
               <div className="why-challenge__inner">
-                <p className="why-challenge__label">{page.challenge.label}</p>
-                <h2 className="why-challenge__title">{page.challenge.title}</h2>
-                <p className="why-challenge__lede">{page.challenge.p1}</p>
-                <p className="why-challenge__lede">
-                  {page.challenge.p2Before}
-                  <strong>{page.challenge.p2Highlight}</strong>
-                  {page.challenge.p2After}
-                </p>
+                <div className="why-challenge__copy">
+                  <p className="why-challenge__label">{page.challenge.label}</p>
+                  <h2 className="why-challenge__title">{page.challenge.title}</h2>
+                  <p className="why-challenge__lede">{page.challenge.p1}</p>
+                  <p className="why-challenge__lede">
+                    {page.challenge.p2Before}
+                    <strong>{page.challenge.p2Highlight}</strong>
+                    {page.challenge.p2After}
+                  </p>
+                </div>
                 <div className="why-challenge__panel">
                   <h3 className="why-challenge__panel-title">{page.challenge.problemsTitle}</h3>
                   <ul className="why-challenge__list">

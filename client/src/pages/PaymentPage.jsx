@@ -207,20 +207,18 @@ export default function PaymentPage() {
   };
 
   const ensureAdminBandBeforeSubmit = async () => {
+    if (!needsSkillBand) return true;
     if (!skillMappingBand) {
       setError('Please select an agewise bifurcation combo before submitting.');
       return false;
     }
-    if (needsSkillBand) {
-      try {
-        await persistSkillBand(skillMappingBand);
-        return true;
-      } catch (e) {
-        setError(e.message);
-        return false;
-      }
+    try {
+      await persistSkillBand(skillMappingBand);
+      return true;
+    } catch (e) {
+      setError(e.message);
+      return false;
     }
-    return true;
   };
 
   const applyCoupon = async () => {
@@ -750,6 +748,7 @@ export default function PaymentPage() {
                         <input className="input-field !py-2.5 w-full" placeholder="UPI / bank reference" value={paymentReferenceId} onChange={(e) => setPaymentReferenceId(e.target.value)} maxLength={120} />
                         <label className="payment-page__field-label">Note (optional)</label>
                         <input className="input-field !py-2.5 w-full" placeholder="Any extra details" value={userNote} onChange={(e) => setUserNote(e.target.value)} maxLength={500} />
+                        {needsSkillBand && (
                         <div className="payment-page__admin-band">
                           <SkillMappingComboPicker
                             combos={skillCombos}
@@ -759,6 +758,7 @@ export default function PaymentPage() {
                             hint="Select the test package for this student. Payment cannot be submitted without this."
                           />
                         </div>
+                        )}
                         <button type="button" onClick={handleAdminSubmit} disabled={paying} className="btn-primary payment-page__admin-submit-btn w-full mt-2">
                           {paying ? 'Submitting…' : `Submit for verification · ${formatPrice(finalPrice)}`}
                         </button>
