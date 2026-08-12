@@ -36,10 +36,10 @@ export default function DashboardB2BBanner({
   const toolkitRail = hasToolkit && (
     <nav className="dash-hero-toolkit" role="tablist" aria-label="Dashboard sections">
       <div className="dash-hero-toolkit__scroll">
-        {toolkitTabs.map((tab, i) => {
+        {toolkitTabs.map((tab) => {
           const on = activeTab === tab.id;
           return (
-            <motion.button
+            <button
               key={tab.id}
               type="button"
               role="tab"
@@ -47,14 +47,10 @@ export default function DashboardB2BBanner({
               disabled={tab.locked}
               className={`dash-hero-toolkit__chip${on ? ' is-active' : ''}${tab.locked ? ' is-locked' : ''}`}
               onClick={() => !tab.locked && onSelectTab(tab.id)}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 + i * 0.03 }}
-              whileTap={{ scale: 0.97 }}
             >
               {tab.label}
               {tab.locked && <span className="dash-hero-toolkit__lock">🔒</span>}
-            </motion.button>
+            </button>
           );
         })}
       </div>

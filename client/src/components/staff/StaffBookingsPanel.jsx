@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar, Clock, MapPin, Link2, Phone, Mail, Save, UserCircle, Search, Filter, X,
   CalendarPlus, Trash2, Users, LayoutGrid, UserCog,
@@ -20,13 +19,6 @@ const STATUS_OPTIONS = [
   { value: 'completed', label: 'Completed' },
   { value: 'cancelled', label: 'Cancelled' },
 ];
-
-const TAB_PANEL = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -6 },
-  transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
-};
 
 function BookingSectionHead({ icon: Icon, iconTone, title, desc }) {
   return (
@@ -174,7 +166,12 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
 
   const handleCreateSlot = async (form) => {
     try {
-      await api.createSlot(token, form);
+      const payload = {
+        ...form,
+        slot_type: slotType,
+        session_number: slotType === 'program_session' ? (Number(form.session_number) || 1) : null,
+      };
+      await api.createSlot(token, payload);
       await loadSlots();
       onNotice?.('Slot created successfully.');
     } catch (err) {
@@ -279,6 +276,7 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
             <SlotCalendar
               mode="admin"
               size="large"
+              slotType={slotType}
               slots={slots}
               loading={slotsLoading}
               onCreateSlot={handleCreateSlot}
@@ -393,10 +391,8 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
               ) : filteredConsultations.length === 0 ? (
                 <p className="text-sm opacity-70">No consultations match your filters.</p>
               ) : filteredConsultations.map((c) => (
-                <motion.div
+                <div
                   key={c.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
                   className="dash-inner-card dash-admin-consult-card admin-booking-card"
                 >
                   <div className="flex flex-wrap justify-between gap-3">
@@ -462,7 +458,7 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
                       </button>
                     ))}
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </section>
@@ -579,11 +575,9 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
         </div>
       </div>
 
-      <AnimatePresence mode="wait">
-        <motion.div key={activeTab} {...TAB_PANEL} className="staff-booking-tab-panel">
-          {renderTabPanel()}
-        </motion.div>
-      </AnimatePresence>
+      <div className="staff-booking-tab-panel">
+        {renderTabPanel()}
+      </div>
     </div>
   );
 }

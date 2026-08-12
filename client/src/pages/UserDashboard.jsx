@@ -229,20 +229,6 @@ export default function UserDashboard() {
   );
 
   useEffect(() => {
-    if (!token || loading) return undefined;
-    let cancelled = false;
-    (async () => {
-      try {
-        const dash = await userApi.dashboard(token);
-        if (!cancelled) setData(dash);
-      } catch {
-        /* silent refresh on tab change */
-      }
-    })();
-    return () => { cancelled = true; };
-  }, [tabParam, token, loading]);
-
-  useEffect(() => {
     if (!token || tabParam !== 'reports') return undefined;
     const timer = window.setInterval(() => {
       userApi.dashboard(token).then((dash) => setData(dash)).catch(() => {});
@@ -272,8 +258,15 @@ export default function UserDashboard() {
   }, [tabParam]);
 
   useEffect(() => {
-    if (token) loadSlots();
-  }, [token, loadSlots]);
+    if (!token) return;
+    if (tabParam === 'book' || (tabParam === 'counselling' && counsellingSubtab === 'counselling')) {
+      loadSlots('counselling');
+    } else if (tabParam === 'training' && (trainingSubtab === 'schedule' || trainingFocus === 'readiness')) {
+      loadSlots('program_session');
+    } else {
+      loadSlots();
+    }
+  }, [token, tabParam, counsellingSubtab, trainingSubtab, trainingFocus, loadSlots]);
 
   useEffect(() => {
     const slotId = parsedDash.slotId;
@@ -595,6 +588,7 @@ export default function UserDashboard() {
         <DashboardSidebarLayout
             tabs={dashboardTabs}
             defaultTab={activePanelTab}
+            activeTabId={tabParam}
             id="user-dashboard"
             topbar
             hideNavigation

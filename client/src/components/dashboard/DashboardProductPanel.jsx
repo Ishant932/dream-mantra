@@ -67,7 +67,7 @@ export function CounsellingProductPanel({
   return (
     <div className="space-y-3">
       {paid && (
-        <div className="dash-subtab-rail dash-subtab-rail--product dash-subtab-rail--center dash-subtab-rail--lg">
+        <div className="dash-subtab-rail dash-subtab-rail--scroll dash-subtab-rail--product dash-subtab-rail--center dash-subtab-rail--lg">
           {subtabs.map((tab) => (
             <button key={tab.id} type="button" disabled={locked(tab)}
               className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}${locked(tab) ? ' is-locked' : ''}`}
@@ -159,7 +159,7 @@ export function TrainingProductPanel({
   return (
     <div className="space-y-3">
       {paid && (
-        <div className="dash-subtab-rail dash-subtab-rail--product dash-subtab-rail--center dash-subtab-rail--lg">
+        <div className="dash-subtab-rail dash-subtab-rail--scroll dash-subtab-rail--product dash-subtab-rail--center dash-subtab-rail--lg">
           {subtabs.map((tab) => (
             <button key={tab.id} type="button" disabled={locked(tab)}
               className={`dash-subtab-rail__chip${subtab === tab.id ? ' is-active' : ''}${locked(tab) ? ' is-locked' : ''}`}

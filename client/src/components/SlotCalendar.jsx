@@ -45,6 +45,7 @@ const gridVariants = {
 export default function SlotCalendar({
   mode = 'user',
   size = 'large',
+  slotType = 'counselling',
   slots = [],
   selectedSlotId,
   onSelectSlot,
@@ -65,10 +66,11 @@ export default function SlotCalendar({
     endTime: '12:00',
     mode: 'online',
     location: 'Online (Pan-India)',
-    title: 'Career Counselling Session',
+    title: slotType === 'program_session' ? 'Career Readiness Session' : 'Career Counselling Session',
     meeting_link: '',
     capacity: 1,
     counsellor: 'Esha Lohiya',
+    session_number: '1',
   });
   const [editForm, setEditForm] = useState(null);
 
@@ -311,6 +313,15 @@ export default function SlotCalendar({
               <input type="url" className="input-field slot-cal-input slot-cal-input--wide" placeholder="Meeting link (Zoom / Google Meet)" value={form.meeting_link} onChange={(e) => setForm({ ...form, meeting_link: e.target.value })} />
               <input type="number" min={1} className="input-field slot-cal-input" placeholder="Capacity" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: Number(e.target.value) })} />
               <input type="text" className="input-field slot-cal-input slot-cal-input--wide" placeholder="Counsellor name" value={form.counsellor} onChange={(e) => setForm({ ...form, counsellor: e.target.value })} />
+              {slotType === 'program_session' && (
+                <select className="input-field slot-cal-input" value={form.session_number} onChange={(e) => setForm({ ...form, session_number: e.target.value })}>
+                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
+                    <option key={n} value={String(n)}>Session {n}</option>
+                  ))}
+                  <option value="9">Mock Interview 1</option>
+                  <option value="10">Mock Interview 2</option>
+                </select>
+              )}
             </div>
             <motion.button type="submit" whileHover={{ scale: 1.02 }} className="btn-primary slot-cal-submit">Create slot</motion.button>
           </motion.form>

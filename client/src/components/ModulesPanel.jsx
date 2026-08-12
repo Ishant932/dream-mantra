@@ -488,7 +488,7 @@ export default function ModulesPanel({
         />
       </div>
 
-      <div className="modules-hub-tabs dash-subtab-rail dash-subtab-rail--center dash-subtab-rail--lg flex flex-wrap gap-2 justify-center">
+      <div className="modules-hub-tabs dash-subtab-rail dash-subtab-rail--scroll dash-subtab-rail--center dash-subtab-rail--lg flex flex-wrap gap-2 justify-center">
         {[
           { id: 'book', label: 'Book program' },
           { id: 'active', label: 'Active modules' },

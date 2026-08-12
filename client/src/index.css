@@ -25649,7 +25649,9 @@ html.aurora .dash-sidebar-panel--hero-match {
 }
 
 /* Cleaner dashboard panels */
-.dash-panel-clean { max-width: 100%; }
+.dash-sidebar-panel {
+  min-height: 12rem;
+}
 .dash-panel-surface { padding: 0.75rem; border-radius: 1.25rem; background: var(--bg-elevated); border: 1px solid var(--border-subtle); }
 .dash-subtab-rail {
   display: grid;
@@ -25659,6 +25661,21 @@ html.aurora .dash-sidebar-panel--hero-match {
   overflow: hidden;
   width: 100%;
   padding-bottom: 0;
+}
+.dash-subtab-rail--scroll {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  grid-auto-flow: unset;
+  grid-auto-columns: unset;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.dash-subtab-rail--scroll::-webkit-scrollbar { display: none; }
+.dash-subtab-rail--scroll .dash-subtab-rail__chip {
+  flex: 0 0 auto;
+  min-width: max-content;
+  white-space: nowrap;
 }
 .dash-subtab-rail__chip {
   flex: 1 1 0;
@@ -27608,30 +27625,28 @@ html.aurora .dash-sidebar-panel--hero-match {
     min-width: 0;
   }
   .dash-b2b-hero--unified .dash-hero-toolkit__scroll {
-    display: grid !important;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    display: flex !important;
+    flex-wrap: nowrap !important;
     gap: 0.35rem;
     width: 100%;
-    overflow-x: visible !important;
-    flex-wrap: wrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .dash-b2b-hero--unified .dash-hero-toolkit__scroll::-webkit-scrollbar {
+    display: none;
   }
   .dash-b2b-hero--unified .dash-hero-toolkit__chip {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
     max-width: none !important;
-    white-space: normal;
+    white-space: nowrap;
     text-align: center;
-    font-size: clamp(0.58rem, 2.5vw, 0.72rem) !important;
-    padding: 0.42rem 0.2rem !important;
+    font-size: 0.72rem !important;
+    padding: 0.45rem 0.75rem !important;
     line-height: 1.15;
-    overflow: visible;
-    grid-column: span 2;
-  }
-  .dash-b2b-hero--unified .dash-hero-toolkit__chip:nth-child(4):nth-last-child(2) {
-    grid-column: 2 / span 2;
-  }
-  .dash-b2b-hero--unified .dash-hero-toolkit__chip:nth-child(5):last-child {
-    grid-column: 4 / span 2;
+    grid-column: auto !important;
   }
   .counselling-tabs {
     grid-auto-flow: row !important;
@@ -27710,14 +27725,43 @@ html.aurora .dash-sidebar-panel--hero-match {
   }
   .dash-product-path-rail,
   .dash-subtab-rail {
-    gap: 0.3rem !important;
-    overflow: hidden !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    gap: 0.35rem !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .dash-product-path-rail::-webkit-scrollbar,
+  .dash-subtab-rail::-webkit-scrollbar {
+    display: none;
+  }
+  .modules-hub-tabs {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    justify-content: flex-start !important;
+    grid-auto-flow: unset !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.15rem;
+  }
+  .modules-hub-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .modules-hub-tabs .dash-subtab-rail__chip {
+    flex: 0 0 auto;
+    min-width: max-content;
+    white-space: nowrap;
+    padding: 0.45rem 0.85rem !important;
   }
   .dash-product-path-rail__chip,
   .dash-subtab-rail__chip {
-    min-height: 2.45rem;
-    font-size: clamp(0.55rem, 2.4vw, 0.72rem) !important;
-    padding: 0.4rem 0.25rem !important;
+    flex: 0 0 auto;
+    min-width: max-content;
+    white-space: nowrap;
+    padding: 0.4rem 0.65rem !important;
   }
   .dash-panel-surface,
   .dash-sidebar-panel,

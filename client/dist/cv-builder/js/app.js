@@ -1042,20 +1042,12 @@ async function bootstrap(){
   if (new URLSearchParams(location.search).get('embed') === '1') {
     document.body.classList.add('embed-mode');
   }
-  const mobileMq = window.matchMedia('(max-width: 640px)');
-  const syncMobileCv = () => {
-    document.body.classList.toggle('cv-mobile-stack', document.body.classList.contains('embed-mode') && mobileMq.matches);
-    scheduleParentHeightNotify();
-  };
-  if (mobileMq.addEventListener) mobileMq.addEventListener('change', syncMobileCv);
-  else mobileMq.addListener(syncMobileCv);
   await loadConfig();
   initSettingsUI();
   buildTemplateGrid();
   renderTabs();
   renderForm();
   render();
-  syncMobileCv();
   if (window.parent && window.parent !== window) {
     window.parent.postMessage({ type: 'dm-cv-ready' }, '*');
     scheduleParentHeightNotify();

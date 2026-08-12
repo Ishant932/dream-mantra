@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CalendarPlus, Trash2, Loader2 } from 'lucide-react';
 
 const WEEKDAYS = [
@@ -11,29 +11,39 @@ const WEEKDAYS = [
   { value: 0, label: 'Sun' },
 ];
 
-const defaultCreate = {
-  startDate: '',
-  endDate: '',
-  daysOfWeek: [1, 2, 3, 4, 5, 6],
-  startTime: '11:00',
-  endTime: '12:00',
-  mode: 'online',
-  location: 'Online (Pan-India)',
-  title: 'Career Counselling Session',
-  meeting_link: '',
-  capacity: 1,
-  counsellor: 'Esha Lohiya',
-};
+const SESSION_OPTIONS = [
+  ...[1, 2, 3, 4, 5, 6, 7, 8].map((n) => ({ value: String(n), label: `Session ${n}` })),
+  { value: '9', label: 'Mock Interview 1' },
+  { value: '10', label: 'Mock Interview 2' },
+];
+
+function buildCreateForm(slotType) {
+  return {
+    startDate: '',
+    endDate: '',
+    daysOfWeek: [1, 2, 3, 4, 5, 6],
+    startTime: '11:00',
+    endTime: '12:00',
+    mode: 'online',
+    location: 'Online (Pan-India)',
+    title: slotType === 'program_session' ? 'Career Readiness Session' : 'Career Counselling Session',
+    meeting_link: '',
+    capacity: '1',
+    counsellor: 'Esha Lohiya',
+    slot_type: slotType,
+    session_number: slotType === 'program_session' ? '1' : '',
+  };
+}
 
 export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = 'both', slotType = 'counselling' }) {
-  const [createForm, setCreateForm] = useState({
-    ...defaultCreate,
-    slot_type: slotType,
-    session_number: slotType === 'program_session' ? 1 : '',
-  });
+  const [createForm, setCreateForm] = useState(() => buildCreateForm(slotType));
   const [deleteForm, setDeleteForm] = useState({ from: '', to: '', onlyEmpty: true });
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  useEffect(() => {
+    setCreateForm(buildCreateForm(slotType));
+  }, [slotType]);
 
   const toggleDay = (day) => {
     setCreateForm((f) => {
@@ -48,10 +58,23 @@ export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = '
     e.preventDefault();
     setCreating(true);
     try {
-      const payload = { ...createForm };
+      const payload = {
+        ...createForm,
+        capacity: Math.max(1, Number(createForm.capacity) || 1),
+        slot_type: slotType,
+      };
       const sn = Number(payload.session_number);
-      if (payload.slot_type === 'program_session' && (sn === 9 || sn === 10) && (!payload.title || payload.title === 'Career Counselling Session')) {
-        payload.title = sn === 9 ? 'Mock Interview 1' : 'Mock Interview 2';
+      if (slotType === 'program_session') {
+        if (!sn || sn < 1 || sn > 10) {
+          onError?.('Choose a session number between 1 and 10.');
+          return;
+        }
+        payload.session_number = sn;
+        if (!payload.title || payload.title === 'Career Counselling Session') {
+          payload.title = sn === 9 ? 'Mock Interview 1' : sn === 10 ? 'Mock Interview 2' : `Career Readiness Session ${sn}`;
+        }
+      } else {
+        delete payload.session_number;
       }
       const result = await api.createBulkSlots(token, payload);
       const msg = `Created ${result.count} slot${result.count === 1 ? '' : 's'}${result.errors?.length ? ` (${result.errors.length} skipped)` : ''}.`;
@@ -87,6 +110,7 @@ export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = '
 
   const showCreate = mode === 'create' || mode === 'both';
   const showDelete = mode === 'delete' || mode === 'both';
+  const sessionNum = Number(createForm.session_number);
 
   return (
     <div className={mode === 'both' ? 'staff-booking-bulk-grid' : ''}>
@@ -95,7 +119,11 @@ export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = '
         <h3 className="staff-booking-bulk-card__title">
           <CalendarPlus className="w-4 h-4 text-emerald-600" /> Create bulk slots
         </h3>
-        <p className="text-xs opacity-70 mb-4">Generate recurring slots across a date range for selected weekdays.</p>
+        <p className="text-xs opacity-70 mb-4">
+          {slotType === 'program_session'
+            ? 'Generate recurring program session slots (Sessions 1–8 or Mock Interviews 9–10) across a date range.'
+            : 'Generate recurring counselling slots across a date range for selected weekdays.'}
+        </p>
         <div className="grid sm:grid-cols-2 gap-3 mb-3">
           <div>
             <label className="text-xs font-bold uppercase opacity-60 block mb-1">From date</label>
@@ -139,21 +167,29 @@ export default function BulkSlotsTool({ api, token, onSuccess, onError, mode = '
           </div>
           <div>
             <label className="text-xs font-bold uppercase opacity-60 block mb-1">Capacity</label>
-            <input type="number" min={1} className="input-field w-full !py-2 !text-sm" value={createForm.capacity} onChange={(e) => setCreateForm({ ...createForm, capacity: Number(e.target.value) || 1 })} />
+            <input type="number" min={1} className="input-field w-full !py-2 !text-sm" value={createForm.capacity} onChange={(e) => setCreateForm({ ...createForm, capacity: e.target.value })} />
           </div>
+          {slotType === 'program_session' && (
+            <div>
+              <label className="text-xs font-bold uppercase opacity-60 block mb-1">Session number</label>
+              <select
+                className="input-field w-full !py-2 !text-sm"
+                value={createForm.session_number}
+                onChange={(e) => setCreateForm({ ...createForm, session_number: e.target.value })}
+              >
+                {SESSION_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>{opt.label}</option>
+                ))}
+              </select>
+              {(sessionNum === 9 || sessionNum === 10) && (
+                <p className="text-[11px] text-amber-700 mt-1">Session {sessionNum} = Mock Interview {sessionNum === 9 ? '1' : '2'}</p>
+              )}
+            </div>
+          )}
           <div className="sm:col-span-2">
             <label className="text-xs font-bold uppercase opacity-60 block mb-1">Title</label>
             <input className="input-field w-full !py-2 !text-sm" value={createForm.title} onChange={(e) => setCreateForm({ ...createForm, title: e.target.value })} />
           </div>
-          {slotType === 'program_session' && (
-            <div>
-              <label className="text-xs font-bold uppercase opacity-60 block mb-1">Session number (1–8, or 9–10 for mock interviews)</label>
-              <input type="number" min={1} max={10} className="input-field w-full !py-2 !text-sm" value={createForm.session_number} onChange={(e) => setCreateForm({ ...createForm, session_number: Number(e.target.value) || 1 })} />
-              {(Number(createForm.session_number) === 9 || Number(createForm.session_number) === 10) && (
-                <p className="text-[11px] text-amber-700 mt-1">Session {createForm.session_number} = Mock Interview {Number(createForm.session_number) === 9 ? '1' : '2'}</p>
-              )}
-            </div>
-          )}
           <div className="sm:col-span-2">
             <label className="text-xs font-bold uppercase opacity-60 block mb-1">Location</label>
             <input className="input-field w-full !py-2 !text-sm" value={createForm.location} onChange={(e) => setCreateForm({ ...createForm, location: e.target.value })} />

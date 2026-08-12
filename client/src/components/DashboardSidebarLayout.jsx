@@ -64,13 +64,14 @@ export default function DashboardSidebarLayout({
   hideMobileDeck = false,
   hideSidebar = false,
   hideMainHeader = false,
+  activeTabId,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
   const mainRef = useRef(null);
   const headerRef = useRef(null);
   const params = new URLSearchParams(location.search);
-  const active = params.get('tab') || defaultTab || tabs[0]?.id;
+  const active = activeTabId || params.get('tab') || defaultTab || tabs[0]?.id;
 
   const activeTab = tabs.find((t) => t.id === active) || tabs[0];
   const panelTab = tabs.some((t) => t.id === active) ? active : (activeTab?.id || 'overview');
@@ -272,9 +273,7 @@ export default function DashboardSidebarLayout({
           )}
 
           <div className={`dash-sidebar-panel${hideSidebar ? ' dash-sidebar-panel--hero-match' : ''}`} role="tabpanel" id={`${id}-panel`}>
-            <div key={panelTab}>
-              {typeof children === 'function' ? children(panelTab) : children}
-            </div>
+            {typeof children === 'function' ? children(panelTab) : children}
           </div>
         </div>
       </div>
