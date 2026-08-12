@@ -29,6 +29,15 @@ export function ensureSiteSettings() {
     data.site_settings.vouchers = [];
     saveData();
   }
+  if (!Array.isArray(data.site_settings.studio_landing_custom)) {
+    data.site_settings.studio_landing_custom = [];
+  }
+  if (!data.site_settings.studio_landing_meta || typeof data.site_settings.studio_landing_meta !== 'object') {
+    data.site_settings.studio_landing_meta = {};
+  }
+  if (!data.site_settings.studio_landing_files || typeof data.site_settings.studio_landing_files !== 'object') {
+    data.site_settings.studio_landing_files = {};
+  }
   return data.site_settings;
 }
 

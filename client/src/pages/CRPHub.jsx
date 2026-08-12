@@ -58,6 +58,22 @@ export default function CRPHub() {
 
   return (
     <div className={`crp-studio crp-studio--${tab} no-reveal`}>
+      <header className="crp-studio__masthead">
+        <div className="crp-studio__masthead-glow" aria-hidden />
+        <motion.div className="crp-studio__masthead-inner" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="crp-studio__masthead-copy">
+            <motion.h1 className="crp-studio__title font-accent">{lead} {accent ? <span className="crp-studio__title-accent">{accent}</span> : null}</motion.h1>
+            <motion.p className="crp-studio__subtitle">{hubSubtitle}</motion.p>
+            <motion.div className="crp-studio__masthead-actions">
+              <GuidanceCTA className="crp-studio__btn crp-studio__btn--primary">
+                <Calendar className="w-4 h-4" /> {hub.cta || fg.cta || 'Book a free guidance call'} <ArrowRight className="w-4 h-4" />
+              </GuidanceCTA>
+              <Link to="/signup" className="crp-studio__btn crp-studio__btn--ghost"><LogIn className="w-4 h-4" /> {fg.login || 'Sign in'}</Link>
+            </motion.div>
+          </div>
+        </motion.div>
+      </header>
+
       <nav className="crp-studio__tabbar" aria-label="Training sections" role="tablist">
         <div className="crp-studio__tabbar-inner">
           {crpTabs.map((item) => {
@@ -79,22 +95,6 @@ export default function CRPHub() {
           })}
         </div>
       </nav>
-
-      <header className="crp-studio__masthead">
-        <div className="crp-studio__masthead-glow" aria-hidden />
-        <motion.div className="crp-studio__masthead-inner" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <div className="crp-studio__masthead-copy">
-            <motion.h1 className="crp-studio__title font-accent">{lead} {accent ? <span className="crp-studio__title-accent">{accent}</span> : null}</motion.h1>
-            <motion.p className="crp-studio__subtitle">{hubSubtitle}</motion.p>
-            <motion.div className="crp-studio__masthead-actions">
-              <GuidanceCTA className="crp-studio__btn crp-studio__btn--primary">
-                <Calendar className="w-4 h-4" /> {hub.cta || fg.cta || 'Book a free guidance call'} <ArrowRight className="w-4 h-4" />
-              </GuidanceCTA>
-              <Link to="/signup" className="crp-studio__btn crp-studio__btn--ghost"><LogIn className="w-4 h-4" /> {fg.login || 'Sign in'}</Link>
-            </motion.div>
-          </div>
-        </motion.div>
-      </header>
 
       <CmsPageSections cms={cms} className="!py-6" />
       <div className="crp-studio__canvas" role="tabpanel">

@@ -27,6 +27,7 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
   const [modules, setModules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [togglingSlug, setTogglingSlug] = useState(null);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [showAddonFields, setShowAddonFields] = useState(false);
@@ -152,11 +153,30 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
     setShowAddonFields(checked);
   };
 
+  const toggleBookNow = async (mod) => {
+    if (!mod?.slug) return;
+    setTogglingSlug(mod.slug);
+    onError?.('');
+    try {
+      const res = await adminApi.updateModule(token, mod.slug, {
+        ...mod,
+        hidden: !mod.hidden,
+      });
+      onNotice?.(mod.hidden ? 'Module visible on Book Now' : 'Module hidden from Book Now');
+      if (Array.isArray(res.modules)) applyModules(res.modules);
+      else await load(true);
+    } catch (err) {
+      onError?.(err.message || 'Could not update Book Now visibility');
+    } finally {
+      setTogglingSlug(null);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <AdminPanelHeader
         title="Module Catalog"
-        subtitle="Changes save instantly and appear in the user dashboard & website."
+        subtitle="Toggle Book Now visibility per module. Hidden modules stay in admin but won't appear on the user Book Now page."
         exportProps={{
           title: 'Modules',
           filename: 'module-catalog',
@@ -165,7 +185,7 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
             { label: 'Title', get: (m) => m.title },
             { label: 'Slug', get: (m) => m.slug },
             { label: 'Price', get: (m) => m.price },
-            { label: 'Hidden', get: (m) => (m.hidden ? 'yes' : 'no') },
+            { label: 'Hidden from Book Now', get: (m) => (m.hidden ? 'yes' : 'no') },
           ],
         }}
       />
@@ -198,7 +218,7 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
                 Optional counselling add-on
               </label>
               <label className="inline-flex items-center gap-2"><input type="checkbox" checked={form.includesCounselling} onChange={(e) => setForm({ ...form, includesCounselling: e.target.checked })} /> Includes counselling</label>
-              <label className="inline-flex items-center gap-2"><input type="checkbox" checked={form.hidden} onChange={(e) => setForm({ ...form, hidden: e.target.checked })} /> Hidden from catalog</label>
+              <label className="inline-flex items-center gap-2"><input type="checkbox" checked={form.hidden} onChange={(e) => setForm({ ...form, hidden: e.target.checked })} /> Hide from Book Now page</label>
             </div>
 
             {form.optionalCounselling && (
@@ -263,8 +283,16 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
                 <p className="font-semibold">{m.icon ? `${m.icon} ` : ''}{m.title}</p>
                 <p className="text-xs font-mono opacity-60">{m.slug}</p>
                 <p className="font-semibold text-amber-700">₹{Number(m.price || 0).toLocaleString('en-IN')}</p>
-                {m.hidden && <span className="text-xs text-red-600 font-semibold">Hidden</span>}
-                <div className="flex gap-2 pt-1">
+                {m.hidden && <span className="text-xs text-red-600 font-semibold">Hidden from Book Now</span>}
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => toggleBookNow(m)}
+                    disabled={togglingSlug === m.slug}
+                    className={`text-xs font-bold px-3 py-1.5 rounded-lg border ${m.hidden ? 'text-emerald-700 border-emerald-200' : 'text-amber-800 border-amber-200'}`}
+                  >
+                    {togglingSlug === m.slug ? 'Saving…' : m.hidden ? 'Show on Book Now' : 'Hide from Book Now'}
+                  </button>
                   <button type="button" onClick={() => startEdit(m)} className="text-xs font-bold px-3 py-1.5 rounded-lg border">Edit</button>
                   <button type="button" onClick={() => remove(m.slug)} className="text-xs font-bold px-3 py-1.5 rounded-lg border text-red-700">Remove</button>
                 </div>
@@ -278,6 +306,7 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
                   <th className="py-2 px-2 font-semibold text-xs uppercase opacity-60">Module</th>
                   <th className="py-2 px-2 font-semibold text-xs uppercase opacity-60">Slug</th>
                   <th className="py-2 px-2 font-semibold text-xs uppercase opacity-60">Price</th>
+                  <th className="py-2 px-2 font-semibold text-xs uppercase opacity-60">Book Now</th>
                   <th className="py-2 px-2 font-semibold text-xs uppercase opacity-60">Counselling</th>
                   <th className="py-2 px-2 font-semibold text-xs uppercase opacity-60 text-right">Actions</th>
                 </tr>
@@ -288,10 +317,21 @@ export default function AdminModulesPanel({ token, onNotice, onError, onCatalogC
                     <td className="py-3 px-2">
                       <p className="font-semibold">{m.icon ? `${m.icon} ` : ''}{m.title}</p>
                       {m.description && <p className="text-xs opacity-60 mt-0.5">{m.description}</p>}
-                      {m.hidden && <span className="text-xs text-red-600 font-semibold">Hidden</span>}
+                      {m.hidden && <span className="text-xs text-red-600 font-semibold">Hidden from Book Now</span>}
                     </td>
                     <td className="py-3 px-2 font-mono text-xs">{m.slug}</td>
                     <td className="py-3 px-2 font-semibold text-amber-700">₹{Number(m.price).toLocaleString('en-IN')}</td>
+                    <td className="py-3 px-2">
+                      <button
+                        type="button"
+                        onClick={() => toggleBookNow(m)}
+                        disabled={togglingSlug === m.slug}
+                        className={`text-xs font-bold px-2.5 py-1.5 rounded-lg border whitespace-nowrap ${m.hidden ? 'text-emerald-700 border-emerald-200 bg-emerald-50/60' : 'text-amber-800 border-amber-200 bg-amber-50/50'}`}
+                        title={m.hidden ? 'Show on Book Now page' : 'Hide from Book Now page'}
+                      >
+                        {togglingSlug === m.slug ? '…' : m.hidden ? 'Show' : 'Hide'}
+                      </button>
+                    </td>
                     <td className="py-3 px-2 text-xs">
                       {m.includesCounselling ? 'Included' : m.optionalCounselling ? (
                         <>

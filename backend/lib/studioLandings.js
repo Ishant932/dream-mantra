@@ -1,9 +1,7 @@
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CUSTOM_FILE = path.join(__dirname, '../data/studio-landings-custom.json');
+import {
+  readCustomLandingsFromStore,
+  saveCustomLandingsToStore,
+} from './studioLandingStore.js';
 
 /** Built-in public URL slugs → Landing Pages folder + checkout module */
 export const BUILTIN_STUDIO_LANDINGS = [
@@ -17,15 +15,7 @@ export const BUILTIN_STUDIO_LANDINGS = [
 export const STUDIO_LANDINGS = BUILTIN_STUDIO_LANDINGS;
 
 export function readCustomLandings() {
-  try {
-    if (fs.existsSync(CUSTOM_FILE)) {
-      const parsed = JSON.parse(fs.readFileSync(CUSTOM_FILE, 'utf8'));
-      return Array.isArray(parsed) ? parsed : [];
-    }
-  } catch {
-    /* ignore */
-  }
-  return [];
+  return readCustomLandingsFromStore();
 }
 
 export function getAllStudioLandings() {
@@ -33,8 +23,7 @@ export function getAllStudioLandings() {
 }
 
 export function saveCustomLandings(list) {
-  fs.mkdirSync(path.dirname(CUSTOM_FILE), { recursive: true });
-  fs.writeFileSync(CUSTOM_FILE, JSON.stringify(list, null, 2), 'utf8');
+  saveCustomLandingsToStore(list);
 }
 
 export function studioSlugForProduct(productSlug) {

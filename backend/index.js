@@ -32,6 +32,7 @@ import { getWhatsAppPublicConfig } from './lib/whatsapp/events.js';
 import { startWhatsAppScheduler } from './lib/whatsapp/scheduler.js';
 import { getAllStudioLandings } from './lib/studioLandings.js';
 import { isLandingPublished } from './lib/studioLandingMeta.js';
+import { ensureLandingFilesOnDisk, hydrateAllStudioLandings } from './lib/studioLandingStore.js';
 import { listSkillMappingCombos, comboSummary } from './lib/skillMappingCombos.js';
 import landingRoutes from './routes/landing.js';
 
@@ -128,8 +129,8 @@ if (fs.existsSync(landingPagesDir)) {
     const meta = getAllStudioLandings().find((l) => l.slug === req.params.slug);
     if (!meta) return next();
     if (req.path !== `/studio/${req.params.slug}`) return next();
-    const dir = path.join(landingPagesDir, meta.folder);
-    if (!isLandingPublished(req.params.slug, fs.existsSync(dir))) {
+    const exists = ensureLandingFilesOnDisk(meta);
+    if (!isLandingPublished(req.params.slug, exists)) {
       return res.status(404).send('Landing page is offline');
     }
     res.redirect(301, `/studio/${req.params.slug}/`);
@@ -137,8 +138,9 @@ if (fs.existsSync(landingPagesDir)) {
   app.use('/studio/:slug', (req, res, next) => {
     const meta = getAllStudioLandings().find((l) => l.slug === req.params.slug);
     if (!meta) return next();
+    const exists = ensureLandingFilesOnDisk(meta);
     const dir = path.join(landingPagesDir, meta.folder);
-    if (!fs.existsSync(dir)) return next();
+    if (!exists || !fs.existsSync(dir)) return next();
     if (!isLandingPublished(req.params.slug, true)) {
       return res.status(404).send('Landing page is offline');
     }
@@ -357,6 +359,8 @@ async function startServer() {
           seedSampleSlots();
           listSkillMappingCombos();
           migrateLegacyPayments();
+          const hydrated = hydrateAllStudioLandings(getAllStudioLandings());
+          if (hydrated) console.log(`  Studio landings hydrated: ${hydrated}`);
           const pay = getGatewayPublicConfig();
           console.log(`  Payments: ${pay.mode}${pay.gatewayEnabled ? ' (Razorpay live)' : ' (manual UPI + admin verify)'}`);
           startWhatsAppScheduler();

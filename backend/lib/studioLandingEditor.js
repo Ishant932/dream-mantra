@@ -8,6 +8,12 @@ import {
   BUILTIN_STUDIO_LANDINGS,
 } from './studioLandings.js';
 import { deleteLandingMeta, getLandingMeta, isLandingPublished, setLandingMeta } from './studioLandingMeta.js';
+import {
+  captureLandingFilesFromDisk,
+  deleteLandingFilesFromStore,
+  ensureLandingFilesOnDisk,
+  persistLandingFiles,
+} from './studioLandingStore.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const landingPagesDir = path.join(__dirname, '../../Landing Pages');
@@ -57,15 +63,16 @@ const DEFAULT_HTML = `<!DOCTYPE html>
 function landingDir(slug) {
   const meta = getAllStudioLandings().find((l) => l.slug === slug);
   if (!meta) throw new Error('Landing page not found');
+  if (!ensureLandingFilesOnDisk(meta)) {
+    throw new Error('Landing page folder missing on server');
+  }
   const dir = path.join(landingPagesDir, meta.folder);
-  if (!fs.existsSync(dir)) throw new Error('Landing page folder missing on server');
   return { meta, dir };
 }
 
 export function listStudioLandingsForAdmin() {
   return getAllStudioLandings().map((l) => {
-    const dir = path.join(landingPagesDir, l.folder);
-    const exists = fs.existsSync(dir);
+    const exists = ensureLandingFilesOnDisk(l);
     const meta = getLandingMeta(l.slug);
     const published = isLandingPublished(l.slug, exists);
     const productSlug = meta.productSlug || l.productSlug;
@@ -103,12 +110,9 @@ export function readStudioLanding(slug) {
 }
 
 export function writeStudioLanding(slug, files = {}) {
-  const { meta, dir } = landingDir(slug);
-  for (const [key, content] of Object.entries(files)) {
-    const filename = FILE_KEYS[key];
-    if (!filename || typeof content !== 'string') continue;
-    fs.writeFileSync(path.join(dir, filename), content, 'utf8');
-  }
+  const meta = getAllStudioLandings().find((l) => l.slug === slug);
+  if (!meta) throw new Error('Landing page not found');
+  persistLandingFiles(meta, files);
   return readStudioLanding(slug);
 }
 
@@ -203,6 +207,7 @@ export function createStudioLanding({ slug, label, productSlug, folder, ctaLabel
   custom.push(entry);
   saveCustomLandings(custom);
   setLandingMeta(cleanSlug, { published: true, ctaLabel: cleanCta, heroImage: heroImage ? 'assets/hero.png' : '', logoImage: logoImage ? 'assets/logo.png' : '' });
+  captureLandingFilesFromDisk(cleanSlug, cleanFolder);
 
   return listStudioLandingsForAdmin().find((l) => l.slug === cleanSlug);
 }
@@ -251,5 +256,6 @@ export function deleteStudioLanding(slug) {
   if (fs.existsSync(dir)) fs.rmSync(dir, { recursive: true, force: true });
   saveCustomLandings(readCustomLandings().filter((l) => l.slug !== slug));
   deleteLandingMeta(slug);
+  deleteLandingFilesFromStore(slug);
   return { deleted: true };
 }

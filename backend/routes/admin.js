@@ -459,36 +459,40 @@ router.get('/studio-landings/:slug', (req, res) => {
   }
 });
 
-router.put('/studio-landings/:slug', (req, res) => {
+router.put('/studio-landings/:slug', async (req, res) => {
   try {
     const landing = writeStudioLanding(req.params.slug, req.body?.files || {});
+    await flushDatabase();
     res.json({ landing });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to save landing page' });
   }
 });
 
-router.post('/studio-landings', (req, res) => {
+router.post('/studio-landings', async (req, res) => {
   try {
     const landing = createStudioLanding(req.body || {});
+    await flushDatabase();
     res.status(201).json({ landing, landings: listStudioLandingsForAdmin() });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to create landing page' });
   }
 });
 
-router.patch('/studio-landings/:slug/meta', (req, res) => {
+router.patch('/studio-landings/:slug/meta', async (req, res) => {
   try {
     const meta = updateStudioLandingMeta(req.params.slug, req.body || {});
+    await flushDatabase();
     res.json({ meta, landings: listStudioLandingsForAdmin() });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to update landing meta' });
   }
 });
 
-router.delete('/studio-landings/:slug', (req, res) => {
+router.delete('/studio-landings/:slug', async (req, res) => {
   try {
     const result = deleteStudioLanding(req.params.slug);
+    await flushDatabase();
     res.json({ ...result, landings: listStudioLandingsForAdmin() });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to delete landing page' });
