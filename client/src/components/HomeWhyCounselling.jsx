@@ -1,6 +1,9 @@
 import { motion } from 'framer-motion';
+import { Briefcase, GraduationCap, Users } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { isMobilePerf } from '../utils/mobilePerf';
+
+const PROBLEM_ICONS = [Users, Briefcase, GraduationCap];
 
 export default function HomeWhyCounselling() {
   const { d } = useLang();
@@ -14,6 +17,15 @@ export default function HomeWhyCounselling() {
         whileInView: { opacity: 1, y: 0 },
         viewport: { once: true, margin: '-60px' },
         transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+      };
+
+  const cardMotion = mobile
+    ? { initial: { opacity: 1, y: 0, rotate: 0 }, whileInView: { opacity: 1, y: 0, rotate: 0 }, viewport: { once: true } }
+    : {
+        initial: { opacity: 0, y: 28, rotate: 0 },
+        whileInView: { opacity: 1, y: 0, rotate: 0 },
+        viewport: { once: true },
+        transition: { duration: 0.55, type: 'spring', stiffness: 260 },
       };
 
   return (
@@ -33,6 +45,29 @@ export default function HomeWhyCounselling() {
           {copy.hook}
         </motion.p>
       </motion.div>
+
+      <div className="grid md:grid-cols-3 gap-2.5 sm:gap-5 lg:gap-6 mb-8 sm:mb-12">
+        {(copy.problems || []).map((item, i) => {
+          const Icon = PROBLEM_ICONS[i % PROBLEM_ICONS.length];
+          return (
+            <motion.div
+              key={item.stat}
+              {...cardMotion}
+              transition={mobile ? undefined : { delay: i * 0.1, duration: 0.55, type: 'spring', stiffness: 260 }}
+              initial={mobile ? { opacity: 1, y: 0, rotate: 0 } : { opacity: 0, y: 28, rotate: i === 1 ? 0 : i === 0 ? -1 : 1 }}
+              whileHover={mobile ? undefined : { y: -8, scale: 1.02 }}
+              className={`home-problem-card home-problem-card--${i + 1}`}
+            >
+              <span className="home-problem-card__icon" aria-hidden>
+                <Icon className="w-6 h-6" />
+              </span>
+              <span className="home-stat-pop">{item.stat}</span>
+              <p className="home-problem-card__label">{item.label}</p>
+              <p className="home-problem-card__desc">{item.desc}</p>
+            </motion.div>
+          );
+        })}
+      </div>
     </div>
   );
 }

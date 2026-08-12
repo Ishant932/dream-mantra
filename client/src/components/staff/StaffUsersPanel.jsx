@@ -21,7 +21,7 @@ const JOINED_FILTER_OPTIONS = [
   { value: 'month', label: 'This month' },
 ];
 
-export default function StaffUsersPanel({ api, token, onError, allowCounsellorAssign = false, allowAccountActions = false }) {
+export default function StaffUsersPanel({ api, token, onError, onNotice, allowCounsellorAssign = false, allowAccountActions = false, catalogModules = [] }) {
   const { t } = useLang();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -50,6 +50,7 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
   const [passwordUser, setPasswordUser] = useState(null);
   const [newPassword, setNewPassword] = useState('');
   const [newPasswordConfirm, setNewPasswordConfirm] = useState('');
+  const [selectedUserIds, setSelectedUserIds] = useState([]);
 
   const loadUsers = useCallback(async () => {
     if (!token) return;
@@ -277,6 +278,18 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
     }
   };
 
+  const filteredUserIds = useMemo(() => filteredUsers.map((u) => u.id), [filteredUsers]);
+
+  const toggleSelectUser = (id) => {
+    setSelectedUserIds((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
+  };
+
+  const selectAllFiltered = () => {
+    setSelectedUserIds(filteredUserIds);
+  };
+
+  const clearSelection = () => setSelectedUserIds([]);
+
   const userExportColumns = [
     { label: 'Dreams ID', get: (u) => u.user_uid },
     { label: 'Name', get: (u) => u.name },
@@ -299,7 +312,16 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
   return (
     <>
       {allowAccountActions && (
-        <AdminBulkUsersPanel onError={onError} onComplete={() => loadUsers()} />
+        <AdminBulkUsersPanel
+          onError={onError}
+          onNotice={onNotice}
+          onComplete={() => { loadUsers(); clearSelection(); }}
+          selectedUserIds={selectedUserIds}
+          filteredUserIds={filteredUserIds}
+          totalUsers={users.length}
+          onClearSelection={clearSelection}
+          catalogModules={catalogModules}
+        />
       )}
       <AdminUserProfileModal
         open={profileOpen}
@@ -433,7 +455,17 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
             {filteredUsers.map((u) => (
               <div key={u.id} className="rounded-xl border border-sand-200 dark:border-sand-700 p-4 space-y-3">
                 <div className="flex items-start justify-between gap-2">
-                  <div>
+                  <div className="flex items-start gap-2">
+                    {allowAccountActions && (
+                      <input
+                        type="checkbox"
+                        className="mt-1"
+                        checked={selectedUserIds.includes(u.id)}
+                        onChange={() => toggleSelectUser(u.id)}
+                        aria-label={`Select ${u.name}`}
+                      />
+                    )}
+                    <div>
                     <button type="button" onClick={() => viewProfile(u.id)} className="font-bold text-left text-amber-800 hover:underline">
                       {u.name}
                     </button>
@@ -441,6 +473,7 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                     {u.account_status === 'suspended' && (
                       <span className="inline-block mt-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-700">Suspended</span>
                     )}
+                    </div>
                   </div>
                   <div className="flex items-start gap-1 shrink-0">
                     <UserActionsMenu
@@ -463,10 +496,25 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
               </div>
             ))}
           </div>
+          <div className="flex flex-wrap items-center gap-2 mb-3">
+            {allowAccountActions && filteredUsers.length > 0 && (
+              <>
+                <button type="button" className="btn-outline !py-1.5 !px-3 text-xs" onClick={selectAllFiltered}>
+                  Select filtered ({filteredUsers.length})
+                </button>
+                {selectedUserIds.length > 0 && (
+                  <button type="button" className="btn-outline !py-1.5 !px-3 text-xs" onClick={clearSelection}>
+                    Clear selection ({selectedUserIds.length})
+                  </button>
+                )}
+              </>
+            )}
+          </div>
           <div className="hidden md:block overflow-x-auto -mx-1">
             <table className="w-full text-sm admin-data-table min-w-[860px]">
               <thead>
                 <tr className="border-b border-sand-200 dark:border-sand-700 text-left">
+                  {allowAccountActions && <th className="py-3 px-2 w-8" aria-label="Select" />}
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Dreams ID</th>
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Name</th>
                   <th className="py-3 px-3 font-semibold text-xs uppercase tracking-wide opacity-60">Contact</th>
@@ -486,9 +534,19 @@ export default function StaffUsersPanel({ api, token, onError, allowCounsellorAs
                     key={u.id}
                     initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: Math.min(i * 0.03, 0.3) }}
+                    transition={{ delay: Math.min(i * 0.02, 0.15) }}
                     className="border-b border-sand-100 dark:border-sand-800/60 hover:bg-amber-50/40 dark:hover:bg-sand-800/30 transition"
                   >
+                    {allowAccountActions && (
+                      <td className="py-3 px-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedUserIds.includes(u.id)}
+                          onChange={() => toggleSelectUser(u.id)}
+                          aria-label={`Select ${u.name}`}
+                        />
+                      </td>
+                    )}
                     <td className="py-3 px-3"><CopyableUserId uid={u.user_uid} compact /></td>
                     <td className="py-3 px-3 font-semibold">
                       <button type="button" onClick={() => viewProfile(u.id)} className="font-semibold text-amber-800 hover:underline text-left">

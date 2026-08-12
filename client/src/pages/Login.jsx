@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Mail, Lock, Shield, Sparkles, ArrowRight, Loader2 } from 'lucide-react';
+import { dashboardPath } from '../utils/pathRoutes';
 import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import Logo from '../components/Logo';
@@ -21,7 +22,7 @@ export default function Login() {
     if (role === 'admin') return '/admin';
     if (role === 'counsellor') return '/counsellor';
     if (returnTo && returnTo.startsWith('/') && !returnTo.startsWith('//')) return returnTo;
-    return slotId ? `/dashboard?tab=book&slot_id=${slotId}` : '/dashboard';
+    return slotId ? dashboardPath('book', { slotId }) : dashboardPath('assess');
   };
 
   const finishLogin = (data) => {

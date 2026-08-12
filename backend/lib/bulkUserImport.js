@@ -50,7 +50,7 @@ export function parseBulkUserCsv(text) {
   return rows;
 }
 
-function assignModuleToUser(userId, productSlug, { approvePayment = false, adminId = null } = {}) {
+function assignModuleToUser(userId, productSlug, { paymentMode = 'none', adminId = null } = {}) {
   const catalog = buildModuleSelection(productSlug, false);
   if (!catalog) throw new Error(`Invalid module: ${productSlug}`);
 
@@ -88,14 +88,24 @@ function assignModuleToUser(userId, productSlug, { approvePayment = false, admin
   });
 
   let paymentApproved = false;
-  if (approvePayment && pay?.order_id) {
+  if (paymentMode === 'admin' && pay?.order_id) {
     confirmPayment({
       orderId: pay.order_id,
       paymentId: `ADMIN-BULK-${Date.now()}`,
       source: 'admin_manual',
       adminId,
-      adminNote: 'Bulk import — admin approved payment',
+      adminNote: 'Bulk assign — admin approved payment',
       paymentMethod: 'manual',
+    });
+    paymentApproved = true;
+  } else if (paymentMode === 'razorpay' && pay?.order_id) {
+    confirmPayment({
+      orderId: pay.order_id,
+      paymentId: `RZP-BULK-${Date.now()}`,
+      source: 'gateway',
+      adminId,
+      adminNote: 'Bulk assign — marked paid via Razorpay',
+      paymentMethod: 'razorpay',
     });
     paymentApproved = true;
   }
@@ -130,15 +140,29 @@ export function importBulkUsers({
   rows = [],
   moduleSlugs = [],
   approvePayments = false,
+  paymentMethod = 'none',
   adminId = null,
   userIds = null,
+  applyToAll = false,
 } = {}) {
   const results = [];
   const slugs = [...new Set((moduleSlugs || []).filter(Boolean))];
+  const payMode = paymentMethod !== 'none'
+    ? paymentMethod
+    : (approvePayments ? 'admin' : 'none');
 
-  const targets = userIds?.length
-    ? userIds.map((id) => ({ userId: Number(id) }))
-    : rows.map((row) => ({ row }));
+  let targets = [];
+  if (applyToAll) {
+    targets = db.prepare('SELECT id FROM users WHERE role = ?').all('user').map((u) => ({ userId: u.id }));
+  } else if (userIds?.length) {
+    targets = userIds.map((id) => ({ userId: Number(id) }));
+  } else {
+    targets = rows.map((row) => ({ row }));
+  }
+
+  if (!targets.length) {
+    return { total: 0, success: 0, failed: 0, results: [] };
+  }
 
   for (const target of targets) {
     try {
@@ -160,7 +184,7 @@ export function importBulkUsers({
       for (const slug of slugs) {
         modules.push({
           slug,
-          ...assignModuleToUser(user.id, slug, { approvePayment: approvePayments, adminId }),
+          ...assignModuleToUser(user.id, slug, { paymentMode: payMode, adminId }),
         });
       }
 

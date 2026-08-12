@@ -28,15 +28,50 @@ function parseCsv(text) {
   }).filter((r) => r.name || r.email || r.phone);
 }
 
-export default function AdminBulkUsersPanel({ onNotice, onError, selectedUserIds = [], onComplete }) {
+const TARGET_OPTIONS = [
+  { id: 'import', label: 'CSV import (new users)' },
+  { id: 'selected', label: 'Selected users' },
+  { id: 'filtered', label: 'Filtered list' },
+  { id: 'all', label: 'All students' },
+];
+
+const PAYMENT_OPTIONS = [
+  { id: 'none', label: 'Assign only — payment pending' },
+  { id: 'admin', label: 'Admin approval — mark paid' },
+  { id: 'razorpay', label: 'Razorpay — mark paid' },
+];
+
+export default function AdminBulkUsersPanel({
+  onNotice,
+  onError,
+  selectedUserIds = [],
+  filteredUserIds = [],
+  totalUsers = 0,
+  onClearSelection,
+  catalogModules = [],
+  onComplete,
+}) {
   const { token } = useAuth();
   const [csvText, setCsvText] = useState('');
   const [moduleSlugs, setModuleSlugs] = useState([]);
-  const [approvePayments, setApprovePayments] = useState(false);
+  const [target, setTarget] = useState('import');
+  const [paymentMode, setPaymentMode] = useState('none');
   const [importing, setImporting] = useState(false);
   const [lastResult, setLastResult] = useState(null);
 
   const preview = useMemo(() => parseCsv(csvText), [csvText]);
+  const checkoutModules = useMemo(() => {
+    const fromApi = (catalogModules || []).filter((m) => !m.hidden && !m.followUpOnly);
+    return fromApi.length ? fromApi : MODULE_CATALOG.filter((m) => !m.followUpOnly);
+  }, [catalogModules]);
+
+  const targetCount = useMemo(() => {
+    if (target === 'import') return preview.length;
+    if (target === 'selected') return selectedUserIds.length;
+    if (target === 'filtered') return filteredUserIds.length;
+    if (target === 'all') return totalUsers;
+    return 0;
+  }, [target, preview.length, selectedUserIds.length, filteredUserIds.length, totalUsers]);
 
   const toggleModule = (slug) => {
     setModuleSlugs((prev) => (prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug]));
@@ -62,30 +97,43 @@ export default function AdminBulkUsersPanel({ onNotice, onError, selectedUserIds
   const onFile = (file) => {
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = () => setCsvText(String(reader.result || ''));
+    reader.onload = () => {
+      setCsvText(String(reader.result || ''));
+      setTarget('import');
+    };
     reader.readAsText(file);
   };
 
   const runImport = async () => {
     if (!token) return;
-    if (!preview.length && !selectedUserIds.length) {
-      onError?.('Upload a CSV or select users first');
+    if (!moduleSlugs.length) {
+      onError?.('Select at least one program to assign');
+      return;
+    }
+    if (!targetCount) {
+      onError?.('No users in the selected target group');
       return;
     }
     setImporting(true);
     try {
-      const res = await adminApi.bulkImportUsers(token, {
-        csv: preview.length ? csvText : undefined,
-        userIds: selectedUserIds.length ? selectedUserIds : undefined,
+      const body = {
         moduleSlugs,
-        approvePayments,
-      });
+        paymentMethod: paymentMode,
+        approvePayments: paymentMode === 'admin',
+      };
+      if (target === 'import') body.csv = csvText;
+      else if (target === 'all') body.applyToAll = true;
+      else if (target === 'filtered') body.userIds = filteredUserIds;
+      else body.userIds = selectedUserIds;
+
+      const res = await adminApi.bulkImportUsers(token, body);
       setLastResult(res);
-      onNotice?.(`Imported ${res.success}/${res.total} users`);
+      onNotice?.(`Done: ${res.success}/${res.total} users · programs assigned`);
       onComplete?.(res);
-      if (res.results?.some((r) => r.password)) {
+      if (target === 'import' && res.results?.some((r) => r.password)) {
         setCsvText('');
       }
+      if (target === 'selected') onClearSelection?.();
     } catch (e) {
       onError?.(e.message);
     } finally {
@@ -94,7 +142,7 @@ export default function AdminBulkUsersPanel({ onNotice, onError, selectedUserIds
   };
 
   return (
-    <DashCard className="space-y-4">
+    <DashCard className="space-y-4 admin-bulk-users">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="font-bold flex items-center gap-2"><Users className="w-5 h-5" /> Bulk users & programs</h3>
         <button type="button" className="btn-outline !py-1.5 !px-3 text-sm" onClick={downloadTemplate}>
@@ -103,27 +151,53 @@ export default function AdminBulkUsersPanel({ onNotice, onError, selectedUserIds
       </div>
 
       <p className="text-sm text-[var(--text-secondary)]">
-        Upload CSV: <code>name,email,phone,password</code>. Password is optional — we generate one if blank.
-        Select programs to assign; enable admin approval to mark payment as done instantly.
+        Import new users from CSV or assign programs to selected, filtered, or all students.
+        Mark payments as done via admin approval or Razorpay.
       </p>
 
-      <label className="block text-sm font-semibold">
-        Upload CSV
-        <input type="file" accept=".csv,text/csv" className="input-field mt-1" onChange={(e) => onFile(e.target.files?.[0])} />
-      </label>
+      <div>
+        <p className="text-sm font-semibold mb-2">Apply to</p>
+        <div className="flex flex-wrap gap-2">
+          {TARGET_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              className={`text-xs px-3 py-1.5 rounded-full border font-semibold ${target === opt.id ? 'bg-amber-600 text-white border-amber-600' : ''}`}
+              onClick={() => setTarget(opt.id)}
+            >
+              {opt.label}
+              {opt.id === 'selected' && selectedUserIds.length ? ` (${selectedUserIds.length})` : ''}
+              {opt.id === 'filtered' && filteredUserIds.length ? ` (${filteredUserIds.length})` : ''}
+              {opt.id === 'all' && totalUsers ? ` (${totalUsers})` : ''}
+            </button>
+          ))}
+        </div>
+      </div>
 
-      {preview.length > 0 && (
-        <p className="text-xs text-emerald-700">{preview.length} row(s) ready to import</p>
+      {target === 'import' && (
+        <label className="block text-sm font-semibold">
+          Upload CSV <span className="font-normal text-xs opacity-70">(name, email, phone, password)</span>
+          <input type="file" accept=".csv,text/csv" className="input-field mt-1" onChange={(e) => onFile(e.target.files?.[0])} />
+        </label>
       )}
 
-      {selectedUserIds.length > 0 && (
-        <p className="text-xs text-amber-800">Will apply programs to {selectedUserIds.length} selected user(s)</p>
+      {target === 'selected' && (
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="text-amber-800 font-semibold">{selectedUserIds.length} user(s) selected</span>
+          {onClearSelection && (
+            <button type="button" className="text-amber-700 underline" onClick={onClearSelection}>Clear</button>
+          )}
+        </div>
+      )}
+
+      {targetCount > 0 && (
+        <p className="text-xs text-emerald-700 font-semibold">{targetCount} user(s) will receive selected programs</p>
       )}
 
       <div>
         <p className="text-sm font-semibold mb-2">Programs to assign</p>
         <div className="flex flex-wrap gap-2">
-          {MODULE_CATALOG.filter((m) => !m.followUpOnly).map((m) => (
+          {checkoutModules.map((m) => (
             <button
               key={m.slug}
               type="button"
@@ -136,22 +210,33 @@ export default function AdminBulkUsersPanel({ onNotice, onError, selectedUserIds
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-sm font-semibold">
-        <input type="checkbox" checked={approvePayments} onChange={(e) => setApprovePayments(e.target.checked)} />
-        Admin approval — mark payment as done for assigned programs
-      </label>
+      <div>
+        <p className="text-sm font-semibold mb-2">Payment status</p>
+        <div className="flex flex-wrap gap-2">
+          {PAYMENT_OPTIONS.map((opt) => (
+            <button
+              key={opt.id}
+              type="button"
+              className={`text-xs px-3 py-1.5 rounded-full border font-semibold ${paymentMode === opt.id ? 'bg-emerald-700 text-white border-emerald-700' : ''}`}
+              onClick={() => setPaymentMode(opt.id)}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <button type="button" className="btn-primary inline-flex items-center gap-2" disabled={importing} onClick={runImport}>
         <Upload className="w-4 h-4" />
-        {importing ? 'Importing…' : 'Import users & assign programs'}
+        {importing ? 'Processing…' : 'Run bulk assign'}
       </button>
 
       {lastResult?.results?.length > 0 && (
-        <div className="text-xs space-y-1 max-h-40 overflow-y-auto border rounded-lg p-2 bg-sand-50">
+        <div className="text-xs space-y-1 max-h-48 overflow-y-auto border rounded-lg p-2 bg-sand-50">
           {lastResult.results.map((r, i) => (
             <p key={i} className={r.ok ? 'text-emerald-800' : 'text-red-700'}>
               {r.ok
-                ? `${r.name} — ID ${r.dreamsId || r.userId}${r.password ? ` · temp password: ${r.password}` : ''}`
+                ? `${r.name} — ID ${r.dreamsId || r.userId}${r.password ? ` · temp password: ${r.password}` : ''}${r.modules?.length ? ` · ${r.modules.length} module(s)` : ''}`
                 : `${r.name}: ${r.error}`}
             </p>
           ))}

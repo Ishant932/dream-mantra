@@ -565,14 +565,18 @@ router.post('/users/bulk-import', async (req, res) => {
       : csv
         ? parseBulkUserCsv(csv)
         : [];
-    if (!rows.length && !req.body?.userIds?.length) {
-      return res.status(400).json({ message: 'No users to import' });
+    if (!rows.length && !req.body?.userIds?.length && !req.body?.applyToAll) {
+      return res.status(400).json({ message: 'No users to import or assign' });
     }
     const result = importBulkUsers({
       rows,
       userIds: req.body?.userIds,
+      applyToAll: !!req.body?.applyToAll,
       moduleSlugs: req.body?.moduleSlugs || [],
       approvePayments: !!req.body?.approvePayments,
+      paymentMethod: ['none', 'admin', 'razorpay'].includes(req.body?.paymentMethod)
+        ? req.body.paymentMethod
+        : (req.body?.approvePayments ? 'admin' : 'none'),
       adminId: req.user.id,
     });
     await flushDatabase();
