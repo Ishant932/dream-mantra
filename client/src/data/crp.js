@@ -5,9 +5,9 @@ export const crpProgram = {
   tagline: 'Class 11-12 · College Students · Freshers · Working Professionals',
   duration: '5 Sessions × 1.5 hours = 7.5 hours total',
   audience: [
-    { label: 'College Students', link: '/crp?tab=pathways&audience=college-students', tab: 'college-students' },
-    { label: 'Freshers', link: '/crp?tab=pathways&audience=freshers', tab: 'freshers' },
-    { label: 'Working Professionals', link: '/crp?tab=pathways&audience=working-professionals', tab: 'working-professionals' },
+    { label: 'College Students', link: '/crp/pathways/college-students', tab: 'college-students' },
+    { label: 'Freshers', link: '/crp/pathways/freshers', tab: 'freshers' },
+    { label: 'Working Professionals', link: '/crp/pathways/working-professionals', tab: 'working-professionals' },
   ],
   description: '',
   outcomes: [

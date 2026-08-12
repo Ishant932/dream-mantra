@@ -7,6 +7,7 @@ import PageHero from '../components/PageHero';
 import { useLang } from '../context/LanguageContext';
 import { IMAGES } from '../data/content';
 import CRPAudiencePanel from '../components/CRPAudiencePanel';
+import { crpPath, parseCrpPath } from '../utils/pathRoutes';
 import {
   fadeUp,
   statIcons,
@@ -21,15 +22,10 @@ export default function CRPLaunchPage({ compact = false }) {
   const crpAudienceTabs = d('data.crpAudienceTabs');
   const statItems = crp.statItems.map((s, i) => ({ ...s, icon: statIcons[i] }));
   const location = useLocation();
-  const params = new URLSearchParams(location.search);
-  const activeTab =
-    params.get('audience') ||
-    (['college-students', 'freshers', 'working-professionals'].includes(params.get('tab'))
-      ? params.get('tab')
-      : null) ||
-    'college-students';
+  const parsed = parseCrpPath(location.pathname, location.search);
+  const activeTab = parsed.audience || 'college-students';
   const activeAudience = crpAudienceTabs.find((t) => t.id === activeTab) || crpAudienceTabs[0];
-  const audienceHref = (id) => `/crp?tab=pathways&audience=${id}`;
+  const audienceHref = (id) => crpPath('pathways', { audience: id });
 
   const body = (
     <section className={compact ? 'crp-pathways' : 'py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'}>
@@ -185,7 +181,7 @@ export default function CRPLaunchPage({ compact = false }) {
           </p>
         </div>
         <Link
-          to="/crp?tab=launchpad"
+          to={crpPath('launchpad')}
           preventScrollReset
           className={compact ? 'crp-studio__btn crp-studio__btn--primary' : 'inline-flex items-center gap-2 mt-8 text-amber-600 font-semibold'}
         >

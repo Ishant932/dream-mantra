@@ -36,6 +36,7 @@ export default function AdminStudioPanel() {
   const [logoFile, setLogoFile] = useState(null);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
+  const [previewKey, setPreviewKey] = useState(0);
   const [productSlug, setProductSlug] = useState('dmit');
   const [savingModule, setSavingModule] = useState(false);
 

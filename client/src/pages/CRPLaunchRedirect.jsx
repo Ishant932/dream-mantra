@@ -1,4 +1,5 @@
 import { Navigate, useLocation } from 'react-router-dom';
+import { crpPath } from '../utils/pathRoutes';
 
 const AUDIENCES = new Set(['college-students', 'freshers', 'working-professionals']);
 
@@ -10,7 +11,7 @@ export default function CRPLaunchRedirect() {
   const audience = AUDIENCES.has(raw) ? raw : 'college-students';
   return (
     <Navigate
-      to={{ pathname: '/crp', search: `?tab=pathways&audience=${audience}`, hash: hash || undefined }}
+      to={{ pathname: crpPath('pathways', { audience }), hash: hash || undefined }}
       replace
     />
   );
