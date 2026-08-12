@@ -1,6 +1,6 @@
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams, Link } from 'react-router-dom';
 import { useLang } from '../context/LanguageContext';
-import { Link } from 'react-router-dom';
+import { counsellingPath } from '../utils/pathRoutes';
 
 const KNOWN_SLUGS = new Set([
   'class-1-5',
@@ -17,13 +17,13 @@ export default function ProgramPage() {
   const programPage = d('pages.program');
 
   if (slug && KNOWN_SLUGS.has(slug)) {
-    return <Navigate to={`/counselling?tab=programs&age=${slug}`} replace />;
+    return <Navigate to={counsellingPath('programs', { age: slug })} replace />;
   }
 
   return (
     <div className="pt-32 text-center py-20">
       <h1 className="text-2xl font-bold">{programPage.notFound}</h1>
-      <Link to="/counselling?tab=programs" className="text-brand-600 mt-4 inline-block">
+      <Link to={counsellingPath('programs', { age: 'class-1-5' })} className="text-brand-600 mt-4 inline-block">
         {programPage.allPathways || programPage.goHome}
       </Link>
     </div>

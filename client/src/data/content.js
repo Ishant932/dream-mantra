@@ -4,8 +4,8 @@ const u = (id, w = 900) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=85`;
 
 export const IMAGES = {
-  hero: u('photo-1523240795612-9a054b0db644', 1200),
-  heroStudents: u('photo-1529390079861-591de354faf5', 1200),
+  hero: '/images/mapping/students-crowd.png',
+  heroStudents: '/images/mapping/classroom.png',
   dmit: '/images/mapping/brain-mapping-hero.png',
   fingerprint: u('photo-1576091160550-2173dba999ef'),
   psychometric: '/images/mapping/skill-mapping-hero.png',
@@ -27,18 +27,19 @@ export const IMAGES = {
   seemaLohiya: '/team/seema-lohiya.jpg',
   vinitaTibrewal: '/team/vinita-tibrewal.jpg',
   ishantGoyal: '/team/ishant-goyal.jpg',
-  counselling: u('photo-1552664730-d307ca884978'),
-  counsellingSession: u('photo-1573497019940-1c28c88b4f3e'),
-  professional: u('photo-1521737604893-d14cc237f11d'),
+  counselling: '/images/mapping/session.png',
+  counsellingSession: '/images/mapping/session.png',
+  professional: '/images/mapping/test.png',
   science: u('photo-1581091226825-a6a2a5aee158'),
   kids: u('photo-1544776193-352d25ca82cd'),
   college: u('photo-1498243691581-b145c3f54a5a'),
-  /** Jaipur street & market scenes (not Taj Mahal / Agra) */
-  jaipur: u('photo-1763291966927-740c48e6afe5'),
+  /** Jaipur centre imagery — local assets (reliable on all networks) */
+  jaipur: '/images/mapping/campus.png',
   jaipurStreets: [
-    u('photo-1763291966927-740c48e6afe5'), // Hawa Mahal market stall
-    u('photo-1756995427928-dcc15d3d091b'), // Jaipur street market
-    u('photo-1599669454699-248893623440'), // Jaipur old city street
+    '/images/mapping/campus.png',
+    '/images/mapping/classroom.png',
+    '/images/mapping/session.png',
+    '/images/mapping/students-crowd.png',
   ],
   aiTech: u('photo-1677442136019-21780ecad995'),
   team: u('photo-1522071820081-009f0129c71c'),
@@ -142,12 +143,12 @@ export const programs = [
 ];
 
 export const partners = [
-  { slug: 'schools', title: 'Schools', icon: '🏫', image: IMAGES.schoolsCampus },
-  { slug: 'coaching-centers', title: 'Coaching Centers', icon: '📖', image: IMAGES.studentsGroup },
-  { slug: 'colleges', title: 'Colleges', icon: '🎓', image: IMAGES.college },
-  { slug: 'corporates', title: 'Corporates', icon: '🏢', image: IMAGES.professional },
-  { slug: 'teachers', title: 'Teachers', icon: '👩‍🏫', image: IMAGES.workshop },
-  { slug: 'referral-partner', title: 'Referral Partner', icon: '🤝', image: IMAGES.team },
+  { slug: 'schools', title: 'Schools', icon: '🏫', image: '/images/mapping/campus.png' },
+  { slug: 'coaching-centers', title: 'Coaching Centers', icon: '📖', image: '/images/mapping/classroom.png' },
+  { slug: 'colleges', title: 'Colleges', icon: '🎓', image: '/images/mapping/students-crowd.png' },
+  { slug: 'corporates', title: 'Corporates', icon: '🏢', image: '/images/mapping/session.png' },
+  { slug: 'teachers', title: 'Teachers', icon: '👩‍🏫', image: '/images/mapping/brain-hero.png' },
+  { slug: 'referral-partner', title: 'Referral Partner', icon: '🤝', image: '/images/mapping/combo-hero.png' },
 ];
 
 export const testimonials = [

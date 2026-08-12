@@ -8,12 +8,12 @@ export const navAssessmentRoutes = [
 export const navAssessmentIcons = ['🔬', '📊', '🧬', '💜'];
 
 export const navProgramRoutes = [
-  '/programs/class-1-5',
-  '/programs/class-6-8',
-  '/programs/class-9-10',
-  '/programs/class-11-12',
-  '/programs/college-students',
-  '/programs/working-professionals',
+  '/counselling/programs/class-1-5',
+  '/counselling/programs/class-6-8',
+  '/counselling/programs/class-9-10',
+  '/counselling/programs/class-11-12',
+  '/counselling/programs/college-students',
+  '/counselling/programs/working-professionals',
 ];
 export const navProgramIcons = ['🌱', '🎯', '📚', '🎓', '🏫', '💼'];
 
@@ -31,12 +31,12 @@ export const navCrpProgramRoutes = [
 export const navCrpProgramIcons = ['🏫', '🚀', '💼'];
 
 export const whoWeGuideRoutes = [
-  '/programs/class-1-5',
-  '/programs/class-6-8',
-  '/programs/class-9-10',
-  '/programs/class-11-12',
-  '/programs/college-students',
-  '/programs/working-professionals',
+  '/counselling/programs/class-1-5',
+  '/counselling/programs/class-6-8',
+  '/counselling/programs/class-9-10',
+  '/counselling/programs/class-11-12',
+  '/counselling/programs/college-students',
+  '/counselling/programs/working-professionals',
 ];
 
 export function zipNavLinks(links, routes, icons) {

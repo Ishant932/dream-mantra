@@ -27973,10 +27973,11 @@ html.aurora .dash-sidebar-panel--hero-match {
 @media (max-width: 767px) {
   .app-embed--career .app-embed__frame,
   .app-embed--cv .app-embed__frame {
-    min-height: 70vh;
+    min-height: min(92vh, 1200px);
     height: auto;
     width: 100%;
     border-radius: 0.75rem;
+    overflow: visible;
   }
   .dash-embed-host {
     width: 100%;

@@ -432,7 +432,7 @@ export default function AdminDashboard() {
                 <AdminBlogPanel token={token} onNotice={setNotice} onError={setError} />
               )}
 
-              {tab === 'landing-pages' && <AdminStudioPanel />}
+              {tab === 'landing-pages' && <AdminStudioPanel catalogModules={catalogModules} />}
               {tab === 'site-pages' && <AdminPageCatalogPanel onNotice={setNotice} onError={setError} />}
               {tab === 'whatsapp' && <AdminWhatsAppPanel onNotice={setNotice} onError={setError} />}
 

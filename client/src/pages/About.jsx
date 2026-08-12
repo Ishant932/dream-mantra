@@ -48,7 +48,7 @@ export default function About() {
       <PageHero
         title={cmsText(cms, 'heroTitle', about.hero.title)}
         subtitle={cmsText(cms, 'heroSubtitle', about.hero.subtitle)}
-        image={cmsText(cms, 'heroImage', IMAGES.counselling)}
+        image={cmsText(cms, 'heroImage', IMAGES.heroStudents)}
         cta={fg.cta || about.cta?.button}
         ctaLink="/contact#guidance"
       />
@@ -213,15 +213,17 @@ export default function About() {
       <section className="py-16 border-y" style={{ borderColor: 'var(--border-subtle)' }}>
         <div className="max-w-7xl mx-auto px-4">
           <h2 className="section-title text-center mb-10">{about.locations.title}</h2>
-          <div className="grid md:grid-cols-3 gap-6 text-center">
-            {about.locations.names.map((loc, i) => (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 text-center">
+            {[...about.locations.names, about.locations.panIndia || 'Pan-India Online'].map((loc, i) => (
               <motion.div key={loc} {...fade} transition={{ delay: i * 0.06 }} whileHover={{ scale: 1.03 }} className="infigon-card overflow-hidden glow-card">
                 <div className="h-28 overflow-hidden img-zoom-wrap">
                   <img src={IMAGES.jaipurStreets[i] || IMAGES.jaipur} alt={loc} className="w-full h-full object-cover" loading="lazy" />
                 </div>
                 <div className="p-6">
                   <p className="font-bold text-lg">{loc}</p>
-                  <p className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>{about.locations.city}</p>
+                  <p className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>
+                    {i < about.locations.names.length ? about.locations.city : (about.locations.panIndiaSub || 'Online counselling nationwide')}
+                  </p>
                 </div>
               </motion.div>
             ))}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Copy, ExternalLink, Save, RefreshCw, Plus, Trash2, Power } from 'lucide-react';
 import AdminPanelHeader from '../AdminPanelHeader';
 import { useAuth } from '../../context/AuthContext';
@@ -21,7 +21,7 @@ function fileToBase64(file) {
   });
 }
 
-export default function AdminStudioPanel() {
+export default function AdminStudioPanel({ catalogModules = [] }) {
   const { token } = useAuth();
   const [landings, setLandings] = useState([]);
   const [active, setActive] = useState('');
@@ -39,6 +39,15 @@ export default function AdminStudioPanel() {
   const [previewKey, setPreviewKey] = useState(0);
   const [productSlug, setProductSlug] = useState('dmit');
   const [savingModule, setSavingModule] = useState(false);
+  const [fetchedModules, setFetchedModules] = useState([]);
+
+  const checkoutModules = useMemo(() => {
+    const fromApi = (catalogModules?.length ? catalogModules : fetchedModules).filter((m) => !m.hidden && !m.followUpOnly);
+    if (fromApi.length) return fromApi;
+    return MODULE_CATALOG.filter((m) => !m.followUpOnly);
+  }, [catalogModules, fetchedModules]);
+
+  const moduleLabel = (slug) => checkoutModules.find((m) => m.slug === slug)?.title || slug;
 
   const page = landings.find((p) => p.slug === active) || landings[0];
   const localUrl = page ? studioLandingLocalUrl(page.slug) : '';
@@ -76,6 +85,12 @@ export default function AdminStudioPanel() {
 
   useEffect(() => { loadList(); }, [loadList]);
   useEffect(() => { if (active) loadPage(active); }, [active, loadPage]);
+  useEffect(() => {
+    if (!token || catalogModules.length) return;
+    adminApi.modules(token)
+      .then((res) => setFetchedModules(res.modules || []))
+      .catch(() => {});
+  }, [token, catalogModules.length]);
   useEffect(() => {
     if (page?.productSlug) setProductSlug(page.productSlug);
   }, [page?.productSlug, active]);
@@ -175,7 +190,7 @@ export default function AdminStudioPanel() {
           <input className="input-field" placeholder="Page label" value={newPage.label} onChange={(e) => setNewPage({ ...newPage, label: e.target.value })} required />
           <select className="input-field" value={newPage.productSlug} onChange={(e) => setNewPage({ ...newPage, productSlug: e.target.value })} required>
             <option value="">Select checkout module…</option>
-            {MODULE_CATALOG.filter((m) => !m.followUpOnly).map((m) => <option key={m.slug} value={m.slug}>{m.title} (₹{m.price})</option>)}
+            {checkoutModules.map((m) => <option key={m.slug} value={m.slug}>{m.title} (₹{m.price})</option>)}
           </select>
           <input className="input-field" placeholder="CTA label (e.g. Book Now)" value={newPage.ctaLabel} onChange={(e) => setNewPage({ ...newPage, ctaLabel: e.target.value })} />
           <input className="input-field" placeholder="Folder name (optional)" value={newPage.folder} onChange={(e) => setNewPage({ ...newPage, folder: e.target.value })} />
@@ -202,7 +217,7 @@ export default function AdminStudioPanel() {
             {landings.map((p) => (
               <tr key={p.slug} className={`border-b border-sand-100 cursor-pointer hover:bg-amber-50/50 ${active === p.slug ? 'bg-amber-50/80' : ''}`} onClick={() => setActive(p.slug)}>
                 <td className="py-2.5 px-3 font-semibold">{p.label}</td>
-                <td className="py-2.5 px-3 text-xs opacity-80">{MODULE_CATALOG.find((m) => m.slug === p.productSlug)?.title || p.productSlug}</td>
+                <td className="py-2.5 px-3 text-xs opacity-80">{moduleLabel(p.productSlug)}</td>
                 <td className="py-2.5 px-3">
                   <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${p.live ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-700'}`}>
                     {p.live ? 'LIVE' : 'OFFLINE'}
@@ -232,7 +247,7 @@ export default function AdminStudioPanel() {
               <label className="text-xs font-bold flex-1 min-w-[200px]">
                 Checkout module (Join Now → payment)
                 <select className="input-field mt-1" value={productSlug} onChange={(e) => setProductSlug(e.target.value)}>
-                  {MODULE_CATALOG.filter((m) => !m.followUpOnly).map((m) => (
+                  {checkoutModules.map((m) => (
                     <option key={m.slug} value={m.slug}>{m.title} — ₹{m.price}</option>
                   ))}
                 </select>

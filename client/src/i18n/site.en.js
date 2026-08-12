@@ -91,7 +91,7 @@ export const siteEn = {
         links: [
           { to: '/marketplace', label: 'Book Now', icon: '🛒' },
           { to: '/dashboard?tab=assess&shop=career-readiness', label: 'Personalised Career Readiness Program', icon: '🎯' },
-          { to: '/counselling?tab=institutions', label: 'Institutions', icon: '🏛️' },
+          { to: '/counselling/institutions', label: 'Institutions', icon: '🏛️' },
           { to: '/#certifications', label: 'Certifications', icon: '🏅' },
         ],
       },
@@ -167,7 +167,7 @@ export const siteEn = {
     ],
     footerQuickColumn: [
       { to: '/contact#guidance', label: 'Book a free guidance call' },
-      { to: '/counselling?tab=institutions', label: 'Institutions' },
+      { to: '/counselling/institutions', label: 'Institutions' },
       { to: '/marketplace', label: 'Book Now' },
       { to: '/#certifications', label: 'Certifications' },
       { to: '/about', label: 'About Us' },
@@ -180,7 +180,7 @@ export const siteEn = {
         title: 'Discover',
         links: [
           { to: '/marketplace', label: 'Book Now' },
-          { to: '/counselling?tab=institutions', label: 'Institutions' },
+          { to: '/counselling/institutions', label: 'Institutions' },
           { to: '/#certifications', label: 'Certifications' },
         ],
       },
@@ -1780,6 +1780,8 @@ export const siteEn = {
       locations: {
         title: '📍 Jaipur Centres · 🌍 Pan-India Online',
         names: ['Raja Park', 'Shastri Nagar', 'Nirman Nagar'],
+        panIndia: 'Pan-India Online',
+        panIndiaSub: 'Live online counselling across India',
         city: 'Jaipur, Rajasthan',
         hours: 'Mon–Sat 11am–7pm',
       },

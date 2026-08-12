@@ -106,14 +106,23 @@ export default function CounsellingHub() {
     }
   }, [location.search, navigate, openGuidance]);
 
-  const setTab = (tabId) => {
-    navigate(counsellingPath(tabId), { replace: true, preventScrollReset: true });
-  };
-
   const ages = useMemo(
     () => d('programs').map((p, i) => ({ ...programImages[i], ...p })),
     [d],
   );
+
+  const setTab = (tabId) => {
+    navigate(
+      counsellingPath(tabId, { age: tabId === 'programs' ? (programAge || ages[0]?.slug) : undefined }),
+      { replace: true, preventScrollReset: true },
+    );
+  };
+
+  useEffect(() => {
+    if (tab === 'programs' && !programAge && ages[0]?.slug) {
+      navigate(counsellingPath('programs', { age: ages[0].slug }), { replace: true, preventScrollReset: true });
+    }
+  }, [tab, programAge, ages, navigate]);
 
   const counsellingTitle = splitCounsellingTitle(cmsText(cms, 'heroTitle', counsellingPage.title));
   const counsellingSubtitle = cmsText(cms, 'heroSubtitle', counsellingPage.subtitle);

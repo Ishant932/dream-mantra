@@ -89,7 +89,7 @@ export const siteHi = {
         title: 'खोजें',
         links: [
           { to: '/marketplace', label: 'Book Now', icon: '🛒' },
-          { to: '/counselling?tab=institutions', label: 'संस्थान', icon: '🏛️' },
+          { to: '/counselling/institutions', label: 'संस्थान', icon: '🏛️' },
           { to: '/#certifications', label: 'Certifications', icon: '🏅' },
         ],
       },
@@ -165,7 +165,7 @@ export const siteHi = {
     ],
     footerQuickColumn: [
       { to: '/contact#guidance', label: 'मुफ़्त guidance call बुक करें' },
-      { to: '/counselling?tab=institutions', label: 'Institutions' },
+      { to: '/counselling/institutions', label: 'Institutions' },
       { to: '/marketplace', label: 'Book Now' },
       { to: '/#certifications', label: 'Certifications' },
       { to: '/about', label: 'हमारे बारे में' },
@@ -178,7 +178,7 @@ export const siteHi = {
         title: 'खोजें',
         links: [
           { to: '/marketplace', label: 'Book Now' },
-          { to: '/counselling?tab=institutions', label: 'Institutions' },
+          { to: '/counselling/institutions', label: 'Institutions' },
           { to: '/#certifications', label: 'Certifications' },
         ],
       },
@@ -1696,6 +1696,8 @@ export const siteHi = {
       locations: {
         title: '📍 Jaipur Centres · 🌍 Pan-India Online',
         names: ['Raja Park', 'Shastri Nagar', 'Nirman Nagar'],
+        panIndia: 'Pan-India Online',
+        panIndiaSub: 'पूरे भारत में ऑनलाइन counselling',
         city: 'Jaipur, Rajasthan',
         hours: 'Mon–Sat 11am–7pm',
       },

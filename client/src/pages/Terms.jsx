@@ -121,20 +121,6 @@ export default function Terms({ pageKey = 'pages.terms', titleOverride, cmsSlug 
           {page.operator && (
             <p className="mt-10 text-center text-sand-700 font-semibold">{page.operator}</p>
           )}
-          {(page.gstNumber || page.gstAddress) && (
-            <div className="mt-4 text-center text-sm text-sand-600 space-y-1">
-              {page.gstNumber && (
-                <p>
-                  <strong>{page.gstLabel || 'GSTIN:'}</strong> {page.gstNumber}
-                </p>
-              )}
-              {page.gstAddress && (
-                <p>
-                  <strong>{page.locationLabel || 'GST Address:'}</strong> {page.gstAddress}
-                </p>
-              )}
-            </div>
-          )}
           <p className="text-sm text-sand-500 mt-4 text-center">
             {page.lastUpdated} {page.lastUpdatedDate || 'January 29, 2025'}
           </p>
@@ -162,9 +148,12 @@ export default function Terms({ pageKey = 'pages.terms', titleOverride, cmsSlug 
                 <strong>{page.gstLabel || 'GSTIN:'}</strong> {page.gstNumber}
               </p>
             )}
-            <p className="text-sand-700">
-              <strong>{page.locationLabel}</strong> {page.locationValue}
-            </p>
+            {(page.gstAddress || page.locationValue) && (
+              <p className="text-sand-700">
+                <strong>{page.locationLabel || 'Registered office:'}</strong>{' '}
+                {page.gstAddress || page.locationValue}
+              </p>
+            )}
           </div>
         </div>
       </section>

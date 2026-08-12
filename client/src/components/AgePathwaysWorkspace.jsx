@@ -19,6 +19,7 @@ import { useAuth } from '../context/AuthContext';
 import { useLang } from '../context/LanguageContext';
 import { useGuidanceModal } from '../context/GuidanceModalContext';
 import { isGuidancePath } from '../utils/guidancePath';
+import { counsellingPath, dashboardPath, parseCounsellingPath } from '../utils/pathRoutes';
 import { programs as programImages } from '../data/content';
 
 const PROBLEM_PREVIEW = 8;
@@ -39,10 +40,10 @@ const panelMotion = {
 };
 
 function resolvePurchasePath(mod) {
-  if (!mod) return '/dashboard?tab=assess';
+  if (!mod) return dashboardPath('assess');
   if (mod.purchasePath) return mod.purchasePath;
-  if (mod.productSlug) return `/dashboard?tab=assess&shop=${mod.productSlug}`;
-  return mod.link || '/dashboard?tab=assess';
+  if (mod.productSlug) return dashboardPath('assess', { shop: mod.productSlug });
+  return mod.link || dashboardPath('assess');
 }
 
 export default function AgePathwaysWorkspace() {
@@ -61,7 +62,8 @@ export default function AgePathwaysWorkspace() {
     [d],
   );
 
-  const ageParam = new URLSearchParams(location.search).get('age');
+  const parsed = parseCounsellingPath(location.pathname, location.search);
+  const ageParam = parsed.age || new URLSearchParams(location.search).get('age');
   const activeSlug = ages.some((a) => a.slug === ageParam) ? ageParam : ages[0]?.slug;
 
   const [selectedModuleId, setSelectedModuleId] = useState(null);
@@ -74,12 +76,10 @@ export default function AgePathwaysWorkspace() {
 
   useEffect(() => {
     if (!activeSlug) return;
-    const params = new URLSearchParams(location.search);
-    if (params.get('age') === activeSlug) return;
-    params.set('tab', 'programs');
-    params.set('age', activeSlug);
-    params.delete('pathway');
-    navigate({ pathname: location.pathname, search: `?${params.toString()}` }, { replace: true, preventScrollReset: true });
+    const target = counsellingPath('programs', { age: activeSlug });
+    if (`${location.pathname}${location.search}` !== target) {
+      navigate(target, { replace: true, preventScrollReset: true });
+    }
   }, [activeSlug, location.pathname, location.search, navigate]);
 
   useEffect(() => {
@@ -92,11 +92,7 @@ export default function AgePathwaysWorkspace() {
   const step = !activeSlug ? 1 : !selectedModule ? 2 : !isLoggedIn ? 3 : 4;
 
   const setAge = (slug) => {
-    const params = new URLSearchParams(location.search);
-    params.set('tab', 'programs');
-    params.set('age', slug);
-    params.delete('pathway');
-    navigate({ pathname: location.pathname, search: `?${params.toString()}` }, { replace: false, preventScrollReset: true });
+    navigate(counsellingPath('programs', { age: slug }), { replace: false, preventScrollReset: true });
   };
 
   const goBook = () => {
