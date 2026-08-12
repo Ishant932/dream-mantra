@@ -121,6 +121,11 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
   };
 
   const removePage = async (slug) => {
+    const pageMeta = landings.find((p) => p.slug === slug);
+    if (pageMeta?.protected) {
+      setError('This landing page is protected and cannot be deleted.');
+      return;
+    }
     if (!window.confirm('Delete or unpublish this landing page?')) return;
     try {
       const res = await adminApi.deleteStudioLanding(token, slug);
@@ -228,9 +233,13 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
                     <button type="button" className="btn-outline !py-1 !px-2 text-xs" onClick={() => toggleLive(p.slug, !p.live)}>
                       <Power className="w-3.5 h-3.5 inline" /> {p.live ? 'Unpublish' : 'Go live'}
                     </button>
-                    <button type="button" className="btn-outline !py-1 !px-2 text-xs text-red-700" onClick={() => removePage(p.slug)}>
-                      <Trash2 className="w-3.5 h-3.5 inline" />
-                    </button>
+                    {p.protected ? (
+                      <span className="text-xs text-sand-500 font-semibold">Protected</span>
+                    ) : (
+                      <button type="button" className="btn-outline !py-1 !px-2 text-xs text-red-700" onClick={() => removePage(p.slug)}>
+                        <Trash2 className="w-3.5 h-3.5 inline" />
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>

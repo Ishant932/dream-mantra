@@ -32,7 +32,8 @@ import { getWhatsAppPublicConfig } from './lib/whatsapp/events.js';
 import { startWhatsAppScheduler } from './lib/whatsapp/scheduler.js';
 import { getAllStudioLandings } from './lib/studioLandings.js';
 import { isLandingPublished } from './lib/studioLandingMeta.js';
-import { ensureLandingFilesOnDisk, hydrateAllStudioLandings } from './lib/studioLandingStore.js';
+import { ensureLandingFilesOnDisk } from './lib/studioLandingStore.js';
+import { seedStudioLandings } from './lib/studioLandingSeed.js';
 import { listSkillMappingCombos, comboSummary } from './lib/skillMappingCombos.js';
 import landingRoutes from './routes/landing.js';
 
@@ -359,8 +360,10 @@ async function startServer() {
           seedSampleSlots();
           listSkillMappingCombos();
           migrateLegacyPayments();
-          const hydrated = hydrateAllStudioLandings(getAllStudioLandings());
-          if (hydrated) console.log(`  Studio landings hydrated: ${hydrated}`);
+          const seeded = seedStudioLandings();
+          if (seeded.restored || seeded.hydrated) {
+            console.log(`  Studio landings: ${seeded.customCount} custom, ${seeded.hydrated} hydrated${seeded.restored ? ' (restored missing)' : ''}`);
+          }
           const pay = getGatewayPublicConfig();
           console.log(`  Payments: ${pay.mode}${pay.gatewayEnabled ? ' (Razorpay live)' : ' (manual UPI + admin verify)'}`);
           startWhatsAppScheduler();

@@ -61,6 +61,7 @@ import {
   updateStudioLandingMeta,
   deleteStudioLanding,
 } from '../lib/studioLandingEditor.js';
+import { seedStudioLandings } from '../lib/studioLandingSeed.js';
 import { listPageCatalog, getPageCatalog, updatePageCatalog } from '../lib/pageCatalog.js';
 import { getCopyOverrideTrees, listCopyPatches, updateCopyPatches } from '../lib/copyOverrides.js';
 import {
@@ -443,8 +444,10 @@ router.delete('/blogs/:id', async (req, res) => {
   }
 });
 
-router.get('/studio-landings', (_req, res) => {
+router.get('/studio-landings', async (_req, res) => {
   try {
+    seedStudioLandings();
+    await flushDatabase();
     res.json({ landings: listStudioLandingsForAdmin() });
   } catch (e) {
     res.status(500).json({ message: e.message || 'Failed to list landing pages' });

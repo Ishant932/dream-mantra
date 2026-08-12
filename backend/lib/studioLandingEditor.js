@@ -8,6 +8,7 @@ import {
   BUILTIN_STUDIO_LANDINGS,
 } from './studioLandings.js';
 import { deleteLandingMeta, getLandingMeta, isLandingPublished, setLandingMeta } from './studioLandingMeta.js';
+import { isProtectedStudioLanding } from './studioLandingSeed.js';
 import {
   captureLandingFilesFromDisk,
   deleteLandingFilesFromStore,
@@ -85,6 +86,7 @@ export function listStudioLandingsForAdmin() {
       filesExist: exists,
       published,
       custom: !BUILTIN_STUDIO_LANDINGS.some((b) => b.slug === l.slug),
+      protected: isProtectedStudioLanding(l.slug),
       heroImage: meta.heroImage || '',
       logoImage: meta.logoImage || '',
       ctaLabel: meta.ctaLabel || 'Book Now',
@@ -247,6 +249,10 @@ export function deleteStudioLanding(slug) {
   const all = getAllStudioLandings();
   const meta = all.find((l) => l.slug === slug);
   if (!meta) throw new Error('Landing page not found');
+  if (isProtectedStudioLanding(slug)) {
+    setLandingMeta(slug, { published: true });
+    return { deleted: false, unpublished: false, protected: true };
+  }
   const isBuiltin = BUILTIN_STUDIO_LANDINGS.some((b) => b.slug === slug);
   if (isBuiltin) {
     setLandingMeta(slug, { published: false });
