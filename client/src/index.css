@@ -27042,6 +27042,9 @@ html.aurora .dash-sidebar-panel--hero-match {
   min-height: 100%;
 }
 .payment-page__admin-submit-btn { font-weight: 800; padding: 0.7rem 1rem; }
+.admin-landing-panel .subtab-track {
+  margin-bottom: 0.25rem;
+}
 .admin-landing-meta code { word-break: break-all; }
 .admin-landing-preview {
   border: 1px solid rgba(201, 168, 76, 0.35);
@@ -27593,6 +27596,58 @@ html.aurora .dash-sidebar-panel--hero-match {
 .dash-sidebar-panel .app-embed--flush { margin: 0; width: 100%; }
 .dash-embed-host { padding: 0 !important; margin: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; }
 
+/* Career library — fixed viewport, scroll inside iframe only */
+.layout-shell--careers-fixed {
+  height: 100vh;
+  min-height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+}
+.layout-shell--careers-fixed .main--careers-fixed {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.layout-shell--careers-fixed .footer-pro {
+  display: none;
+}
+.careers-page-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.careers-page-shell__cms {
+  flex-shrink: 0;
+  max-height: 28vh;
+  overflow-y: auto;
+}
+.careers-page-shell .app-embed--career {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.careers-page-shell .app-embed--career .app-embed__frame {
+  flex: 1;
+  min-height: 0 !important;
+  height: 100% !important;
+  width: 100%;
+}
+.dash-embed-host .app-embed--career {
+  min-height: calc(100vh - 12rem);
+  display: flex;
+  flex-direction: column;
+}
+.dash-embed-host .app-embed--career .app-embed__frame {
+  flex: 1;
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
 .admin-copy-cms__layout {
   display: grid;
   gap: 1rem;
@@ -28050,7 +28105,14 @@ html.aurora .dash-sidebar-panel--hero-match {
 
 /* CV maker & career library — mobile responsive embeds */
 @media (max-width: 767px) {
-  .app-embed--career .app-embed__frame,
+  .layout-shell--careers-fixed {
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+  .careers-page-shell .app-embed--career .app-embed__frame {
+    min-height: 0 !important;
+    height: 100% !important;
+  }
   .app-embed--cv .app-embed__frame {
     min-height: min(92vh, 1200px);
     height: auto;

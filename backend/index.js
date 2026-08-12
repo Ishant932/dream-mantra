@@ -7,7 +7,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { getUploadsDir } from './lib/paymentProof.js';
 import { getMessageUploadsDir } from './lib/messageAttachments.js';
-import { getBlogImagesDir, hydrateBlogImagesFromStore } from './lib/blogImages.js';
 import { seedAdmin, seedCounsellors, initDatabase, flushDatabase, getDbStatus } from './db.js';
 import { disconnectMongo, pingMongo } from './lib/mongo.js';
 import { APP_VERSION } from './version.js';
@@ -154,7 +153,6 @@ app.use(express.json({ limit: '12mb' }));
 
 app.use('/api/uploads/payment-proofs', express.static(getUploadsDir(), { maxAge: isProd ? '7d' : 0 }));
 app.use('/api/uploads/message-files', express.static(getMessageUploadsDir(), { maxAge: isProd ? '7d' : 0 }));
-app.use('/api/uploads/blog-images', express.static(getBlogImagesDir(), { maxAge: isProd ? '30d' : 0 }));
 
 async function buildHealthPayload() {
   const dbStatus = getDbStatus();
@@ -366,8 +364,6 @@ async function startServer() {
           if (seeded.restored || seeded.hydrated) {
             console.log(`  Studio landings: ${seeded.customCount} custom, ${seeded.hydrated} hydrated${seeded.restored ? ' (restored missing)' : ''}`);
           }
-          const blogImages = hydrateBlogImagesFromStore();
-          if (blogImages) console.log(`  Blog images hydrated: ${blogImages}`);
           const pay = getGatewayPublicConfig();
           console.log(`  Payments: ${pay.mode}${pay.gatewayEnabled ? ' (Razorpay live)' : ' (manual UPI + admin verify)'}`);
           startWhatsAppScheduler();

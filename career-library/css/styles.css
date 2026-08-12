@@ -912,9 +912,9 @@ a { color: inherit; text-decoration: none; }
 .filter-dd__opt:hover { background: #FFF4EC; color: var(--orange); }
 .filter-dd__opt.is-active { background: #FFF4EC; color: var(--orange); font-weight: 700; }
 
-body.embed-mode { background: #F7F4F0; }
+body.embed-mode { background: #F7F4F0; height: 100%; overflow: hidden; }
 body.embed-mode .site-header { padding: 18px 16px 16px; }
 body.embed-mode .header-title { font-size: 1.45rem; }
 body.embed-mode .header-sub { font-size: 13px; }
 body.embed-mode .stats-strip { padding: 8px 12px; }
-body.embed-mode .main { padding: 14px 12px 40px; max-width: none; }
+body.embed-mode .main { padding: 14px 12px 40px; max-width: none; overflow-y: auto; height: calc(100vh - 220px); }

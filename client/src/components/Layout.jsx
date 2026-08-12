@@ -36,6 +36,7 @@ export default function Layout() {
     location.pathname.startsWith('/dashboard')
     || location.pathname.startsWith('/admin')
     || location.pathname.startsWith('/counsellor');
+  const isCareersLibrary = location.pathname === '/careers';
   const showMobileNavPadding = phoneNav && isMobileBottomNavVisible(location.pathname);
   const [loadChatbot, setLoadChatbot] = useState(!mobilePerf);
   useEffect(() => {
@@ -46,12 +47,12 @@ export default function Layout() {
 
   return (
     <div
-      className={`layout-shell min-h-screen flex flex-col relative${isDashboard ? ' layout-shell--dashboard' : ''}${isDashboard && phoneNav ? ' layout-shell--dashboard-mobile' : ''}${showMobileNavPadding ? ' layout-shell--mobile-nav' : ''}`}
+      className={`layout-shell min-h-screen flex flex-col relative${isDashboard ? ' layout-shell--dashboard' : ''}${isDashboard && phoneNav ? ' layout-shell--dashboard-mobile' : ''}${showMobileNavPadding ? ' layout-shell--mobile-nav' : ''}${isCareersLibrary ? ' layout-shell--careers-fixed' : ''}`}
     >
       <AnimatedBackground />
       <SiteHeader />
       <div className="site-header-spacer" aria-hidden="true" />
-      <main className="flex-1 relative w-full min-w-0">
+      <main className={`flex-1 relative w-full min-w-0${isCareersLibrary ? ' main--careers-fixed' : ''}`}>
         <ErrorBoundary resetKey={location.pathname + location.search}>
           <Suspense fallback={<PageLoader />}>
             <PageTransition />

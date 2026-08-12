@@ -12,10 +12,14 @@ import {
   captureLandingFilesFromDisk,
   deleteLandingFilesFromStore,
   ensureLandingFilesOnDisk,
+  ensureStudioLandingStore,
   persistLandingFiles,
+  readAllLandingMetaFromStore,
   saveLandingAssetsToStore,
   saveLandingFilesToStore,
+  writeAllLandingMetaToStore,
 } from './studioLandingStore.js';
+import { getData, saveData } from './database.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const landingPagesDir = path.join(__dirname, '../../Landing Pages');
@@ -72,6 +76,46 @@ function landingDir(slug) {
   return { meta, dir };
 }
 
+function walkAssetFiles(dir, prefix = 'assets') {
+  const out = [];
+  if (!fs.existsSync(dir)) return out;
+  for (const name of fs.readdirSync(dir)) {
+    const full = path.join(dir, name);
+    const rel = `${prefix}/${name}`;
+    if (fs.statSync(full).isDirectory()) {
+      out.push(...walkAssetFiles(full, rel));
+    } else {
+      out.push(rel);
+    }
+  }
+  return out;
+}
+
+export function listStudioLandingAssets(slug) {
+  try {
+    const { meta, dir } = landingDir(slug);
+    const assetsDir = path.join(dir, 'assets');
+    return walkAssetFiles(assetsDir).map((rel) => ({
+      path: rel,
+      url: `/studio/${meta.slug}/${rel}`,
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export function uploadStudioLandingAsset(slug, { filename, data } = {}) {
+  const { meta, dir } = landingDir(slug);
+  const cleanName = path.basename(String(filename || 'image.png')).replace(/[^a-zA-Z0-9._-]/g, '_');
+  if (!data) throw new Error('Image data is required');
+  const assetsDir = path.join(dir, 'assets');
+  fs.mkdirSync(assetsDir, { recursive: true });
+  const rel = `assets/${cleanName}`;
+  fs.writeFileSync(path.join(dir, rel), Buffer.from(data, 'base64'));
+  captureLandingFilesFromDisk(slug, meta.folder);
+  return { path: rel, url: `/studio/${meta.slug}/${rel}` };
+}
+
 export function listStudioLandingsForAdmin() {
   return getAllStudioLandings().map((l) => {
     const exists = ensureLandingFilesOnDisk(l);
@@ -80,7 +124,7 @@ export function listStudioLandingsForAdmin() {
     const productSlug = meta.productSlug || l.productSlug;
     return {
       slug: l.slug,
-      label: l.label,
+      label: meta.label || l.label,
       productSlug,
       folder: l.folder,
       live: published,
@@ -98,6 +142,7 @@ export function listStudioLandingsForAdmin() {
 
 export function readStudioLanding(slug) {
   const { meta, dir } = landingDir(slug);
+  const landingMeta = getLandingMeta(slug);
   const files = {};
   for (const [key, filename] of Object.entries(FILE_KEYS)) {
     const filePath = path.join(dir, filename);
@@ -105,8 +150,12 @@ export function readStudioLanding(slug) {
   }
   return {
     slug: meta.slug,
-    label: meta.label,
-    productSlug: meta.productSlug,
+    label: landingMeta.label || meta.label,
+    folder: meta.folder,
+    productSlug: landingMeta.productSlug || meta.productSlug,
+    ctaLabel: landingMeta.ctaLabel || 'Book Now',
+    custom: !BUILTIN_STUDIO_LANDINGS.some((b) => b.slug === meta.slug),
+    assets: listStudioLandingAssets(slug),
     files,
   };
 }
@@ -202,7 +251,7 @@ document.getElementById('lead-form')?.addEventListener('submit', (e) => window.d
 `, 'utf8');
 }
 
-export function createStudioLanding({ slug, label, productSlug, folder, ctaLabel, heroImage, logoImage }) {
+export function createStudioLanding({ slug, label, productSlug, folder, ctaLabel, heroImage, logoImage, files }) {
   const cleanSlug = slugify(slug);
   const cleanLabel = String(label || '').trim();
   const cleanProduct = String(productSlug || '').trim();
@@ -233,9 +282,108 @@ export function createStudioLanding({ slug, label, productSlug, folder, ctaLabel
   custom.push(entry);
   saveCustomLandings(custom);
   setLandingMeta(cleanSlug, { published: true, ctaLabel: cleanCta, heroImage: heroImage ? 'assets/hero.png' : '', logoImage: logoImage ? 'assets/logo.png' : '' });
+  if (files && (files.html || files.css || files.js)) {
+    persistLandingFiles(entry, files);
+  }
   captureLandingFilesFromDisk(cleanSlug, cleanFolder);
 
   return listStudioLandingsForAdmin().find((l) => l.slug === cleanSlug);
+}
+
+function moveLandingMetaKey(oldSlug, newSlug) {
+  const all = readAllLandingMetaFromStore();
+  if (all[oldSlug]) {
+    all[newSlug] = { ...all[oldSlug] };
+    delete all[oldSlug];
+    writeAllLandingMetaToStore(all);
+  }
+}
+
+function moveLandingFilesKey(oldSlug, newSlug) {
+  const data = getData();
+  ensureStudioLandingStore();
+  const files = data.site_settings.studio_landing_files?.[oldSlug];
+  if (files) {
+    data.site_settings.studio_landing_files[newSlug] = files;
+    delete data.site_settings.studio_landing_files[oldSlug];
+    saveData();
+  }
+}
+
+export function renameStudioLanding(slug, { label, folder, newSlug, ctaLabel } = {}) {
+  const all = getAllStudioLandings();
+  const meta = all.find((l) => l.slug === slug);
+  if (!meta) throw new Error('Landing page not found');
+  const isBuiltin = BUILTIN_STUDIO_LANDINGS.some((b) => b.slug === slug);
+  let currentSlug = slug;
+  let currentFolder = meta.folder;
+
+  if (folder && folder !== meta.folder) {
+    if (isBuiltin) throw new Error('Built-in landing page folders cannot be renamed');
+    const cleanFolder = String(folder).trim();
+    if (!cleanFolder) throw new Error('Folder name is required');
+    const oldDir = path.join(landingPagesDir, meta.folder);
+    const newDir = path.join(landingPagesDir, cleanFolder);
+    if (fs.existsSync(newDir)) throw new Error('Folder already exists — choose a different name');
+    if (fs.existsSync(oldDir)) fs.renameSync(oldDir, newDir);
+    const custom = readCustomLandings();
+    const idx = custom.findIndex((l) => l.slug === currentSlug);
+    if (idx >= 0) {
+      custom[idx] = { ...custom[idx], folder: cleanFolder };
+      saveCustomLandings(custom);
+    }
+    currentFolder = cleanFolder;
+  }
+
+  if (label && label !== meta.label) {
+    const cleanLabel = String(label).trim();
+    if (!cleanLabel) throw new Error('Page label is required');
+    if (isBuiltin) {
+      setLandingMeta(currentSlug, { label: cleanLabel });
+    } else {
+      const custom = readCustomLandings();
+      const idx = custom.findIndex((l) => l.slug === currentSlug);
+      if (idx >= 0) {
+        custom[idx] = { ...custom[idx], label: cleanLabel };
+        saveCustomLandings(custom);
+      }
+    }
+  }
+
+  if (ctaLabel) {
+    setLandingMeta(currentSlug, { ctaLabel: String(ctaLabel).trim() || 'Book Now' });
+  }
+
+  if (newSlug && newSlug !== slug) {
+    if (isBuiltin) throw new Error('Built-in landing page slugs cannot be changed');
+    const cleanSlug = slugify(newSlug);
+    if (!cleanSlug) throw new Error('URL slug is required');
+    if (getAllStudioLandings().some((l) => l.slug === cleanSlug)) {
+      throw new Error('A landing page with this slug already exists');
+    }
+    const custom = readCustomLandings();
+    const idx = custom.findIndex((l) => l.slug === currentSlug);
+    if (idx >= 0) {
+      custom[idx] = { ...custom[idx], slug: cleanSlug };
+      saveCustomLandings(custom);
+    }
+    moveLandingMetaKey(currentSlug, cleanSlug);
+    moveLandingFilesKey(currentSlug, cleanSlug);
+    try {
+      const dir = path.join(landingPagesDir, currentFolder);
+      const htmlPath = path.join(dir, 'index.html');
+      if (fs.existsSync(htmlPath)) {
+        let html = fs.readFileSync(htmlPath, 'utf8');
+        html = html.replace(/data-dm-studio="[^"]*"/, `data-dm-studio="${cleanSlug}"`);
+        fs.writeFileSync(htmlPath, html, 'utf8');
+      }
+    } catch {
+      /* ignore */
+    }
+    currentSlug = cleanSlug;
+  }
+
+  return listStudioLandingsForAdmin().find((l) => l.slug === currentSlug);
 }
 
 export function updateStudioLandingAssets(slug, { heroImage, logoImage } = {}) {

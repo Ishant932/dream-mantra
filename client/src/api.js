@@ -313,6 +313,8 @@ export const adminApi = {
     request('/admin/studio-landings', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   updateStudioLandingMeta: (token, slug, body) =>
     request(`/admin/studio-landings/${slug}/meta`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
+  uploadStudioLandingAsset: (token, slug, body) =>
+    request(`/admin/studio-landings/${slug}/assets`, { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   deleteStudioLanding: (token, slug) =>
     request(`/admin/studio-landings/${slug}`, { method: 'DELETE', headers: headers(token) }),
   pageCatalog: (token) => request('/admin/page-catalog', { headers: headers(token) }),

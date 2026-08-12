@@ -2,13 +2,14 @@ import CareerLibraryExplorer from '../components/CareerLibraryExplorer';
 import CmsPageSections from '../components/CmsPageSections';
 import { usePageCatalog } from '../hooks/usePageCatalog';
 
-/** Public career library — uses uploaded career-library template */
+/** Public career library — fixed viewport embed, scrolls inside iframe only */
 export default function CareersPage() {
   const cms = usePageCatalog('careers');
+  const hasCms = cms?.hasCustom && (cms?.sections?.length || cms?.intro);
   return (
-    <>
-      <CmsPageSections cms={cms} className="!py-6" />
-      <CareerLibraryExplorer embedded={false} />
-    </>
+    <div className={`careers-page-shell${hasCms ? ' careers-page-shell--with-cms' : ''}`}>
+      {hasCms ? <CmsPageSections cms={cms} className="careers-page-shell__cms !py-4" /> : null}
+      <CareerLibraryExplorer embedded />
+    </div>
   );
 }

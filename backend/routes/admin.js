@@ -61,6 +61,8 @@ import {
   createStudioLanding,
   updateStudioLandingMeta,
   deleteStudioLanding,
+  renameStudioLanding,
+  uploadStudioLandingAsset,
 } from '../lib/studioLandingEditor.js';
 import { listPageCatalog, getPageCatalog, updatePageCatalog } from '../lib/pageCatalog.js';
 import { getCopyOverrideTrees, listCopyPatches, updateCopyPatches } from '../lib/copyOverrides.js';
@@ -494,11 +496,26 @@ router.post('/studio-landings', async (req, res) => {
 
 router.patch('/studio-landings/:slug/meta', async (req, res) => {
   try {
-    updateStudioLandingMeta(req.params.slug, req.body || {});
+    const body = req.body || {};
+    if (body.label || body.folder || body.newSlug || body.ctaLabel) {
+      renameStudioLanding(req.params.slug, body);
+    } else {
+      updateStudioLandingMeta(req.params.slug, body);
+    }
     await flushDatabase();
     res.json({ landings: listStudioLandingsForAdmin() });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to update landing meta' });
+  }
+});
+
+router.post('/studio-landings/:slug/assets', async (req, res) => {
+  try {
+    const asset = uploadStudioLandingAsset(req.params.slug, req.body || {});
+    await flushDatabase();
+    res.status(201).json({ asset, landings: listStudioLandingsForAdmin() });
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to upload asset' });
   }
 });
 
