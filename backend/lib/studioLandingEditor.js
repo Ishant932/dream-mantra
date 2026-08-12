@@ -8,12 +8,12 @@ import {
   BUILTIN_STUDIO_LANDINGS,
 } from './studioLandings.js';
 import { deleteLandingMeta, getLandingMeta, isLandingPublished, setLandingMeta } from './studioLandingMeta.js';
-import { isProtectedStudioLanding } from './studioLandingSeed.js';
 import {
   captureLandingFilesFromDisk,
   deleteLandingFilesFromStore,
   ensureLandingFilesOnDisk,
   persistLandingFiles,
+  writeLandingAssetsToDisk,
 } from './studioLandingStore.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -86,7 +86,6 @@ export function listStudioLandingsForAdmin() {
       filesExist: exists,
       published,
       custom: !BUILTIN_STUDIO_LANDINGS.some((b) => b.slug === l.slug),
-      protected: isProtectedStudioLanding(l.slug),
       heroImage: meta.heroImage || '',
       logoImage: meta.logoImage || '',
       ctaLabel: meta.ctaLabel || 'Book Now',
@@ -144,8 +143,7 @@ function copyTemplateFiles(targetDir, { slug, label, productSlug, ctaLabel, asse
   const assetsDir = path.join(targetDir, 'assets');
   fs.mkdirSync(assetsDir, { recursive: true });
 
-  if (assets.heroImage) fs.writeFileSync(path.join(assetsDir, 'hero.png'), Buffer.from(assets.heroImage, 'base64'));
-  if (assets.logoImage) fs.writeFileSync(path.join(assetsDir, 'logo.png'), Buffer.from(assets.logoImage, 'base64'));
+  writeLandingAssetsToDisk(targetDir, assets);
 
   if (fs.existsSync(templateDir)) {
     for (const filename of Object.values(FILE_KEYS)) {
@@ -154,7 +152,9 @@ function copyTemplateFiles(targetDir, { slug, label, productSlug, ctaLabel, asse
         let content = fs.readFileSync(src, 'utf8');
         content = personalizeTemplate(content, { slug, label, productSlug, ctaLabel });
         if (assets.heroImage && filename === 'index.html') {
-          content = content.replace(/assets\/founder[^"']*\.(png|jpg|webp)/gi, 'assets/hero.png');
+          content = content
+            .replace(/assets\/founder[^"']*\.(png|jpg|webp)/gi, 'assets/hero.png')
+            .replace(/assets\/esha-new\.png/gi, 'assets/hero.png');
         }
         if (assets.logoImage && filename === 'index.html') {
           content = content.replace(/assets\/logo\.png/g, 'assets/logo.png');
@@ -214,6 +214,33 @@ export function createStudioLanding({ slug, label, productSlug, folder, ctaLabel
   return listStudioLandingsForAdmin().find((l) => l.slug === cleanSlug);
 }
 
+export function applyLandingAssets(slug, { heroImage, logoImage } = {}) {
+  const meta = getAllStudioLandings().find((l) => l.slug === slug);
+  if (!meta) throw new Error('Landing page not found');
+  const dir = path.join(landingPagesDir, meta.folder);
+  if (!fs.existsSync(dir)) throw new Error('Landing page folder missing on server');
+
+  writeLandingAssetsToDisk(dir, { heroImage, logoImage });
+
+  if (heroImage) {
+    const htmlPath = path.join(dir, 'index.html');
+    if (fs.existsSync(htmlPath)) {
+      let html = fs.readFileSync(htmlPath, 'utf8');
+      html = html
+        .replace(/assets\/founder[^"']*\.(png|jpg|webp)/gi, 'assets/hero.png')
+        .replace(/assets\/esha-new\.png/gi, 'assets/hero.png');
+      fs.writeFileSync(htmlPath, html, 'utf8');
+    }
+  }
+
+  captureLandingFilesFromDisk(slug, meta.folder);
+  const patch = {};
+  if (heroImage) patch.heroImage = 'assets/hero.png';
+  if (logoImage) patch.logoImage = 'assets/logo.png';
+  if (Object.keys(patch).length) setLandingMeta(slug, patch);
+  return getLandingMeta(slug);
+}
+
 export function updateStudioLandingMeta(slug, patch) {
   if (!getAllStudioLandings().some((l) => l.slug === slug)) throw new Error('Landing page not found');
 
@@ -242,17 +269,25 @@ export function updateStudioLandingMeta(slug, patch) {
     }
   }
 
-  return setLandingMeta(slug, patch);
+  if (patch.heroImage || patch.logoImage) {
+    applyLandingAssets(slug, {
+      heroImage: patch.heroImage,
+      logoImage: patch.logoImage,
+    });
+    delete patch.heroImage;
+    delete patch.logoImage;
+  }
+
+  if (Object.keys(patch).length) {
+    return setLandingMeta(slug, patch);
+  }
+  return getLandingMeta(slug);
 }
 
 export function deleteStudioLanding(slug) {
   const all = getAllStudioLandings();
   const meta = all.find((l) => l.slug === slug);
   if (!meta) throw new Error('Landing page not found');
-  if (isProtectedStudioLanding(slug)) {
-    setLandingMeta(slug, { published: true });
-    return { deleted: false, unpublished: false, protected: true };
-  }
   const isBuiltin = BUILTIN_STUDIO_LANDINGS.some((b) => b.slug === slug);
   if (isBuiltin) {
     setLandingMeta(slug, { published: false });

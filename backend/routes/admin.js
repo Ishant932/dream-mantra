@@ -48,6 +48,7 @@ import {
   updateBlogPost,
   deleteBlogPost,
 } from '../lib/blogs.js';
+import { saveBlogImage } from '../lib/blogImages.js';
 import {
   listAllResources,
   createUserResource,
@@ -410,6 +411,18 @@ router.get('/blogs/:id', (req, res) => {
   const post = getBlogPostById(req.params.id);
   if (!post) return res.status(404).json({ message: 'Blog post not found' });
   res.json({ post });
+});
+
+router.post('/blogs/upload-image', async (req, res) => {
+  try {
+    const image = req.body?.image;
+    if (!image) return res.status(400).json({ message: 'Image data is required' });
+    const saved = saveBlogImage(image, req.body?.filename || 'cover');
+    await flushDatabase();
+    res.json(saved);
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to upload image' });
+  }
 });
 
 router.post('/blogs', async (req, res) => {

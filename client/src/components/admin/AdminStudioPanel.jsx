@@ -39,6 +39,9 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
   const [previewKey, setPreviewKey] = useState(0);
   const [productSlug, setProductSlug] = useState('dmit');
   const [savingModule, setSavingModule] = useState(false);
+  const [savingAssets, setSavingAssets] = useState(false);
+  const [editHeroFile, setEditHeroFile] = useState(null);
+  const [editLogoFile, setEditLogoFile] = useState(null);
   const [fetchedModules, setFetchedModules] = useState([]);
 
   const checkoutModules = useMemo(() => {
@@ -121,11 +124,6 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
   };
 
   const removePage = async (slug) => {
-    const pageMeta = landings.find((p) => p.slug === slug);
-    if (pageMeta?.protected) {
-      setError('This landing page is protected and cannot be deleted.');
-      return;
-    }
     if (!window.confirm('Delete or unpublish this landing page?')) return;
     try {
       const res = await adminApi.deleteStudioLanding(token, slug);
@@ -149,6 +147,28 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
       setError(e.message);
     } finally {
       setSavingModule(false);
+    }
+  };
+
+  const saveAssets = async () => {
+    if (!token || !active || (!editHeroFile && !editLogoFile)) return;
+    setSavingAssets(true);
+    setError('');
+    try {
+      const body = {};
+      if (editHeroFile) body.heroImage = await fileToBase64(editHeroFile);
+      if (editLogoFile) body.logoImage = await fileToBase64(editLogoFile);
+      await adminApi.updateStudioLandingMeta(token, active, body);
+      const res = await adminApi.studioLandings(token);
+      setLandings(res.landings || []);
+      setEditHeroFile(null);
+      setEditLogoFile(null);
+      setPreviewKey((k) => k + 1);
+      setNotice('Hero and logo images updated.');
+    } catch (e) {
+      setError(e.message || 'Failed to update images');
+    } finally {
+      setSavingAssets(false);
     }
   };
 
@@ -233,13 +253,9 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
                     <button type="button" className="btn-outline !py-1 !px-2 text-xs" onClick={() => toggleLive(p.slug, !p.live)}>
                       <Power className="w-3.5 h-3.5 inline" /> {p.live ? 'Unpublish' : 'Go live'}
                     </button>
-                    {p.protected ? (
-                      <span className="text-xs text-sand-500 font-semibold">Protected</span>
-                    ) : (
-                      <button type="button" className="btn-outline !py-1 !px-2 text-xs text-red-700" onClick={() => removePage(p.slug)}>
-                        <Trash2 className="w-3.5 h-3.5 inline" />
-                      </button>
-                    )}
+                    <button type="button" className="btn-outline !py-1 !px-2 text-xs text-red-700" onClick={() => removePage(p.slug)}>
+                      <Trash2 className="w-3.5 h-3.5 inline" />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -264,6 +280,21 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
               <button type="button" onClick={saveModule} disabled={savingModule} className="btn-outline !py-2 !px-3 text-xs">
                 {savingModule ? 'Saving…' : 'Save module'}
               </button>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              <label className="text-xs font-bold">
+                Hero image
+                <input type="file" accept="image/*" className="input-field !py-2 mt-1" onChange={(e) => setEditHeroFile(e.target.files?.[0] || null)} />
+              </label>
+              <label className="text-xs font-bold">
+                Logo image
+                <input type="file" accept="image/*" className="input-field !py-2 mt-1" onChange={(e) => setEditLogoFile(e.target.files?.[0] || null)} />
+              </label>
+              {(editHeroFile || editLogoFile) && (
+                <button type="button" onClick={saveAssets} disabled={savingAssets} className="btn-primary sm:col-span-2 !py-2 !px-3 text-xs">
+                  {savingAssets ? 'Uploading images…' : 'Save hero & logo images'}
+                </button>
+              )}
             </div>
             <div className="flex flex-wrap gap-2">
               <a href={localUrl} target="_blank" rel="noopener noreferrer" className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1">Open local <ExternalLink className="w-3.5 h-3.5" /></a>

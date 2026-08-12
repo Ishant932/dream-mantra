@@ -297,6 +297,8 @@ export const adminApi = {
     request(`/admin/blogs/${id}`, { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   deleteBlog: (token, id) =>
     request(`/admin/blogs/${id}`, { method: 'DELETE', headers: headers(token) }),
+  uploadBlogImage: (token, body) =>
+    request('/admin/blogs/upload-image', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
   resources: (token) => request('/admin/resources', { headers: headers(token) }),
   createResource: (token, body) =>
     request('/admin/resources', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),

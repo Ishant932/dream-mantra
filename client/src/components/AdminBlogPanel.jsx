@@ -1,8 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Eye, EyeOff, Save, X, ExternalLink } from 'lucide-react';
+import { Plus, Pencil, Trash2, Eye, EyeOff, Save, X, ExternalLink, Upload } from 'lucide-react';
 import { adminApi } from '../api';
 import { DashCard } from './DashboardUI';
 import AdminPanelHeader from './AdminPanelHeader';
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result));
+    r.onerror = reject;
+    r.readAsDataURL(file);
+  });
+}
 
 const EMPTY_FORM = {
   title: '',
@@ -21,6 +30,7 @@ export default function AdminBlogPanel({ token, onNotice, onError }) {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
+  const [uploadingCover, setUploadingCover] = useState(false);
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -60,6 +70,21 @@ export default function AdminBlogPanel({ token, onNotice, onError }) {
   const closeForm = () => {
     setEditing(null);
     setForm(EMPTY_FORM);
+  };
+
+  const uploadCover = async (file) => {
+    if (!token || !file) return;
+    setUploadingCover(true);
+    try {
+      const image = await fileToBase64(file);
+      const saved = await adminApi.uploadBlogImage(token, { image, filename: file.name });
+      setForm((prev) => ({ ...prev, cover_image: saved.url }));
+      onNotice?.('Cover image uploaded.');
+    } catch (err) {
+      onError?.(err.message || 'Failed to upload cover image');
+    } finally {
+      setUploadingCover(false);
+    }
   };
 
   const save = async (e) => {
@@ -180,8 +205,34 @@ export default function AdminBlogPanel({ token, onNotice, onError }) {
                 </select>
               </div>
               <div className="sm:col-span-2">
-                <label className="text-xs font-bold uppercase opacity-60 block mb-1">Cover image URL (optional)</label>
-                <input type="url" className="input-field w-full" value={form.cover_image} onChange={(e) => setForm({ ...form, cover_image: e.target.value })} placeholder="https://..." />
+                <label className="text-xs font-bold uppercase opacity-60 block mb-1">Cover image</label>
+                <div className="flex flex-wrap items-center gap-3">
+                  <label className="btn-outline !py-2 !px-4 text-sm inline-flex items-center gap-2 cursor-pointer">
+                    <Upload className="w-4 h-4" />
+                    {uploadingCover ? 'Uploading…' : 'Upload image'}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="sr-only"
+                      disabled={uploadingCover}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) uploadCover(file);
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                  <input
+                    type="url"
+                    className="input-field flex-1 min-w-[200px]"
+                    value={form.cover_image}
+                    onChange={(e) => setForm({ ...form, cover_image: e.target.value })}
+                    placeholder="Or paste image URL"
+                  />
+                </div>
+                {form.cover_image && (
+                  <img src={form.cover_image} alt="Cover preview" className="mt-3 max-h-40 rounded-xl border border-sand-200 object-cover" />
+                )}
               </div>
               <div className="sm:col-span-2">
                 <label className="text-xs font-bold uppercase opacity-60 block mb-1">Tags (comma separated)</label>
