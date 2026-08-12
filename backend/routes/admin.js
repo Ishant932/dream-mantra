@@ -546,7 +546,13 @@ router.patch('/whatsapp-config', (req, res) => {
   try {
     const templates = req.body?.templates && typeof req.body.templates === 'object' ? req.body.templates : {};
     const timing = req.body?.timing && typeof req.body.timing === 'object' ? req.body.timing : {};
-    const config = updateWhatsAppAdminConfig({ templates, timing });
+    const config = updateWhatsAppAdminConfig({
+      templates,
+      timing,
+      joinPhrase: req.body?.joinPhrase,
+      customTriggers: req.body?.customTriggers,
+      customTimingFields: req.body?.customTimingFields,
+    });
     res.json({ config });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to save WhatsApp config' });

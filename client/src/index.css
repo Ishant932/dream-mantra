@@ -25651,6 +25651,32 @@ html.aurora .dash-sidebar-panel--hero-match {
 /* Cleaner dashboard panels */
 .dash-sidebar-panel {
   min-height: 12rem;
+  contain: layout style;
+}
+.dash-b2b-page {
+  contain: layout style;
+}
+.dash-b2b-widget__title--link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+.dash-b2b-widget__title--link:hover {
+  color: var(--accent, #c2410c);
+}
+.admin-overview-tabs__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.dash-b2b-stat {
+  transform: none !important;
 }
 .dash-panel-surface { padding: 0.75rem; border-radius: 1.25rem; background: var(--bg-elevated); border: 1px solid var(--border-subtle); }
 .dash-subtab-rail {

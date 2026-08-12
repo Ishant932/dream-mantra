@@ -3,7 +3,7 @@
  * Twilio sandbox sends plain text; Meta maps to Content SIDs in production.
  */
 import { siteUrl } from './config.js';
-import { getTemplateOverride, applyTemplateVars } from './adminConfig.js';
+import { getTemplateOverride, applyTemplateVars, getJoinPhrase } from './adminConfig.js';
 import {
   banner,
   bullet,
@@ -439,9 +439,10 @@ ${contactBlock(base)}`,
 }
 
 export function messageCatalog(trigger, user, extra = {}) {
+  const mergedExtra = { joinPhrase: getJoinPhrase(), ...extra };
   const override = getTemplateOverride(trigger);
-  if (override) return applyTemplateVars(override, user, extra);
-  return buildDefaultMessage(trigger, user, extra);
+  if (override) return applyTemplateVars(override, user, mergedExtra);
+  return buildDefaultMessage(trigger, user, mergedExtra);
 }
 
 export function messageCatalogDefault(trigger) {

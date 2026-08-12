@@ -8,6 +8,7 @@ import { getWhatsAppPublicConfig, isWhatsAppEnabled, siteUrl } from './config.js
 import { messageCatalog, supportLine } from './catalog.js';
 import { banner, bullet, cta, miniPulse, sparkleBar } from './format.js';
 import { processOutbox } from './outbox.js';
+import { getJoinPhrase } from './adminConfig.js';
 
 function ensureConvos() {
   const data = getData();
@@ -51,9 +52,7 @@ function pushHistory(convo, role, text) {
 }
 
 function sandboxJoinPhrase() {
-  const { sandboxJoinCode } = getWhatsAppPublicConfig();
-  const code = (sandboxJoinCode || 'dream-mantra').trim();
-  return /^join\s+/i.test(code) ? code : `join ${code}`;
+  return getJoinPhrase();
 }
 
 function isSandboxJoinMessage(text) {

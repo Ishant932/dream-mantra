@@ -47,15 +47,12 @@ export default function DashboardMobileDeck({
   hideSectionRail = false,
 }) {
   const [flipped, setFlipped] = useState(false);
-  const [burst, setBurst] = useState(false);
   const phone = isPhoneViewport();
 
   if (!phone) return null;
 
   const pickTab = (tabId) => {
     if (tabId === panelTab) return;
-    setBurst(true);
-    window.setTimeout(() => setBurst(false), 520);
     onSelectTab(tabId);
   };
 
@@ -66,7 +63,7 @@ export default function DashboardMobileDeck({
       : 'Command center';
 
   return (
-    <div className={`dash-mobile-deck dash-mobile-deck--${variant}${burst ? ' dash-mobile-deck--burst' : ''}`}>
+    <div className={`dash-mobile-deck dash-mobile-deck--${variant}`}>
       <div className="dash-mobile-deck__aurora" aria-hidden />
       <div className="dash-mobile-deck__grid" aria-hidden />
 

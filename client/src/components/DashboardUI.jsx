@@ -162,18 +162,28 @@ export function DashCard({
   hover = true,
   glow = false,
   onClick,
-  as: Tag = motion.div,
+  as: Tag = 'div',
+  animate = false,
 }) {
+  const baseClass = `dash-card ${accent ? `dash-card-accent-${accent}` : ''} ${glow ? 'dash-card-glow' : ''} ${className}`;
+  if (!animate) {
+    return (
+      <Tag className={baseClass} {...(onClick ? { onClick, role: 'button', tabIndex: 0 } : {})}>
+        {children}
+      </Tag>
+    );
+  }
+  const MotionTag = Tag === 'div' ? motion.div : motion(Tag);
   const props = {
     initial: { opacity: 0, y: 16 },
     animate: { opacity: 1, y: 0 },
     transition: { delay, duration: 0.45, ease: [0.22, 1, 0.36, 1] },
     whileHover: hover ? { y: -6, scale: 1.01 } : undefined,
-    className: `dash-card ${accent ? `dash-card-accent-${accent}` : ''} ${glow ? 'dash-card-glow' : ''} ${className}`,
+    className: baseClass,
     ...(onClick ? { onClick, role: 'button', tabIndex: 0 } : {}),
   };
 
-  return <Tag {...props}>{children}</Tag>;
+  return <MotionTag {...props}>{children}</MotionTag>;
 }
 
 export function DashAlert({ type = 'success', children, onRetry }) {
@@ -199,13 +209,7 @@ export function AdminStatCard({ stat, index, hint }) {
   const tone = tones[index % tones.length];
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      whileHover={{ y: -4, transition: { duration: 0.25 } }}
-      className="dash-b2b-stat"
-    >
+    <div className="dash-b2b-stat">
       <div className="dash-b2b-stat__top">
         <div className={`dash-b2b-stat__icon dash-b2b-stat__icon--${tone}`}>
           <stat.icon className="w-5 h-5" />
@@ -214,6 +218,6 @@ export function AdminStatCard({ stat, index, hint }) {
       </div>
       <p className="dash-b2b-stat__value">{stat.value}</p>
       <p className="dash-b2b-stat__label">{stat.label}</p>
-    </motion.div>
+    </div>
   );
 }

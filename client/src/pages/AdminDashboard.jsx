@@ -35,6 +35,7 @@ import AdminBlogPanel from '../components/AdminBlogPanel';
 import AdminStudioPanel from '../components/admin/AdminStudioPanel';
 import AdminPageCatalogPanel from '../components/admin/AdminPageCatalogPanel';
 import AdminWhatsAppPanel from '../components/admin/AdminWhatsAppPanel';
+import AdminOverviewPanel from '../components/admin/AdminOverviewPanel';
 import { useFlashNotice } from '../hooks/useFlashNotice';
 import DashboardB2BBanner from '../components/DashboardB2BBanner';
 import { getAdminDashboardNextStep, ADMIN_NEXT_STEP_ACTIONS } from '../utils/dashboardNextStep';
@@ -285,7 +286,7 @@ export default function AdminDashboard() {
           )}
         />
 
-        <DashboardSidebarLayout tabs={ADMIN_TABS} defaultTab="overview" id="admin-dashboard" user={user} showProfileCompletion={false} sectionTitle="Dream Mantra Admin" deckVariant="admin" notifToken={token} notifUnread={notifUnread} onNotifRefresh={refreshNotifs} nextStep={nextStep}>
+        <DashboardSidebarLayout tabs={ADMIN_TABS} defaultTab="overview" activeTabId={tabParam} id="admin-dashboard" user={user} showProfileCompletion={false} sectionTitle="Dream Mantra Admin" deckVariant="admin" notifToken={token} notifUnread={notifUnread} onNotifRefresh={refreshNotifs} nextStep={nextStep}>
           {(tab) => (
             <>
               {tab === 'overview' && (
@@ -300,66 +301,13 @@ export default function AdminDashboard() {
                       />
                     ))}
                   </div>
-                  <div className="dash-b2b-widget-grid">
-                    <DashCard className="dash-b2b-widget dash-b2b-widget--wide" hover={false}>
-                      <div className="dash-b2b-widget__head">
-                        <h3 className="dash-b2b-widget__title">
-                          <Users className="w-4 h-4 text-blue-600" />
-                          Registered Users
-                        </h3>
-                        <span className="dash-b2b-widget__meta">{stats?.users ?? users.length} total</span>
-                      </div>
-                      <div className="dash-b2b-list">
-                        {users.slice(0, 8).map((u) => (
-                          <div key={u.id} className="dash-b2b-list__row">
-                            <div className="min-w-0">
-                              <p className="font-semibold truncate">{u.name}</p>
-                              {u.user_uid && <CopyableUserId uid={u.user_uid} compact animate={false} />}
-                            </div>
-                            <button type="button" onClick={() => viewProfile(u.id)} className="dash-b2b-link-btn">View</button>
-                          </div>
-                        ))}
-                        {!users.length && <p className="text-sm text-[var(--text-secondary)]">No registered users yet.</p>}
-                      </div>
-                    </DashCard>
-                    <DashCard className="dash-b2b-widget" hover={false}>
-                      <div className="dash-b2b-widget__head">
-                        <h3 className="dash-b2b-widget__title">
-                          <CreditCard className="w-4 h-4 text-emerald-600" />
-                          Recent Payments
-                        </h3>
-                      </div>
-                      <div className="dash-b2b-list">
-                        {payments.filter((p) => p.payment_status === 'confirmed').slice(0, 6).map((p) => (
-                          <div key={p.id} className="dash-b2b-list__row dash-b2b-list__row--stack">
-                            <p className="font-semibold text-sm">{p.user_name}</p>
-                            <p className="text-xs text-[var(--text-secondary)]">{p.product_title || p.type}</p>
-                            <p className="text-xs font-bold text-emerald-700">₹{p.amount?.toLocaleString('en-IN')}</p>
-                          </div>
-                        ))}
-                        {!payments.length && <p className="text-sm text-[var(--text-secondary)]">No paid orders yet</p>}
-                      </div>
-                    </DashCard>
-                    <DashCard className="dash-b2b-widget dash-b2b-widget--wide" hover={false}>
-                      <div className="dash-b2b-widget__head">
-                        <h3 className="dash-b2b-widget__title">
-                          <Clock className="w-4 h-4 text-violet-600" />
-                          Recent Bookings
-                        </h3>
-                      </div>
-                      <div className="dash-b2b-list">
-                        {consultations.slice(0, 6).map((c) => (
-                          <div key={c.id} className="dash-b2b-list__row dash-b2b-list__row--stack">
-                            <p className="font-semibold text-sm">{c.user_name} — {c.program}</p>
-                            <p className="text-xs text-[var(--text-secondary)]">
-                              {c.scheduled_at && new Date(c.scheduled_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Kolkata' })}
-                            </p>
-                          </div>
-                        ))}
-                        {!consultations.length && <p className="text-sm text-[var(--text-secondary)]">No bookings yet</p>}
-                      </div>
-                    </DashCard>
-                  </div>
+                  <AdminOverviewPanel
+                    users={users}
+                    payments={payments}
+                    consultations={consultations}
+                    onViewProfile={viewProfile}
+                    onOpenTab={goTab}
+                  />
                 </div>
               )}
 

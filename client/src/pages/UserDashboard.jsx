@@ -72,7 +72,6 @@ import {
   DashAlert,
 } from '../components/DashboardUI';
 import DashboardB2BBanner from '../components/DashboardB2BBanner';
-import AgePathwaysWorkspace from '../components/AgePathwaysWorkspace';
 
 const COUNSELLING_PATHS = [
   { id: 'brain', label: 'Brain Mapping', slug: 'dmit' },
@@ -83,7 +82,6 @@ const COUNSELLING_PATHS = [
 const TRAINING_PATHS = [
   { id: 'launchpad', label: 'AI Career Launchpad', slug: 'crp-test' },
   { id: 'readiness', label: 'Personalised Career Readiness Program', slug: 'career-readiness' },
-  { id: 'pathways', label: 'Age Pathways', slug: null },
 ];
 
 export default function UserDashboard() {
@@ -722,12 +720,7 @@ export default function UserDashboard() {
                       );
                     })}
                   </div>
-                  {trainingFocus === 'pathways' ? (
-                    <div className="dash-panel-surface dash-panel-surface--product">
-                      <AgePathwaysWorkspace />
-                    </div>
-                  ) : (
-                    <TrainingProductPanel
+                  <TrainingProductPanel
                       focus={trainingFocus}
                       paid={trainingPaid}
                       subtab={trainingSubtab}
@@ -744,7 +737,6 @@ export default function UserDashboard() {
                       onCommunityJoined={refreshDashboard}
                       {...profilePanelProps}
                     />
-                  )}
                 </div>
               )}
 

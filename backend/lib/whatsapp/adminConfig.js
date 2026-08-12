@@ -55,10 +55,15 @@ function ensureWhatsAppAdmin() {
 
 export function getWhatsAppAdminConfig() {
   const row = ensureWhatsAppAdmin();
+  const customTriggers = Array.isArray(row.custom_triggers) ? row.custom_triggers : [];
+  const customTimingFields = Array.isArray(row.custom_timing_fields) ? row.custom_timing_fields : [];
   return {
     templates: { ...row.templates },
     timing: { ...DEFAULT_WHATSAPP_TIMING, ...row.timing },
-    triggers: WHATSAPP_TRIGGER_META,
+    triggers: [...WHATSAPP_TRIGGER_META, ...customTriggers],
+    customTriggers,
+    customTimingFields,
+    joinPhrase: row.join_phrase || 'join dream-mantra',
     updated_at: row.updated_at || null,
   };
 }
@@ -68,7 +73,21 @@ export function getTemplateOverride(trigger) {
   return typeof t === 'string' && t.trim() ? t.trim() : null;
 }
 
-export function updateWhatsAppAdminConfig({ templates = {}, timing = {} } = {}) {
+export function getJoinPhrase() {
+  const row = ensureWhatsAppAdmin();
+  const configured = row.join_phrase?.trim();
+  if (configured) return configured;
+  const code = process.env.TWILIO_WHATSAPP_SANDBOX_CODE?.trim() || 'dream-mantra';
+  return /^join\s+/i.test(code) ? code : `join ${code}`;
+}
+
+export function updateWhatsAppAdminConfig({
+  templates = {},
+  timing = {},
+  joinPhrase,
+  customTriggers,
+  customTimingFields,
+} = {}) {
   const row = ensureWhatsAppAdmin();
   for (const [key, body] of Object.entries(templates)) {
     if (body === null || body === '') {
@@ -78,6 +97,15 @@ export function updateWhatsAppAdminConfig({ templates = {}, timing = {} } = {}) 
     }
   }
   row.timing = { ...DEFAULT_WHATSAPP_TIMING, ...row.timing, ...timing };
+  if (joinPhrase !== undefined) {
+    row.join_phrase = String(joinPhrase || 'join dream-mantra').trim() || 'join dream-mantra';
+  }
+  if (customTriggers !== undefined) {
+    row.custom_triggers = Array.isArray(customTriggers) ? customTriggers : [];
+  }
+  if (customTimingFields !== undefined) {
+    row.custom_timing_fields = Array.isArray(customTimingFields) ? customTimingFields : [];
+  }
   row.updated_at = new Date().toISOString();
   saveData();
   return getWhatsAppAdminConfig();
@@ -104,7 +132,7 @@ export function applyTemplateVars(text, user = {}, extra = {}) {
     '{{sessionDate}}': extra.sessionDate || '',
     '{{sessionTime}}': extra.sessionTime || '',
     '{{reportTitle}}': extra.reportTitle || '',
-    '{{joinPhrase}}': extra.joinPhrase || 'join dream-mantra',
+    '{{joinPhrase}}': extra.joinPhrase || getJoinPhrase(),
     '{{statusSummary}}': extra.statusSummary || '',
     '{{progressPercent}}': String(extra.progressPercent ?? ''),
   };
