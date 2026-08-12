@@ -1,17 +1,8 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Plus, Pencil, Trash2, Eye, EyeOff, Save, X, ExternalLink, Upload } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Plus, Pencil, Trash2, Eye, EyeOff, Save, X, ExternalLink, ImagePlus, Upload } from 'lucide-react';
 import { adminApi } from '../api';
 import { DashCard } from './DashboardUI';
 import AdminPanelHeader from './AdminPanelHeader';
-
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const r = new FileReader();
-    r.onload = () => resolve(String(r.result));
-    r.onerror = reject;
-    r.readAsDataURL(file);
-  });
-}
 
 const EMPTY_FORM = {
   title: '',
@@ -23,6 +14,15 @@ const EMPTY_FORM = {
   tags: '',
 };
 
+function fileToDataUrl(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 export default function AdminBlogPanel({ token, onNotice, onError }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,6 +31,8 @@ export default function AdminBlogPanel({ token, onNotice, onError }) {
   const [form, setForm] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
+  const [uploadingInline, setUploadingInline] = useState(false);
+  const contentRef = useRef(null);
 
   const load = useCallback(async () => {
     if (!token) return;
@@ -72,18 +74,52 @@ export default function AdminBlogPanel({ token, onNotice, onError }) {
     setForm(EMPTY_FORM);
   };
 
-  const uploadCover = async (file) => {
-    if (!token || !file) return;
+  const uploadImage = async (file) => {
+    const dataUrl = await fileToDataUrl(file);
+    const res = await adminApi.uploadBlogImage(token, {
+      image: dataUrl,
+      mime: file.type,
+      filename: file.name,
+    });
+    return res.url;
+  };
+
+  const handleCoverUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !token) return;
     setUploadingCover(true);
+    onError?.('');
     try {
-      const image = await fileToBase64(file);
-      const saved = await adminApi.uploadBlogImage(token, { image, filename: file.name });
-      setForm((prev) => ({ ...prev, cover_image: saved.url }));
+      const url = await uploadImage(file);
+      setForm((prev) => ({ ...prev, cover_image: url }));
       onNotice?.('Cover image uploaded.');
     } catch (err) {
-      onError?.(err.message || 'Failed to upload cover image');
+      onError?.(err.message || 'Cover upload failed');
     } finally {
       setUploadingCover(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleInlineUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !token) return;
+    setUploadingInline(true);
+    onError?.('');
+    try {
+      const url = await uploadImage(file);
+      const snippet = `\n\n<img src="${url}" alt="${file.name.replace(/\.[^.]+$/, '')}" class="blog-inline-image" />\n\n`;
+      const el = contentRef.current;
+      const start = el?.selectionStart ?? form.content.length;
+      const end = el?.selectionEnd ?? form.content.length;
+      const next = `${form.content.slice(0, start)}${snippet}${form.content.slice(end)}`;
+      setForm((prev) => ({ ...prev, content: next }));
+      onNotice?.('Image inserted into content.');
+    } catch (err) {
+      onError?.(err.message || 'Image upload failed');
+    } finally {
+      setUploadingInline(false);
+      e.target.value = '';
     }
   };
 
@@ -207,28 +243,12 @@ export default function AdminBlogPanel({ token, onNotice, onError }) {
               <div className="sm:col-span-2">
                 <label className="text-xs font-bold uppercase opacity-60 block mb-1">Cover image</label>
                 <div className="flex flex-wrap items-center gap-3">
-                  <label className="btn-outline !py-2 !px-4 text-sm inline-flex items-center gap-2 cursor-pointer">
+                  <label className="btn-outline !py-2 !px-3 text-sm inline-flex items-center gap-2 cursor-pointer">
                     <Upload className="w-4 h-4" />
-                    {uploadingCover ? 'Uploading…' : 'Upload image'}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="sr-only"
-                      disabled={uploadingCover}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) uploadCover(file);
-                        e.target.value = '';
-                      }}
-                    />
+                    {uploadingCover ? 'Uploading…' : 'Upload cover'}
+                    <input type="file" accept="image/*" className="sr-only" onChange={handleCoverUpload} disabled={uploadingCover} />
                   </label>
-                  <input
-                    type="url"
-                    className="input-field flex-1 min-w-[200px]"
-                    value={form.cover_image}
-                    onChange={(e) => setForm({ ...form, cover_image: e.target.value })}
-                    placeholder="Or paste image URL"
-                  />
+                  <input type="url" className="input-field flex-1 min-w-[200px]" value={form.cover_image} onChange={(e) => setForm({ ...form, cover_image: e.target.value })} placeholder="Or paste image URL" />
                 </div>
                 {form.cover_image && (
                   <img src={form.cover_image} alt="Cover preview" className="mt-3 max-h-40 rounded-xl border border-sand-200 object-cover" />
@@ -239,8 +259,22 @@ export default function AdminBlogPanel({ token, onNotice, onError }) {
                 <input className="input-field w-full" value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="career, counselling, class 10" />
               </div>
               <div className="sm:col-span-2">
-                <label className="text-xs font-bold uppercase opacity-60 block mb-1">Content</label>
-                <textarea className="input-field w-full min-h-[14rem] font-mono text-sm" required value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} placeholder="Write your blog article here. Line breaks are preserved." />
+                <div className="flex flex-wrap items-center justify-between gap-2 mb-1">
+                  <label className="text-xs font-bold uppercase opacity-60">Content</label>
+                  <label className="btn-outline !py-1.5 !px-3 text-xs inline-flex items-center gap-1.5 cursor-pointer">
+                    <ImagePlus className="w-3.5 h-3.5" />
+                    {uploadingInline ? 'Uploading…' : 'Insert image'}
+                    <input type="file" accept="image/*" className="sr-only" onChange={handleInlineUpload} disabled={uploadingInline} />
+                  </label>
+                </div>
+                <textarea
+                  ref={contentRef}
+                  className="input-field w-full min-h-[14rem] font-mono text-sm"
+                  required
+                  value={form.content}
+                  onChange={(e) => setForm({ ...form, content: e.target.value })}
+                  placeholder="Write your blog article here. Use Insert image to add photos."
+                />
               </div>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -267,6 +301,9 @@ export default function AdminBlogPanel({ token, onNotice, onError }) {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
+                    {post.cover_image && (
+                      <img src={post.cover_image} alt="" className="w-12 h-12 rounded-lg object-cover border border-sand-200" />
+                    )}
                     <p className="font-bold text-base">{post.title}</p>
                     <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
                       post.status === 'published' ? 'bg-emerald-100 text-emerald-800' : 'bg-sand-200 text-sand-700'

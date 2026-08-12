@@ -15,8 +15,8 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CUSTOM_FILE = path.join(__dirname, '../data/studio-landings-custom.json');
 const META_FILE = path.join(__dirname, '../data/studio-landings-meta.json');
 
-/** Default custom landings shipped with the repo — merged into DB if missing. */
-export const DEFAULT_CUSTOM_STUDIO_LANDINGS = [
+/** Custom landing pages that must always remain registered and published. */
+export const PROTECTED_CUSTOM_STUDIO_LANDINGS = [
   {
     slug: 'personalized-career-readiness-program',
     label: 'Personalised Career Readiness Program',
@@ -53,6 +53,8 @@ export const DEFAULT_CUSTOM_STUDIO_LANDINGS = [
   },
 ];
 
+export const PROTECTED_CUSTOM_SLUGS = new Set(PROTECTED_CUSTOM_STUDIO_LANDINGS.map((l) => l.slug));
+
 function readJsonFile(filePath, fallback) {
   try {
     if (fs.existsSync(filePath)) return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -65,13 +67,13 @@ function readJsonFile(filePath, fallback) {
 function defaultCustomLandings() {
   const fromFile = readJsonFile(CUSTOM_FILE, []);
   if (Array.isArray(fromFile) && fromFile.length) return fromFile;
-  return DEFAULT_CUSTOM_STUDIO_LANDINGS;
+  return PROTECTED_CUSTOM_STUDIO_LANDINGS;
 }
 
 function defaultLandingMeta() {
   const fromFile = readJsonFile(META_FILE, {});
   const base = fromFile && typeof fromFile === 'object' ? fromFile : {};
-  const all = [...BUILTIN_STUDIO_LANDINGS, ...DEFAULT_CUSTOM_STUDIO_LANDINGS];
+  const all = [...BUILTIN_STUDIO_LANDINGS, ...PROTECTED_CUSTOM_STUDIO_LANDINGS];
   for (const landing of all) {
     if (!base[landing.slug]) {
       base[landing.slug] = { published: true, ctaLabel: 'Join Now' };
@@ -80,7 +82,6 @@ function defaultLandingMeta() {
   return base;
 }
 
-/** Merge default custom landings into DB and capture files for serving. */
 export function seedStudioLandings() {
   const data = getData();
   ensureStudioLandingStore();
@@ -99,6 +100,14 @@ export function seedStudioLandings() {
     }
   }
 
+  for (const protectedEntry of PROTECTED_CUSTOM_STUDIO_LANDINGS) {
+    const existing = bySlug.get(protectedEntry.slug);
+    if (!existing || existing.folder !== protectedEntry.folder || existing.productSlug !== protectedEntry.productSlug) {
+      bySlug.set(protectedEntry.slug, { ...protectedEntry, ...existing, ...protectedEntry });
+      customChanged = true;
+    }
+  }
+
   if (customChanged || current.length !== bySlug.size) {
     data.site_settings.studio_landing_custom = [...bySlug.values()];
   }
@@ -109,8 +118,12 @@ export function seedStudioLandings() {
   let metaChanged = false;
 
   for (const [slug, meta] of Object.entries(metaDefaults)) {
-    if (!mergedMeta[slug]) {
+    const prev = mergedMeta[slug];
+    if (!prev) {
       mergedMeta[slug] = meta;
+      metaChanged = true;
+    } else if (PROTECTED_CUSTOM_SLUGS.has(slug) && prev.published === false) {
+      mergedMeta[slug] = { ...prev, published: true };
       metaChanged = true;
     }
   }

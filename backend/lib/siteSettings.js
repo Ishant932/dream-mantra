@@ -38,8 +38,8 @@ export function ensureSiteSettings() {
   if (!data.site_settings.studio_landing_files || typeof data.site_settings.studio_landing_files !== 'object') {
     data.site_settings.studio_landing_files = {};
   }
-  if (!data.site_settings.media_files || typeof data.site_settings.media_files !== 'object') {
-    data.site_settings.media_files = {};
+  if (!data.site_settings.blog_media || typeof data.site_settings.blog_media !== 'object') {
+    data.site_settings.blog_media = {};
   }
   return data.site_settings;
 }

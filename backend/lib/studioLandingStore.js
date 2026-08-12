@@ -24,15 +24,25 @@ function readJsonFile(filePath, fallback) {
   return fallback;
 }
 
+function migrateCustomFromFile() {
+  const parsed = readJsonFile(CUSTOM_FILE, []);
+  return Array.isArray(parsed) ? parsed : [];
+}
+
+function migrateMetaFromFile() {
+  const parsed = readJsonFile(META_FILE, {});
+  return parsed && typeof parsed === 'object' ? parsed : {};
+}
+
 export function ensureStudioLandingStore() {
   const settings = ensureSiteSettings();
   let changed = false;
   if (!Array.isArray(settings.studio_landing_custom)) {
-    settings.studio_landing_custom = readJsonFile(CUSTOM_FILE, []);
+    settings.studio_landing_custom = migrateCustomFromFile();
     changed = true;
   }
   if (!settings.studio_landing_meta || typeof settings.studio_landing_meta !== 'object') {
-    settings.studio_landing_meta = readJsonFile(META_FILE, {});
+    settings.studio_landing_meta = migrateMetaFromFile();
     changed = true;
   }
   if (!settings.studio_landing_files || typeof settings.studio_landing_files !== 'object') {
@@ -73,7 +83,7 @@ export function getLandingFilesFromStore(slug) {
 export function hasLandingFilesInStore(slug) {
   const files = getLandingFilesFromStore(slug);
   if (!files) return false;
-  return !!(files.html || files.css || files.js);
+  return !!(files.html || files.css || files.js || files.assets?.hero || files.assets?.logo);
 }
 
 export function saveLandingFilesToStore(slug, files = {}) {
@@ -83,7 +93,9 @@ export function saveLandingFilesToStore(slug, files = {}) {
   const next = { ...prev };
   for (const [key, content] of Object.entries(files)) {
     if (key === 'assets') {
-      next.assets = content && typeof content === 'object' ? content : {};
+      if (content && typeof content === 'object') {
+        next.assets = { ...(prev.assets || {}), ...content };
+      }
       continue;
     }
     if (typeof content !== 'string') continue;
@@ -104,30 +116,43 @@ export function deleteLandingFilesFromStore(slug) {
   }
 }
 
+const ASSET_FILES = {
+  hero: 'hero.png',
+  logo: 'logo.png',
+  esha: 'esha-new.png',
+};
+
+function readAssetsFromDisk(dir) {
+  const assetsDir = path.join(dir, 'assets');
+  if (!fs.existsSync(assetsDir)) return {};
+  const assets = {};
+  for (const [key, filename] of Object.entries(ASSET_FILES)) {
+    const filePath = path.join(assetsDir, filename);
+    if (fs.existsSync(filePath)) {
+      assets[key] = fs.readFileSync(filePath).toString('base64');
+    }
+  }
+  return assets;
+}
+
 function readFilesFromDisk(dir) {
   const files = {};
   for (const [key, filename] of Object.entries(FILE_KEYS)) {
     const filePath = path.join(dir, filename);
     if (fs.existsSync(filePath)) files[key] = fs.readFileSync(filePath, 'utf8');
   }
-  files.assets = readAssetsFromDisk(dir);
+  const assets = readAssetsFromDisk(dir);
+  if (Object.keys(assets).length) files.assets = assets;
   return files;
 }
 
-function readAssetsFromDisk(dir) {
-  const assetsDir = path.join(dir, 'assets');
-  if (!fs.existsSync(assetsDir)) return {};
-  const out = {};
-  const walk = (rel, base) => {
-    for (const name of fs.readdirSync(base)) {
-      const full = path.join(base, name);
-      const relPath = rel ? `${rel}/${name}` : name;
-      if (fs.statSync(full).isDirectory()) walk(relPath, full);
-      else out[relPath] = fs.readFileSync(full).toString('base64');
-    }
-  };
-  walk('', assetsDir);
-  return out;
+function writeAssetFiles(assetsDir, assets = {}) {
+  fs.mkdirSync(assetsDir, { recursive: true });
+  const heroB64 = assets.hero || assets.heroImage;
+  const logoB64 = assets.logo || assets.logoImage;
+  if (heroB64) fs.writeFileSync(path.join(assetsDir, 'hero.png'), Buffer.from(heroB64, 'base64'));
+  if (logoB64) fs.writeFileSync(path.join(assetsDir, 'logo.png'), Buffer.from(logoB64, 'base64'));
+  if (assets.esha) fs.writeFileSync(path.join(assetsDir, 'esha-new.png'), Buffer.from(assets.esha, 'base64'));
 }
 
 function writeFilesToDisk(dir, files = {}) {
@@ -139,40 +164,25 @@ function writeFilesToDisk(dir, files = {}) {
     fs.writeFileSync(path.join(dir, filename), content, 'utf8');
   }
   if (files.assets && typeof files.assets === 'object') {
-    writeAssetsToDisk(dir, files.assets);
+    writeAssetFiles(path.join(dir, 'assets'), files.assets);
   }
 }
 
-function writeAssetsToDisk(dir, assets = {}) {
-  const assetsDir = path.join(dir, 'assets');
-  fs.mkdirSync(assetsDir, { recursive: true });
-  for (const [relPath, b64] of Object.entries(assets)) {
-    if (!b64 || typeof b64 !== 'string') continue;
-    const dest = path.join(assetsDir, relPath);
-    fs.mkdirSync(path.dirname(dest), { recursive: true });
-    fs.writeFileSync(dest, Buffer.from(b64, 'base64'));
-  }
-}
-
-export function writeLandingAssetsToDisk(dir, { heroImage, logoImage } = {}) {
-  if (!heroImage && !logoImage) return;
-  const assetsDir = path.join(dir, 'assets');
-  fs.mkdirSync(assetsDir, { recursive: true });
-  if (heroImage) {
-    const buf = Buffer.from(heroImage, 'base64');
-    fs.writeFileSync(path.join(assetsDir, 'hero.png'), buf);
-    fs.writeFileSync(path.join(assetsDir, 'esha-new.png'), buf);
-  }
-  if (logoImage) {
-    fs.writeFileSync(path.join(assetsDir, 'logo.png'), Buffer.from(logoImage, 'base64'));
-  }
+export function saveLandingAssetsToStore(slug, assets = {}) {
+  const data = getData();
+  ensureStudioLandingStore();
+  const prev = data.site_settings.studio_landing_files[slug] || {};
+  const next = { ...prev, assets: { ...(prev.assets || {}), ...assets }, updated_at: new Date().toISOString() };
+  data.site_settings.studio_landing_files[slug] = next;
+  saveData();
+  return next;
 }
 
 export function captureLandingFilesFromDisk(slug, folder) {
   const dir = path.join(landingPagesDir, folder);
   if (!fs.existsSync(dir)) return null;
   const files = readFilesFromDisk(dir);
-  if (!files.html && !files.css && !files.js && !Object.keys(files.assets || {}).length) return null;
+  if (!files.html && !files.css && !files.js) return null;
   saveLandingFilesToStore(slug, files);
   return files;
 }

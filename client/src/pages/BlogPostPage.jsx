@@ -4,6 +4,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { ArrowLeft, Calendar, User, Sparkles } from 'lucide-react';
 import { blogApi } from '../api';
 import { isMobilePerf } from '../utils/mobilePerf';
+import { renderBlogContent } from '../utils/blogContent.jsx';
 
 export default function BlogPostPage() {
   const { slug } = useParams();
@@ -71,7 +72,7 @@ export default function BlogPostPage() {
     );
   }
 
-  const paragraphs = (post.content || '').split(/\n\n+/).filter(Boolean);
+  const contentBody = renderBlogContent(post.content);
 
   return (
     <article className="blog-post-root min-h-screen pb-16 relative">
@@ -172,21 +173,8 @@ export default function BlogPostPage() {
             </motion.div>
           )}
 
-          <div className="border-t border-sand-200 dark:border-sand-700 pt-8 space-y-5">
-            {paragraphs.length > 0 ? (
-              paragraphs.map((para, i) => (
-                <motion.p
-                  key={i}
-                  className="prose-blog text-base sm:text-lg leading-relaxed opacity-90"
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 0.92, y: 0 }}
-                  viewport={{ once: true, margin: '-40px' }}
-                  transition={{ delay: Math.min(i * 0.04, 0.3), duration: 0.45 }}
-                >
-                  {para}
-                </motion.p>
-              ))
-            ) : (
+          <div className="border-t border-sand-200 dark:border-sand-700 pt-8">
+            {contentBody || (
               <p className="prose-blog text-base sm:text-lg leading-relaxed whitespace-pre-wrap opacity-90">
                 {post.content}
               </p>

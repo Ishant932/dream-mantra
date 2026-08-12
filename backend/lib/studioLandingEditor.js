@@ -13,7 +13,8 @@ import {
   deleteLandingFilesFromStore,
   ensureLandingFilesOnDisk,
   persistLandingFiles,
-  writeLandingAssetsToDisk,
+  saveLandingAssetsToStore,
+  saveLandingFilesToStore,
 } from './studioLandingStore.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -138,12 +139,40 @@ function personalizeTemplate(content, { slug, label, productSlug, ctaLabel = 'Bo
     .replace(/<link rel="stylesheet" href="styles.css">/, '<link rel="stylesheet" href="styles.css">\n  <link rel="stylesheet" href="/studio/shared/responsive.css">');
 }
 
+function applyLandingAssetPaths(html, { hasHero, hasLogo }) {
+  let content = html;
+  if (hasHero) {
+    content = content
+      .replace(/assets\/founder[^"']*\.(png|jpg|webp)/gi, 'assets/hero.png')
+      .replace(/assets\/esha-new\.png/gi, 'assets/hero.png');
+  }
+  if (hasLogo) {
+    content = content.replace(/assets\/logo\.png/g, 'assets/logo.png');
+  }
+  return content;
+}
+
 function copyTemplateFiles(targetDir, { slug, label, productSlug, ctaLabel, assets = {} }) {
   const templateDir = path.join(landingPagesDir, 'Counselling');
   const assetsDir = path.join(targetDir, 'assets');
   fs.mkdirSync(assetsDir, { recursive: true });
 
-  writeLandingAssetsToDisk(targetDir, assets);
+  const heroB64 = assets.heroImage || assets.hero;
+  const logoB64 = assets.logoImage || assets.logo;
+  if (heroB64) fs.writeFileSync(path.join(assetsDir, 'hero.png'), Buffer.from(heroB64, 'base64'));
+  if (logoB64) fs.writeFileSync(path.join(assetsDir, 'logo.png'), Buffer.from(logoB64, 'base64'));
+
+  const templateAssets = path.join(templateDir, 'assets');
+  if (fs.existsSync(templateAssets)) {
+    for (const file of fs.readdirSync(templateAssets)) {
+      const src = path.join(templateAssets, file);
+      const dest = path.join(assetsDir, file);
+      if (fs.statSync(src).isFile()) {
+        if ((file === 'hero.png' && heroB64) || (file === 'logo.png' && logoB64)) continue;
+        fs.copyFileSync(src, dest);
+      }
+    }
+  }
 
   if (fs.existsSync(templateDir)) {
     for (const filename of Object.values(FILE_KEYS)) {
@@ -151,13 +180,8 @@ function copyTemplateFiles(targetDir, { slug, label, productSlug, ctaLabel, asse
       if (fs.existsSync(src)) {
         let content = fs.readFileSync(src, 'utf8');
         content = personalizeTemplate(content, { slug, label, productSlug, ctaLabel });
-        if (assets.heroImage && filename === 'index.html') {
-          content = content
-            .replace(/assets\/founder[^"']*\.(png|jpg|webp)/gi, 'assets/hero.png')
-            .replace(/assets\/esha-new\.png/gi, 'assets/hero.png');
-        }
-        if (assets.logoImage && filename === 'index.html') {
-          content = content.replace(/assets\/logo\.png/g, 'assets/logo.png');
+        if (filename === 'index.html') {
+          content = applyLandingAssetPaths(content, { hasHero: !!heroB64, hasLogo: !!logoB64 });
         }
         fs.writeFileSync(path.join(targetDir, filename), content, 'utf8');
       }
@@ -214,35 +238,59 @@ export function createStudioLanding({ slug, label, productSlug, folder, ctaLabel
   return listStudioLandingsForAdmin().find((l) => l.slug === cleanSlug);
 }
 
-export function applyLandingAssets(slug, { heroImage, logoImage } = {}) {
+export function updateStudioLandingAssets(slug, { heroImage, logoImage } = {}) {
   const meta = getAllStudioLandings().find((l) => l.slug === slug);
   if (!meta) throw new Error('Landing page not found');
   const dir = path.join(landingPagesDir, meta.folder);
   if (!fs.existsSync(dir)) throw new Error('Landing page folder missing on server');
 
-  writeLandingAssetsToDisk(dir, { heroImage, logoImage });
-
+  const assetsDir = path.join(dir, 'assets');
+  fs.mkdirSync(assetsDir, { recursive: true });
+  const assetPatch = {};
   if (heroImage) {
-    const htmlPath = path.join(dir, 'index.html');
-    if (fs.existsSync(htmlPath)) {
-      let html = fs.readFileSync(htmlPath, 'utf8');
-      html = html
-        .replace(/assets\/founder[^"']*\.(png|jpg|webp)/gi, 'assets/hero.png')
-        .replace(/assets\/esha-new\.png/gi, 'assets/hero.png');
-      fs.writeFileSync(htmlPath, html, 'utf8');
-    }
+    fs.writeFileSync(path.join(assetsDir, 'hero.png'), Buffer.from(heroImage, 'base64'));
+    assetPatch.hero = heroImage;
+  }
+  if (logoImage) {
+    fs.writeFileSync(path.join(assetsDir, 'logo.png'), Buffer.from(logoImage, 'base64'));
+    assetPatch.logo = logoImage;
   }
 
-  captureLandingFilesFromDisk(slug, meta.folder);
-  const patch = {};
-  if (heroImage) patch.heroImage = 'assets/hero.png';
-  if (logoImage) patch.logoImage = 'assets/logo.png';
-  if (Object.keys(patch).length) setLandingMeta(slug, patch);
-  return getLandingMeta(slug);
+  const htmlPath = path.join(dir, 'index.html');
+  if (fs.existsSync(htmlPath)) {
+    let html = fs.readFileSync(htmlPath, 'utf8');
+    html = applyLandingAssetPaths(html, { hasHero: !!heroImage, hasLogo: !!logoImage });
+    fs.writeFileSync(htmlPath, html, 'utf8');
+    saveLandingFilesToStore(slug, { html });
+  }
+
+  if (Object.keys(assetPatch).length) {
+    saveLandingAssetsToStore(slug, assetPatch);
+    captureLandingFilesFromDisk(slug, meta.folder);
+  }
+
+  setLandingMeta(slug, {
+    heroImage: heroImage ? 'assets/hero.png' : getLandingMeta(slug).heroImage,
+    logoImage: logoImage ? 'assets/logo.png' : getLandingMeta(slug).logoImage,
+  });
+
+  return listStudioLandingsForAdmin().find((l) => l.slug === slug);
 }
 
 export function updateStudioLandingMeta(slug, patch) {
   if (!getAllStudioLandings().some((l) => l.slug === slug)) throw new Error('Landing page not found');
+
+  if (patch.heroImage || patch.logoImage) {
+    updateStudioLandingAssets(slug, {
+      heroImage: patch.heroImage,
+      logoImage: patch.logoImage,
+    });
+    const { heroImage, logoImage, ...rest } = patch;
+    if (Object.keys(rest).length === 0) {
+      return getLandingMeta(slug);
+    }
+    patch = rest;
+  }
 
   if (patch.productSlug) {
     const custom = readCustomLandings();
@@ -269,19 +317,7 @@ export function updateStudioLandingMeta(slug, patch) {
     }
   }
 
-  if (patch.heroImage || patch.logoImage) {
-    applyLandingAssets(slug, {
-      heroImage: patch.heroImage,
-      logoImage: patch.logoImage,
-    });
-    delete patch.heroImage;
-    delete patch.logoImage;
-  }
-
-  if (Object.keys(patch).length) {
-    return setLandingMeta(slug, patch);
-  }
-  return getLandingMeta(slug);
+  return setLandingMeta(slug, patch);
 }
 
 export function deleteStudioLanding(slug) {

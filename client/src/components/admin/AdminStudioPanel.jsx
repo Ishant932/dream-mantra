@@ -34,14 +34,14 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
   const [newPage, setNewPage] = useState({ slug: '', label: '', productSlug: 'dmit', folder: '', ctaLabel: 'Book Now' });
   const [heroFile, setHeroFile] = useState(null);
   const [logoFile, setLogoFile] = useState(null);
+  const [editHeroFile, setEditHeroFile] = useState(null);
+  const [editLogoFile, setEditLogoFile] = useState(null);
+  const [savingAssets, setSavingAssets] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [previewKey, setPreviewKey] = useState(0);
   const [productSlug, setProductSlug] = useState('dmit');
   const [savingModule, setSavingModule] = useState(false);
-  const [savingAssets, setSavingAssets] = useState(false);
-  const [editHeroFile, setEditHeroFile] = useState(null);
-  const [editLogoFile, setEditLogoFile] = useState(null);
   const [fetchedModules, setFetchedModules] = useState([]);
 
   const checkoutModules = useMemo(() => {
@@ -79,6 +79,8 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
       const res = await adminApi.getStudioLanding(token, slug);
       setFiles(res.files || { html: '', css: '', js: '' });
       setFileTab('html');
+      setEditHeroFile(null);
+      setEditLogoFile(null);
     } catch (e) {
       setError(e.message || 'Failed to load page content');
     } finally {
@@ -110,6 +112,28 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
       setError(e.message || 'Failed to save');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const saveAssets = async () => {
+    if (!token || !active || (!editHeroFile && !editLogoFile)) return;
+    setSavingAssets(true);
+    setError('');
+    try {
+      const body = {};
+      if (editHeroFile) body.heroImage = await fileToBase64(editHeroFile);
+      if (editLogoFile) body.logoImage = await fileToBase64(editLogoFile);
+      const res = await adminApi.updateStudioLandingMeta(token, active, body);
+      setLandings(res.landings || landings);
+      setEditHeroFile(null);
+      setEditLogoFile(null);
+      setNotice('Hero and logo images updated.');
+      setPreviewKey((k) => k + 1);
+      await loadPage(active);
+    } catch (e) {
+      setError(e.message || 'Failed to upload images');
+    } finally {
+      setSavingAssets(false);
     }
   };
 
@@ -150,28 +174,6 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
     }
   };
 
-  const saveAssets = async () => {
-    if (!token || !active || (!editHeroFile && !editLogoFile)) return;
-    setSavingAssets(true);
-    setError('');
-    try {
-      const body = {};
-      if (editHeroFile) body.heroImage = await fileToBase64(editHeroFile);
-      if (editLogoFile) body.logoImage = await fileToBase64(editLogoFile);
-      await adminApi.updateStudioLandingMeta(token, active, body);
-      const res = await adminApi.studioLandings(token);
-      setLandings(res.landings || []);
-      setEditHeroFile(null);
-      setEditLogoFile(null);
-      setPreviewKey((k) => k + 1);
-      setNotice('Hero and logo images updated.');
-    } catch (e) {
-      setError(e.message || 'Failed to update images');
-    } finally {
-      setSavingAssets(false);
-    }
-  };
-
   const createPage = async (e) => {
     e.preventDefault();
     if (!token) return;
@@ -189,6 +191,7 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
       setHeroFile(null);
       setLogoFile(null);
       setNotice('Landing page created with Join Now → checkout.');
+      setPreviewKey((k) => k + 1);
     } catch (e) {
       setError(e.message || 'Failed to create');
     } finally {
@@ -221,6 +224,11 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
           <input className="input-field" placeholder="Folder name (optional)" value={newPage.folder} onChange={(e) => setNewPage({ ...newPage, folder: e.target.value })} />
           <label className="text-xs font-bold">Hero image<input type="file" accept="image/*" className="input-field !py-2 mt-1" onChange={(e) => setHeroFile(e.target.files?.[0] || null)} /></label>
           <label className="text-xs font-bold">Logo image<input type="file" accept="image/*" className="input-field !py-2 mt-1" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} /></label>
+          {(heroFile || logoFile) && (
+            <p className="sm:col-span-2 text-xs text-emerald-700 font-semibold">
+              {heroFile ? `Hero: ${heroFile.name}` : ''}{heroFile && logoFile ? ' · ' : ''}{logoFile ? `Logo: ${logoFile.name}` : ''}
+            </p>
+          )}
           <button type="submit" disabled={creating} className="btn-primary sm:col-span-2">{creating ? 'Creating…' : 'Create page'}</button>
         </form>
       )}
@@ -281,18 +289,16 @@ export default function AdminStudioPanel({ catalogModules = [] }) {
                 {savingModule ? 'Saving…' : 'Save module'}
               </button>
             </div>
-            <div className="grid sm:grid-cols-2 gap-3">
-              <label className="text-xs font-bold">
-                Hero image
+            <div className="grid sm:grid-cols-2 gap-3 rounded-lg border border-sand-200/80 bg-white/60 p-3">
+              <label className="text-xs font-bold">Replace hero image
                 <input type="file" accept="image/*" className="input-field !py-2 mt-1" onChange={(e) => setEditHeroFile(e.target.files?.[0] || null)} />
               </label>
-              <label className="text-xs font-bold">
-                Logo image
+              <label className="text-xs font-bold">Replace logo image
                 <input type="file" accept="image/*" className="input-field !py-2 mt-1" onChange={(e) => setEditLogoFile(e.target.files?.[0] || null)} />
               </label>
               {(editHeroFile || editLogoFile) && (
-                <button type="button" onClick={saveAssets} disabled={savingAssets} className="btn-primary sm:col-span-2 !py-2 !px-3 text-xs">
-                  {savingAssets ? 'Uploading images…' : 'Save hero & logo images'}
+                <button type="button" onClick={saveAssets} disabled={savingAssets} className="btn-primary sm:col-span-2 !py-2 text-xs">
+                  {savingAssets ? 'Uploading…' : 'Upload hero / logo images'}
                 </button>
               )}
             </div>

@@ -48,7 +48,7 @@ import {
   updateBlogPost,
   deleteBlogPost,
 } from '../lib/blogs.js';
-import { saveBlogImage } from '../lib/blogImages.js';
+import { saveBlogImage } from '../lib/blogMedia.js';
 import {
   listAllResources,
   createUserResource,
@@ -62,7 +62,6 @@ import {
   updateStudioLandingMeta,
   deleteStudioLanding,
 } from '../lib/studioLandingEditor.js';
-import { seedStudioLandings } from '../lib/studioLandingSeed.js';
 import { listPageCatalog, getPageCatalog, updatePageCatalog } from '../lib/pageCatalog.js';
 import { getCopyOverrideTrees, listCopyPatches, updateCopyPatches } from '../lib/copyOverrides.js';
 import {
@@ -413,18 +412,6 @@ router.get('/blogs/:id', (req, res) => {
   res.json({ post });
 });
 
-router.post('/blogs/upload-image', async (req, res) => {
-  try {
-    const image = req.body?.image;
-    if (!image) return res.status(400).json({ message: 'Image data is required' });
-    const saved = saveBlogImage(image, req.body?.filename || 'cover');
-    await flushDatabase();
-    res.json(saved);
-  } catch (e) {
-    res.status(400).json({ message: e.message || 'Failed to upload image' });
-  }
-});
-
 router.post('/blogs', async (req, res) => {
   try {
     const post = createBlogPost(req.body);
@@ -457,10 +444,20 @@ router.delete('/blogs/:id', async (req, res) => {
   }
 });
 
-router.get('/studio-landings', async (_req, res) => {
+router.post('/blogs/upload-image', async (req, res) => {
   try {
-    seedStudioLandings();
+    const image = req.body?.image;
+    if (!image) return res.status(400).json({ message: 'Image data is required' });
+    const saved = saveBlogImage(image, { mime: req.body?.mime, filename: req.body?.filename });
     await flushDatabase();
+    res.status(201).json(saved);
+  } catch (e) {
+    res.status(400).json({ message: e.message || 'Failed to upload image' });
+  }
+});
+
+router.get('/studio-landings', (_req, res) => {
+  try {
     res.json({ landings: listStudioLandingsForAdmin() });
   } catch (e) {
     res.status(500).json({ message: e.message || 'Failed to list landing pages' });
@@ -497,9 +494,9 @@ router.post('/studio-landings', async (req, res) => {
 
 router.patch('/studio-landings/:slug/meta', async (req, res) => {
   try {
-    const meta = updateStudioLandingMeta(req.params.slug, req.body || {});
+    updateStudioLandingMeta(req.params.slug, req.body || {});
     await flushDatabase();
-    res.json({ meta, landings: listStudioLandingsForAdmin() });
+    res.json({ landings: listStudioLandingsForAdmin() });
   } catch (e) {
     res.status(400).json({ message: e.message || 'Failed to update landing meta' });
   }
