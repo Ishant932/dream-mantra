@@ -1,0 +1,93 @@
+# DigitalOcean App Platform — Dream Mantra (frontend + API on one URL)
+# Deploy: node scripts/deploy-digitalocean.js
+# Or:    doctl apps create --spec .do/app.yaml
+
+name: dream-mantra
+region: sgp
+
+services:
+  - name: web
+    environment_slug: node-js
+    github:
+      repo: DreamsMantra/dream-mantra
+      branch: main
+      deploy_on_push: true
+    build_command: bash scripts/digitalocean-build.sh
+    run_command: node backend/index.js
+    http_port: 8080
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    health_check:
+      http_path: /api/health
+      initial_delay_seconds: 30
+      period_seconds: 30
+      timeout_seconds: 10
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: NODE_ENV
+        scope: RUN_AND_BUILD_TIME
+        value: production
+      - key: JWT_EXPIRES_IN
+        scope: RUN_TIME
+        value: 7d
+      - key: ADMIN_EMAIL
+        scope: RUN_TIME
+        value: admin@dreamsmantra.com
+      - key: ADMIN_PHONE
+        scope: RUN_TIME
+        value: "9680102276"
+      - key: ADMIN2_EMAIL
+        scope: RUN_TIME
+        value: admin2@dreamsmantra.com
+      - key: ADMIN2_PHONE
+        scope: RUN_TIME
+        value: "9999999998"
+      - key: ADMIN2_NAME
+        scope: RUN_TIME
+        value: Dream Mantra Admin 2
+      - key: ADMIN_REQUIRE_2FA
+        scope: RUN_TIME
+        value: "true"
+      - key: APP_PUBLIC_URL
+        scope: RUN_TIME
+        value: https://dreammantra.in
+      - key: SEED_SAMPLE_SLOTS
+        scope: RUN_TIME
+        value: "true"
+      - key: WHATSAPP_ENABLED
+        scope: RUN_TIME
+        value: "false"
+      - key: WHATSAPP_PROVIDER
+        scope: RUN_TIME
+        value: twilio
+      - key: TWILIO_WHATSAPP_SANDBOX
+        scope: RUN_TIME
+        value: "true"
+      - key: WHATSAPP_SITE_URL
+        scope: RUN_TIME
+        value: https://dreammantra.in
+      # Secrets (JWT_SECRET, MONGODB_URI, payment keys, etc.) are set via
+      # scripts/deploy-digitalocean.js — copied from Render or entered manually.
+
+domains:
+  - domain: dreammantra.in
+    type: PRIMARY
+  - domain: www.dreammantra.in
+    type: ALIAS
+
+jobs:
+  - name: whatsapp-cron
+    kind: SCHEDULED
+    environment_slug: node-js
+    github:
+      repo: DreamsMantra/dream-mantra
+      branch: main
+      deploy_on_push: true
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    run_command: >-
+      node -e "const s=process.env.CRON_SECRET;if(!s){console.error('CRON_SECRET missing');process.exit(1)}fetch('https://dreammantra.in/api/cron/whatsapp',{method:'POST',headers:{Authorization:'Bearer '+s}}).then(r=>r.text()).then(console.log).catch(e=>{console.error(e);process.exit(1)})"
+    schedule:
+      cron: "0 * * * *"
+      time_zone: Asia/Kolkata

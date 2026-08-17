@@ -19,7 +19,8 @@
     "open": "npm run build && cd backend && node index.js",
     "generate:sitemaps": "node scripts/generate-sitemaps.js",
     "generate:careers": "node scripts/generateCareers.js",
-    "generate:certs": "node scripts/download-all-certs.js"
+    "generate:certs": "node scripts/download-all-certs.js",
+    "deploy:digitalocean": "node scripts/deploy-digitalocean.js"
   },
   "devDependencies": {
     "concurrently": "^9.1.2",
