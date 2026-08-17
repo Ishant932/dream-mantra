@@ -11,6 +11,7 @@ import { applyVoucherPrice } from '../data/promotions';
 import { buildModuleSelection, getModuleBySlug, hasSkillMappingTests, getSkillMappingComboLabel, MODULE_CATALOG, resolveCounsellingAddon } from '../data/moduleCatalog';
 import { purchaseIncludesCounselling, resolveAssessmentSlug } from '../utils/moduleAccess';
 import SkillMappingComboPicker from '../components/SkillMappingComboPicker';
+import SkillMappingBandPicker from '../components/SkillMappingBandPicker';
 
 const UPI_VPA = '8824652354@pthdfc';
 const UPI_QR_IMAGE = '/payments/upi-qr.png';
@@ -666,14 +667,24 @@ export default function PaymentPage() {
 
               {needsSkillBand && (
                 <section className="payment-page__card">
-                  <SkillMappingComboPicker
-                    combos={skillCombos}
-                    value={skillMappingBand}
-                    onChange={handleSkillBandChange}
-                    lockedComboId={isConfirmed ? (order?.assessment?.progress?.skillMappingComboId || order?.assessment?.progress?.skillMappingBand) : null}
-                    title="Test Package (required)"
-                    hint="Choose the test package for this student. You can change it until payment is completed."
-                  />
+                  {skillCombos.length > 0 ? (
+                    <SkillMappingComboPicker
+                      combos={skillCombos}
+                      value={skillMappingBand}
+                      onChange={handleSkillBandChange}
+                      lockedComboId={isConfirmed ? (order?.assessment?.progress?.skillMappingComboId || order?.assessment?.progress?.skillMappingBand) : null}
+                      title="Test package (required)"
+                      hint="Choose at payment — this unlocks your Take test tab after checkout."
+                    />
+                  ) : (
+                    <SkillMappingBandPicker
+                      value={skillMappingBand}
+                      onChange={handleSkillBandChange}
+                      lockedBand={isConfirmed ? (order?.assessment?.progress?.skillMappingBand || order?.assessment?.progress?.skillMappingComboId) : null}
+                      title="Class band (required)"
+                      hint="Choose at payment — tests unlock from your selection after checkout."
+                    />
+                  )}
                 </section>
               )}
 

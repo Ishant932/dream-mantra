@@ -87,7 +87,8 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
   const { token } = useAuth();
   const location = useLocation();
   const parsedDash = parseDashboardPath(location.pathname, location.search);
-  const sectionParam = parsedDash.section || new URLSearchParams(location.search).get('section');
+  const urlParams = new URLSearchParams(location.search);
+  const sectionParam = parsedDash.section || urlParams.get('section');
   const openTestOnLoad = urlParams.get('open') === '1';
 
   const paidModules = useMemo(

@@ -189,11 +189,11 @@
   }
 
 /* Embed mode — dashboard full bleed */
-body.embed-mode{background:#f2f3f6;margin:0}
+body.embed-mode{background:#f2f3f6;margin:0;min-height:100%}
 body.embed-mode .brand{display:none}
-body.embed-mode .app{min-height:100vh;height:100vh;grid-template-columns:minmax(300px,38%) 1fr}
-body.embed-mode .editor{max-height:100vh;padding:14px}
-body.embed-mode .preview-wrap{max-height:100vh;overflow:auto}
+body.embed-mode .app{min-height:100%;height:auto;grid-template-columns:minmax(300px,38%) 1fr}
+body.embed-mode .editor{max-height:none;padding:14px}
+body.embed-mode .preview-wrap{max-height:none;overflow:auto}
 
 @media (max-width:768px){
   body.embed-mode .app{

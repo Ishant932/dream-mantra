@@ -3,7 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   CreditCard, Play, ClipboardList, Package, ShoppingBag,
   CheckCircle2, AlertCircle, Sparkles, MessageCircle, Clock, XCircle, Trash2,
-  Receipt, ArrowRight, X,
+  Receipt, ArrowRight, X, Users,
 } from 'lucide-react';
 import { userApi, paymentsApi } from '../api';
 import { DashCard } from './DashboardUI';
@@ -27,6 +27,7 @@ import {
   moduleHasTakeTest,
 } from '../utils/moduleAccess';
 import { moduleActionFlags, moduleActionLabel } from '../utils/moduleDashboardNav';
+import { resolveCommunityUrl } from '../utils/communityLink';
 
 function formatPrice(n) {
   return `₹${Number(n || 0).toLocaleString('en-IN')}`;
@@ -233,6 +234,7 @@ export default function ModulesPanel({
   onGoTakeTest,
   onOpenModule,
   initialHubView,
+  communityLink,
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -246,6 +248,8 @@ export default function ModulesPanel({
   const [hubView, setHubView] = useState(initialHubView || 'book');
   const [catalog, setCatalog] = useState(MODULE_CATALOG);
   const [liveVouchers, setLiveVouchers] = useState([]);
+
+  const communityUrl = resolveCommunityUrl(communityLink);
 
   const reloadCatalog = useCallback(() => {
     paymentsApi.products()
@@ -516,7 +520,7 @@ export default function ModulesPanel({
               const slug = resolveAssessmentSlug(a);
               const mod = getMod(slug) || { icon: '📋' };
               const selected = Number(activePaid?.id) === Number(a.id);
-              const { showTest, showProcess, showBook } = moduleActionFlags(a);
+              const { showTest, showProcess, showBook, showCommunity } = moduleActionFlags(a);
               return (
                 <div key={a.id} className={`modules-active-row ${selected ? 'modules-active-row--selected' : ''}`}>
                   <button type="button" className="modules-active-row__main" onClick={() => setActivePaidId(a.id)}>
@@ -536,6 +540,16 @@ export default function ModulesPanel({
                       <button type="button" onClick={() => openModule(a, 'test')} className="modules-order-btn modules-order-btn--primary">
                         <ClipboardList className="w-4 h-4" /> {moduleActionLabel(a, 'test')}
                       </button>
+                    )}
+                    {showCommunity && communityUrl && (
+                      <a
+                        href={communityUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="modules-order-btn modules-order-btn--primary"
+                      >
+                        <Users className="w-4 h-4" /> Community
+                      </a>
                     )}
                     {showBook && (
                       <button type="button" onClick={() => openModule(a, 'book')} className="modules-order-btn modules-order-btn--primary">

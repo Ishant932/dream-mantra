@@ -175,9 +175,10 @@ export function isSkillMappingBandAllowed(bandId, unlockedBand) {
 
 /** Band stored on assessment at payment — null until selected & paid */
 export function resolveSkillMappingBand(assessment) {
-  const band = assessment?.progress?.skillMappingBand;
-  if (band && SKILL_MAPPING_BANDS.some((b) => b.id === band)) return band;
-  return null;
+  const band = assessment?.progress?.skillMappingComboId || assessment?.progress?.skillMappingBand;
+  if (!band) return null;
+  if (SKILL_MAPPING_BANDS.some((b) => b.id === band)) return band;
+  return band;
 }
 
 export function getSkillMappingBandLabel(bandId) {

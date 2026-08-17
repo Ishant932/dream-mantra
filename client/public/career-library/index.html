@@ -33,21 +33,15 @@
 </div>
 
 <!-- ══ QUICK CATEGORY CHIPS ══════════════════════════════════════════════════ -->
-<div class="browse-row">
-  <div class="browse-inner">
-    <span class="f-label">Browse by</span>
-    <button class="cat-chip active" data-cat="tech" type="button">💻 Technology</button>
-    <button class="cat-chip" data-cat="health" type="button">🏥 Healthcare</button>
-    <button class="cat-chip" data-cat="biz" type="button">💼 Business</button>
-    <button class="cat-chip" data-cat="finance" type="button">📈 Finance</button>
-    <button class="cat-chip" data-cat="creative" type="button">🎨 Creative</button>
-    <button class="cat-chip" data-cat="science" type="button">🔬 Science</button>
-    <button class="cat-chip" data-cat="edu" type="button">📚 Education</button>
-    <button class="cat-chip" data-cat="govt" type="button">⚖️ Govt / Law</button>
-    <button class="cat-chip" data-cat="defence" type="button">🛡️ Defence</button>
-    <button class="cat-chip" data-cat="agri" type="button">🌾 Agriculture</button>
-    <button class="cat-chip" data-cat="hospitality" type="button">🏨 Hospitality</button>
-    <button class="cat-chip" data-cat="sports" type="button">🏅 Sports</button>
+<div style="background:#fff;border-bottom:1.5px solid #E5DDD4;padding:10px 20px;">
+  <div style="max-width:1200px;margin:0 auto;display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;">
+    <span style="font-size:11px;font-weight:700;color:#8A7F74;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;line-height:30px;flex-shrink:0;">Browse by</span>
+    <button class="cat-chip" data-cat="tech">💻 Technology</button>
+    <button class="cat-chip" data-cat="health">🏥 Healthcare</button>
+    <button class="cat-chip" data-cat="biz">💼 Business</button>
+    <button class="cat-chip" data-cat="creative">🎨 Creative</button>
+    <button class="cat-chip" data-cat="science">🔬 Science</button>
+    <button class="cat-chip" data-cat="govt">⚖️ Govt / Law</button>
   </div>
 </div>
 
@@ -64,13 +58,10 @@
     <select class="f-select" id="f-level" aria-label="Filter by education level">
       <option value="">Any Level</option>
     </select>
-    <select class="f-select" id="f-type" aria-label="Filter by qualification">
-      <option value="">All Qualifications</option>
-    </select>
     <div class="filter-divider"></div>
-    <button class="clear-all" id="clear-all" type="button">Clear filters</button>
-    <div class="sort-wrap">
-      <span class="sort-lbl">Sort</span>
+    <button class="clear-all" id="clear-all">Clear filters</button>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:6px;flex-shrink:0;">
+      <span class="sort-lbl" style="font-size:12px;color:#8A7F74;">Sort</span>
       <select class="sort-sel" id="sort-sel" aria-label="Sort careers">
         <option value="rel">Relevance</option>
         <option value="demand">Demand</option>
@@ -116,7 +107,6 @@
 <script src="data/exams-data.js"></script>
 <script src="data/clusters-data.js"></script>
 <script src="data/meta-data.js"></script>
-<script src="js/clusters.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

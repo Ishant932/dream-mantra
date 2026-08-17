@@ -2,7 +2,6 @@ import CareerLibraryExplorer from '../components/CareerLibraryExplorer';
 import CmsPageSections from '../components/CmsPageSections';
 import { usePageCatalog } from '../hooks/usePageCatalog';
 
-/** Public career library — full-height embed with internal scroll */
 export default function CareersPage() {
   const cms = usePageCatalog('careers');
   const hasCms = cms?.hasCustom && (cms?.sections?.length || cms?.intro);

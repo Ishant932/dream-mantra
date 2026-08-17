@@ -1,5 +1,5 @@
 /**
- * Clean start: free ports 5000 + 5173, then run backend + Vite.
+ * Clean start: free ports 5001 + 5174, then run backend + Vite.
  * Usage: npm run dev   or   npm run restart
  */
 import { spawn, execSync } from 'child_process';

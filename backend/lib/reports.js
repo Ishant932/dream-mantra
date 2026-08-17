@@ -19,9 +19,17 @@ export function listAllReports() {
     .sort((a, b) => new Date(b.updated_at || b.created_at) - new Date(a.updated_at || a.created_at));
 }
 
-export function listReportsForUser(userId) {
+export function listReportsForUser(userId, { scope } = {}) {
   const uid = Number(userId);
-  return listAllReports().filter((r) => Number(r.user_id) === uid);
+  return listAllReports()
+    .filter((r) => Number(r.user_id) === uid)
+    .filter((r) => {
+      const s = r.report_scope || 'reports';
+      if (!scope) return s === 'reports' || s === 'both' || !r.report_scope;
+      if (scope === 'reports') return s === 'reports' || s === 'both';
+      if (scope === 'process') return s === 'process' || s === 'both';
+      return true;
+    });
 }
 
 function enrichReport(row) {
@@ -52,7 +60,7 @@ function syncAssessmentReportLink(assessmentId, reportLink) {
   if (assessment) assessment.report_link = reportLink || null;
 }
 
-export function upsertReport({ id, userId, userUid, assessmentId, productSlug, productTitle, reportLink, reportTitle, adminNotes, resendNotification }) {
+export function upsertReport({ id, userId, userUid, assessmentId, productSlug, productTitle, reportLink, reportTitle, adminNotes, reportScope, resendNotification }) {
   ensureReportsInitialized();
   const data = getData();
   const reportId = id != null && id !== '' ? Number(id) : null;
@@ -68,6 +76,9 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
     if (reportLink !== undefined) row.report_link = String(reportLink).trim();
     if (reportTitle !== undefined) row.report_title = String(reportTitle).trim() || row.report_title;
     if (adminNotes !== undefined) row.admin_notes = adminNotes ? String(adminNotes).trim() : null;
+    if (reportScope !== undefined && ['reports', 'process', 'both'].includes(reportScope)) {
+      row.report_scope = reportScope;
+    }
     if (productTitle !== undefined) row.product_title = productTitle;
     row.updated_at = new Date().toISOString();
 
@@ -108,6 +119,9 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
   const user = resolvedUserId ? data.users.find((u) => Number(u.id) === resolvedUserId) : null;
   if (!user) throw new Error('User not found');
 
+  const link = reportLink ? String(reportLink).trim() : '';
+  if (!link) throw new Error('Report URL is required');
+
   const assessment = assessmentId
     ? data.assessments.find((a) => Number(a.id) === Number(assessmentId))
     : null;
@@ -119,8 +133,9 @@ export function upsertReport({ id, userId, userUid, assessmentId, productSlug, p
     assessment_id: assessmentId ? Number(assessmentId) : null,
     product_slug: productSlug || assessment?.product_slug || null,
     product_title: productTitle || assessment?.type || 'Assessment Report',
-    report_link: reportLink ? String(reportLink).trim() : '',
+    report_link: link,
     report_title: reportTitle ? String(reportTitle).trim() : 'Your Report',
+    report_scope: ['reports', 'process', 'both'].includes(reportScope) ? reportScope : 'reports',
     admin_notes: adminNotes ? String(adminNotes).trim() : null,
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),

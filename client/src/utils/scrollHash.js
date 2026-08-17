@@ -18,6 +18,20 @@ export function scrollToSectionId(id, behavior = 'smooth') {
   return true;
 }
 
+/** Retry scroll for lazy-mounted home sections (e.g. #certifications). */
+export function scrollToSectionIdWithRetry(id, { attempts = 12, delayMs = 150, behavior = 'smooth' } = {}) {
+  if (!id) return () => {};
+  let n = 0;
+  let timer;
+  const tick = () => {
+    if (scrollToSectionId(id, behavior)) return;
+    n += 1;
+    if (n < attempts) timer = window.setTimeout(tick, delayMs);
+  };
+  tick();
+  return () => { if (timer) window.clearTimeout(timer); };
+}
+
 export function handleHashNavClick(e, to, pathname, onAfter) {
   const target = parseNavTarget(to);
   if (typeof target !== 'object' || !target.hash) return false;
@@ -28,7 +42,7 @@ export function handleHashNavClick(e, to, pathname, onAfter) {
 
   if (onSamePage) {
     e.preventDefault();
-    scrollToSectionId(hashId);
+    scrollToSectionIdWithRetry(hashId);
     window.history.pushState(null, '', `${destPath}#${hashId}`);
     onAfter?.();
     return true;

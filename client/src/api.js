@@ -329,6 +329,14 @@ export const adminApi = {
     request('/admin/whatsapp-config', { method: 'PATCH', headers: headers(token), body: JSON.stringify(body) }),
   bulkImportUsers: (token, body) =>
     request('/admin/users/bulk-import', { method: 'POST', headers: headers(token), body: JSON.stringify(body) }),
+  bulkUsersTemplate: async (token) => {
+    const res = await fetch(`${API}/admin/users/bulk-template`, { headers: headers(token) });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.message || `Template download failed (${res.status})`);
+    }
+    return res.text();
+  },
 };
 
 export const pagesApi = {

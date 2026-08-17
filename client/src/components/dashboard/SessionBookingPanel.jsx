@@ -24,9 +24,16 @@ function durationLabel(start, end) {
 }
 
 function slotOptions(slots, sessionNumber) {
+  const seen = new Set();
   return slots
     .filter((s) => s.slot_type === 'program_session' && Number(s.session_number) === sessionNumber)
-    .sort((a, b) => new Date(a.start_at) - new Date(b.start_at));
+    .sort((a, b) => new Date(a.start_at) - new Date(b.start_at))
+    .filter((s) => {
+      const key = `${s.start_at}|${s.end_at}|${s.session_number}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
 }
 
 function BookedList({ booked }) {

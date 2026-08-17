@@ -30,6 +30,8 @@ const DASHBOARD_TAB_SEGMENTS = {
 const DASHBOARD_SEGMENT_TABS = Object.fromEntries(
   Object.entries(DASHBOARD_TAB_SEGMENTS).map(([tab, seg]) => [seg, tab]),
 );
+/** Legacy / bookmarked URL — same Support tab as /dashboard/support */
+DASHBOARD_SEGMENT_TABS.supportpage = 'support';
 
 const CRP_TAB_SEGMENTS = {
   launchpad: 'launchpad',

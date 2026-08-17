@@ -27,7 +27,7 @@ export const siteEn = {
     common: {
       title: 'Common',
       links: [
-        { label: 'Institutions', desc: 'Schools, colleges & partners' },
+        { label: 'Partner with us', desc: 'Schools, colleges & partners' },
       ],
     },
     crp: {
@@ -89,9 +89,8 @@ export const siteEn = {
       {
         title: 'Discover',
         links: [
-          { to: '/marketplace', label: 'Book Now', icon: '🛒' },
-          { to: '/dashboard?tab=assess&shop=career-readiness', label: 'Personalised Career Readiness Program', icon: '🎯' },
-          { to: '/counselling/institutions', label: 'Institutions', icon: '🏛️' },
+          { to: '/book-now', label: 'Book Now', icon: '🛒' },
+          { to: '/counselling/institutions', label: 'Partner with us', icon: '🏛️' },
           { to: '/#certifications', label: 'Certifications', icon: '🏅' },
         ],
       },
@@ -167,7 +166,7 @@ export const siteEn = {
     ],
     footerQuickColumn: [
       { to: '/contact#guidance', label: 'Book a free guidance call' },
-      { to: '/counselling/institutions', label: 'Institutions' },
+      { to: '/counselling/institutions', label: 'Partner with us' },
       { to: '/marketplace', label: 'Book Now' },
       { to: '/#certifications', label: 'Certifications' },
       { to: '/about', label: 'About Us' },
@@ -180,7 +179,7 @@ export const siteEn = {
         title: 'Discover',
         links: [
           { to: '/marketplace', label: 'Book Now' },
-          { to: '/counselling/institutions', label: 'Institutions' },
+          { to: '/counselling/institutions', label: 'Partner with us' },
           { to: '/#certifications', label: 'Certifications' },
         ],
       },
@@ -643,7 +642,7 @@ export const siteEn = {
       { id: 'psychometric', label: 'Skill Mapping' },
       { id: 'combo', label: 'Brain + Skill Mapping' },
       { id: 'programs', label: 'Age Pathways' },
-      { id: 'institutions', label: 'Institutions' },
+      { id: 'institutions', label: 'Partner with us' },
     ],
 
     crpTabs: [
@@ -1595,7 +1594,7 @@ export const siteEn = {
           exploreProgram: 'Explore Pathway',
           subTabs: {
             students: 'Students',
-            institutions: 'Institutions',
+            institutions: 'Partner with us',
           },
           institutions: {
             badge: 'Partner With Dream Mantra',

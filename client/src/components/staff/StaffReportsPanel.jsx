@@ -10,7 +10,7 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [reportForm, setReportForm] = useState({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report' });
+  const [reportForm, setReportForm] = useState({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report', reportScope: 'reports' });
   const [reportUserSearch, setReportUserSearch] = useState('');
   const [editingReportId, setEditingReportId] = useState(null);
   const [editReportForm, setEditReportForm] = useState({ reportTitle: '', reportLink: '', adminNotes: '' });
@@ -67,12 +67,13 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
       await api.createReport(token, {
         userUid: reportForm.userUid,
         assessmentId: reportForm.assessmentId ? Number(reportForm.assessmentId) : null,
-        reportLink: reportForm.reportLink,
+        reportLink: reportForm.reportLink.trim(),
         reportTitle: reportForm.reportTitle,
+        reportScope: reportForm.reportScope,
       });
       const r = await api.reports(token);
       setReports(r.reports || []);
-      setReportForm({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report' });
+      setReportForm({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report', reportScope: 'reports' });
       onNotice?.('Report published to user dashboard.');
     } catch (err) {
       onError?.(err.message);
@@ -199,6 +200,11 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
           </select>
           <input type="text" className="input-field sm:col-span-2" placeholder="Report title" value={reportForm.reportTitle} onChange={(e) => setReportForm({ ...reportForm, reportTitle: e.target.value })} />
           <input type="url" className="input-field sm:col-span-2" placeholder="Report URL (Google Drive / PDF link)" value={reportForm.reportLink} onChange={(e) => setReportForm({ ...reportForm, reportLink: e.target.value })} required />
+          <select className="input-field sm:col-span-2" value={reportForm.reportScope} onChange={(e) => setReportForm({ ...reportForm, reportScope: e.target.value })}>
+            <option value="reports">Show in user Reports tab</option>
+            <option value="process">Show in module Process (after payment)</option>
+            <option value="both">Show in Reports + Process</option>
+          </select>
           <button type="submit" className="btn-primary sm:col-span-2">Publish report to user dashboard</button>
         </form>
       </DashCard>

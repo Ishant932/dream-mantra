@@ -1,15 +1,13 @@
 
-if (new URLSearchParams(location.search).get('embed') === '1') {
-  document.documentElement.classList.add('embed-mode');
-  document.addEventListener('DOMContentLoaded', function () {
-    document.body.classList.add('embed-mode');
-  });
-}
-
 /* ═══════════════════════════════════════════════════════════════════
    CAREER LIBRARY v2 — app.js
    Clean, career-first, student-friendly
 ═══════════════════════════════════════════════════════════════════ */
+
+if (new URLSearchParams(location.search).get('embed') === '1') {
+  document.documentElement.classList.add('embed-mode');
+  document.body.classList.add('embed-mode');
+}
 
 // ── DATA SETUP ──────────────────────────────────────────────────────────────
 var ALL_CAREERS   = (D.careers   || []).concat(D.future || [], D.universal || []);
@@ -28,63 +26,28 @@ var ALL_TYPES    = uniq(ALL_CAREERS.map(function(c){ return c.degreeType||''; })
 function clusterClass(cluster) {
   var cl = (cluster||'').toLowerCase();
   if (cl.includes('engineer') || cl.includes('information tech') || cl.includes('artificial') || cl.includes('software') || cl.includes('data') || cl.includes('aviation')) return 'cc-tech';
-  if (cl.includes('health') || cl.includes('medical') || cl.includes('nurs') || cl.includes('pharma')) return 'cc-health';
-  if (cl.includes('agri') || cl.includes('food') || cl.includes('horticult') || cl.includes('dairy')) return 'cc-agri';
-  if (cl.includes('sport') || cl.includes('fitness')) return 'cc-sport';
-  if (cl.includes('finance') || cl.includes('banking') || cl.includes('account') || cl.includes('insurance')) return 'cc-finance';
-  if (cl.includes('management') || cl.includes('business') || cl.includes('market') || cl.includes('hr')) return 'cc-biz';
-  if (cl.includes('legal') || cl.includes('law') || cl.includes('govern') || cl.includes('public')) return 'cc-law';
-  if (cl.includes('hospit') || cl.includes('tourism') || cl.includes('hotel') || cl.includes('travel')) return 'cc-hosp';
-  if (cl.includes('educat') || cl.includes('teach')) return 'cc-edu';
-  if (cl.includes('design') || cl.includes('media') || cl.includes('art') || cl.includes('fashion') || cl.includes('film')) return 'cc-design';
+  if (cl.includes('health') || cl.includes('medical') || cl.includes('nurs') || cl.includes('agri') || cl.includes('sustain') || cl.includes('sport')) return 'cc-health';
+  if (cl.includes('finance') || cl.includes('banking') || cl.includes('management') || cl.includes('business')) return 'cc-biz';
+  if (cl.includes('legal') || cl.includes('law')) return 'cc-law';
+  if (cl.includes('design') || cl.includes('media') || cl.includes('art') || cl.includes('social') || cl.includes('mental') || cl.includes('hospit') || cl.includes('voc')) return 'cc-design';
   if (cl.includes('science') || cl.includes('research') || cl.includes('environment')) return 'cc-sci';
-  if (cl.includes('defence') || cl.includes('defense') || cl.includes('armed') || cl.includes('military')) return 'cc-def';
+  if (cl.includes('defence')) return 'cc-def';
   return 'cc-other';
 }
 function clusterDot(cluster) {
   var map = { 'cc-tech':'#3B82F6','cc-health':'#16A34A','cc-biz':'#D97706',
-    'cc-law':'#7C3AED','cc-design':'#DB2777','cc-sci':'#0891B2','cc-def':'#1B2A4A',
-    'cc-agri':'#65A30D','cc-sport':'#CA8A04','cc-finance':'#0F766E','cc-hosp':'#EA580C','cc-edu':'#7C3AED','cc-other':'#9A9390' };
+    'cc-law':'#7C3AED','cc-design':'#DB2777','cc-sci':'#0891B2','cc-def':'#1B2A4A','cc-other':'#9A9390' };
   return map[clusterClass(cluster)] || '#9A9390';
-}
-function clusterSticker(cluster) {
-  var map = { 'cc-tech':'💻','cc-health':'🏥','cc-biz':'💼',
-    'cc-law':'⚖️','cc-design':'🎨','cc-sci':'🔬','cc-def':'🛡️',
-    'cc-agri':'🌾','cc-sport':'🏅','cc-finance':'📈','cc-hosp':'🏨','cc-edu':'📚','cc-other':'📌' };
-  return map[clusterClass(cluster)] || '📌';
-}
-function safeClusterElig(cluster) {
-  try {
-    var map = (typeof CLUSTER_ELIG !== 'undefined' && CLUSTER_ELIG) ? CLUSTER_ELIG : {};
-    if (typeof clusterLookup === 'function') return clusterLookup(map, cluster) || null;
-    if (!cluster) return null;
-    var cl = String(cluster).toLowerCase();
-    var keys = Object.keys(map);
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i];
-      var part = key.toLowerCase().split('&')[0].trim();
-      if (cl.indexOf(part) !== -1 || part.indexOf(cl.split('&')[0].trim()) !== -1) return map[key];
-    }
-    return map['Multidisciplinary / Professional'] || null;
-  } catch (err) {
-    return null;
-  }
 }
 
 // ── CATEGORY QUICK-FILTER GROUPS ─────────────────────────────────────────────
 var QUICK_CATS = [
-  { id:'tech',   label:'Technology',   fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('engineer')||cl.includes('tech')||cl.includes('artificial')||cl.includes('data')||cl.includes('software')||cl.includes('aviation'); }},
-  { id:'health', label:'Healthcare',   fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('health')||cl.includes('medical')||cl.includes('nurs')||cl.includes('pharma'); }},
-  { id:'biz',    label:'Business',     fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('management')||cl.includes('business')||cl.includes('market')||cl.includes('hr'); }},
-  { id:'finance',label:'Finance',      fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('finance')||cl.includes('banking')||cl.includes('account')||cl.includes('insurance'); }},
-  { id:'creative',label:'Creative',    fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('design')||cl.includes('media')||cl.includes('art')||cl.includes('fashion')||cl.includes('film'); }},
+  { id:'tech',   label:'Technology',   fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('engineer')||cl.includes('tech')||cl.includes('artificial')||cl.includes('data')||cl.includes('software'); }},
+  { id:'health', label:'Healthcare',   fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('health')||cl.includes('medical')||cl.includes('nurs'); }},
+  { id:'biz',    label:'Business',     fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('finance')||cl.includes('banking')||cl.includes('management')||cl.includes('business'); }},
+  { id:'creative',label:'Creative',    fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('design')||cl.includes('media')||cl.includes('art'); }},
   { id:'science',label:'Science',      fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('science')||cl.includes('research')||cl.includes('environment'); }},
-  { id:'edu',    label:'Education',    fn: function(c){ var cl=(c.cluster||'').toLowerCase(); var n=(c.name||'').toLowerCase(); return cl.includes('educat')||cl.includes('teach')||n.includes('teacher')||n.includes('professor'); }},
-  { id:'govt',   label:'Govt / Law',   fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('legal')||cl.includes('law')||cl.includes('public')||cl.includes('civil service')||cl.includes('govern'); }},
-  { id:'defence',label:'Defence',      fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('defence')||cl.includes('defense')||cl.includes('armed')||cl.includes('military'); }},
-  { id:'agri',   label:'Agriculture',  fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('agri')||cl.includes('food')||cl.includes('dairy')||cl.includes('horticult'); }},
-  { id:'hospitality',label:'Hospitality', fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('hospit')||cl.includes('tourism')||cl.includes('hotel')||cl.includes('travel'); }},
-  { id:'sports', label:'Sports',       fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('sport')||cl.includes('fitness')||cl.includes('physical education'); }},
+  { id:'govt',   label:'Govt / Law',   fn: function(c){ var cl=(c.cluster||'').toLowerCase(); return cl.includes('legal')||cl.includes('defence')||cl.includes('public'); }},
 ];
 
 // ── STATE ────────────────────────────────────────────────────────────────────
@@ -94,7 +57,7 @@ var state = {
   cluster: '',
   level: '',
   type: '',
-  quickCat: 'tech',
+  quickCat: '',
   sort: 'rel',
   page: 1,
   tab: 'careers',   // 'careers' | 'exams' | 'streams'
@@ -168,8 +131,7 @@ function renderCard(c) {
   var typeLabel= c.degreeType || '';
   var lvl  = c.level || '';
 
-  return '<button class="card '+cc+'" type="button" data-career-id="'+escH(c.id)+'" aria-label="'+escH(c.name)+'">'
-    + '<span class="card-sticker" aria-hidden="true">'+clusterSticker(c.cluster||c.domain||'')+'</span>'
+  return '<button class="card '+cc+'" onclick="openCareer(\''+escH(c.id)+'\')" aria-label="'+escH(c.name)+'">'
     + '<div class="card-cluster"><span class="cluster-dot" style="background:'+dot+'"></span>'+escH(c.cluster||c.domain||'Career')+'</div>'
     + '<div class="card-name">'+escH(c.name)+'</div>'
     + '<div class="card-desc">'+escH(desc)+'</div>'
@@ -212,90 +174,22 @@ function renderGrid() {
 }
 
 // ── POPULATE SELECTS ─────────────────────────────────────────────────────────
-function fillSelect(el, values) {
-  if (!el) return;
-  values.forEach(function(s) {
-    var o = document.createElement('option'); o.value = s; o.textContent = s;
-    el.appendChild(o);
-  });
-}
-
 function buildSelects() {
-  fillSelect(document.getElementById('f-stream'), ALL_STREAMS);
-  fillSelect(document.getElementById('f-cluster'), ALL_CLUSTERS);
-  fillSelect(document.getElementById('f-level'), ALL_LEVELS);
-  fillSelect(document.getElementById('f-type'), ALL_TYPES);
-  enhanceSelects();
-}
+  var fStream  = document.getElementById('f-stream');
+  var fCluster = document.getElementById('f-cluster');
+  var fLevel   = document.getElementById('f-level');
 
-function enhanceSelects() {
-  ['f-stream', 'f-cluster', 'f-level', 'f-type'].forEach(function(id) {
-    var sel = document.getElementById(id);
-    if (!sel || sel.dataset.enhanced === '1') return;
-    sel.dataset.enhanced = '1';
-    sel.classList.add('filter-dd__native');
-    var wrap = document.createElement('div');
-    wrap.className = 'filter-dd';
-    sel.parentNode.insertBefore(wrap, sel);
-    wrap.appendChild(sel);
-
-    var btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'f-select filter-dd__btn';
-    btn.setAttribute('aria-haspopup', 'listbox');
-    btn.setAttribute('aria-expanded', 'false');
-    btn.textContent = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent : 'Select';
-
-    var menu = document.createElement('div');
-    menu.className = 'filter-dd__menu';
-    menu.setAttribute('role', 'listbox');
-
-    function rebuildMenu() {
-      menu.innerHTML = '';
-      Array.prototype.forEach.call(sel.options, function(opt) {
-        var item = document.createElement('button');
-        item.type = 'button';
-        item.className = 'filter-dd__opt' + (opt.value === sel.value ? ' is-active' : '');
-        item.textContent = opt.textContent;
-        item.addEventListener('click', function(e) {
-          e.stopPropagation();
-          sel.value = opt.value;
-          sel.dispatchEvent(new Event('change', { bubbles: true }));
-          btn.textContent = opt.textContent;
-          wrap.classList.remove('is-open');
-          btn.setAttribute('aria-expanded', 'false');
-        });
-        menu.appendChild(item);
-      });
-    }
-    rebuildMenu();
-    wrap.appendChild(btn);
-    wrap.appendChild(menu);
-
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var willOpen = !wrap.classList.contains('is-open');
-      document.querySelectorAll('.filter-dd.is-open').forEach(function(other) {
-        other.classList.remove('is-open');
-        var b = other.querySelector('.filter-dd__btn');
-        if (b) b.setAttribute('aria-expanded', 'false');
-      });
-      wrap.classList.toggle('is-open', willOpen);
-      btn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-    });
-    sel.addEventListener('change', function() {
-      var opt = sel.options[sel.selectedIndex];
-      btn.textContent = opt ? opt.textContent : 'Select';
-      btn.classList.toggle('active', !!sel.value);
-      rebuildMenu();
-    });
+  ALL_STREAMS.forEach(function(s) {
+    var o = document.createElement('option'); o.value = s; o.textContent = s;
+    fStream.appendChild(o);
   });
-  document.addEventListener('click', function() {
-    document.querySelectorAll('.filter-dd.is-open').forEach(function(w) {
-      w.classList.remove('is-open');
-      var b = w.querySelector('.filter-dd__btn');
-      if (b) b.setAttribute('aria-expanded', 'false');
-    });
+  ALL_CLUSTERS.forEach(function(s) {
+    var o = document.createElement('option'); o.value = s; o.textContent = s;
+    fCluster.appendChild(o);
+  });
+  ALL_LEVELS.forEach(function(s) {
+    var o = document.createElement('option'); o.value = s; o.textContent = s;
+    fLevel.appendChild(o);
   });
 }
 
@@ -314,7 +208,6 @@ function initFilters() {
   var fStream  = document.getElementById('f-stream');
   var fCluster = document.getElementById('f-cluster');
   var fLevel   = document.getElementById('f-level');
-  var fType    = document.getElementById('f-type');
 
   var _t = null;
   searchEl.addEventListener('input', function() {
@@ -331,13 +224,11 @@ function initFilters() {
   });
   clearAll.addEventListener('click', clearFilters);
 
-  [fStream, fCluster, fLevel, fType].forEach(function(sel) {
-    if (!sel) return;
+  [fStream, fCluster, fLevel].forEach(function(sel) {
     sel.addEventListener('change', function() {
       if (sel.id==='f-stream')  state.stream  = sel.value;
       if (sel.id==='f-cluster') state.cluster = sel.value;
       if (sel.id==='f-level')   state.level   = sel.value;
-      if (sel.id==='f-type')    state.type    = sel.value;
       sel.classList.toggle('active', !!sel.value);
       state.page = 1;
       renderGrid(); updateClearBtn();
@@ -348,7 +239,6 @@ function initFilters() {
 
   // Quick cat chips
   document.querySelectorAll('.cat-chip').forEach(function(chip) {
-    if (chip.dataset.cat === state.quickCat) chip.classList.add('active');
     chip.addEventListener('click', function() {
       var id = chip.dataset.cat;
       if (state.quickCat === id) { state.quickCat = ''; chip.classList.remove('active'); }
@@ -401,14 +291,6 @@ function escH(s) {
 function openCareer(id) {
   var c = CAREER_MAP[id];
   if (!c) return;
-  try {
-    renderCareerModal(c);
-  } catch (err) {
-    console.error('Career modal failed', err);
-  }
-}
-
-function renderCareerModal(c) {
 
   var cluster = c.cluster || c.domain || '';
   var demand  = c.industryDemand || c.futureDemand || 'Medium';
@@ -453,7 +335,7 @@ function renderCareerModal(c) {
   }
 
   // Education path from CLUSTER_ELIG
-  var ep = safeClusterElig(cluster);
+  var ep = clusterLookup ? clusterLookup(CLUSTER_ELIG||{}, cluster) : null;
   if (ep || c.eligibility) {
     body += '<div class="m-section"><div class="m-sec-title">Education path</div><div class="edu-path">';
     if (ep) {
@@ -535,7 +417,7 @@ function renderCareerModal(c) {
       // Try to find the career
       var rel = ALL_CAREERS.find(function(x){ return x.name===name; });
       if (rel) {
-        body += '<button class="rel-card" type="button" data-career-id="'+escH(rel.id)+'">'
+        body += '<button class="rel-card" onclick="openCareer(\''+escH(rel.id)+'\')">'
           + '<div class="rel-name">'+escH(rel.name)+'</div>'
           + '<div class="rel-type">'+escH(rel.degreeType||rel.cluster||'')+'</div>'
           + '</button>';
@@ -554,13 +436,9 @@ function renderCareerModal(c) {
 }
 
 function closeCareer() {
-  var overlay = document.getElementById('modal-overlay');
-  if (overlay) overlay.classList.remove('open');
+  document.getElementById('modal-overlay').classList.remove('open');
   document.body.style.overflow = '';
 }
-
-window.openCareer = openCareer;
-window.closeCareer = closeCareer;
 
 // ── INIT ─────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', function() {
@@ -568,34 +446,12 @@ document.addEventListener('DOMContentLoaded', function() {
   initFilters();
   renderStats();
   renderGrid();
-  updateClearBtn();
 
-  var grid = document.getElementById('career-grid');
-  if (grid) {
-    grid.addEventListener('click', function(e) {
-      var btn = e.target.closest('[data-career-id]');
-      if (!btn) return;
-      e.preventDefault();
-      openCareer(btn.getAttribute('data-career-id'));
-    });
-  }
-
-  var overlay = document.getElementById('modal-overlay');
-  if (overlay) {
-    overlay.addEventListener('click', function(e) {
-      if (e.target.closest('.modal-close')) {
-        closeCareer();
-        return;
-      }
-      var rel = e.target.closest('[data-career-id]');
-      if (rel) {
-        e.preventDefault();
-        openCareer(rel.getAttribute('data-career-id'));
-        return;
-      }
-      if (e.target === overlay) closeCareer();
-    });
-  }
+  // Close modal on overlay click
+  document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeCareer();
+  });
+  // ESC closes modal
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeCareer();
   });

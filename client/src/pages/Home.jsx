@@ -1,5 +1,5 @@
 import { lazy, Suspense, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown } from 'lucide-react';
 import HomeHero from '../components/HomeHero';
@@ -53,9 +53,9 @@ function SectionPlaceholder() {
   return <div className="home-lazy-placeholder" aria-hidden="true" />;
 }
 
-function LazyBlock({ children, minHeight = 120 }) {
+function LazyBlock({ children, minHeight = 120, force = false }) {
   return (
-    <LazyMount minHeight={minHeight} fallback={<SectionPlaceholder />}>
+    <LazyMount minHeight={minHeight} fallback={<SectionPlaceholder />} force={force}>
       <Suspense fallback={<SectionPlaceholder />}>{children}</Suspense>
     </LazyMount>
   );
@@ -63,6 +63,8 @@ function LazyBlock({ children, minHeight = 120 }) {
 
 export default function Home() {
   const { t } = useLang();
+  const location = useLocation();
+  const forceCertifications = location.hash === '#certifications';
   const {
     home,
     pillars,
@@ -339,7 +341,7 @@ export default function Home() {
           <HomeDivider />
 
           <HomeSection variant="yellow">
-            <LazyBlock minHeight={160}>
+            <LazyBlock minHeight={160} force={forceCertifications}>
               <CertificationsShowcase />
             </LazyBlock>
           </HomeSection>

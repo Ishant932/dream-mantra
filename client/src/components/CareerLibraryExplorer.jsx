@@ -8,6 +8,7 @@ export default function CareerLibraryExplorer({ embedded = false }) {
         title="Career Library"
         className="app-embed__frame"
         embed={embedded}
+        loading="eager"
       />
     </div>
   );

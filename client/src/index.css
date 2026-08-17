@@ -128,8 +128,8 @@
     --border-card: rgba(255, 107, 53, 0.22);
     --nav-bg: rgba(12, 10, 8, 0.92);
     --btn-primary-bg: linear-gradient(135deg, #FF6B35 0%, #FFD060 50%, #FF3366 100%);
-    --btn-primary-text: #1A1008;
-    --btn-gold-text: #1A1008;
+    --btn-primary-text: #FFFFFF;
+    --btn-gold-text: #FFFFFF;
     --hero-text: #FFF5EB;
     --gradient-text: linear-gradient(270deg, #FFD060, #FF6B35, #BFFF00, #FF3366);
     --gradient-hero: linear-gradient(135deg, #0C0A08 0%, #2A1810 35%, #1A2410 70%, #0C0A08 100%);
@@ -279,22 +279,25 @@
     transform: translateY(-2px);
   }
   html.aurora .btn-outline {
-    border-color: rgba(255, 208, 96, 0.45);
-    color: var(--text-primary);
-    background: rgba(255, 107, 53, 0.06);
+    border-color: rgba(234, 88, 12, 0.45);
+    color: #ea580c;
+    -webkit-text-fill-color: #ea580c;
+    background: #ffffff;
   }
   html.aurora .btn-outline:hover {
-    border-color: #FF6B35;
-    background: rgba(255, 107, 53, 0.12);
+    border-color: #ea580c;
+    background: #fff7ed;
     box-shadow: 0 0 20px rgba(255, 107, 53, 0.2);
-    color: #FFF5EB;
+    color: #c2410c;
+    -webkit-text-fill-color: #c2410c;
   }
   html.aurora .btn-gold {
     background: var(--gold-gradient);
     background-size: 200% auto;
     animation: auroraBtnShift 5s linear infinite;
     box-shadow: 0 8px 28px rgba(255, 208, 96, 0.3);
-    color: #1A1008;
+    color: #ffffff;
+    -webkit-text-fill-color: #ffffff;
   }
   .btn-outline:hover {
     transform: translateY(-2px);
@@ -2472,6 +2475,63 @@
     color: var(--hero-text);
     opacity: 0.92;
   }
+  html.aurora .hero-pathway__btn--primary,
+  html.dark .hero-pathway__btn--primary {
+    color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 55%, #dc2626 100%) !important;
+  }
+  html.aurora .hero-pathway__btn--secondary,
+  html.dark .hero-pathway__btn--secondary {
+    color: #ea580c !important;
+    -webkit-text-fill-color: #ea580c !important;
+    background: #fff !important;
+    border-color: rgba(234, 88, 12, 0.45) !important;
+  }
+  html.aurora .hero-pathway__btn--secondary:hover,
+  html.dark .hero-pathway__btn--secondary:hover {
+    color: #c2410c !important;
+    -webkit-text-fill-color: #c2410c !important;
+    background: #fff7ed !important;
+  }
+  html.aurora .hero-pathway__points,
+  html.dark .hero-pathway__points {
+    color: var(--text-secondary) !important;
+  }
+  html.aurora .hero-lead,
+  html.dark .hero-lead {
+    color: var(--text-body) !important;
+  }
+  html.aurora .guidance-modal__title,
+  html.aurora .guidance-modal__sub,
+  html.aurora .guidance-modal__module .text-theme-primary {
+    color: var(--text-primary) !important;
+    -webkit-text-fill-color: unset !important;
+  }
+  html.aurora .modules-order-btn--ghost {
+    color: var(--text-primary) !important;
+    border-color: rgba(255, 208, 96, 0.35) !important;
+    background: rgba(255, 107, 53, 0.08) !important;
+  }
+  html.aurora .modules-order-btn--primary {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+  html.aurora .btn-outline {
+    color: #ea580c !important;
+    -webkit-text-fill-color: #ea580c !important;
+    border-color: rgba(234, 88, 12, 0.45);
+    background: #ffffff !important;
+  }
+  html.aurora .guidance-modal__module,
+  html.aurora .guidance-modal .btn-outline {
+    color: #ea580c !important;
+    -webkit-text-fill-color: #ea580c !important;
+    background: #ffffff !important;
+  }
+  html.aurora .guidance-modal__module .dash-card-meta {
+    color: #57534e !important;
+  }
   html.aurora .stats-banner {
     background: linear-gradient(135deg, #1A1410, #2A1810, #1A2010);
     border-color: rgba(255, 208, 96, 0.2);
@@ -2551,7 +2611,7 @@
     color: #FFD060;
     text-shadow: none;
   }
-  html.aurora .subtab-btn.active { color: #1A1008; }
+  html.aurora .subtab-btn.active { color: #ffffff; -webkit-text-fill-color: #ffffff; }
   html.aurora .subtab-pill {
     background: linear-gradient(135deg, #FF6B35, #FFD060);
     background-size: 200% auto;
@@ -27593,6 +27653,14 @@ html.aurora .dash-sidebar-panel--hero-match {
 .app-embed--career .app-embed__frame { min-height: 80vh; height: 80vh; }
 .app-embed--flush { margin: 0; width: 100%; }
 .app-embed--cv .app-embed__frame { min-height: 88vh; height: 88vh; }
+.cv-maker-embed {
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+.cv-maker-embed .app-embed__frame {
+  min-height: min(78vh, 960px) !important;
+  height: min(78vh, 960px) !important;
+}
 .dash-sidebar-panel .app-embed--flush { margin: 0; width: 100%; }
 .dash-embed-host { padding: 0 !important; margin: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; }
 
@@ -27628,16 +27696,25 @@ html.aurora .dash-sidebar-panel--hero-match {
   min-height: min(78vh, 900px) !important;
   height: min(78vh, 900px) !important;
   width: 100%;
+  background: #fff;
+}
+.dash-embed-host {
+  min-height: min(78vh, 900px);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 .dash-embed-host .app-embed--career {
-  min-height: calc(100vh - 12rem);
+  flex: 1;
+  min-height: min(78vh, 900px);
   display: flex;
   flex-direction: column;
 }
 .dash-embed-host .app-embed--career .app-embed__frame {
   flex: 1;
-  min-height: 0 !important;
-  height: 100% !important;
+  min-height: min(78vh, 900px) !important;
+  height: min(78vh, 900px) !important;
+  width: 100%;
 }
 
 .admin-copy-cms__layout {
@@ -28076,6 +28153,30 @@ html.aurora .dash-sidebar-panel--hero-match {
   box-shadow: 0 14px 28px rgba(234, 88, 12, 0.35) !important;
 }
 
+.book-now-page {
+  background: var(--surface-card, #fff);
+  border: 1px solid rgba(229, 221, 212, 0.9);
+  border-radius: 1.25rem;
+  padding: 1.5rem 1.25rem 1.75rem;
+  box-shadow: 0 8px 32px rgba(26, 20, 16, 0.06);
+}
+.book-now-page__head { text-align: center; margin-bottom: 1.25rem; }
+.book-now-page__title {
+  margin: 0.65rem 0 0.35rem;
+  font-size: clamp(1.35rem, 4vw, 1.75rem);
+  font-weight: 800;
+  color: #ea580c;
+}
+.book-now-page__sub {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-muted, #8a7f74);
+  line-height: 1.5;
+}
+@media (min-width: 640px) {
+  .book-now-page { padding: 2rem 2rem 2.25rem; }
+}
+
 /* Training session dropdown form */
 .session-schedule-form .session-form-row {
   margin-bottom: 0.85rem;
@@ -28106,19 +28207,36 @@ html.aurora .dash-sidebar-panel--hero-match {
 @media (max-width: 767px) {
   .layout-shell--careers-fixed {
     min-height: 100dvh;
+    overflow-x: hidden;
   }
   .careers-page-shell {
+    min-height: calc(100dvh - var(--site-header-h) - var(--safe-top) - 0.5rem);
+    overflow: hidden;
+  }
+  .careers-page-shell .app-embed--career {
     min-height: calc(100dvh - var(--site-header-h) - var(--safe-top) - 1rem);
   }
   .careers-page-shell .app-embed--career .app-embed__frame {
-    min-height: min(72vh, 820px) !important;
-    height: min(72vh, 820px) !important;
+    min-height: calc(100dvh - var(--site-header-h) - var(--safe-top) - 1rem) !important;
+    height: calc(100dvh - var(--site-header-h) - var(--safe-top) - 1rem) !important;
+  }
+  .dash-embed-host {
+    min-height: calc(100dvh - 12rem);
+    overflow: hidden;
+  }
+  .dash-embed-host .app-embed--career .app-embed__frame {
+    min-height: calc(100dvh - 12rem) !important;
+    height: calc(100dvh - 12rem) !important;
   }
   .app-embed--cv .app-embed__frame {
     min-height: 72vh !important;
     height: 72vh !important;
     width: 100%;
     border-radius: 0.75rem;
+  }
+  .cv-maker-embed .app-embed__frame {
+    min-height: min(70vh, 820px) !important;
+    height: min(70vh, 820px) !important;
   }
   .dash-section-heading,
   .page-title,
@@ -28296,4 +28414,70 @@ html.aurora .age-pathways-tab:not(.age-pathways-tab--active) .age-pathways-tab__
 html.dark .age-pathways-tab:not(.age-pathways-tab--active) .age-pathways-tab__sub,
 html.aurora .age-pathways-tab:not(.age-pathways-tab--active) .age-pathways-tab__sub {
   color: var(--text-secondary);
+}
+
+html.aurora a.hero-pathway__btn--secondary,
+html.dark a.hero-pathway__btn--secondary,
+a.hero-pathway__btn.hero-pathway__btn--secondary {
+  color: #ea580c !important;
+  -webkit-text-fill-color: #ea580c !important;
+  background: #ffffff !important;
+  border: 1.5px solid rgba(234, 88, 12, 0.45) !important;
+}
+html.aurora a.hero-pathway__btn--secondary:hover,
+html.dark a.hero-pathway__btn--secondary:hover {
+  color: #c2410c !important;
+  -webkit-text-fill-color: #c2410c !important;
+  background: #fff7ed !important;
+}
+html.aurora .skill-band-picker__option,
+html.aurora .skill-band-picker__label {
+  color: var(--text-primary) !important;
+  -webkit-text-fill-color: unset !important;
+}
+html.aurora .skill-band-picker__sub {
+  color: var(--text-secondary) !important;
+}
+
+/* Aurora — orange surfaces: white text; white/light surfaces: orange text */
+html.aurora .btn-primary,
+html.aurora .btn-gold,
+html.aurora .nav-mobile-pathway,
+html.aurora .nav-mobile-pathway__label,
+html.aurora .nav-mobile-pathway__go,
+html.aurora .dash-product-path-rail__chip--active,
+html.aurora .dash-subtab-rail__chip.is-active,
+html.aurora .subtab-btn.active,
+html.aurora .subtab-pill,
+html.aurora .modules-order-btn--primary,
+html.aurora .hero-pathway__btn--primary {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+html.aurora .nav-mobile-link,
+html.aurora .nav-mobile-link__text {
+  color: #ea580c !important;
+  -webkit-text-fill-color: #ea580c !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+}
+html.aurora .nav-mobile-link:active {
+  color: #c2410c !important;
+  -webkit-text-fill-color: #c2410c !important;
+}
+html.aurora .nav-mobile-section-label {
+  color: #ea580c !important;
+}
+html.aurora .book-now-page {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(234, 88, 12, 0.2);
+}
+html.aurora .book-now-page__title {
+  color: #ea580c !important;
+  -webkit-text-fill-color: #ea580c !important;
+}
+html.aurora .home-trust-strip--on-orange .home-trust-chip__label,
+html.aurora .home-trust-strip--on-orange .home-trust-chip__badge-text,
+html.aurora .home-trust-strip--on-orange .home-trust-num--compact {
+  color: #ea580c !important;
+  -webkit-text-fill-color: #ea580c !important;
 }

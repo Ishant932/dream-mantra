@@ -56,9 +56,11 @@ export function moduleActionLabel(assessment, action) {
 export function moduleActionFlags(assessment) {
   const slug = resolveAssessmentSlug(assessment);
   const isReadiness = slug === 'career-readiness';
+  const isCrp = slug === 'crp-test';
   return {
     showTest: !!(slug && moduleHasTakeTest(slug) && !isReadiness),
     showProcess: slug !== 'counselling-topup',
-    showBook: assessmentGrantsSlotBooking(assessment),
+    showBook: assessmentGrantsSlotBooking(assessment) && !isCrp,
+    showCommunity: isCrp,
   };
 }

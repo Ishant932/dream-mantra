@@ -217,5 +217,9 @@ export function importBulkUsers({
 }
 
 export function bulkUserCsvTemplate() {
-  return 'name,email,phone,password\nStudent Name,student@example.com,9876543210,Welcome123\n';
+  return [
+    'name,email,phone,password,whatsapp_opt_in,class_band,notes',
+    '"Riya Sharma","riya@example.com","9876543210","Welcome123","yes","class-9-12","Sample student row"',
+    '"Amit Kumar","amit@example.com","9123456780","Welcome456","yes","professionals","Leave password blank to auto-generate"',
+  ].join('\n');
 }

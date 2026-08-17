@@ -41,6 +41,13 @@ export function getAvailableSlots({ from, to, slot_type, session_number } = {}) 
   if (session_number != null && session_number !== '') {
     slots = slots.filter((s) => Number(s.session_number) === Number(session_number));
   }
+  const seen = new Set();
+  slots = slots.filter((s) => {
+    const key = `${s.id}|${s.start_at}|${s.end_at}|${s.session_number ?? ''}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
   return slots;
 }
 

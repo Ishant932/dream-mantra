@@ -124,7 +124,7 @@ export const counsellingTabs = [
   { id: 'combo', label: 'Brain + Skill Mapping' },
   { id: 'programs', label: 'Age Pathways' },
   { id: 'book', label: 'Book Session' },
-  { id: 'institutions', label: 'Institutions' },
+  { id: 'institutions', label: 'Partner with us' },
 ];
 
 export const counsellorsTabs = [

@@ -89,7 +89,7 @@ export const siteHi = {
         title: 'खोजें',
         links: [
           { to: '/marketplace', label: 'Book Now', icon: '🛒' },
-          { to: '/counselling/institutions', label: 'संस्थान', icon: '🏛️' },
+          { to: '/counselling/institutions', label: 'Partner with us', icon: '🏛️' },
           { to: '/#certifications', label: 'Certifications', icon: '🏅' },
         ],
       },
@@ -165,7 +165,7 @@ export const siteHi = {
     ],
     footerQuickColumn: [
       { to: '/contact#guidance', label: 'मुफ़्त guidance call बुक करें' },
-      { to: '/counselling/institutions', label: 'Institutions' },
+      { to: '/counselling/institutions', label: 'Partner with us' },
       { to: '/marketplace', label: 'Book Now' },
       { to: '/#certifications', label: 'Certifications' },
       { to: '/about', label: 'हमारे बारे में' },
@@ -178,7 +178,7 @@ export const siteHi = {
         title: 'खोजें',
         links: [
           { to: '/marketplace', label: 'Book Now' },
-          { to: '/counselling/institutions', label: 'Institutions' },
+          { to: '/counselling/institutions', label: 'Partner with us' },
           { to: '/#certifications', label: 'Certifications' },
         ],
       },
@@ -630,12 +630,13 @@ export const siteHi = {
       { id: 'psychometric', label: 'Skill Mapping' },
       { id: 'combo', label: 'Brain + Skill Mapping' },
       { id: 'programs', label: 'आयु मार्ग' },
-      { id: 'institutions', label: 'संस्थान' },
+      { id: 'institutions', label: 'Partner with us' },
     ],
 
     crpTabs: [
       { id: 'launchpad', label: 'AI Career Launchpad' },
       { id: 'readiness', label: 'Personalised Career Readiness Program' },
+      { id: 'pathways', label: 'उम्र के अनुसार मार्ग' },
     ],
 
     assessmentTabs: [

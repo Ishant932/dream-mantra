@@ -1,11 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 
 /** Renders children only when near the viewport — faster initial paint on mobile. */
-export default function LazyMount({ children, rootMargin = '420px 0px', minHeight = 80, fallback = null }) {
+export default function LazyMount({ children, rootMargin = '420px 0px', minHeight = 80, fallback = null, force = false }) {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(!!force);
 
   useEffect(() => {
+    if (force) {
+      setVisible(true);
+      return undefined;
+    }
     const el = ref.current;
     if (!el) return undefined;
     if (!('IntersectionObserver' in window)) {
@@ -23,7 +27,7 @@ export default function LazyMount({ children, rootMargin = '420px 0px', minHeigh
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [rootMargin]);
+  }, [rootMargin, force]);
 
   return (
     <div ref={ref} className="lazy-mount" style={!visible ? { minHeight } : undefined}>

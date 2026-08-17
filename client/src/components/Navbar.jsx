@@ -11,6 +11,7 @@ import { useBookNowModal } from '../context/BookNowModalContext';
 import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLink, NavDropdownLinkGroup } from './NavDropdownPanel';
 import { useSiteNav } from '../i18n/useSiteContent';
 import { isMobilePerf } from '../utils/mobilePerf';
+import { handleHashNavClick } from '../utils/scrollHash';
 
 const buildMainNav = (t, counsellingMega, crpMega, counsellingCommon = [], commonTitle = 'Common') => [
   {
@@ -347,7 +348,9 @@ export default function Navbar({ scrolled = false }) {
                         <Link
                           key={link.to}
                           to={link.to}
-                          onClick={closeMobile}
+                          onClick={(e) => {
+                            if (!handleHashNavClick(e, link.to, location.pathname, closeMobile)) closeMobile();
+                          }}
                           className="nav-mobile-link"
                           style={{ '--i': 4 + colIdx * 6 + i }}
                         >

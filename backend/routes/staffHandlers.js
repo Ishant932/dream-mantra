@@ -504,7 +504,17 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
           return res.status(403).json({ message: 'You can only publish reports for your assigned students' });
         }
       }
-      const report = upsertReport(req.body);
+      const report = upsertReport({
+        userUid: req.body.userUid,
+        userId: req.body.userId,
+        assessmentId: req.body.assessmentId,
+        productSlug: req.body.productSlug,
+        productTitle: req.body.productTitle,
+        reportLink: req.body.reportLink,
+        reportTitle: req.body.reportTitle,
+        adminNotes: req.body.adminNotes,
+        reportScope: req.body.reportScope,
+      });
       await flushDatabase();
       res.status(201).json({ report });
     } catch (e) {

@@ -306,7 +306,7 @@ export default function UserDashboard() {
   const openProfileModal = () => setShowProfileModal(true);
 
   const goProcessGuides = (section = 'process') => {
-    goTab('support', { section: section === 'tests' ? 'tests' : 'process' });
+    goTab('assess', { section: section === 'tests' ? 'tests' : 'process' });
   };
 
   const goToTakeTest = () => goProcessGuides('tests');
@@ -634,16 +634,7 @@ export default function UserDashboard() {
               )}
 
               {tab === 'support' && (
-                <div className="space-y-6">
-                  <ProcessQuestionnairesPanel
-                    assessments={data.assessments || []}
-                    profile={data.profile}
-                    user={displayUser}
-                    communityLink={data.communityLink}
-                    onRefresh={refreshDashboard}
-                  />
-                  <SupportStudio token={token} />
-                </div>
+                <SupportStudio token={token} />
               )}
 
               {tab === 'book' && (
@@ -651,7 +642,19 @@ export default function UserDashboard() {
               )}
 
               {tab === 'assess' && (
-                <ModulesPanel
+                <>
+                  {(parsedDash.section === 'process' || parsedDash.section === 'tests') && (
+                    <div className="mb-6">
+                      <ProcessQuestionnairesPanel
+                        assessments={data.assessments || []}
+                        profile={data.profile}
+                        user={displayUser}
+                        communityLink={data.communityLink}
+                        onRefresh={refreshDashboard}
+                      />
+                    </div>
+                  )}
+                  <ModulesPanel
                   token={token}
                   assessments={data.assessments || []}
                   payments={data.payments || []}
@@ -665,7 +668,9 @@ export default function UserDashboard() {
                   onGoTakeTest={goToTakeTest}
                   onOpenModule={openPaidModule}
                   initialHubView={new URLSearchParams(location.search).get('hub') || undefined}
+                  communityLink={data.communityLink}
                 />
+                </>
               )}
 
               {tab === 'counselling' && (

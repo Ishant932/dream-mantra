@@ -4,7 +4,6 @@ import { Clock, Lock, Sparkles, CheckCircle2, AlertCircle, UserCircle, Mail, Cop
 import { useAuth } from '../context/AuthContext';
 import { userApi } from '../api';
 import CopyableUserId from './CopyableUserId';
-import SkillMappingBandPicker from './SkillMappingBandPicker';
 import {
   SKILL_MAPPING_BANDS,
   getSkillMappingTestsForBand,
@@ -69,11 +68,11 @@ export default function SkillMappingTestsSection({
 }) {
   const { token } = useAuth();
   const unlockedBand = resolveSkillMappingBand(assessment);
+  const comboName = assessment?.progress?.skillMappingComboName;
   const [bandId, setBandId] = useState(unlockedBand || 'class-6-8');
   const [testId, setTestId] = useState(
     () => getSkillMappingTestsForBand(unlockedBand || 'class-6-8')[0]?.id || 'vak'
   );
-  const [savingBand, setSavingBand] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
   const [identity, setIdentity] = useState(null);
@@ -118,7 +117,7 @@ export default function SkillMappingTestsSection({
       setIdentity(nextIdentity);
       const nextBand = data.band || resolveSkillMappingBand(assessment) || bandId;
       if (data.band) setBandId(data.band);
-      setBandTestsForBand(nextBand, nextIdentity);
+      setBandTests(Array.isArray(data.tests) && data.tests.length ? data.tests : buildPrefilledTests(nextBand, nextIdentity));
     } catch (err) {
       const uid = String(propUid || '').trim();
       const band = resolveSkillMappingBand(assessment);
@@ -171,16 +170,6 @@ export default function SkillMappingTestsSection({
   const activeTestIndex = bandTests.findIndex((t) => t.id === testId);
   const testCount = bandTests.length;
 
-  const handleLegacyBandSelect = async (band) => {
-    if (!assessment?.id || !onBandSaved) return;
-    setSavingBand(true);
-    try {
-      await onBandSaved(band);
-    } finally {
-      setSavingBand(false);
-    }
-  };
-
   const copyTestLink = async (test) => {
     const t = test || activeTest;
     if (!t?.url) return;
@@ -214,38 +203,12 @@ export default function SkillMappingTestsSection({
 
   if (!unlockedBand) {
     return (
-      <div className="modules-tests-section no-reveal">
-        <motion.div className="modules-tests-intro" {...fadeUp}>
-          <p className="text-sm dash-card-meta">
-            Class bands are locked until you choose one at payment. If you already paid, select your band below to unlock your tests.
-          </p>
-          {onBandSaved && assessment?.id && (
-            <div className="mt-4 p-4 rounded-xl border border-amber-200/60 bg-amber-50/50 dark:bg-amber-950/20">
-              <SkillMappingBandPicker
-                value=""
-                onChange={handleLegacyBandSelect}
-                disabled={savingBand}
-                title="Select your class band to unlock tests"
-                hint="This is set once per purchase and cannot be changed later."
-              />
-            </div>
-          )}
-        </motion.div>
-        <div className="modules-test-band-tabs mt-4">
-          {SKILL_MAPPING_BANDS.map((b) => (
-            <div
-              key={b.id}
-              className="modules-test-band-tab modules-test-band-tab--locked opacity-60"
-              aria-disabled="true"
-            >
-              <span className="font-bold text-sm flex items-center gap-1.5">
-                <Lock className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
-                {b.label}
-              </span>
-              <span className="text-[0.6875rem] dash-card-meta">Locked — select at payment</span>
-            </div>
-          ))}
-        </div>
+      <div className="modules-tests-section no-reveal p-5 rounded-xl border border-amber-200/60 bg-amber-50/50 text-center">
+        <AlertCircle className="w-10 h-10 text-amber-600 mx-auto mb-3" />
+        <p className="font-bold text-sm">Test package not set yet</p>
+        <p className="text-sm dash-card-meta mt-2 max-w-md mx-auto">
+          Select your class band or test package on the payment page before checkout. After payment, your tests will unlock here automatically.
+        </p>
       </div>
     );
   }
@@ -313,7 +276,7 @@ export default function SkillMappingTestsSection({
         <div className="min-w-0 flex-1">
           <h3 className="modules-tests-hero__title">Skill Mapping Tests</h3>
           <p className="modules-tests-hero__sub">
-            {testCount} assessment{testCount === 1 ? '' : 's'} for {activeBand.label}
+            {testCount} assessment{testCount === 1 ? '' : 's'} — {comboName || activeBand.label}
           </p>
         </div>
         <motion.div
@@ -342,7 +305,7 @@ export default function SkillMappingTestsSection({
         transition={{ delay: 0.1, duration: 0.35 }}
       >
         <span className="modules-test-step-label__dot" />
-        Step 1 — Your class band
+        Step 1 — Your package ({comboName || activeBand.label})
       </motion.p>
 
       <motion.div

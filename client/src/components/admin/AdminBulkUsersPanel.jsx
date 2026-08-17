@@ -79,10 +79,8 @@ export default function AdminBulkUsersPanel({
 
   const downloadTemplate = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/users/bulk-template', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const blob = await res.blob();
+      const text = await adminApi.bulkUsersTemplate(token);
+      const blob = new Blob([`\uFEFF${text}`], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
