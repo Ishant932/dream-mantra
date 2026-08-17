@@ -3,7 +3,7 @@ import ProductJourneySteps from './ProductJourneySteps';
 import CounsellingBookingPanel from '../CounsellingBookingPanel';
 import DashboardProductOverview from './DashboardProductOverview';
 import ProfileWizardPanel from './ProfileWizardPanel';
-import SkillMappingTakeTestPanel from './SkillMappingTakeTestPanel';
+import SkillMappingTestsSection from '../SkillMappingTestsSection';
 import CommunityLinksPanel from './CommunityLinksPanel';
 import SessionBookingPanel from './SessionBookingPanel';
 import { getCounsellingSubtabs, getTrainingSubtabs } from '../../utils/productSubtabs';
@@ -14,6 +14,7 @@ import {
   purchaseHadCounsellingPackage,
 } from '../../utils/moduleAccess';
 import { DashCard } from '../DashboardUI';
+import { userApi } from '../../api';
 
 function LockedCard({ onBook }) {
   return (
@@ -99,14 +100,18 @@ export function CounsellingProductPanel({
           <ProfileWizardPanel user={displayUser} profile={profile} onSave={onProfileSave} saving={profileSaving} />
         )}
         {paid && subtab === 'take-test' && (
-          <SkillMappingTakeTestPanel
-            user={displayUser}
-            profile={profile}
-            instrumentIds={careerPath?.activeAssessment?.progress?.skillMappingInstruments}
-            assessmentId={careerPath?.activeAssessment?.id}
-            token={token}
-            savedProgress={careerPath?.activeAssessment?.progress?.skillTestProgress}
-            onProgressSaved={onTestProgressSaved}
+          <SkillMappingTestsSection
+            key={`counselling-tests-${careerPath?.activeAssessment?.id}-${displayUser?.user_uid}`}
+            assessment={careerPath?.activeAssessment}
+            userUid={displayUser?.user_uid}
+            userName={displayUser?.name}
+            userEmail={displayUser?.email}
+            userPhone={displayUser?.phone || profile?.whatsappNumber}
+            onBandSaved={async (band) => {
+              if (!token || !careerPath?.activeAssessment?.id) return;
+              await userApi.setSkillMappingBand(token, careerPath.activeAssessment.id, band);
+              onTestProgressSaved?.();
+            }}
           />
         )}
         {paid && subtab === 'counselling' && !counsellingUnlocked && (

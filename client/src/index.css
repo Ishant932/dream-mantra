@@ -27596,33 +27596,25 @@ html.aurora .dash-sidebar-panel--hero-match {
 .dash-sidebar-panel .app-embed--flush { margin: 0; width: 100%; }
 .dash-embed-host { padding: 0 !important; margin: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; }
 
-/* Career library — fixed viewport, scroll inside iframe only */
+/* Career library — viewport-height embed, scroll inside iframe */
 .layout-shell--careers-fixed {
-  height: 100vh;
   min-height: 100vh;
-  max-height: 100vh;
-  overflow: hidden;
 }
 .layout-shell--careers-fixed .main--careers-fixed {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-}
-.layout-shell--careers-fixed .footer-pro {
-  display: none;
 }
 .careers-page-shell {
   flex: 1;
-  min-height: 0;
+  min-height: calc(100dvh - var(--site-header-h) - var(--safe-top) - 2rem);
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 .careers-page-shell__cms {
   flex-shrink: 0;
-  max-height: 28vh;
+  max-height: 24vh;
   overflow-y: auto;
 }
 .careers-page-shell .app-embed--career {
@@ -27633,8 +27625,8 @@ html.aurora .dash-sidebar-panel--hero-match {
 }
 .careers-page-shell .app-embed--career .app-embed__frame {
   flex: 1;
-  min-height: 0 !important;
-  height: 100% !important;
+  min-height: min(78vh, 900px) !important;
+  height: min(78vh, 900px) !important;
   width: 100%;
 }
 .dash-embed-host .app-embed--career {
@@ -28088,6 +28080,13 @@ html.aurora .dash-sidebar-panel--hero-match {
 .session-schedule-form .session-form-row {
   margin-bottom: 0.85rem;
 }
+.session-schedule-form select.input-field {
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .session-form-row__label {
   display: block;
   font-size: 0.82rem;
@@ -28106,19 +28105,65 @@ html.aurora .dash-sidebar-panel--hero-match {
 /* CV maker & career library — mobile responsive embeds */
 @media (max-width: 767px) {
   .layout-shell--careers-fixed {
-    height: 100dvh;
-    max-height: 100dvh;
+    min-height: 100dvh;
+  }
+  .careers-page-shell {
+    min-height: calc(100dvh - var(--site-header-h) - var(--safe-top) - 1rem);
   }
   .careers-page-shell .app-embed--career .app-embed__frame {
-    min-height: 0 !important;
-    height: 100% !important;
+    min-height: min(72vh, 820px) !important;
+    height: min(72vh, 820px) !important;
   }
   .app-embed--cv .app-embed__frame {
-    min-height: min(92vh, 1200px);
-    height: auto;
+    min-height: 72vh !important;
+    height: 72vh !important;
     width: 100%;
     border-radius: 0.75rem;
-    overflow: visible;
+  }
+  .dash-section-heading,
+  .page-title,
+  .test-portal-root .page-title,
+  .wizard-step-head h2,
+  .modules-hub-card h3 {
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    max-width: 100%;
+    line-height: 1.25;
+  }
+  .dash-subtab-rail--scroll,
+  .modules-hub-tabs.dash-subtab-rail--scroll {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+  .dash-subtab-rail--scroll .dash-subtab-rail__chip,
+  .modules-hub-tabs .dash-subtab-rail__chip {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: 100%;
+    white-space: normal !important;
+    text-align: center;
+    line-height: 1.2;
+    padding: 0.45rem 0.65rem !important;
+  }
+  .dash-product-path-rail {
+    flex-wrap: wrap !important;
+    justify-content: center;
+    overflow-x: visible !important;
+  }
+  .dash-product-path-rail__chip {
+    white-space: normal !important;
+    text-align: center;
+    line-height: 1.2;
+    max-width: 100%;
+  }
+  .dash-panel-surface,
+  .dash-sidebar-panel,
+  .modules-hub-card {
+    max-width: 100%;
+    overflow-x: hidden;
   }
   .dash-embed-host {
     width: 100%;
@@ -28169,6 +28214,14 @@ html.aurora .dash-product-path-rail__chip:not(.dash-product-path-rail__chip--act
 }
 html.dark .dash-subtab-rail__chip:not(.is-active),
 html.aurora .dash-subtab-rail__chip:not(.is-active) {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(201, 168, 76, 0.28);
+}
+html.dark .dash-card-meta,
+html.aurora .dash-card-meta,
+html.dark .dash-section-heading,
+html.aurora .dash-section-heading {
   color: var(--text-primary);
 }
 html.dark .modules-product-card__desc,

@@ -11,16 +11,9 @@ import { getWhatsAppAgentLink } from '../data/siteLinks';
 
 export default function Signup() {
   const { register, user, loading: authLoading } = useAuth();
-  const { t, d } = useLang();
+  const { t } = useLang();
   const navigate = useNavigate();
   const location = useLocation();
-  const fg = d('freeGuidance') || {};
-  const signupIntents = [
-    { id: 'counselling', label: 'Counselling' },
-    { id: 'training', label: 'Training & Placement' },
-    { id: 'placement', label: 'Placement' },
-    { id: 'other', label: 'Not sure yet' },
-  ];
   const slotId = new URLSearchParams(location.search).get('slot_id');
   const returnTo = typeof location.state?.from === 'string' ? location.state.from : '';
   const postAuthPath = () => {
@@ -39,7 +32,6 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [whatsappOptIn, setWhatsappOptIn] = useState(true);
-  const [signupInterest, setSignupInterest] = useState('counselling');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -73,7 +65,7 @@ export default function Signup() {
         phone: mobile,
         password,
         whatsappOptIn: optedIn,
-        signupInterest,
+        signupInterest: 'counselling',
       });
 
       // Free Twilio sandbox: one-tap join (prefilled). User only presses Send.
@@ -171,21 +163,6 @@ export default function Signup() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <p className="text-sm font-semibold text-sand-700 mb-2">{fg.intentLabel || 'What are you looking for?'}</p>
-                <div className="flex flex-wrap gap-2" role="group" aria-label="Signup interest">
-                  {signupIntents.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setSignupInterest(item.id)}
-                      className={`guidance-modal__intent guidance-modal__intent--orange${signupInterest === item.id ? ' guidance-modal__intent--active' : ''}`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
               <div>
                 <label className="text-sm font-semibold text-sand-700 flex items-center gap-2 mb-1.5">
                   <User className="w-4 h-4 text-amber-600" /> {t('auth.name')}

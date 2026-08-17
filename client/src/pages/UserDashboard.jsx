@@ -19,6 +19,7 @@ import NotificationBell from '../components/NotificationBell';
 import CVMakerPanel from '../components/dashboard/CVMakerPanel';
 import TrainingResourcesPanel from '../components/dashboard/TrainingResourcesPanel';
 import SupportStudio from '../components/dashboard/SupportStudio';
+import ProcessQuestionnairesPanel from '../components/ProcessQuestionnairesPanel';
 import { profileStreamToFilter } from '../utils/careerStreams';
 import DashboardOverview from '../components/DashboardOverview';
 import { CounsellingProductPanel, TrainingProductPanel } from '../components/dashboard/DashboardProductPanel';
@@ -371,14 +372,14 @@ export default function UserDashboard() {
     else goProcessGuides('process');
   };
 
-  const goToCounsellingTopUp = () => goTab('assess', '&shop=counselling-topup');
+  const goToCounsellingTopUp = () => goTab('assess', { shop: 'counselling-topup' });
 
   const goAdditionalCounselling = useCallback(() => {
     if (canShowCounsellingTopUp(data.assessments || [], data.consultations || [])) {
       goToCounsellingTopUp();
     } else {
       setCounsellingSubtab('counselling');
-      goTab('counselling', `&focus=${counsellingFocus}&subtab=counselling`);
+      goTab('counselling', { focus: counsellingFocus, subtab: 'counselling' });
     }
   }, [data.assessments, data.consultations, counsellingFocus, goTab]);
 
@@ -632,7 +633,18 @@ export default function UserDashboard() {
                 </Suspense>
               )}
 
-              {tab === 'support' && <SupportStudio token={token} />}
+              {tab === 'support' && (
+                <div className="space-y-6">
+                  <ProcessQuestionnairesPanel
+                    assessments={data.assessments || []}
+                    profile={data.profile}
+                    user={displayUser}
+                    communityLink={data.communityLink}
+                    onRefresh={refreshDashboard}
+                  />
+                  <SupportStudio token={token} />
+                </div>
+              )}
 
               {tab === 'book' && (
                 <CounsellingBookingPanel {...bookingProps} />
@@ -680,7 +692,10 @@ export default function UserDashboard() {
                       focus={counsellingFocus}
                       paid={counsellingPaid}
                       subtab={counsellingSubtab}
-                      onSubtab={setCounsellingSubtab}
+                      onSubtab={(id) => {
+                        setCounsellingSubtab(id);
+                        navigate(dashboardPath('counselling', { focus: counsellingFocus, subtab: id }), { preventScrollReset: true });
+                      }}
                       careerPath={counsellingCareerPath}
                       journeyCtx={makeJourneyCtx(counsellingProductSlug)}
                       reports={counsellingReports}
@@ -724,7 +739,10 @@ export default function UserDashboard() {
                       focus={trainingFocus}
                       paid={trainingPaid}
                       subtab={trainingSubtab}
-                      onSubtab={setTrainingSubtab}
+                      onSubtab={(id) => {
+                        setTrainingSubtab(id);
+                        navigate(dashboardPath('training', { focus: trainingFocus, subtab: id }), { preventScrollReset: true });
+                      }}
                       careerPath={trainingCareerPath}
                       journeyCtx={makeJourneyCtx(trainingProductSlug)}
                       bookingProps={bookingProps}

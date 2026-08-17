@@ -547,18 +547,6 @@ export default function ModulesPanel({
               );
             })}
           </div>
-          {activePaid && (
-            <PaidModuleActions
-              onGoProcess={() => openModule(activePaid, 'default')}
-              onGoTest={() => openModule(activePaid, 'test')}
-              onGoBook={() => openModule(activePaid, 'book')}
-              showTakeTest={!!activeShowTest}
-              showProcess={activeShowProcess}
-              showBook={!!activeShowBook}
-              testLabel={moduleActionLabel(activePaid, 'test')}
-              bookLabel={moduleActionLabel(activePaid, 'book')}
-            />
-          )}
         </DashCard>
       )}
 

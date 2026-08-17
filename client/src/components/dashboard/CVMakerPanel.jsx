@@ -89,7 +89,6 @@ export default function CVMakerPanel() {
     const win = frameRef.current?.contentWindow;
     if (win) {
       win.postMessage({ type: 'dm-cv-download' }, '*');
-      try { win.downloadCvPdf?.(); } catch { /* iframe may still handle via postMessage */ }
       return;
     }
     window.open('/cv-builder/index.html', '_blank', 'noopener,noreferrer');

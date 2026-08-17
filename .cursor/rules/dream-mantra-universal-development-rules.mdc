@@ -1,0 +1,156 @@
+---
+description: Dream Mantra universal development rules — preserve existing functionality, minimal scope, token-efficient work
+alwaysApply: true
+---
+
+# Dream Mantra — Universal Development Rules
+
+**Source:** Dream Mantra — Universal Cursor Development Rules.pdf
+
+These rules apply to Dream Mantra CRM, Website, Test Portal, and all related applications. They are additive — do not remove, rewrite, or replace existing working logic, features, or files unless the user explicitly instructs you to.
+
+## 1. Core Principle
+
+This is an **existing application**. Existing working functionality must be preserved.
+
+When implementing a new feature or fixing an issue:
+
+- Make the smallest change necessary.
+- Do not rewrite working code unnecessarily.
+- Do not modify unrelated functionality.
+- **Do not remove existing features unless explicitly instructed.**
+- **Do not change existing business logic unless explicitly instructed.**
+- Do not refactor unrelated code.
+- Do not upgrade or replace dependencies unless required.
+- Do not redesign unrelated UI.
+
+**Default assumption:** PRESERVE EXISTING FUNCTIONALITY.  
+**New feature ≠ permission to change old features.**
+
+## 2. Scope Control
+
+- Work ONLY on the requested task.
+- Do not automatically fix unrelated issues discovered during development.
+- If an unrelated issue is noticed, mention it briefly in the final report instead of fixing it.
+- Do not expand task scope without permission.
+
+## 3. Token-Efficient Development
+
+Use the minimum analysis, code inspection, and testing necessary to safely complete the task.
+
+**Do not:** full-project analysis for small tasks, inspect unrelated files, run the entire test suite for minor UI changes, or repeatedly explain the same code.
+
+### Small Task
+Examples: text change, button label, minor UI/CSS adjustment, small validation, simple field, minor frontend bug.
+
+- Inspect only the relevant file/component and direct dependencies.
+- Implement the smallest change.
+- Run only relevant checks.
+
+### Medium Task
+Examples: new dashboard feature, form, API endpoint, page, workflow, multi-component change, database field addition.
+
+- Inspect directly affected files and dependencies.
+- Briefly identify possible impact.
+- Implement the smallest safe change.
+- Run targeted tests/checks and verify the affected workflow.
+
+### High-Risk / Major Task
+Examples: auth, payments, database migration, assessment/scoring/formula changes, report generation, major architecture, core business logic, shared services.
+
+- Analyze before coding; identify affected files, dependencies, and regressions.
+- Explain implementation approach.
+- **Wait for approval** if the change affects protected/core functionality.
+- Run relevant tests and targeted regression testing.
+- Use full planning workflow only when risk justifies it.
+
+## 4. Before Editing Files
+
+**Small tasks:** No lengthy plan. Briefly determine what changes, which file is relevant, and whether existing functionality could be affected — then proceed.
+
+**Medium and high-risk tasks:** Provide a concise impact summary before making changes.
+
+## 5. Minimal File Access
+
+Inspect only files relevant to the requested task. Do not scan the entire repository unless genuinely required or explicitly requested.
+
+## 6. Minimal Code Change
+
+**Prefer:** adding new components/functions, extending existing functionality, backward-compatible changes, reusing existing utilities and patterns.
+
+**Avoid:** large rewrites, unnecessary refactoring, moving/renaming unrelated code, unnecessary architecture changes.
+
+## 7. Protected Business Logic
+
+Protected unless explicitly instructed otherwise:
+
+- Business rules, pricing, revenue/commission/partner calculations
+- CRM pipeline logic, user roles, permissions, authentication, payment logic
+- Assessment calculations, scoring, formulas, weightages, lookup tables
+- Report calculations and generation
+- Existing user data and assessment results
+
+If protected logic must change, state **"Protected logic affected."** and explain what is affected, why, and what could break. **Never silently modify protected logic.**
+
+## 8. Database Safety
+
+Never perform destructive operations without explicit instruction (drop tables, delete users/results/reports, truncate, reset, remove populated fields, destroy records). Prefer backward-compatible changes.
+
+## 9. API Safety
+
+Preserve existing API contracts unless the task explicitly requires changes. Check direct callers before changing request/response structure, auth, permissions, or status codes.
+
+## 10. UI Safety
+
+Preserve existing functionality, navigation, forms, buttons, workflows, and mobile/desktop responsiveness. Do not redesign unrelated screens or change the design system unless requested.
+
+## 11. Secrets and Confidential Data
+
+Never expose or hard-code passwords, API keys, DB credentials, auth/payment secrets, tokens, or production env vars. Do not unnecessarily expose confidential assessment questions, formulas, reports, or personal user data.
+
+## 12. Dependencies
+
+Do not install, remove, upgrade, downgrade, or replace packages unless required for the requested task. Explain briefly before any dependency change.
+
+## 13. Testing — Token-Efficient
+
+Testing must be proportional to the change:
+
+- **Small:** targeted validation only (relevant lint/typecheck/component/manual check).
+- **Medium:** targeted tests plus relevant workflow.
+- **High-risk:** relevant automated tests and targeted regression.
+
+Run the full test/build suite only when core/shared functionality is affected, the user requests it, deployment requires it, or targeted tests cannot provide sufficient confidence.
+
+## 14. Do Not Over-Test
+
+Do not repeatedly run the same test when no code changed. After fixing a failure, re-run the failed check and relevant dependent checks only.
+
+## 15. Definition of Done
+
+A task is complete when:
+
+- Requested functionality works.
+- Existing relevant functionality still works.
+- Relevant checks pass.
+- No unrelated functionality or files were changed.
+
+Do not claim completion without verifying the actual requested behavior.
+
+## 16. Final Response — Keep It Concise
+
+Provide only: **Changed** (brief), **Files** (list), **Verification** (targeted checks), **Notes** (risks or unrelated issues only).
+
+## 17. Git Safety
+
+Never force push, delete branches, rewrite history, or reset user changes without permission. Do not overwrite uncommitted user work. Recommend a checkpoint before significant changes.
+
+## 18. User Instruction Priority
+
+Follow the user's current explicit task. Never interpret "add" or "change" as permission to delete unrelated functionality, rewrite unrelated code, change business logic, change protected systems, or modify confidential data. If a request conflicts with protected functionality, explain the conflict before proceeding.
+
+## 19. Communication Style
+
+Be concise. Do not restate entire architecture or explain obvious code. No lengthy plans for simple tasks. Act quickly on simple tasks; slow down and verify on risky tasks.
+
+**Goal: SAFE + MINIMAL + TOKEN-EFFICIENT DEVELOPMENT.**

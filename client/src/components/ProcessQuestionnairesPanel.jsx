@@ -18,6 +18,8 @@ import {
   resolveAssessmentSlug,
 } from '../utils/moduleAccess';
 import { getAssessmentDisplayTitle } from '../utils/assessmentHelpers';
+import { parseDashboardPath } from '../utils/pathRoutes';
+import { resolveCommunityUrl } from '../utils/communityLink';
 
 function ProcessSection({ section }) {
   return (
@@ -84,8 +86,8 @@ function ProcessGuideView({ guide }) {
 export default function ProcessQuestionnairesPanel({ assessments = [], profile, user, communityLink, onRefresh }) {
   const { token } = useAuth();
   const location = useLocation();
-  const urlParams = new URLSearchParams(location.search);
-  const sectionParam = urlParams.get('section');
+  const parsedDash = parseDashboardPath(location.pathname, location.search);
+  const sectionParam = parsedDash.section || new URLSearchParams(location.search).get('section');
   const openTestOnLoad = urlParams.get('open') === '1';
 
   const paidModules = useMemo(
@@ -132,7 +134,8 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
   const showQuestionnairesForProduct = moduleHasTakeTest(activeProduct?.slug);
   const effectiveSection = showQuestionnairesForProduct ? mainSection : 'process';
   const showCommunityLink = activeProduct?.slug === 'crp-test';
-  const hasCommunityLink = Boolean(communityLink?.trim());
+  const communityUrl = resolveCommunityUrl(communityLink);
+  const hasCommunityLink = Boolean(communityUrl);
 
   useEffect(() => {
     if (sectionParam === 'tests' && showQuestionnairesForProduct) setMainSection('questionnaires');
@@ -299,7 +302,7 @@ export default function ProcessQuestionnairesPanel({ assessments = [], profile, 
                   </p>
                   {hasCommunityLink && (
                     <motion.a
-                      href={communityLink}
+                      href={communityUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="btn-primary inline-flex items-center gap-2 mt-4 !py-2.5 !px-5 text-sm"

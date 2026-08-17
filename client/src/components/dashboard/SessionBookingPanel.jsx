@@ -45,18 +45,6 @@ function BookedList({ booked }) {
 
 function SessionSelectRow({ sessionNum, title, slots, value, onChange, disabled, booked }) {
   const options = slotOptions(slots, sessionNum);
-  const grouped = useMemo(() => {
-    const map = new Map();
-    for (const s of options) {
-      const day = new Date(s.start_at).toLocaleDateString('en-IN', {
-        weekday: 'short', day: 'numeric', month: 'short', timeZone: 'Asia/Kolkata',
-      });
-      if (!map.has(day)) map.set(day, []);
-      map.get(day).push(s);
-    }
-    return map;
-  }, [options]);
-
   if (booked) {
     return (
       <div className="session-form-row session-form-row--done">
@@ -76,14 +64,10 @@ function SessionSelectRow({ sessionNum, title, slots, value, onChange, disabled,
         disabled={disabled}
       >
         <option value="">Select date & time…</option>
-        {[...grouped.entries()].map(([day, daySlots]) => (
-          <optgroup key={day} label={day}>
-            {daySlots.map((s) => (
-              <option key={s.id} value={s.id}>
-                {formatWhen(s.start_at)} · {durationLabel(s.start_at, s.end_at)}
-              </option>
-            ))}
-          </optgroup>
+        {options.map((s) => (
+          <option key={s.id} value={s.id}>
+            {formatWhen(s.start_at)} · {durationLabel(s.start_at, s.end_at)}
+          </option>
         ))}
       </select>
       {!options.length && <p className="text-xs dash-card-meta mt-1">No slots available yet — check back soon.</p>}

@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   PROFILE_WIZARD_STEPS, profileToWizardForm, wizardFormToProfile, getCareerFieldsForStage,
 } from '../../data/testPortalData';
@@ -52,6 +52,26 @@ export default function ProfileWizardPanel({ user, profile, onSave, saving }) {
 
   const careerFields = useMemo(() => getCareerFieldsForStage(form.academicStage), [form.academicStage]);
 
+  useEffect(() => {
+    const allowed = new Set(getCareerFieldsForStage(form.academicStage).map((f) => f.key));
+    const careerKeys = [
+      'course', 'yearSemester', 'favoriteSubjects', 'schoolActivities', 'careerDream',
+      'streamInterest', 'targetExams', 'careerGoal', 'internships', 'specialization',
+      'currentRole', 'yearsExperience', 'industry',
+    ];
+    setForm((f) => {
+      let changed = false;
+      const next = { ...f };
+      for (const key of careerKeys) {
+        if (next[key] && !allowed.has(key)) {
+          next[key] = '';
+          changed = true;
+        }
+      }
+      return changed ? next : f;
+    });
+  }, [form.academicStage]);
+
   const stepContent = useMemo(() => {
     if (step.id === 'basics') {
       return (
@@ -101,11 +121,14 @@ export default function ProfileWizardPanel({ user, profile, onSave, saving }) {
           {!form.academicStage ? (
             <div className="info-banner"><p>Select your academic / professional stage on the Personal & Contact step first.</p></div>
           ) : (
-            <div className="form-grid">
-              {careerFields.map((f) => (
-                <Field key={f.key} field={f} value={form[f.key]} onChange={setField} />
-              ))}
-            </div>
+            <>
+              <p className="text-sm dash-card-meta mb-3">Fields for: <strong>{form.academicStage}</strong></p>
+              <div className="form-grid">
+                {careerFields.map((f) => (
+                  <Field key={f.key} field={f} value={form[f.key]} onChange={setField} />
+                ))}
+              </div>
+            </>
           )}
         </div>
       );
