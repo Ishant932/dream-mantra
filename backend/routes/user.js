@@ -15,7 +15,7 @@ import {
   normalizeStreamInput,
   getStreamInsight,
 } from '../lib/streamKnowledge.js';
-import { getAvailableSlots, bookConsultationWithSlot, bookProgramSessionsBatch, bookMockInterviewSessions, enrichConsultation, cancelConsultationByUser } from '../lib/slots.js';
+import { getAvailableSlots, bookConsultationWithSlot, bookProgramSessionsBatch, bookSingleCoreProgramSession, bookMockInterviewSessions, enrichConsultation, cancelConsultationByUser } from '../lib/slots.js';
 import { userHasCounsellingAccess, userHasProgramSessionAccess } from '../lib/userAccess.js';
 import { listReportsForUser } from '../lib/reports.js';
 import { listResourcesForUser } from '../lib/userResources.js';
@@ -333,22 +333,31 @@ router.post('/consultations', (req, res) => {
       if (Array.isArray(req.body.sessions) && req.body.sessions.length) {
         const nums = req.body.sessions.map((s) => Number(s.session_number));
         const isMocks = nums.length && nums.every((n) => n === 9 || n === 10);
-        const results = isMocks
-          ? bookMockInterviewSessions(req.user.id, req.body.sessions, notes, user)
-          : bookProgramSessionsBatch(req.user.id, req.body.sessions, notes, user);
+        const isSingleCore = !isMocks && req.body.sessions.length === 1 && nums[0] >= 1 && nums[0] <= 8;
+        let results;
+        if (isMocks) {
+          results = bookMockInterviewSessions(req.user.id, req.body.sessions, notes, user);
+        } else if (isSingleCore) {
+          const s = req.body.sessions[0];
+          results = [bookSingleCoreProgramSession(req.user.id, { slot_id: s.slot_id, notes }, user)];
+        } else {
+          results = bookProgramSessionsBatch(req.user.id, req.body.sessions, notes, user);
+        }
         notifyUser(req.user.id, {
           type: 'booking',
-          title: isMocks ? 'Mock interviews booked' : 'All 8 sessions booked',
+          title: isMocks ? 'Mock interviews booked' : isSingleCore ? `Session ${nums[0]} booked` : 'All 8 sessions booked',
           body: isMocks
             ? 'Your mock interview session(s) are confirmed. Check Schedule your Session for details.'
-            : 'Your Career Readiness schedule is confirmed. You can now book 2 additional mock interviews.',
+            : isSingleCore
+              ? `Session ${nums[0]} is confirmed. Book your next session when ready.`
+              : 'Your Career Readiness schedule is confirmed. You can now book 2 additional mock interviews.',
           link: '/dashboard?tab=training',
           meta: { consultationIds: results.map((r) => r.consultation.id) },
         });
         return res.status(201).json({ consultations: results.map((r) => r.consultation), slots: results.map((r) => r.slot) });
       }
-      if (!slot_id || !session_number) {
-        return res.status(400).json({ message: 'Please book all 8 sessions together from Schedule your Session.' });
+      if (!slot_id) {
+        return res.status(400).json({ message: 'Please select a time slot to book your session.' });
       }
       if (Number(session_number) >= 9) {
         const results = bookMockInterviewSessions(req.user.id, [{ slot_id, session_number }], notes, user);
@@ -362,7 +371,15 @@ router.post('/consultations', (req, res) => {
         });
         return res.status(201).json(result);
       }
-      return res.status(400).json({ message: 'Please book all 8 sessions together from Schedule your Session.' });
+      const result = bookSingleCoreProgramSession(req.user.id, { slot_id, notes }, user);
+      notifyUser(req.user.id, {
+        type: 'booking',
+        title: `Session ${result.consultation.session_number} booked`,
+        body: `Your session is confirmed for ${new Date(result.consultation.scheduled_at).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}.`,
+        link: '/dashboard?tab=training',
+        meta: { consultationId: result.consultation.id },
+      });
+      return res.status(201).json(result);
     }
 
     if (!userHasCounsellingAccess(req.user.id)) {

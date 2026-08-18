@@ -1,4 +1,5 @@
 /** CSV (Excel-compatible) and printable PDF export for admin panels */
+import { downloadBlob } from './downloadFile';
 
 function escapeCsv(val) {
   const s = val == null ? '' : String(val);
@@ -13,12 +14,7 @@ export function exportToCsv(filename, rows, columns) {
   );
   const csv = [header, ...body].join('\r\n');
   const blob = new Blob(['\ufeff', csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${filename}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+  downloadBlob(blob, `${filename}.csv`);
 }
 
 export function exportToPdf(title, rows, columns) {

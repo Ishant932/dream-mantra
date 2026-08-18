@@ -25,7 +25,7 @@ const valueIcons = [Target, Users, Zap, Heart];
 
 export default function About() {
   const { about, missionVision, founder, managementTeam, leadership, homeLeadership } = useAboutContent();
-  const { d } = useLang();
+  const { d, lang } = useLang();
   const cms = usePageCatalog('about');
   const fg = d('freeGuidance') || {};
   const values = about.values.items.map((item, i) => ({
@@ -46,9 +46,9 @@ export default function About() {
   return (
     <>
       <PageHero
-        title={cmsText(cms, 'heroTitle', about.hero.title)}
-        subtitle={cmsText(cms, 'heroSubtitle', about.hero.subtitle)}
-        image={cmsText(cms, 'heroImage', IMAGES.heroStudents)}
+        title={cmsText(cms, 'heroTitle', about.hero.title, lang)}
+        subtitle={cmsText(cms, 'heroSubtitle', about.hero.subtitle, lang)}
+        image={cmsText(cms, 'heroImage', IMAGES.heroStudents, lang)}
         cta={fg.cta || about.cta?.button}
         ctaLink="/contact#guidance"
       />

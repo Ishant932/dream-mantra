@@ -57,12 +57,22 @@ var state = {
   cluster: '',
   level: '',
   type: '',
+  demand: '',
   quickCat: '',
   sort: 'rel',
   page: 1,
   tab: 'careers',   // 'careers' | 'exams' | 'streams'
 };
-var PAGE_SIZE = 60;
+var PAGE_SIZE_WEB = 24;
+var PAGE_SIZE_MOBILE = 48;
+
+function isWebLayout() {
+  return window.matchMedia('(min-width: 768px)').matches;
+}
+
+function pageSize() {
+  return isWebLayout() ? PAGE_SIZE_WEB : PAGE_SIZE_MOBILE;
+}
 
 // ── SEARCH + FILTER ──────────────────────────────────────────────────────────
 function scoreCareer(c, ql) {
@@ -90,6 +100,10 @@ function applyFilters() {
     if (state.cluster && (c.cluster||c.domain||'')!==state.cluster)       return false;
     if (state.level   && (c.level||'')!==state.level)                     return false;
     if (state.type    && (c.degreeType||'')!==state.type)                 return false;
+    if (state.demand) {
+      var dmd = c.industryDemand || c.futureDemand || '';
+      if (dmd !== state.demand) return false;
+    }
     if (state.quickCat) {
       var qc = QUICK_CATS.find(function(x){ return x.id===state.quickCat; });
       if (qc && !qc.fn(c)) return false;
@@ -116,8 +130,19 @@ function applyFilters() {
       var bs = parseFloat((b.salaryMid||'0').replace(/[^0-9.]/g,'')) || 0;
       return bs - as;
     });
+  } else {
+    results.sort(function(a,b){ return careerPriority(a) - careerPriority(b) || a.name.localeCompare(b.name); });
   }
   return results;
+}
+
+function careerPriority(c) {
+  var cl = (c.cluster||c.domain||'').toLowerCase();
+  var name = (c.name||'').toLowerCase();
+  if (cl.includes('information tech') || cl.includes('software') || cl.includes('data') || cl.includes('engineer') || cl.includes('artificial')) return 1;
+  if (cl.includes('account') || name.includes('account') || name.includes('chartered')) return 2;
+  if (cl.includes('finance') || cl.includes('banking')) return 3;
+  return 10;
 }
 
 // ── RENDER CAREER CARD ───────────────────────────────────────────────────────
@@ -131,7 +156,7 @@ function renderCard(c) {
   var typeLabel= c.degreeType || '';
   var lvl  = c.level || '';
 
-  return '<button class="card '+cc+'" onclick="openCareer(\''+escH(c.id)+'\')" aria-label="'+escH(c.name)+'">'
+  return '<button type="button" class="card '+cc+'" data-career-id="'+escH(c.id)+'" aria-label="'+escH(c.name)+'">'
     + '<div class="card-cluster"><span class="cluster-dot" style="background:'+dot+'"></span>'+escH(c.cluster||c.domain||'Career')+'</div>'
     + '<div class="card-name">'+escH(c.name)+'</div>'
     + '<div class="card-desc">'+escH(desc)+'</div>'
@@ -155,6 +180,13 @@ function renderGrid() {
   var empty = document.getElementById('empty-state');
   var count = document.getElementById('result-count');
   var loadW = document.getElementById('load-wrap');
+  var pagW  = document.getElementById('pagination-wrap');
+  var perPage = pageSize();
+  var web = isWebLayout();
+  var totalPages = Math.max(1, Math.ceil(_filtered.length / perPage));
+
+  if (state.page > totalPages) state.page = totalPages;
+  if (state.page < 1) state.page = 1;
 
   count.innerHTML = _filtered.length
     ? '<strong>'+_filtered.length.toLocaleString()+'</strong> career'+(+_filtered.length!==1?'s':'')+' found'
@@ -164,13 +196,56 @@ function renderGrid() {
     grid.innerHTML  = '';
     empty.style.display = 'block';
     loadW.style.display = 'none';
+    if (pagW) pagW.style.display = 'none';
     return;
   }
   empty.style.display = 'none';
 
-  var slice = _filtered.slice(0, state.page * PAGE_SIZE);
+  var slice;
+  if (web) {
+    var start = (state.page - 1) * perPage;
+    slice = _filtered.slice(start, start + perPage);
+  } else {
+    slice = _filtered.slice(0, state.page * perPage);
+  }
   grid.innerHTML = slice.map(renderCard).join('');
-  loadW.style.display = slice.length < _filtered.length ? 'block' : 'none';
+
+  if (web) {
+    loadW.style.display = 'none';
+    renderPagination(totalPages);
+  } else {
+    if (pagW) pagW.style.display = 'none';
+    loadW.style.display = slice.length < _filtered.length ? 'block' : 'none';
+  }
+}
+
+function renderPagination(totalPages) {
+  var pagW = document.getElementById('pagination-wrap');
+  if (!pagW) return;
+  if (totalPages <= 1) {
+    pagW.style.display = 'none';
+    pagW.innerHTML = '';
+    return;
+  }
+  pagW.style.display = 'flex';
+  var prevDisabled = state.page <= 1;
+  var nextDisabled = state.page >= totalPages;
+  pagW.innerHTML =
+    '<button type="button" class="page-btn" id="page-prev"'+(prevDisabled?' disabled':'')+'>← Previous</button>'
+    + '<span class="page-info">Page <strong>'+state.page+'</strong> of '+totalPages+'</span>'
+    + '<button type="button" class="page-btn" id="page-next"'+(nextDisabled?' disabled':'')+'>Next →</button>';
+  var prev = document.getElementById('page-prev');
+  var next = document.getElementById('page-next');
+  if (prev && !prevDisabled) prev.addEventListener('click', function() {
+    state.page = Math.max(1, state.page - 1);
+    renderGrid();
+    document.getElementById('career-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  if (next && !nextDisabled) next.addEventListener('click', function() {
+    state.page = Math.min(totalPages, state.page + 1);
+    renderGrid();
+    document.getElementById('career-grid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
 }
 
 // ── POPULATE SELECTS ─────────────────────────────────────────────────────────
@@ -178,6 +253,7 @@ function buildSelects() {
   var fStream  = document.getElementById('f-stream');
   var fCluster = document.getElementById('f-cluster');
   var fLevel   = document.getElementById('f-level');
+  var fType    = document.getElementById('f-type');
 
   ALL_STREAMS.forEach(function(s) {
     var o = document.createElement('option'); o.value = s; o.textContent = s;
@@ -191,11 +267,17 @@ function buildSelects() {
     var o = document.createElement('option'); o.value = s; o.textContent = s;
     fLevel.appendChild(o);
   });
+  if (fType) {
+    ALL_TYPES.forEach(function(s) {
+      var o = document.createElement('option'); o.value = s; o.textContent = s;
+      fType.appendChild(o);
+    });
+  }
 }
 
 // ── UPDATE CLEAR BUTTON ──────────────────────────────────────────────────────
 function updateClearBtn() {
-  var hasFilter = state.q||state.stream||state.cluster||state.level||state.type||state.quickCat;
+  var hasFilter = state.q||state.stream||state.cluster||state.level||state.type||state.demand||state.quickCat;
   document.getElementById('clear-all').classList.toggle('visible', !!hasFilter);
 }
 
@@ -208,8 +290,8 @@ function initFilters() {
   var fStream  = document.getElementById('f-stream');
   var fCluster = document.getElementById('f-cluster');
   var fLevel   = document.getElementById('f-level');
-
-  var _t = null;
+  var fType    = document.getElementById('f-type');
+  var fDemand  = document.getElementById('f-demand');
   searchEl.addEventListener('input', function() {
     state.q = searchEl.value;
     clearBtn.classList.toggle('visible', !!state.q);
@@ -224,11 +306,14 @@ function initFilters() {
   });
   clearAll.addEventListener('click', clearFilters);
 
-  [fStream, fCluster, fLevel].forEach(function(sel) {
+  [fStream, fCluster, fLevel, fType, fDemand].forEach(function(sel) {
+    if (!sel) return;
     sel.addEventListener('change', function() {
       if (sel.id==='f-stream')  state.stream  = sel.value;
       if (sel.id==='f-cluster') state.cluster = sel.value;
       if (sel.id==='f-level')   state.level   = sel.value;
+      if (sel.id==='f-type')    state.type    = sel.value;
+      if (sel.id==='f-demand')  state.demand  = sel.value;
       sel.classList.toggle('active', !!sel.value);
       state.page = 1;
       renderGrid(); updateClearBtn();
@@ -250,10 +335,20 @@ function initFilters() {
     });
   });
 
-  // Load more
+  // Load more (mobile)
   document.getElementById('load-more').addEventListener('click', function() {
     state.page++; renderGrid();
     window.scrollTo({ top: document.getElementById('career-grid').offsetHeight, behavior: 'smooth' });
+  });
+
+  // Export CSV
+  var exportBtn = document.getElementById('export-btn');
+  if (exportBtn) exportBtn.addEventListener('click', exportCareersCsv);
+
+  // Resize — switch pagination mode
+  window.addEventListener('resize', function() {
+    clearTimeout(window._clResizeT);
+    window._clResizeT = setTimeout(function() { state.page = 1; renderGrid(); }, 200);
   });
 
   // Empty state clear
@@ -261,12 +356,47 @@ function initFilters() {
 }
 
 function clearFilters() {
-  state.q=''; state.stream=''; state.cluster=''; state.level=''; state.type=''; state.quickCat='';
+  state.q=''; state.stream=''; state.cluster=''; state.level=''; state.type=''; state.demand=''; state.quickCat='';
   document.getElementById('search').value = '';
   document.getElementById('search-clear').classList.remove('visible');
   document.querySelectorAll('.f-select').forEach(function(s){ s.value=''; s.classList.remove('active'); });
   document.querySelectorAll('.cat-chip').forEach(function(c){ c.classList.remove('active'); });
   state.page = 1; renderGrid(); updateClearBtn();
+}
+
+function escCsv(val) {
+  var s = val == null ? '' : String(val);
+  if (/[",\n\r]/.test(s)) return '"' + s.replace(/"/g, '""') + '"';
+  return s;
+}
+
+function exportCareersCsv() {
+  var rows = applyFilters();
+  if (!rows.length) return;
+  var header = ['Name','Cluster','Streams','Level','Type','Demand','Entry salary','Description'].map(escCsv).join(',');
+  var body = rows.map(function(c) {
+    return [
+      c.name,
+      c.cluster || c.domain || '',
+      (c.streams || []).join('; '),
+      c.level || '',
+      c.degreeType || '',
+      c.industryDemand || c.futureDemand || '',
+      c.salaryEntry || '',
+      c.description || c.whatYouStudy || ''
+    ].map(escCsv).join(',');
+  });
+  var csv = '\ufeff' + [header, ...body].join('\r\n');
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'dream-mantra-careers.csv';
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(function() { URL.revokeObjectURL(url); }, 500);
 }
 
 // ── STATS ────────────────────────────────────────────────────────────────────
@@ -446,6 +576,11 @@ document.addEventListener('DOMContentLoaded', function() {
   initFilters();
   renderStats();
   renderGrid();
+
+  document.getElementById('career-grid').addEventListener('click', function(e) {
+    var btn = e.target.closest('[data-career-id]');
+    if (btn) openCareer(btn.getAttribute('data-career-id'));
+  });
 
   // Close modal on overlay click
   document.getElementById('modal-overlay').addEventListener('click', function(e) {

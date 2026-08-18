@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, Lock, Sparkles, CheckCircle2, AlertCircle, UserCircle, Mail, Copy, Play } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useLang } from '../context/LanguageContext';
 import { userApi } from '../api';
 import CopyableUserId from './CopyableUserId';
 import {
@@ -40,8 +41,8 @@ const panelMotion = {
   exit: { opacity: 0, y: -12, scale: 0.98, transition: { duration: 0.28 } },
 };
 
-function buildPrefilledTests(bandId, { userUid, userName, userPhone }) {
-  return getSkillMappingTestsForBand(bandId).map((t) => {
+function buildPrefilledTests(bandId, { userUid, userName, userPhone }, lang = 'en') {
+  return getSkillMappingTestsForBand(bandId, lang).map((t) => {
     const prefillData = { userUid, userName, phone: userPhone };
     const prefillFields = t.prefill || {};
     return {
@@ -67,11 +68,12 @@ export default function SkillMappingTestsSection({
   openTestOnLoad = false,
 }) {
   const { token } = useAuth();
+  const { lang } = useLang();
   const unlockedBand = resolveSkillMappingBand(assessment);
   const comboName = assessment?.progress?.skillMappingComboName;
   const [bandId, setBandId] = useState(unlockedBand || 'class-6-8');
   const [testId, setTestId] = useState(
-    () => getSkillMappingTestsForBand(unlockedBand || 'class-6-8')[0]?.id || 'vak'
+    () => getSkillMappingTestsForBand(unlockedBand || 'class-6-8', lang)[0]?.id || 'vak'
   );
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
@@ -90,8 +92,8 @@ export default function SkillMappingTestsSection({
       userUid: id.userUid,
       userName: id.userName,
       userPhone: id.userPhone,
-    }));
-  }, []);
+    }, lang));
+  }, [lang]);
 
   useEffect(() => {
     if (unlockedBand) setBandId(unlockedBand);
@@ -117,7 +119,7 @@ export default function SkillMappingTestsSection({
       setIdentity(nextIdentity);
       const nextBand = data.band || resolveSkillMappingBand(assessment) || bandId;
       if (data.band) setBandId(data.band);
-      setBandTests(Array.isArray(data.tests) && data.tests.length ? data.tests : buildPrefilledTests(nextBand, nextIdentity));
+      setBandTests(Array.isArray(data.tests) && data.tests.length ? data.tests : buildPrefilledTests(nextBand, nextIdentity, lang));
     } catch (err) {
       const uid = String(propUid || '').trim();
       const band = resolveSkillMappingBand(assessment);
@@ -137,7 +139,7 @@ export default function SkillMappingTestsSection({
     } finally {
       setLoading(false);
     }
-  }, [assessment, token, propUid, propName, propPhone, propEmail, bandId, setBandTestsForBand]);
+  }, [assessment, token, propUid, propName, propPhone, propEmail, bandId, setBandTestsForBand, lang]);
 
   useEffect(() => {
     loadTests();

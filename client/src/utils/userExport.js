@@ -1,3 +1,5 @@
+import { downloadBlob } from './downloadFile';
+
 function escapeCsv(val) {
   const s = val == null ? '' : String(val);
   if (/[",\n\r]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
@@ -100,12 +102,7 @@ export function exportUserDetailToCsv(user, stats = {}) {
 
   const csv = lines.join('\r\n');
   const blob = new Blob(['\ufeff', csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${safeFilename(user)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+  downloadBlob(blob, `${safeFilename(user)}.csv`);
 }
 
 export function exportUserDetailToPdf(user, stats = {}) {

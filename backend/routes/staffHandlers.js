@@ -448,7 +448,18 @@ export function registerStaffRoutes(router, { includeStats = true, skipUsers = f
         start_at = istIso(date, startTime);
         end_at = istIso(date, endTime);
       }
-      const slot = createSlot({ start_at, end_at, mode, location, title, meeting_link, capacity, counsellor, slot_type, session_number });
+      const slot = createSlot({
+        start_at,
+        end_at,
+        mode,
+        location,
+        title,
+        meeting_link,
+        capacity,
+        counsellor,
+        slot_type,
+        session_number: slot_type === 'program_session' ? null : session_number,
+      });
       await flushDatabase();
       res.status(201).json({ slot });
     } catch (e) {

@@ -39,6 +39,7 @@ const TestPage = lazyWithRetry(() => import('./pages/TestPage'));
 const ForgotPassword = lazyWithRetry(() => import('./pages/ForgotPassword'));
 const MarketplaceHub = lazyWithRetry(() => import('./pages/MarketplaceHub'));
 const BookNowPage = lazyWithRetry(() => import('./pages/BookNowPage'));
+const WebinarLandingPage = lazyWithRetry(() => import('./pages/WebinarLandingPage'));
 const NotFound = lazyWithRetry(() => import('./pages/NotFound'));
 
 function AuthPage({ children }) {
@@ -83,6 +84,8 @@ export default function App() {
               <Route path="blog/:slug" element={<BlogPostPage />} />
               <Route path="marketplace/*" element={<MarketplaceHub />} />
               <Route path="book-now" element={<BookNowPage />} />
+              <Route path="webinar" element={<WebinarLandingPage />} />
+              <Route path="live" element={<WebinarLandingPage />} />
               <Route path="study-abroad" element={<Navigate to="/" replace />} />
               <Route path="about" element={<About />} />
               <Route path="contact" element={<Contact />} />

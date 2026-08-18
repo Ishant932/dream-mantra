@@ -79,16 +79,6 @@ export default {
         peach: { DEFAULT: '#E8C96A', light: '#F5D97A', dark: '#C9A84C' },
         blush: { DEFAULT: '#E8C96A', light: '#F5D97A', dark: '#C9A84C' },
         sandstone: { DEFAULT: '#C9A84C', light: '#E8C96A', dark: '#B8922E' },
-        aurora: {
-          DEFAULT: '#FF6B35',
-          flame: '#FF6B35',
-          solar: '#FFD060',
-          lime: '#BFFF00',
-          rose: '#FF3366',
-          copper: '#D4845A',
-          deep: '#0C0A08',
-          surface: '#1C1714',
-        },
         slateGray: { DEFAULT: '#4A5A4A', light: '#7A8A7A', dark: '#1E2E1E' },
       },
       fontFamily: {
@@ -102,8 +92,6 @@ export default {
         'float-slow': 'float 6s ease-in-out infinite',
         gradient: 'gradientShift 5s ease infinite',
         'gold-shimmer': 'goldShimmer 3s linear infinite',
-        'aurora-shift': 'auroraBtnShift 4s linear infinite',
-        'aurora-mesh': 'auroraMeshShift 18s ease infinite',
         marquee: 'marqueeScroll var(--marquee-speed, 35s) linear infinite',
         'marquee-reverse': 'marqueeScrollReverse var(--marquee-speed, 35s) linear infinite',
       },
@@ -124,15 +112,6 @@ export default {
         goldShimmer: {
           '0%': { backgroundPosition: '-200% center' },
           '100%': { backgroundPosition: '200% center' },
-        },
-        auroraBtnShift: {
-          '0%': { backgroundPosition: '0% center' },
-          '100%': { backgroundPosition: '200% center' },
-        },
-        auroraMeshShift: {
-          '0%, 100%': { backgroundPosition: '0% 50%' },
-          '33%': { backgroundPosition: '100% 0%' },
-          '66%': { backgroundPosition: '0% 100%' },
         },
         marqueeScroll: {
           '0%': { transform: 'translateX(0)' },

@@ -3,6 +3,7 @@ import { Download, Upload, Users } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { adminApi } from '../../api';
 import { MODULE_CATALOG } from '../../data/moduleCatalog';
+import { downloadText } from '../../utils/downloadFile';
 import { DashCard } from '../DashboardUI';
 
 function parseCsv(text) {
@@ -80,13 +81,10 @@ export default function AdminBulkUsersPanel({
   const downloadTemplate = useCallback(async () => {
     try {
       const text = await adminApi.bulkUsersTemplate(token);
-      const blob = new Blob([`\uFEFF${text}`], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'dream-mantra-users-template.csv';
-      a.click();
-      URL.revokeObjectURL(url);
+      if (!text || !String(text).trim()) {
+        throw new Error('Template is empty');
+      }
+      downloadText(String(text).replace(/^\ufeff/, ''), 'dream-mantra-users-template.csv');
     } catch (e) {
       onError?.(e.message);
     }

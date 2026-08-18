@@ -321,6 +321,38 @@ export function bookProgramSessionsBatch(userId, sessions = [], notes = '', user
   return results;
 }
 
+/** Book the next core session (1–8) one at a time; slot must be after previous session. */
+export function bookSingleCoreProgramSession(userId, { slot_id, session_number, notes }, userRecord = null) {
+  ensureSlotsInitialized();
+  const data = getData();
+  const existing = (data.consultations || []).filter(
+    (c) => c.user_id === Number(userId) && c.booking_type === 'program_session' && c.status !== 'cancelled',
+  );
+  const coreBooked = existing
+    .filter((c) => {
+      const n = Number(c.session_number);
+      return n >= 1 && n <= 8;
+    })
+    .sort((a, b) => Number(a.session_number) - Number(b.session_number));
+  const nextSession = coreBooked.length + 1;
+  if (nextSession > 8) throw new Error('All 8 sessions are already booked');
+  if (session_number != null && Number(session_number) !== nextSession) {
+    throw new Error(`Please book Session ${nextSession} next`);
+  }
+
+  const slot = data.availability_slots.find((s) => s.id === Number(slot_id));
+  if (!slot) throw new Error(`Slot not found for Session ${nextSession}`);
+  if (nextSession > 1) {
+    const prev = coreBooked.find((c) => Number(c.session_number) === nextSession - 1);
+    if (!prev?.scheduled_at) throw new Error(`Book Session ${nextSession - 1} first`);
+    if (new Date(slot.start_at).getTime() <= new Date(prev.scheduled_at).getTime()) {
+      throw new Error(`Session ${nextSession} must be scheduled after Session ${nextSession - 1}`);
+    }
+  }
+
+  return bookProgramSessionWithSlot(userId, { slot_id, session_number: nextSession, notes }, userRecord);
+}
+
 export function bookMockInterviewSessions(userId, sessions = [], notes = '', userRecord = null) {
   if (!Array.isArray(sessions) || !sessions.length) throw new Error('Select mock interview slots');
   const sorted = [...sessions].sort((a, b) => Number(a.session_number) - Number(b.session_number));

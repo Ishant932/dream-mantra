@@ -72,7 +72,7 @@ const AGE_CARD_STYLES = [
 ];
 
 export default function CounsellingHub() {
-  const { t, d } = useLang();
+  const { t, d, lang } = useLang();
   const fg = d('freeGuidance') || {};
   const counsellingTabs = d('data.counsellingTabs');
   const processSteps = d('data.processSteps');
@@ -124,8 +124,8 @@ export default function CounsellingHub() {
     }
   }, [tab, programAge, ages, navigate]);
 
-  const counsellingTitle = splitCounsellingTitle(cmsText(cms, 'heroTitle', counsellingPage.title));
-  const counsellingSubtitle = cmsText(cms, 'heroSubtitle', counsellingPage.subtitle);
+  const counsellingTitle = splitCounsellingTitle(cmsText(cms, 'heroTitle', counsellingPage.title, lang));
+  const counsellingSubtitle = cmsText(cms, 'heroSubtitle', counsellingPage.subtitle, lang);
   const nextStepTitle = counsellingPage.nextStepTitle || 'Ready for personal guidance?';
   const nextStepDesc =
     counsellingPage.nextStepDesc ||

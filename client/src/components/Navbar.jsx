@@ -5,7 +5,6 @@ import { Menu, X, ChevronDown, Sparkles } from 'lucide-react';
 import { useLang } from '../context/LanguageContext';
 import { useAuth } from '../context/AuthContext';
 import Logo from './Logo';
-import ThemeToggle from './ThemeToggle';
 import NavQuickMenu from './NavQuickMenu';
 import { useBookNowModal } from '../context/BookNowModalContext';
 import { NavDropdownPanel, NavDropdownColumn, NavDropdownColumns, NavDropdownLink, NavDropdownLinkGroup } from './NavDropdownPanel';
@@ -177,9 +176,6 @@ export default function Navbar({ scrolled = false }) {
               <div className="hidden xl:block nav-quick-menu-wrap">
                 <NavQuickMenu />
               </div>
-              <div className="hidden xl:block">
-                <ThemeToggle compact />
-              </div>
               {!navLite && (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
@@ -280,7 +276,6 @@ export default function Navbar({ scrolled = false }) {
                   >
                     {lang === 'en' ? 'हिंदी' : 'EN'}
                   </button>
-                  <ThemeToggle compact />
                   <button
                   type="button"
                   className="nav-mobile-drawer-close"

@@ -1,29 +1,30 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-
-const THEMES = ['light', 'dark'];
+import { createContext, useContext, useEffect } from 'react';
 
 const ThemeContext = createContext(null);
 
+/** Site uses a single light theme — no dark / aurora switching. */
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('dm_theme');
-    if (saved === 'aurora') return 'dark';
-    return THEMES.includes(saved) ? saved : 'light';
-  });
-
   useEffect(() => {
     const root = document.documentElement;
     root.classList.remove('light', 'dark', 'aurora');
-    root.classList.add(theme === 'dark' ? 'dark' : 'light');
-    localStorage.setItem('dm_theme', theme);
-  }, [theme]);
-
-  const cycleTheme = useCallback(() => {
-    setTheme((t) => (t === 'light' ? 'dark' : 'light'));
+    root.classList.add('light');
+    try {
+      localStorage.setItem('dm_theme', 'light');
+    } catch {
+      /* ignore storage errors */
+    }
   }, []);
 
+  const value = {
+    theme: 'light',
+    setTheme: () => {},
+    toggle: () => {},
+    cycleTheme: () => {},
+    themes: ['light'],
+  };
+
   return (
-    <ThemeContext.Provider value={{ theme, setTheme, toggle: cycleTheme, cycleTheme, themes: THEMES }}>
+    <ThemeContext.Provider value={value}>
       {children}
     </ThemeContext.Provider>
   );

@@ -33,15 +33,17 @@
 </div>
 
 <!-- ══ QUICK CATEGORY CHIPS ══════════════════════════════════════════════════ -->
-<div style="background:#fff;border-bottom:1.5px solid #E5DDD4;padding:10px 20px;">
-  <div style="max-width:1200px;margin:0 auto;display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;">
-    <span style="font-size:11px;font-weight:700;color:#8A7F74;text-transform:uppercase;letter-spacing:.07em;white-space:nowrap;line-height:30px;flex-shrink:0;">Browse by</span>
-    <button class="cat-chip" data-cat="tech">💻 Technology</button>
-    <button class="cat-chip" data-cat="health">🏥 Healthcare</button>
-    <button class="cat-chip" data-cat="biz">💼 Business</button>
-    <button class="cat-chip" data-cat="creative">🎨 Creative</button>
-    <button class="cat-chip" data-cat="science">🔬 Science</button>
-    <button class="cat-chip" data-cat="govt">⚖️ Govt / Law</button>
+<div class="cat-strip">
+  <div class="cat-strip-inner">
+    <span class="cat-strip-label">Browse by</span>
+    <div class="cat-chips">
+      <button class="cat-chip" data-cat="tech">💻 Technology</button>
+      <button class="cat-chip" data-cat="health">🏥 Healthcare</button>
+      <button class="cat-chip" data-cat="biz">💼 Business</button>
+      <button class="cat-chip" data-cat="creative">🎨 Creative</button>
+      <button class="cat-chip" data-cat="science">🔬 Science</button>
+      <button class="cat-chip" data-cat="govt">⚖️ Govt / Law</button>
+    </div>
   </div>
 </div>
 
@@ -57,6 +59,16 @@
     </select>
     <select class="f-select" id="f-level" aria-label="Filter by education level">
       <option value="">Any Level</option>
+    </select>
+    <select class="f-select" id="f-type" aria-label="Filter by qualification type">
+      <option value="">Any Type</option>
+    </select>
+    <select class="f-select" id="f-demand" aria-label="Filter by industry demand">
+      <option value="">Any Demand</option>
+      <option value="Very High">Very High</option>
+      <option value="High">High</option>
+      <option value="Medium">Medium</option>
+      <option value="Low">Low</option>
     </select>
     <div class="filter-divider"></div>
     <button class="clear-all" id="clear-all">Clear filters</button>
@@ -76,6 +88,7 @@
 <main class="main">
   <div class="results-row">
     <span class="result-count" id="result-count"></span>
+    <button type="button" class="export-btn" id="export-btn" title="Export filtered careers to CSV">Export CSV</button>
   </div>
 
   <!-- Career grid -->
@@ -89,10 +102,13 @@
     <button class="empty-clear" id="empty-clear">Clear all filters</button>
   </div>
 
-  <!-- Load more -->
+  <!-- Load more (mobile) -->
   <div class="load-wrap" id="load-wrap" style="display:none;">
     <button class="load-btn" id="load-more">Load more careers</button>
   </div>
+
+  <!-- Pagination (desktop / web) -->
+  <div class="pagination-wrap" id="pagination-wrap" style="display:none;" aria-label="Career pages"></div>
 </main>
 
 <!-- ══ CAREER MODAL ════════════════════════════════════════════════════════════ -->

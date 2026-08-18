@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { adminApi } from '../api';
@@ -9,6 +9,9 @@ import { DashboardShell, DashboardLoading } from '../components/DashboardUI';
 export default function AdminUserDetailPage() {
   const { userId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const backTab = location.state?.fromTab === 'payments' ? 'payments' : 'users';
+  const backLabel = backTab === 'payments' ? 'Back to payments' : 'Back to users';
   const { token } = useAuth();
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState(null);
@@ -45,8 +48,8 @@ export default function AdminUserDetailPage() {
   return (
     <DashboardShell variant="admin" className="pt-16 pb-10">
       <div className="max-w-4xl mx-auto px-4 space-y-4">
-        <Link to="/admin?tab=users" className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700">
-          <ArrowLeft className="w-4 h-4" /> Back to users
+        <Link to={`/admin?tab=${backTab}`} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-700">
+          <ArrowLeft className="w-4 h-4" /> {backLabel}
         </Link>
         {error && <p className="text-sm text-red-600">{error}</p>}
         <AdminUserProfileModal
@@ -57,7 +60,7 @@ export default function AdminUserDetailPage() {
           loading={false}
           saving={saving}
           onSave={saveUser}
-          onClose={() => navigate('/admin?tab=users')}
+          onClose={() => navigate(`/admin?tab=${backTab}`)}
           api={adminApi}
           token={token}
           onError={setError}

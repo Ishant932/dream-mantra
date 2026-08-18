@@ -445,7 +445,8 @@ export default function UserDashboard() {
     try {
       await userApi.bookConsultation(token, { sessions, notes, booking_type: 'program_session' });
       const isMocks = (sessions || []).length && (sessions || []).every((s) => Number(s.session_number) >= 9);
-      flashMsg(isMocks ? 'Mock interview(s) booked successfully!' : 'All 8 sessions booked successfully!');
+      const isSingle = (sessions || []).length === 1 && !isMocks;
+      flashMsg(isMocks ? 'Mock interview(s) booked successfully!' : isSingle ? `Session ${sessions[0].session_number} booked!` : 'Sessions booked successfully!');
       await load(token, () => false);
       loadSlots('program_session');
     } catch (e) {

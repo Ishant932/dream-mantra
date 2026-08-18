@@ -191,21 +191,8 @@ export default function AdminDashboard() {
     setCommunitySchedule(v.settings?.community_schedule || []);
   };
 
-  const viewProfile = async (userId) => {
-    setProfileOpen(true);
-    setProfileLoading(true);
-    setProfileUser(null);
-    setProfileStats(null);
-    try {
-      const data = await adminApi.getUser(token, userId);
-      setProfileUser(data.user);
-      setProfileStats(data.stats || null);
-    } catch (err) {
-      setError(err.message);
-      setProfileOpen(false);
-    } finally {
-      setProfileLoading(false);
-    }
+  const viewProfile = (userId, fromTab = 'users') => {
+    navigate(`/admin/users/${userId}`, { state: { fromTab } });
   };
 
   const statCards = stats ? [
@@ -348,7 +335,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'payments' && (
-                <AdminPaymentsPanel token={token} users={users} onNotice={setNotice} onError={setError} onViewUser={viewProfile} />
+                <AdminPaymentsPanel token={token} users={users} onNotice={setNotice} onError={setError} onViewUser={(id) => viewProfile(id, 'payments')} />
               )}
 
               {tab === 'modules' && (
@@ -369,7 +356,7 @@ export default function AdminDashboard() {
               )}
 
               {tab === 'reports' && (
-                <StaffReportsPanel api={adminApi} token={token} onNotice={setNotice} />
+                <StaffReportsPanel api={adminApi} token={token} onNotice={setNotice} onError={setError} />
               )}
 
               {tab === 'leads' && (

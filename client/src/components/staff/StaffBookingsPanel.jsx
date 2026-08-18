@@ -169,7 +169,7 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
       const payload = {
         ...form,
         slot_type: slotType,
-        session_number: slotType === 'program_session' ? (Number(form.session_number) || 1) : null,
+        session_number: slotType === 'program_session' ? null : null,
       };
       await api.createSlot(token, payload);
       await loadSlots();
@@ -208,9 +208,14 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
     { label: 'Email', get: (c) => c.email },
     { label: 'Phone', get: (c) => c.phone },
     { label: 'Program', get: (c) => c.program },
+    { label: 'Session #', get: (c) => c.session_number },
     { label: 'Status', get: (c) => c.status },
     { label: 'Scheduled', get: (c) => c.scheduled_at },
+    { label: 'End', get: (c) => c.end_at },
     { label: 'Slot', get: (c) => c.slot_title },
+    { label: 'Meeting link', get: (c) => c.meeting_link },
+    { label: 'Mode', get: (c) => c.mode },
+    { label: 'Location', get: (c) => c.location },
   ];
 
   const slotExportColumns = [
@@ -324,7 +329,12 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
                   </p>
                 </div>
               </div>
-              <AdminSectionExport title="Slots" filename="booking-slots" rows={slots} columns={slotExportColumns} />
+              <AdminSectionExport
+                title="Consultations"
+                filename="booking-consultations"
+                rows={filteredConsultations}
+                columns={consultationExportColumns}
+              />
             </div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-5 staff-booking-filters">
@@ -503,8 +513,8 @@ export default function StaffBookingsPanel({ api, token, onViewProfile, onError,
         title="Booking Management"
         subtitle={`${filteredConsultations.length} consultations · ${slots.length} slots`}
         exportProps={{
-          title: 'Bookings',
-          filename: 'bookings-consultations',
+          title: slotType === 'program_session' ? 'Session bookings' : 'Counselling bookings',
+          filename: slotType === 'program_session' ? 'session-bookings' : 'counselling-bookings',
           rows: filteredConsultations,
           columns: consultationExportColumns,
         }}

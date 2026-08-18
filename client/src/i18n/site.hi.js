@@ -7,74 +7,74 @@ export const siteHi = {
     assessments: {
       title: 'मूल्यांकन',
       links: [
-        { label: 'Brain Mapping', desc: 'फिंगरप्रिंट से प्रतिभा मैपिंग' },
-        { label: 'Skill Mapping', desc: '7-फ्रेमवर्क व्यक्तित्व सूट' },
-        { label: 'Brain Mapping + Skill Mapping', desc: 'पूर्ण प्रोफाइल कॉम्बो' },
-        { label: 'करियर counselling क्यों?', desc: 'विज्ञान-आधारित मार्गदर्शन' },
+        { label: 'ब्रेन मैपिंग', desc: 'फिंगरप्रिंट से प्रतिभा मानचित्रण' },
+        { label: 'स्किल मैपिंग', desc: '७-फ्रेमवर्क व्यक्तित्व मूल्यांकन' },
+        { label: 'ब्रेन + स्किल मैपिंग', desc: 'पूर्ण प्रोफ़ाइल संयोजन' },
+        { label: 'करियर परामर्श क्यों', desc: 'विज्ञान-आधारित मार्गदर्शन' },
       ],
     },
     programs: {
       title: 'आयु मार्ग',
       links: [
-        { label: 'कक्षा 1-5', desc: 'शुरुआती प्रतिभा खोज' },
-        { label: 'कक्षा 6-8', desc: 'आत्म-खोज का चरण' },
-        { label: 'कक्षा 9-10', desc: 'स्ट्रीम चयन' },
-        { label: 'कक्षा 11-12', desc: 'करियर दिशा' },
+        { label: 'कक्षा १–५', desc: 'शुरुआती प्रतिभा खोज' },
+        { label: 'कक्षा ६–८', desc: 'आत्म-खोज का चरण' },
+        { label: 'कक्षा ९–१०', desc: 'स्ट्रीम चयन' },
+        { label: 'कक्षा ११–१२', desc: 'करियर दिशा' },
         { label: 'कॉलेज छात्र', desc: 'डिग्री और नौकरी की स्पष्टता' },
-        { label: 'वर्किंग प्रोफेशनल', desc: 'स्विच और विकास' },
+        { label: 'कार्यरत पेशेवर', desc: 'करियर परिवर्तन और विकास' },
       ],
     },
     common: {
-      title: 'साझा',
+      title: 'सामान्य',
       links: [
-        { label: 'संस्थान', desc: 'Schools, colleges और partners' },
+        { label: 'संस्थान', desc: 'स्कूल, कॉलेज और साझेदार' },
       ],
     },
     crp: {
-      title: 'Training and placement',
+      title: 'प्रशिक्षण और प्लेसमेंट',
       links: [
-        { label: 'AI Career Launchpad', desc: 'Blueprint · Sessions · Highlights · Parameters' },
+        { label: 'एआई करियर लॉन्चपैड', desc: 'योजना · सत्र · मुख्य बिंदु · मापदंड' },
       ],
     },
     crpPrograms: {
-      title: 'Age Pathway',
+      title: 'आयु मार्ग',
       links: [
         { label: 'कॉलेज छात्र', desc: 'डिग्री और पहली नौकरी की तैयारी' },
-        { label: 'Freshers', desc: 'AI से पहली नौकरी पाएं' },
-        { label: 'वर्किंग प्रोफेशनल', desc: 'करियर स्विच और विकास' },
+        { label: 'नए पेशेवर', desc: 'एआई से पहली नौकरी' },
+        { label: 'कार्यरत पेशेवर', desc: 'करियर परिवर्तन और विकास' },
       ],
     },
   },
 
   freeGuidance: {
-    cta: 'मुफ़्त guidance call बुक करें',
-    login: 'Sign in to know more',
-    badge: 'मुफ़्त guidance call',
+    cta: 'निःशुल्क मार्गदर्शन कॉल बुक करें',
+    login: 'अधिक जानने के लिए साइन इन करें',
+    badge: 'निःशुल्क मार्गदर्शन कॉल',
     bookIntro:
-      'अपनी class या goal बताएं। हम कॉल बैक करेंगे — पहली बातचीत के लिए payment नहीं।',
-    formTitle: 'मुफ़्त guidance call बुक करें',
-    formSubtitle: 'अपनी details दें। Dream Mantra counsellor आपको कॉल करेगा।',
+      'अपनी कक्षा या लक्ष्य बताएं। हम कॉल करेंगे — पहली बातचीत के लिए कोई भुगतान नहीं।',
+    formTitle: 'निःशुल्क मार्गदर्शन कॉल बुक करें',
+    formSubtitle: 'अपना विवरण दें। ड्रीम मंत्र काउंसलर आपको कॉल करेगा।',
     intentLabel: 'आपको क्या चाहिए?',
     intents: [
-      { id: 'counselling', label: 'Counselling' },
-      { id: 'training', label: 'Training & Placement' },
-      { id: 'partner', label: 'Partner / Institution' },
+      { id: 'counselling', label: 'परामर्श' },
+      { id: 'training', label: 'प्रशिक्षण और प्लेसमेंट' },
+      { id: 'partner', label: 'साझेदार / संस्थान' },
       { id: 'other', label: 'अभी तय नहीं' },
     ],
-    messagePlaceholder: 'आपकी class / goal / सवाल (कम से कम 10 अक्षर)',
-    submit: 'मुफ़्त call request करें',
+    messagePlaceholder: 'आपकी कक्षा / लक्ष्य / प्रश्न (कम से कम १० अक्षर)',
+    submit: 'निःशुल्क कॉल अनुरोध करें',
     sending: 'भेज रहे हैं…',
-    thankYou: 'धन्यवाद! हम जल्द मुफ़्त guidance conversation के लिए कॉल करेंगे।',
+    thankYou: 'धन्यवाद! हम जल्द निःशुल्क मार्गदर्शन के लिए कॉल करेंगे।',
     error: 'संदेश नहीं भेज सके। कृपया फिर कोशिश करें।',
     alreadyClient: '',
-    authCta: 'Sign in to know more',
-    newHere: 'नए हैं? Overview देखें, फिर मुफ़्त guidance call बुक करें।',
+    authCta: 'अधिक जानने के लिए साइन इन करें',
+    newHere: 'नए हैं? अवलोकन देखें, फिर निःशुल्क मार्गदर्शन कॉल बुक करें।',
   },
 
   quickLinks: {
     title: 'त्वरित लिंक',
     links: [
-      { to: '/#certifications', label: 'Certifications' },
+      { to: '/#certifications', label: 'प्रमाणपत्र' },
       { to: '/about', label: 'हमारे बारे में' },
       { to: '/blog', label: 'ब्लॉग' },
       { to: '/terms', label: 'नियम और शर्तें' },
@@ -82,21 +82,21 @@ export const siteHi = {
   },
 
   navQuickMenu: {
-    whatsappLabel: 'WhatsApp पर Esh से बात करें',
-    footer: 'वैज्ञानिक करियर मार्गदर्शन · कक्षा 1 से पहली नौकरी',
+    whatsappLabel: 'व्हाट्सऐप पर विशेषज्ञ से बात करें',
+    footer: 'विज्ञान-आधारित करियर मार्गदर्शन · कक्षा १ से पहली नौकरी',
     columns: [
       {
         title: 'खोजें',
         links: [
-          { to: '/marketplace', label: 'Book Now', icon: '🛒' },
-          { to: '/counselling/institutions', label: 'Partner with us', icon: '🏛️' },
-          { to: '/#certifications', label: 'Certifications', icon: '🏅' },
+          { to: '/marketplace', label: 'अभी बुक करें', icon: '🛒' },
+          { to: '/counselling/institutions', label: 'हमारे साथ साझेदारी', icon: '🏛️' },
+          { to: '/#certifications', label: 'प्रमाणपत्र', icon: '🏅' },
         ],
       },
       {
         title: 'जुड़ें',
         links: [
-          { to: '/contact#guidance', label: 'मुफ़्त guidance call बुक करें', icon: '📅' },
+          { to: '/contact#guidance', label: 'निःशुल्क मार्गदर्शन कॉल', icon: '📅' },
           { to: '/contact', label: 'संपर्क', icon: '📞' },
           { to: '/about', label: 'हमारे बारे में', icon: '✨' },
           { to: '/blog', label: 'ब्लॉग', icon: '📝' },
@@ -107,16 +107,16 @@ export const siteHi = {
 
   mobileNav: {
     home: 'होम',
-    counselling: 'Counselling',
-    tests: 'Training and Placement',
+    counselling: 'परामर्श',
+    tests: 'प्रशिक्षण और प्लेसमेंट',
     dashboard: 'डैशबोर्ड',
     contact: 'संपर्क',
     careers: 'करियर',
     call: 'कॉल',
     modules: 'मॉड्यूल',
-    pillars: '5 स्तंभ',
-    book: 'मुफ़्त कॉल',
-    faq: 'FAQ',
+    pillars: '५ स्तंभ',
+    book: 'निःशुल्क कॉल',
+    faq: 'प्रश्नोत्तर',
     signup: 'साइन अप',
     jumpLabel: 'जल्दी जाएँ',
     showMore: 'और देखें',
@@ -625,25 +625,25 @@ export const siteHi = {
 
     counsellingTabs: [
       { id: 'overview', label: 'अवलोकन' },
-      { id: 'why', label: 'करियर counselling क्यों?' },
-      { id: 'dmit', label: 'Brain Mapping' },
-      { id: 'psychometric', label: 'Skill Mapping' },
-      { id: 'combo', label: 'Brain + Skill Mapping' },
+      { id: 'why', label: 'करियर परामर्श क्यों' },
+      { id: 'dmit', label: 'ब्रेन मैपिंग' },
+      { id: 'psychometric', label: 'स्किल मैपिंग' },
+      { id: 'combo', label: 'ब्रेन + स्किल मैपिंग' },
       { id: 'programs', label: 'आयु मार्ग' },
-      { id: 'institutions', label: 'Partner with us' },
+      { id: 'institutions', label: 'हमारे साथ साझेदारी' },
     ],
 
     crpTabs: [
-      { id: 'launchpad', label: 'AI Career Launchpad' },
-      { id: 'readiness', label: 'Personalised Career Readiness Program' },
-      { id: 'pathways', label: 'उम्र के अनुसार मार्ग' },
+      { id: 'launchpad', label: 'एआई करियर लॉन्चपैड' },
+      { id: 'readiness', label: 'व्यक्तिगत करियर रेडिनेस कार्यक्रम' },
+      { id: 'pathways', label: 'आयु मार्ग' },
     ],
 
     assessmentTabs: [
-      { id: 'dmit', label: 'Brain Mapping' },
-      { id: 'psychometric', label: 'Skill Mapping' },
-      { id: 'dmit-psychometric', label: 'Brain Mapping + Skill Mapping' },
-      { id: 'why-dreams-mantra', label: 'करियर counselling क्यों?' },
+      { id: 'dmit', label: 'ब्रेन मैपिंग' },
+      { id: 'psychometric', label: 'स्किल मैपिंग' },
+      { id: 'dmit-psychometric', label: 'ब्रेन + स्किल मैपिंग' },
+      { id: 'why-dreams-mantra', label: 'करियर परामर्श क्यों' },
     ],
 
     assessments: [

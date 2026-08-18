@@ -89,7 +89,7 @@ export default function CRPHub() {
                 onClick={() => setTab(item.id)}
               >
                 <Icon className="w-4 h-4" aria-hidden />
-                <span>{TAB_GUIDE[item.id]?.title || item.label}</span>
+                <span>{item.label}</span>
               </button>
             );
           })}

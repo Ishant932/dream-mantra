@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
-import { Calendar, CheckCircle2, AlertTriangle, Lock } from 'lucide-react';
-import { READINESS_SESSIONS, MOCK_INTERVIEW_SESSIONS, CORE_SESSION_COUNT, programSessionTitle } from '../../data/crReadinessContent';
+import { Calendar, CheckCircle2, Lock, Clock, Link2 } from 'lucide-react';
+import { MOCK_INTERVIEW_SESSIONS, CORE_SESSION_COUNT, programSessionTitle, READINESS_SESSIONS } from '../../data/crReadinessContent';
 import { allCoreProgramSessionsComplete } from '../../utils/counsellingStatus';
+import { useLang } from '../../context/LanguageContext';
 import { DashCard } from '../DashboardUI';
 
 const CORE_NUMS = [...Array(CORE_SESSION_COUNT)].map((_, i) => i + 1);
@@ -14,80 +15,75 @@ function formatWhen(iso) {
   });
 }
 
-function durationLabel(start, end) {
+function durationLabel(start, end, t) {
   if (!start || !end) return '—';
   const mins = Math.round((new Date(end) - new Date(start)) / 60000);
-  if (mins < 60) return `${mins} mins`;
+  if (mins < 60) return `${mins} ${t('sessionBooking.minutes')}`;
   const h = Math.floor(mins / 60);
   const m = mins % 60;
-  return m ? `${h}h ${m}m` : `${h} hour${h > 1 ? 's' : ''}`;
+  return m ? `${h} ${t('sessionBooking.hours')} ${m} ${t('sessionBooking.minutes')}` : `${h} ${t('sessionBooking.hours')}`;
 }
 
-function slotOptions(slots, sessionNumber) {
+function slotOptions(slots, minStartMs = 0) {
   const seen = new Set();
   return slots
-    .filter((s) => s.slot_type === 'program_session' && Number(s.session_number) === sessionNumber)
+    .filter((s) => s.slot_type === 'program_session')
+    .filter((s) => !minStartMs || new Date(s.start_at).getTime() > minStartMs)
     .sort((a, b) => new Date(a.start_at) - new Date(b.start_at))
     .filter((s) => {
-      const key = `${s.start_at}|${s.end_at}|${s.session_number}`;
+      const key = `${s.start_at}|${s.end_at}`;
       if (seen.has(key)) return false;
       seen.add(key);
       return true;
     });
 }
 
-function BookedList({ booked }) {
+function BookedSessionCard({ booking, t }) {
+  const num = Number(booking.session_number);
   return (
-    <div className="mt-3 space-y-2">
+    <div className="booked-session-card">
+      <div className="booked-session-card__head">
+        <span className="booked-session-card__badge">{t('sessionBooking.sessionNo')} {num}</span>
+        <span className="booked-session-card__status">{booking.status || 'confirmed'}</span>
+      </div>
+      <h4 className="booked-session-card__title">{programSessionTitle(num)}</h4>
+      <div className="booked-session-card__meta">
+        <p className="flex items-center gap-1.5">
+          <Clock className="w-4 h-4 shrink-0 opacity-70" />
+          {formatWhen(booking.scheduled_at)}
+        </p>
+        <p className="text-sm opacity-80">{durationLabel(booking.scheduled_at, booking.end_at, t)}</p>
+        {booking.slot_title && <p className="text-sm opacity-80">{booking.slot_title}</p>}
+        {booking.meeting_link && (
+          <p className="flex items-center gap-1.5">
+            <Link2 className="w-4 h-4 shrink-0 opacity-70" />
+            <a href={booking.meeting_link} target="_blank" rel="noreferrer" className="text-amber-700 underline font-semibold">
+              {t('sessionBooking.join')}
+            </a>
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BookedSessionsGrid({ booked, t }) {
+  if (!booked.length) return null;
+  return (
+    <div className="booked-sessions-grid">
       {[...booked].sort((a, b) => Number(a.session_number) - Number(b.session_number)).map((b) => (
-        <div key={b.id} className="text-sm p-3 rounded-lg bg-emerald-50/80 border border-emerald-200/50">
-          <strong>{programSessionTitle(b.session_number)}</strong>
-          {' '}— {formatWhen(b.scheduled_at)} · {durationLabel(b.scheduled_at, b.end_at)}
-          {b.meeting_link && <> · <a href={b.meeting_link} target="_blank" rel="noreferrer" className="text-amber-700 underline">Join</a></>}
-        </div>
+        <BookedSessionCard key={b.id} booking={b} t={t} />
       ))}
     </div>
   );
 }
 
-function SessionSelectRow({ sessionNum, title, slots, value, onChange, disabled, booked }) {
-  const options = slotOptions(slots, sessionNum);
-  if (booked) {
-    return (
-      <div className="session-form-row session-form-row--done">
-        <label className="session-form-row__label">{title}</label>
-        <p className="text-sm text-emerald-800 flex items-center gap-1"><CheckCircle2 className="w-4 h-4" /> Booked — {formatWhen(booked.scheduled_at)}</p>
-      </div>
-    );
-  }
-  return (
-    <div className="session-form-row">
-      <label className="session-form-row__label" htmlFor={`session-slot-${sessionNum}`}>{title}</label>
-      <select
-        id={`session-slot-${sessionNum}`}
-        className="input-field w-full"
-        value={value || ''}
-        onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
-        disabled={disabled}
-      >
-        <option value="">Select date & time…</option>
-        {options.map((s) => (
-          <option key={s.id} value={s.id}>
-            {formatWhen(s.start_at)} · {durationLabel(s.start_at, s.end_at)}
-          </option>
-        ))}
-      </select>
-      {!options.length && <p className="text-xs dash-card-meta mt-1">No slots available yet — check back soon.</p>}
-    </div>
-  );
-}
-
 export default function SessionBookingPanel({ slots = [], slotsLoading, bookings = [], onBookAll, displayUser }) {
+  const { t } = useLang();
   const [picks, setPicks] = useState({});
   const [notes, setNotes] = useState('');
   const [booking, setBooking] = useState(false);
   const [err, setErr] = useState('');
-  const [submitted, setSubmitted] = useState(false);
 
   const booked = useMemo(
     () => bookings.filter((b) => b.booking_type === 'program_session' && b.status !== 'cancelled'),
@@ -108,6 +104,15 @@ export default function SessionBookingPanel({ slots = [], slotsLoading, bookings
     return m;
   }, [booked]);
 
+  const remainingCore = useMemo(
+    () => CORE_NUMS.filter((n) => !bookedByNum[n]),
+    [bookedByNum],
+  );
+  const remainingMocks = useMemo(
+    () => MOCK_NUMS.filter((n) => !bookedByNum[n]),
+    [bookedByNum],
+  );
+
   const setPick = (num, slotId) => {
     setErr('');
     setPicks((prev) => {
@@ -118,56 +123,39 @@ export default function SessionBookingPanel({ slots = [], slotsLoading, bookings
     });
   };
 
-  const getSlotTime = (num) => {
-    const b = bookedByNum[num];
-    if (b) return new Date(b.scheduled_at).getTime();
-    const id = picks[num];
-    if (!id) return null;
-    const slot = slots.find((s) => s.id === Number(id));
-    return slot ? new Date(slot.start_at).getTime() : null;
-  };
-
-  const validateCore = () => {
-    for (const n of CORE_NUMS) {
-      if (!bookedByNum[n] && !picks[n]) return `Please select date & time for Session ${n}`;
-    }
-    const dates = CORE_NUMS.map((n) => getSlotTime(n));
-    for (let i = 1; i < dates.length; i += 1) {
-      if (dates[i] <= dates[i - 1]) return `Session ${i + 1} must be on a later date/time than Session ${i}`;
-    }
-    return null;
-  };
-
-  const validateMocks = () => {
-    const remaining = MOCK_NUMS.filter((n) => !bookedByNum[n]);
-    for (const n of remaining) {
-      if (!picks[n]) return `Please select date & time for ${programSessionTitle(n)}`;
-    }
-    const lastCore = coreBooked.reduce((max, b) => Math.max(max, new Date(b.scheduled_at).getTime()), 0);
-    let prev = bookedByNum[9] ? new Date(bookedByNum[9].scheduled_at).getTime() : lastCore;
-    for (const n of MOCK_NUMS) {
-      const t = getSlotTime(n);
-      if (t == null) continue;
-      if (t <= prev) return `${programSessionTitle(n)} must be after your previous session`;
-      prev = t;
+  const validateSessionOrder = (nums) => {
+    let prev = 0;
+    for (const n of nums) {
+      const bookedPrev = bookedByNum[n - 1];
+      if (n > 1 && bookedByNum[n - 1]) {
+        prev = new Date(bookedByNum[n - 1].scheduled_at).getTime();
+      } else if (n > 1 && picks[n - 1]) {
+        const slotPrev = slots.find((s) => s.id === Number(picks[n - 1]));
+        if (slotPrev) prev = Math.max(prev, new Date(slotPrev.start_at).getTime());
+      }
+      const id = picks[n];
+      if (!id) return t('sessionBooking.pickAll');
+      const slot = slots.find((s) => s.id === Number(id));
+      const tms = slot ? new Date(slot.start_at).getTime() : 0;
+      if (tms <= prev) return `${programSessionTitle(n)} — ${t('sessionBooking.orderError')}`;
+      prev = tms;
     }
     return null;
   };
 
   const handleBookCore = async (e) => {
     e.preventDefault();
-    const v = validateCore();
-    if (v) { setErr(v); return; }
-    const sessions = CORE_NUMS.filter((n) => picks[n]).map((n) => ({ session_number: n, slot_id: picks[n] }));
+    const orderErr = validateSessionOrder(remainingCore);
+    if (orderErr) { setErr(orderErr); return; }
+    const sessions = remainingCore.map((n) => ({ session_number: n, slot_id: picks[n] }));
     setBooking(true);
     setErr('');
     try {
       await onBookAll?.({ sessions, notes });
       setPicks({});
       setNotes('');
-      setSubmitted(true);
     } catch (ex) {
-      setErr(ex.message || 'Booking failed');
+      setErr(ex.message || t('sessionBooking.failed'));
     } finally {
       setBooking(false);
     }
@@ -175,134 +163,169 @@ export default function SessionBookingPanel({ slots = [], slotsLoading, bookings
 
   const handleBookMocks = async (e) => {
     e.preventDefault();
-    const v = validateMocks();
-    if (v) { setErr(v); return; }
-    const sessions = MOCK_NUMS.filter((n) => picks[n] && !bookedByNum[n]).map((n) => ({ session_number: n, slot_id: picks[n] }));
+    const orderErr = validateSessionOrder(remainingMocks);
+    if (orderErr) { setErr(orderErr); return; }
+    const sessions = remainingMocks.map((n) => ({ session_number: n, slot_id: picks[n] }));
     setBooking(true);
     setErr('');
     try {
       await onBookAll?.({ sessions, notes });
       setPicks({});
       setNotes('');
-      setSubmitted(true);
     } catch (ex) {
-      setErr(ex.message || 'Booking failed');
+      setErr(ex.message || t('sessionBooking.failed'));
     } finally {
       setBooking(false);
     }
   };
 
+  const coreSessionMeta = (n) => READINESS_SESSIONS.find((s) => s.number === n);
+
   if (allCoreBooked && allMocksBooked) {
     return (
-      <DashCard className="!p-5 border-emerald-200/60 !overflow-visible" glow={false} hover={false}>
-        <p className="font-bold text-emerald-800 flex items-center gap-2"><CheckCircle2 className="w-5 h-5" /> All sessions booked</p>
-        <BookedList booked={booked} />
-      </DashCard>
-    );
-  }
-
-  if (allCoreBooked && submitted && !allMocksBooked) {
-    return (
       <div className="space-y-4">
-        <DashCard className="!p-5 border-emerald-200/60" glow={false} hover={false}>
-          <p className="font-bold text-emerald-800">Your 8 sessions are confirmed and cannot be edited.</p>
-          <BookedList booked={coreBooked} />
+        <DashCard className="!p-5 border-emerald-200/60 !overflow-visible" glow={false} hover={false}>
+          <p className="font-bold text-emerald-800 dark:text-emerald-200 flex items-center gap-2 mb-4">
+            <CheckCircle2 className="w-5 h-5" /> {t('sessionBooking.allBooked')}
+          </p>
+          <BookedSessionsGrid booked={booked} t={t} />
         </DashCard>
       </div>
-    );
-  }
-
-  if (allCoreBooked) {
-    return (
-      <div className="space-y-4">
-        <DashCard className="!p-5 border-emerald-200/60" glow={false} hover={false}>
-          <p className="font-bold text-emerald-800 flex items-center gap-2"><CheckCircle2 className="w-5 h-5" /> All 8 sessions booked</p>
-          <BookedList booked={coreBooked} />
-        </DashCard>
-
-        <DashCard className={`!p-5 !overflow-visible${!coreSessionsComplete ? ' opacity-90' : ''}`} glow={false} hover={false}>
-          <h4 className="font-bold flex items-center gap-2 mb-3">
-            {coreSessionsComplete ? <Calendar className="w-5 h-5 text-amber-600" /> : <Lock className="w-5 h-5 text-amber-600" />}
-            Mock interview scheduling
-          </h4>
-          {!coreSessionsComplete ? (
-            <p className="text-sm dash-card-meta">Mock interviews unlock after all 8 sessions are completed. Sessions auto-complete the day after each scheduled date.</p>
-          ) : (
-            <form onSubmit={handleBookMocks} className="space-y-4 session-schedule-form">
-              <p className="text-sm dash-card-meta">Pick date & time for each mock interview. Session 2 must be after Session 1.</p>
-              {MOCK_INTERVIEW_SESSIONS.map((s) => (
-                <SessionSelectRow
-                  key={s.number}
-                  sessionNum={s.number}
-                  title={s.title}
-                  slots={slots}
-                  value={picks[s.number]}
-                  onChange={(id) => setPick(s.number, id)}
-                  disabled={slotsLoading || !!bookedByNum[s.number]}
-                  booked={bookedByNum[s.number]}
-                />
-              ))}
-              <textarea className="w-full rounded-xl border border-amber-200/60 p-3 text-sm min-h-[72px] bg-white"
-                placeholder="Notes for mock interviews (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
-              {err && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{err}</p>}
-              <button type="submit" className="btn-primary w-full sm:w-auto" disabled={booking || slotsLoading}>
-                {booking ? 'Booking…' : 'Confirm mock interviews'}
-              </button>
-            </form>
-          )}
-        </DashCard>
-        {displayUser?.user_uid && <p className="text-xs dash-card-meta">Dream Mantra ID: {displayUser.user_uid}</p>}
-      </div>
-    );
-  }
-
-  if (submitted && allCoreBooked) {
-    return (
-      <DashCard className="!p-5 border-emerald-200/60" glow={false} hover={false}>
-        <p className="font-bold text-emerald-800">Schedule saved — your sessions cannot be edited.</p>
-        <BookedList booked={coreBooked.length ? coreBooked : booked} />
-      </DashCard>
     );
   }
 
   return (
     <div className="space-y-4">
-      <DashCard className="!p-4 border-amber-300/60 bg-amber-50/90" glow={false} hover={false}>
-        <p className="text-sm font-bold text-amber-900 flex items-start gap-2">
-          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" /> Schedule all sessions at once
-        </p>
-        <ul className="text-sm dash-card-meta mt-2 space-y-1 list-disc pl-5">
-          <li>Select <strong>date & time</strong> for Session 1, then Session 2, and so on up to Session 8.</li>
-          <li>Each next session must be on a <strong>later date/time</strong> than the previous.</li>
-          <li>Once submitted, your schedule <strong>cannot be edited</strong>.</li>
-          <li>Mock interviews unlock after all 8 sessions are completed.</li>
-        </ul>
-      </DashCard>
-
-      <form onSubmit={handleBookCore} className="session-schedule-form space-y-4">
-        <DashCard className="!p-5 !overflow-visible" glow={false} hover={false}>
-          <h4 className="font-bold flex items-center gap-2 mb-4"><Calendar className="w-5 h-5 text-amber-600" /> Your session schedule</h4>
-          {READINESS_SESSIONS.map((s) => (
-            <SessionSelectRow
-              key={s.number}
-              sessionNum={s.number}
-              title={`Session ${s.number}`}
-              slots={slots}
-              value={picks[s.number]}
-              onChange={(id) => setPick(s.number, id)}
-              disabled={slotsLoading || !!bookedByNum[s.number]}
-              booked={bookedByNum[s.number]}
-            />
-          ))}
+      {booked.length > 0 && (
+        <DashCard className="!p-5 border-emerald-200/60" glow={false} hover={false}>
+          <p className="font-bold text-emerald-800 dark:text-emerald-200 mb-3 flex items-center gap-2">
+            <Calendar className="w-5 h-5" /> {t('sessionBooking.yourBooked')}
+          </p>
+          <BookedSessionsGrid booked={booked} t={t} />
         </DashCard>
-        <textarea className="w-full rounded-xl border border-amber-200/60 p-3 text-sm min-h-[72px] bg-white"
-          placeholder="Notes for your sessions (optional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
-        {err && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{err}</p>}
-        <button type="submit" className="btn-primary w-full sm:w-auto" disabled={booking || slotsLoading}>
-          {booking ? 'Booking all sessions…' : 'Confirm all 8 sessions'}
-        </button>
-      </form>
-      {displayUser?.user_uid && <p className="text-xs dash-card-meta">Dream Mantra ID: {displayUser.user_uid}</p>}
+      )}
+
+      {!allCoreBooked && remainingCore.length > 0 && (
+        <form onSubmit={handleBookCore} className="session-schedule-form session-schedule-form--bulk space-y-4">
+          <DashCard className="!p-5 !overflow-visible" glow={false} hover={false}>
+            <h4 className="font-bold flex items-center gap-2 mb-2">
+              <Calendar className="w-5 h-5 text-amber-600" /> {t('sessionBooking.bookAllCore')}
+            </h4>
+            <p className="text-sm dash-card-meta mb-4">{t('sessionBooking.bookAllCoreHint')}</p>
+            <div className="space-y-3">
+              {remainingCore.map((n) => {
+                const meta = coreSessionMeta(n);
+                const minTime = n > 1
+                  ? (bookedByNum[n - 1]?.scheduled_at
+                    ? new Date(bookedByNum[n - 1].scheduled_at).getTime()
+                    : picks[n - 1]
+                      ? new Date(slots.find((s) => s.id === picks[n - 1])?.start_at || 0).getTime()
+                      : 0)
+                  : 0;
+                const options = slotOptions(slots, minTime);
+                return (
+                  <div key={n} className="session-form-row session-form-row--readonly-select">
+                    <label className="session-form-row__label" htmlFor={`session-slot-${n}`}>
+                      <span className="session-form-row__num">{t('sessionBooking.sessionNo')} {n}</span>
+                      {meta?.title || programSessionTitle(n)}
+                    </label>
+                    <select
+                      id={`session-slot-${n}`}
+                      className="input-field w-full"
+                      value={picks[n] || ''}
+                      onChange={(e) => setPick(n, e.target.value ? Number(e.target.value) : null)}
+                      disabled={slotsLoading}
+                      required
+                    >
+                      <option value="">{t('sessionBooking.selectSlot')}</option>
+                      {options.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {formatWhen(s.start_at)} · {durationLabel(s.start_at, s.end_at, t)}
+                        </option>
+                      ))}
+                    </select>
+                    {!options.length && <p className="text-sm dash-card-meta mt-1">{t('sessionBooking.noSlots')}</p>}
+                  </div>
+                );
+              })}
+            </div>
+          </DashCard>
+          <textarea
+            className="w-full rounded-xl border border-amber-200/60 p-3 text-sm min-h-[72px] bg-white dark:bg-[var(--input-bg)]"
+            placeholder={t('sessionBooking.notesPlaceholder')}
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+          />
+          {err && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{err}</p>}
+          <button type="submit" className="btn-primary w-full" disabled={booking || slotsLoading}>
+            {booking ? t('sessionBooking.submitting') : t('sessionBooking.submitCore')}
+          </button>
+        </form>
+      )}
+
+      {allCoreBooked && !allMocksBooked && (
+        <DashCard className={`!p-5 !overflow-visible${!coreSessionsComplete ? ' opacity-90' : ''}`} glow={false} hover={false}>
+          <h4 className="font-bold flex items-center gap-2 mb-3">
+            {coreSessionsComplete ? <Calendar className="w-5 h-5 text-amber-600" /> : <Lock className="w-5 h-5 text-amber-600" />}
+            {t('sessionBooking.mockTitle')}
+          </h4>
+          {!coreSessionsComplete ? (
+            <p className="text-sm dash-card-meta">{t('sessionBooking.mockLocked')}</p>
+          ) : (
+            <form onSubmit={handleBookMocks} className="space-y-4 session-schedule-form session-schedule-form--bulk">
+              <p className="text-sm dash-card-meta">{t('sessionBooking.mockHint')}</p>
+              {remainingMocks.map((n) => {
+                const mockMeta = MOCK_INTERVIEW_SESSIONS.find((s) => s.number === n);
+                const minTime = n === 9
+                  ? coreBooked.reduce((max, b) => Math.max(max, new Date(b.scheduled_at).getTime()), 0)
+                  : (bookedByNum[9]?.scheduled_at
+                    ? new Date(bookedByNum[9].scheduled_at).getTime()
+                    : picks[9]
+                      ? new Date(slots.find((s) => s.id === picks[9])?.start_at || 0).getTime()
+                      : 0);
+                const options = slotOptions(slots, minTime);
+                return (
+                  <div key={n} className="session-form-row session-form-row--readonly-select">
+                    <label className="session-form-row__label" htmlFor={`session-slot-${n}`}>
+                      <span className="session-form-row__num">{t('sessionBooking.sessionNo')} {n}</span>
+                      {mockMeta?.title || programSessionTitle(n)}
+                    </label>
+                    <select
+                      id={`session-slot-${n}`}
+                      className="input-field w-full"
+                      value={picks[n] || ''}
+                      onChange={(e) => setPick(n, e.target.value ? Number(e.target.value) : null)}
+                      disabled={slotsLoading}
+                      required
+                    >
+                      <option value="">{t('sessionBooking.selectSlot')}</option>
+                      {options.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {formatWhen(s.start_at)} · {durationLabel(s.start_at, s.end_at, t)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                );
+              })}
+              <textarea
+                className="w-full rounded-xl border border-amber-200/60 p-3 text-sm min-h-[72px] bg-white dark:bg-[var(--input-bg)]"
+                placeholder={t('sessionBooking.mockNotes')}
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+              />
+              {err && <p className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{err}</p>}
+              <button type="submit" className="btn-primary w-full" disabled={booking || slotsLoading}>
+                {booking ? t('sessionBooking.submitting') : t('sessionBooking.submitMocks')}
+              </button>
+            </form>
+          )}
+        </DashCard>
+      )}
+
+      {displayUser?.user_uid && (
+        <p className="text-sm dash-card-meta">{t('sessionBooking.dreamsId')}: {displayUser.user_uid}</p>
+      )}
     </div>
   );
 }

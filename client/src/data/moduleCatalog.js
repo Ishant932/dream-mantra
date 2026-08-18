@@ -85,8 +85,11 @@ export const SKILL_MAPPING_TESTS = [
   {
     id: 'vak',
     title: '📚 Learning Style Assessment',
+    titleHi: '📚 सीखने की शैली मूल्यांकन',
     shortTitle: '📚 Learning Style',
+    shortTitleHi: '📚 सीखने की शैली',
     desc: 'Discovers how you learn and retain information most effectively.',
+    descHi: 'आप सबसे अच्छी तरह कैसे सीखते और जानकारी याद रखते हैं — यह पता लगाता है।',
     duration: '5 mins',
     bands: ['class-6-8', 'class-9-12'],
     icon: '👁️',
@@ -96,8 +99,11 @@ export const SKILL_MAPPING_TESTS = [
   {
     id: 'mit',
     title: '🌟 Multiple Talents Assessment',
+    titleHi: '🌟 बहु-प्रतिभा मूल्यांकन',
     shortTitle: 'Multiple Talents',
+    shortTitleHi: 'बहु-प्रतिभा',
     desc: 'Identifies your strongest multiple abilities and areas of intelligence.',
+    descHi: 'आपकी सबसे मजबूत क्षमताएं और बुद्धि के क्षेत्र पहचानता है।',
     duration: '30 mins',
     bands: ['class-6-8', 'class-9-12', 'professionals'],
     icon: '🎯',
@@ -107,8 +113,11 @@ export const SKILL_MAPPING_TESTS = [
   {
     id: 'disc',
     title: '🤝 Professional Behaviour & Work Style Analysis',
+    titleHi: '🤝 व्यावसायिक व्यवहार और कार्य शैली विश्लेषण',
     shortTitle: 'Professional Behaviour',
+    shortTitleHi: 'व्यावसायिक व्यवहार',
     desc: 'Understands how you communicate, collaborate, and respond in different situations.',
+    descHi: 'आप विभिन्न परिस्थितियों में कैसे संवाद, सहयोग और प्रतिक्रिया करते हैं — यह समझता है।',
     duration: '10 mins',
     bands: ['class-9-12', 'professionals'],
     icon: '⚡',
@@ -118,8 +127,11 @@ export const SKILL_MAPPING_TESTS = [
   {
     id: 'riasec',
     title: '🧠 Career Interest Assessment',
+    titleHi: '🧠 करियर रुचि मूल्यांकन',
     shortTitle: 'Career Interest',
+    shortTitleHi: 'करियर रुचि',
     desc: 'Finds the careers and work environments that match your interests.',
+    descHi: 'आपकी रुचियों से मेल खाने वाले करियर और कार्य वातावरण खोजता है।',
     duration: '10 mins',
     bands: ['class-9-12', 'professionals'],
     icon: '🗺️',
@@ -129,8 +141,11 @@ export const SKILL_MAPPING_TESTS = [
   {
     id: 'mbti',
     title: '👤 Personality Assessment',
+    titleHi: '👤 व्यक्तित्व मूल्यांकन',
     shortTitle: 'Personality',
+    shortTitleHi: 'व्यक्तित्व',
     desc: 'Helps you understand your personality type, work style, and preferences.',
+    descHi: 'आपके व्यक्तित्व प्रकार, कार्य शैली और प्राथमिकताओं को समझने में मदद करता है।',
     duration: '15 mins',
     bands: ['class-9-12', 'professionals'],
     icon: '🧠',
@@ -140,8 +155,11 @@ export const SKILL_MAPPING_TESTS = [
   {
     id: 'big5',
     title: '💡 Workplace Personality & Success Factors Analysis',
+    titleHi: '💡 कार्यस्थल व्यक्तित्व और सफलता कारक विश्लेषण',
     shortTitle: 'Workplace Personality',
+    shortTitleHi: 'कार्यस्थल व्यक्तित्व',
     desc: 'Identifies your core personality traits, behavioural patterns, and strengths.',
+    descHi: 'आपके मुख्य व्यक्तित्व लक्षण, व्यवहार पैटर्न और ताकत पहचानता है।',
     duration: '15 mins',
     bands: ['professionals'],
     icon: '🌟',
@@ -151,8 +169,11 @@ export const SKILL_MAPPING_TESTS = [
   {
     id: 'career-understanding',
     title: 'Career Understanding',
+    titleHi: 'करियर समझ मूल्यांकन',
     shortTitle: 'Career',
+    shortTitleHi: 'करियर',
     desc: 'Reflect on your career goals, priorities, and direction — helps our counsellor tailor your personalised roadmap.',
+    descHi: 'अपने करियर लक्ष्य, प्राथमिकताएं और दिशा पर विचार करें — हमारे काउंसलर को आपका व्यक्तिगत रोडमैप बनाने में मदद करता है।',
     duration: '10 mins',
     bands: ['professionals'],
     icon: '🧭',
@@ -162,9 +183,19 @@ export const SKILL_MAPPING_TESTS = [
 ];
 
 /** Tests available for a class band */
-export function getSkillMappingTestsForBand(bandId) {
+export function getSkillMappingTestsForBand(bandId, lang = 'en') {
   if (!bandId) return [];
-  return SKILL_MAPPING_TESTS.filter((t) => t.bands.includes(bandId));
+  return SKILL_MAPPING_TESTS.filter((t) => t.bands.includes(bandId)).map((t) => localizeSkillMappingTest(t, lang));
+}
+
+export function localizeSkillMappingTest(test, lang = 'en') {
+  if (!test || lang !== 'hi') return test;
+  return {
+    ...test,
+    title: test.titleHi || test.title,
+    shortTitle: test.shortTitleHi || test.shortTitle,
+    desc: test.descHi || test.desc,
+  };
 }
 
 /** Whether a class band is unlocked (from payment selection) */

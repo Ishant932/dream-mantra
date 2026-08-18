@@ -64,7 +64,7 @@ export default function DashboardMobileDeck({
 
   return (
     <div className={`dash-mobile-deck dash-mobile-deck--${variant}`}>
-      <div className="dash-mobile-deck__aurora" aria-hidden />
+      <div className="dash-mobile-deck__glow" aria-hidden />
       <div className="dash-mobile-deck__grid" aria-hidden />
 
       <div className="dash-mobile-deck__top">

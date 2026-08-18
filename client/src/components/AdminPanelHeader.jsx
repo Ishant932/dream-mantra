@@ -15,7 +15,7 @@ export default function AdminPanelHeader({ title, subtitle, exportProps, childre
         </div>
       )}
       <div className={`flex flex-wrap items-center gap-2 shrink-0${phone && !showMeta ? ' ml-auto' : ''}`}>
-        {exportProps?.rows?.length > 0 && exportProps?.columns?.length > 0 && (
+        {exportProps?.columns?.length > 0 && (
           <AdminSectionExport {...exportProps} />
         )}
         {children}

@@ -9,8 +9,8 @@ import CopyableUserId from './CopyableUserId';
 import AdminSectionExport from './AdminSectionExport';
 
 const STATUS_OPTIONS = [
-  { value: 'pending', label: 'Pending' },
   { value: 'all', label: 'All' },
+  { value: 'pending', label: 'Pending' },
   { value: 'confirmed', label: 'Confirmed' },
   { value: 'failed', label: 'Failed' },
   { value: 'refunded', label: 'Refunded' },
@@ -77,7 +77,7 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
   const [payments, setPayments] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, totalPages: 1 });
   const [loading, setLoading] = useState(true);
-  const [statusFilter, setStatusFilter] = useState('pending');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [search, setSearch] = useState('');
   const [sort, setSort] = useState('created_at');
   const [order, setOrder] = useState('desc');
@@ -217,9 +217,26 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
     }
   };
 
+  const fetchAllForExport = useCallback(async () => {
+    const data = await adminApi.payments(token, {
+      status: statusFilter,
+      search,
+      page: 1,
+      limit: 10000,
+      sort,
+      order,
+    });
+    return data.payments || [];
+  }, [token, statusFilter, search, sort, order]);
+
+  const openUserPage = (userId) => {
+    if (!userId) return;
+    if (onViewUser) onViewUser(userId);
+  };
+
   const pendingCount = useMemo(
-    () => (statusFilter === 'pending' ? pagination.total : null),
-    [statusFilter, pagination.total]
+    () => payments.filter((p) => p.payment_status === 'pending').length,
+    [payments],
   );
 
   return (
@@ -234,7 +251,13 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
             )}
           </p>
         </div>
-        <AdminSectionExport title="Payments" filename="payments" rows={payments} columns={exportColumns} />
+        <AdminSectionExport
+          title="Payments"
+          filename="payments"
+          rows={payments}
+          columns={exportColumns}
+          onFetchRows={fetchAllForExport}
+        />
       </div>
 
       <div className="flex flex-wrap gap-3 mb-5">
@@ -271,7 +294,15 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
               <div className="flex items-start justify-between gap-2">
                 <div className="min-w-0">
                   <p className="font-mono text-xs font-bold break-all">{p.order_id}</p>
-                  <p className="font-semibold mt-1">{p.user_name}</p>
+                  <p className="font-semibold mt-1">
+                    <button
+                      type="button"
+                      onClick={() => openUserPage(p.user_id)}
+                      className="text-left font-semibold text-amber-800 hover:underline"
+                    >
+                      {p.user_name}
+                    </button>
+                  </p>
                   <CopyableUserId uid={p.user_uid} compact />
                 </div>
                 <StatusBadge status={p.payment_status} />
@@ -344,17 +375,21 @@ export default function AdminPaymentsPanel({ token, users = [], onNotice, onErro
                     <p className="text-xs opacity-60 mt-0.5">{p.product_title || '—'}</p>
                   </td>
                   <td className="py-3 px-2">
-                    <p className="font-semibold">{p.user_name}</p>
+                    <button
+                      type="button"
+                      onClick={() => openUserPage(p.user_id)}
+                      className="font-semibold text-left text-amber-800 hover:underline"
+                    >
+                      {p.user_name}
+                    </button>
                     <CopyableUserId uid={p.user_uid} compact />
-                    {onViewUser && (
-                      <button
-                        type="button"
-                        onClick={() => onViewUser(p.user_id)}
-                        className="text-xs font-semibold text-amber-700 hover:underline mt-1 inline-flex items-center gap-1"
-                      >
-                        <Pencil className="w-3 h-3" /> View profile
-                      </button>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => openUserPage(p.user_id)}
+                      className="text-xs font-semibold text-amber-700 hover:underline mt-1 inline-flex items-center gap-1"
+                    >
+                      <Pencil className="w-3 h-3" /> View full profile
+                    </button>
                   </td>
                   <td className="py-3 px-2 text-xs">
                     <p>{p.phone || '—'}</p>

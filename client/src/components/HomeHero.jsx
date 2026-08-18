@@ -27,7 +27,7 @@ function Pathway({ points, cta, to, variant }) {
 }
 
 export default function HomeHero() {
-  const { t, d } = useLang();
+  const { t, d, lang } = useLang();
   const mobile = isMobilePerf();
   const cms = usePageCatalog('home');
   const counsellingPoints = (d('hero.counsellingPointers') || []).join(' · ');
@@ -66,8 +66,8 @@ export default function HomeHero() {
               transition={{ ...fadeLite.transition, delay: 0.06 }}
               className="hero-h1 hero-title font-accent hero-mobile-stage__copy"
             >
-              <span className="block hero-brand-name">{cmsText(cms, 'heroTitle', t('hero.titleLine1'))}</span>
-              <span className="block hero-service-line mt-1.5">{cmsText(cms, 'heroSubtitle', t('hero.titleHighlight'))}</span>
+              <span className="block hero-brand-name">{cmsText(cms, 'heroTitle', t('hero.titleLine1'), lang)}</span>
+              <span className="block hero-service-line mt-1.5">{cmsText(cms, 'heroSubtitle', t('hero.titleHighlight'), lang)}</span>
             </motion.h1>
           </div>
 
@@ -77,8 +77,8 @@ export default function HomeHero() {
             transition={mobile ? undefined : { duration: 0.6, delay: 0.08 }}
             className="hero-h1 hero-title font-accent mb-3 hero-desktop-title"
           >
-            <span className="block hero-brand-name">{cmsText(cms, 'heroTitle', t('hero.titleLine1'))}</span>
-            <span className="block hero-service-line mt-2">{cmsText(cms, 'heroSubtitle', t('hero.titleHighlight'))}</span>
+            <span className="block hero-brand-name">{cmsText(cms, 'heroTitle', t('hero.titleLine1'), lang)}</span>
+            <span className="block hero-service-line mt-2">{cmsText(cms, 'heroSubtitle', t('hero.titleHighlight'), lang)}</span>
           </motion.h1>
 
           <motion.p
@@ -91,7 +91,7 @@ export default function HomeHero() {
                 })}
             className="hero-lead"
           >
-            {cmsText(cms, 'intro', t('hero.subtitle'))}
+            {cmsText(cms, 'intro', t('hero.subtitle'), lang)}
           </motion.p>
 
           <motion.div

@@ -3,6 +3,7 @@ import { FileText, ExternalLink, Pencil, Send, Check, Trash2 } from 'lucide-reac
 import CopyableUserId from '../CopyableUserId';
 import { DashCard } from '../DashboardUI';
 import AdminPanelHeader from '../AdminPanelHeader';
+import { MODULE_CATALOG } from '../../data/moduleCatalog';
 
 export default function StaffReportsPanel({ api, token, onError, onNotice }) {
   const [users, setUsers] = useState([]);
@@ -10,8 +11,10 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [reportForm, setReportForm] = useState({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report', reportScope: 'reports' });
+  const [reportForm, setReportForm] = useState({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report', reportScope: 'reports', productSlug: '' });
   const [reportUserSearch, setReportUserSearch] = useState('');
+  const [reportModuleFilter, setReportModuleFilter] = useState('all');
+  const [formError, setFormError] = useState('');
   const [editingReportId, setEditingReportId] = useState(null);
   const [editReportForm, setEditReportForm] = useState({ reportTitle: '', reportLink: '', adminNotes: '' });
   const [reportSavingId, setReportSavingId] = useState(null);
@@ -43,11 +46,6 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
     load();
   }, [load]);
 
-  const selectedReportUser = useMemo(
-    () => users.find((u) => u.user_uid === reportForm.userUid),
-    [users, reportForm.userUid]
-  );
-
   const reportUserOptions = useMemo(() => {
     const q = reportUserSearch.trim().toLowerCase();
     if (!q) return users;
@@ -61,8 +59,31 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
     });
   }, [users, reportUserSearch]);
 
+  const selectedReportUser = useMemo(
+    () => users.find((u) => u.user_uid === reportForm.userUid),
+    [users, reportForm.userUid]
+  );
+
+  const visibleReports = useMemo(() => {
+    if (reportModuleFilter === 'all') return reports;
+    return reports.filter((r) => r.product_slug === reportModuleFilter);
+  }, [reports, reportModuleFilter]);
+
   const submitReport = async (e) => {
     e.preventDefault();
+    setFormError('');
+    if (!reportForm.userUid?.trim()) {
+      const msg = 'Please select a student.';
+      setFormError(msg);
+      onError?.(msg);
+      return;
+    }
+    if (!reportForm.reportLink?.trim()) {
+      const msg = 'Report URL is required.';
+      setFormError(msg);
+      onError?.(msg);
+      return;
+    }
     try {
       await api.createReport(token, {
         userUid: reportForm.userUid,
@@ -70,13 +91,19 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
         reportLink: reportForm.reportLink.trim(),
         reportTitle: reportForm.reportTitle,
         reportScope: reportForm.reportScope,
+        productSlug: reportForm.productSlug || undefined,
+        productTitle: reportForm.productSlug
+          ? MODULE_CATALOG.find((m) => m.slug === reportForm.productSlug)?.title
+          : undefined,
       });
       const r = await api.reports(token);
       setReports(r.reports || []);
-      setReportForm({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report', reportScope: 'reports' });
+      setReportForm({ userUid: '', assessmentId: '', reportLink: '', reportTitle: 'Assessment Report', reportScope: 'reports', productSlug: '' });
       onNotice?.('Report published to user dashboard.');
     } catch (err) {
-      onError?.(err.message);
+      const msg = err.message || 'Failed to publish report';
+      setFormError(msg);
+      onError?.(msg);
     }
   };
 
@@ -199,20 +226,35 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
             ))}
           </select>
           <input type="text" className="input-field sm:col-span-2" placeholder="Report title" value={reportForm.reportTitle} onChange={(e) => setReportForm({ ...reportForm, reportTitle: e.target.value })} />
-          <input type="url" className="input-field sm:col-span-2" placeholder="Report URL (Google Drive / PDF link)" value={reportForm.reportLink} onChange={(e) => setReportForm({ ...reportForm, reportLink: e.target.value })} required />
-          <select className="input-field sm:col-span-2" value={reportForm.reportScope} onChange={(e) => setReportForm({ ...reportForm, reportScope: e.target.value })}>
+          <input type="text" className="input-field sm:col-span-2" placeholder="Report URL (Google Drive / PDF link)" value={reportForm.reportLink} onChange={(e) => setReportForm({ ...reportForm, reportLink: e.target.value })} required />
+          <select className="input-field" value={reportForm.productSlug} onChange={(e) => setReportForm({ ...reportForm, productSlug: e.target.value })}>
+            <option value="">All modules (general report)</option>
+            {MODULE_CATALOG.filter((m) => !m.followUpOnly).map((m) => (
+              <option key={m.slug} value={m.slug}>{m.title}</option>
+            ))}
+          </select>
+          <select className="input-field" value={reportForm.reportScope} onChange={(e) => setReportForm({ ...reportForm, reportScope: e.target.value })}>
             <option value="reports">Show in user Reports tab</option>
             <option value="process">Show in module Process (after payment)</option>
             <option value="both">Show in Reports + Process</option>
           </select>
+          {formError && <p className="sm:col-span-2 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">{formError}</p>}
           <button type="submit" className="btn-primary sm:col-span-2">Publish report to user dashboard</button>
         </form>
       </DashCard>
 
       <DashCard className="!p-5 sm:!p-6">
-        <h3 className="font-bold mb-4">Published Reports ({reports.length})</h3>
-        {reports.length === 0 ? (
-          <p className="text-sm opacity-60">No reports published yet.</p>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h3 className="font-bold">Published Reports ({reports.length})</h3>
+          <select className="input-field !py-2 !text-sm w-auto min-w-[12rem]" value={reportModuleFilter} onChange={(e) => setReportModuleFilter(e.target.value)}>
+            <option value="all">All modules</option>
+            {MODULE_CATALOG.filter((m) => !m.followUpOnly).map((m) => (
+              <option key={m.slug} value={m.slug}>{m.title}</option>
+            ))}
+          </select>
+        </div>
+        {visibleReports.length === 0 ? (
+          <p className="text-sm opacity-60">{reportModuleFilter === 'all' ? 'No reports published yet.' : 'No reports for this module.'}</p>
         ) : (
           <div className="overflow-x-auto -mx-1">
             <table className="w-full text-sm admin-data-table min-w-[560px]">
@@ -226,7 +268,7 @@ export default function StaffReportsPanel({ api, token, onError, onNotice }) {
                 </tr>
               </thead>
               <tbody>
-                {reports.map((r) => (
+                {visibleReports.map((r) => (
                   <tr key={r.id} className="border-b border-sand-100 dark:border-sand-800/60 hover:bg-amber-50/40 dark:hover:bg-sand-800/30 transition align-top">
                     {Number(editingReportId) === Number(r.id) ? (
                       <>
